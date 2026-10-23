@@ -1,7 +1,13 @@
+-include .env
+
+DATABASE_URL ?= postgres://rantai:rantai@localhost:5433/rantai?sslmode=disable
+TEST_DATABASE_URL ?= $(DATABASE_URL)
+export DATABASE_URL TEST_DATABASE_URL
+
 COMPOSE := docker compose
 MIGRATE := $(COMPOSE) run --rm --build migrate
 
-.PHONY: up down migrate migrate-down lint test
+.PHONY: up down migrate migrate-down lint test impor-wilayah
 
 up:
 	$(COMPOSE) up -d --wait db minio
@@ -20,3 +26,6 @@ lint:
 
 test:
 	cd backend && go test ./...
+
+impor-wilayah:
+	cd backend && go run ./cmd/worker wilayah

@@ -36,7 +36,7 @@ Versi 1.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` dan `docs/SPEC.md`.
   - Migrasi ekstensi `postgis`, `pg_trgm`; tabel `wilayah`, `provenance`, `ingest_run` (SPEC 2.1).
   - Commit: `🗃️ Tambah skema wilayah, provenance, dan riwayat ingest`
   - Selesai bila: migrasi naik dan turun tanpa error.
-- [ ] **T-103** Impor batas wilayah **[GERBANG DATA GD-10]**
+- [x] **T-103** Impor batas wilayah **[GERBANG DATA GD-10]**
   - Job `wilayah`: impor kota, kecamatan, kelurahan DKI beserta alias nama dan titik tengah.
   - Commit: `✨ Impor batas dan alias wilayah DKI Jakarta`
   - Selesai bila: 6 kota/kabupaten administrasi, seluruh kecamatan dan kelurahan DKI tersimpan; tes menghitung jumlah dan memeriksa satu alias.

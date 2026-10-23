@@ -21,15 +21,22 @@ type Server struct {
 }
 
 func Load(path string) (Config, error) {
-	isi, err := os.ReadFile(path)
-	if err != nil {
-		return Config{}, fmt.Errorf("baca konfigurasi %s: %w", path, err)
-	}
 	var cfg Config
-	if err := yaml.Unmarshal(isi, &cfg); err != nil {
-		return Config{}, fmt.Errorf("urai konfigurasi %s: %w", path, err)
+	if err := BacaYAML(path, &cfg); err != nil {
+		return Config{}, err
 	}
 	return terapkanEnv(cfg), nil
+}
+
+func BacaYAML(path string, tujuan any) error {
+	isi, err := os.ReadFile(path)
+	if err != nil {
+		return fmt.Errorf("baca konfigurasi %s: %w", path, err)
+	}
+	if err := yaml.Unmarshal(isi, tujuan); err != nil {
+		return fmt.Errorf("urai konfigurasi %s: %w", path, err)
+	}
+	return nil
 }
 
 func terapkanEnv(cfg Config) Config {

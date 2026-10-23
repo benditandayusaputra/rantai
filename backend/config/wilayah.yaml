@@ -1,0 +1,40 @@
+sumber:
+  url_dasar: https://raw.githubusercontent.com/cahyadsn/wilayah_boundaries/main/db
+  url_rujukan: https://github.com/cahyadsn/wilayah_boundaries
+  catatan: Batas wilayah sesuai Kepmendagri No 300.2.2-2430 Tahun 2025, kompilasi cahyadsn/wilayah_boundaries (lisensi MIT)
+  user_agent: RantaiBot/1.0 (+https://github.com/benditandayusaputra/rantai)
+  jeda_permintaan: 1s
+  berkas:
+    - kab/wilayah_boundaries_kab_31.sql
+    - kec/wilayah_boundaries_kec_31.sql
+    - kel/31/wilayah_boundaries_kel_31.01.sql
+    - kel/31/wilayah_boundaries_kel_31.71.sql
+    - kel/31/wilayah_boundaries_kel_31.72.sql
+    - kel/31/wilayah_boundaries_kel_31.73.sql
+    - kel/31/wilayah_boundaries_kel_31.74.sql
+    - kel/31/wilayah_boundaries_kel_31.75.sql
+
+provinsi:
+  kode: "31"
+  nama: DKI Jakarta
+
+alias:
+  provinsi:
+    "": ["", "Provinsi ", "Prov. "]
+  kota:
+    "Kota Administrasi ": ["", "Kota ", "Kota Adm. "]
+    "Kabupaten Administrasi ": ["", "Kabupaten ", "Kab. ", "Kab. Adm. "]
+  kecamatan:
+    "": ["", "Kecamatan ", "Kec. "]
+  kelurahan:
+    "": ["", "Kelurahan ", "Kel. "]
+
+singkatan:
+  Kelapa: Klp.
+  Tanjung: Tj.
+  Kebon: Kb.
+  Kampung: Kp.
+  Pulau: P.
+  Pasar: Ps.
+  Gunung: Gn.
+  Kebayoran: Keb.

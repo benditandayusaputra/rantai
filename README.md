@@ -35,6 +35,7 @@ Prasyarat: Docker dengan Docker Compose, Go 1.26 ke atas, GNU Make.
 cp .env.example .env
 make up
 make migrate
+make impor-wilayah
 ```
 
 ## Progres pengerjaan
@@ -48,6 +49,10 @@ make migrate
 - [ ] Frontend
 - [ ] Laporan warga
 - [ ] Tanya Rantai
+
+## Sumber data
+
+Batas wilayah: [cahyadsn/wilayah_boundaries](https://github.com/cahyadsn/wilayah_boundaries) (MIT), sesuai Kepmendagri No 300.2.2-2430 Tahun 2025. Rincian verifikasi tiap sumber ada di `docs/data-sources.md`.
 
 ## Pengambilan data
 
