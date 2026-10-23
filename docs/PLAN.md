@@ -358,3 +358,5 @@ Dikerjakan tim, bukan tugas commit. Dicatat di sini agar urutannya terlihat.
 Format: `- T-xxx · tanggal · alasan · tugas yang dikerjakan sebagai gantinya`
 
 - T-301 · 23 Oktober 2026 · halaman detail dan evaluasi tender SPSE DKI tertutup untuk publik (403, "Akses Ditolak"); detail tender butuh token API Gateway Inaproc (peran Data Integrator, surat ke LKPP) · paket tender disimpan dari kolom daftar, non-tender memakai halaman pengumuman lengkap
+- T-608 · 24 Oktober 2026 · `docs/DESIGN.md` belum memuat layar Kesenjangan vs Belanja (SPEC 14 butir 5) · T-609 dan T-610
+- T-609 · 24 Oktober 2026 · `docs/DESIGN.md` belum memuat umpan dua sumber di profil anggota dan token warna jenis sumber umpan (SPEC 14 butir 1 dan 5); kartu wakil di halaman kecamatan sudah menaut ke `/id/anggota/{id}` · T-610
