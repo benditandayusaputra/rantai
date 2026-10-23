@@ -8,7 +8,8 @@ import (
 const prefiksAPI = "/api/v1"
 
 type Layanan struct {
-	Wilayah LayananWilayah
+	Wilayah    LayananWilayah
+	Provenance LayananProvenance
 }
 
 func NewApp(cfg config.Server, layanan Layanan) *fiber.App {
@@ -20,6 +21,7 @@ func NewApp(cfg config.Server, layanan Layanan) *fiber.App {
 	api := app.Group(prefiksAPI)
 	api.Get("/kesehatan", periksaKesehatan)
 	daftarkanWilayah(api, handlerWilayah{layanan: layanan.Wilayah})
+	api.Get("/provenance/:id", handlerProvenance{layanan: layanan.Provenance}.ambil)
 	return app
 }
 

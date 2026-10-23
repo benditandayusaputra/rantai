@@ -45,8 +45,10 @@ func jalankan() error {
 }
 
 func susunLayanan(pool *pgxpool.Pool) deliveryhttp.Layanan {
-	wilayah := repository.WilayahRepository{DB: pool}
-	return deliveryhttp.Layanan{Wilayah: usecase.CariWilayah{Pembaca: wilayah}}
+	return deliveryhttp.Layanan{
+		Wilayah:    usecase.CariWilayah{Pembaca: repository.WilayahRepository{DB: pool}},
+		Provenance: usecase.AmbilProvenance{Pembaca: repository.ProvenanceRepository{DB: pool}},
+	}
 }
 
 func pathKonfigurasi() string {

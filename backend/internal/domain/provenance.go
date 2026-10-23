@@ -24,3 +24,12 @@ type Provenance struct {
 	HashKonten  string
 	Catatan     string
 }
+
+func (l Label) IsValid() bool {
+	switch l {
+	case LabelResmi, LabelProksi, LabelEstimasi, LabelSimulasi:
+		return true
+	default:
+		return false
+	}
+}

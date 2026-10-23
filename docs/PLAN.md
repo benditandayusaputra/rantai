@@ -44,7 +44,7 @@ Versi 1.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` dan `docs/SPEC.md`.
   - `GET /wilayah/cari`, `GET /wilayah/titik`, `GET /wilayah/{kode}`.
   - Commit: `✨ Tambah API pencarian wilayah berdasarkan nama dan titik`
   - Selesai bila: kriteria terima DASAR-01 terpenuhi dalam tes integrasi.
-- [ ] **T-105** Provenance (DASAR-02)
+- [x] **T-105** Provenance (DASAR-02)
   - `GET /provenance/{id}` dan tipe `Angka` di lapisan delivery.
   - Commit: `✨ Tambah API provenance dan tipe Angka berlabel`
   - Selesai bila: setiap `Angka` di respons wajib membawa label dan `provenance_id` (dites).

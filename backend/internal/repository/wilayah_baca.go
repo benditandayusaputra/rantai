@@ -78,7 +78,7 @@ func hasilSatuBaris[T any](nilai T, err error) (T, bool, error) {
 		return kosong, false, nil
 	}
 	if err != nil {
-		return kosong, false, fmt.Errorf("baca wilayah: %w", err)
+		return kosong, false, fmt.Errorf("baca baris: %w", err)
 	}
 	return nilai, true, nil
 }
