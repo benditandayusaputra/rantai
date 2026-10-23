@@ -32,6 +32,10 @@ func (u BacaWakil) WakilKecamatan(ctx context.Context, kode, kodeTema string) (d
 	if err != nil {
 		return domain.WakilKecamatan{}, err
 	}
+	return u.WakilKecamatanKomisi(ctx, kodeKecamatan, komisiPengawas)
+}
+
+func (u BacaWakil) WakilKecamatanKomisi(ctx context.Context, kodeKecamatan string, komisiPengawas []string) (domain.WakilKecamatan, error) {
 	kecamatan, dapil, ada, err := u.Pembaca.DapilKecamatan(ctx, kodeKecamatan)
 	if err != nil {
 		return domain.WakilKecamatan{}, fmt.Errorf("ambil dapil kecamatan %s: %w", kodeKecamatan, err)

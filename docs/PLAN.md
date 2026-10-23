@@ -158,7 +158,7 @@ Versi 2.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` v2.0 dan `docs/SPEC.
   - Klien LLM bersama (model dari env), job `ringkas_umpan` dengan validator, `GET /anggota/{id}/umpan`.
   - Commit: `✨ Ringkas umpan wakil rakyat secara netral dan tambah API umpan`
   - Selesai bila: tes memakai klien LLM tiruan; ringkasan dengan kosakata terlarang atau angka karangan ditolak dan jatuh ke judul saja.
-- [ ] **T-407** Ringkasan halaman kecamatan (WIL-02 sisi backend)
+- [x] **T-407** Ringkasan halaman kecamatan (WIL-02 sisi backend)
   - `GET /kecamatan/{kode}/ringkasan` untuk bagian Tema, Arus Anggaran, dan Wakilku.
   - Commit: `✨ Tambah ringkasan halaman kecamatan`
   - Selesai bila: kode kelurahan diarahkan ke kecamatannya dengan keterangan; setiap angka berbentuk `Angka` (dites).

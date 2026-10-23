@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/benditandayusaputra/rantai/backend/internal/config"
 	deliveryhttp "github.com/benditandayusaputra/rantai/backend/internal/delivery/http"
@@ -46,12 +47,18 @@ func jalankan() error {
 
 func susunLayanan(pool *pgxpool.Pool) deliveryhttp.Layanan {
 	tema := usecase.BacaTema{Pembaca: repository.TemaRepository{DB: pool}}
+	wilayah := repository.WilayahRepository{DB: pool}
+	wakil := usecase.BacaWakil{Pembaca: repository.WakilRepository{DB: pool}, Tema: tema}
+	ringkasan := repository.RingkasanKecamatanRepository{DB: pool}
 	return deliveryhttp.Layanan{
-		Wilayah:    usecase.CariWilayah{Pembaca: repository.WilayahRepository{DB: pool}},
+		Wilayah:    usecase.CariWilayah{Pembaca: wilayah},
 		Provenance: usecase.AmbilProvenance{Pembaca: repository.ProvenanceRepository{DB: pool}},
 		Tema:       tema,
-		Wakil:      usecase.BacaWakil{Pembaca: repository.WakilRepository{DB: pool}, Tema: tema},
+		Wakil:      wakil,
 		Umpan:      usecase.BacaUmpan{Pembaca: repository.UmpanRepository{DB: pool}},
+		Ringkasan: usecase.RingkasKecamatan{
+			Wilayah: wilayah, Tema: tema, Indikator: ringkasan, Anggaran: ringkasan, Wakil: wakil, Sekarang: time.Now,
+		},
 	}
 }
 

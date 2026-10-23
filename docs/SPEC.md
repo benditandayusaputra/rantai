@@ -255,7 +255,11 @@ Halaman `/{bahasa}/kecamatan/{kode}`. Header: nama kecamatan, kota, kelurahan ya
 - **Arus Anggaran**: jumlah dan total nilai paket tahun berjalan di kecamatan, dengan filter tema.
 - **Wakilku**: dapil, jumlah anggota, dan anggota yang duduk di komisi pengawas tema aktif lebih dahulu.
 
-API: `GET /kecamatan/{kode}/ringkasan` mengembalikan ringkasan ketiga bagian, setiap angka sebagai `Angka`.
+API: `GET /kecamatan/{kode}/ringkasan` mengembalikan ringkasan ketiga bagian, setiap angka sebagai `Angka`. Kode kelurahan diarahkan ke kecamatan induknya dan dikembalikan sebagai `kelurahan_disorot`.
+
+- Tema: indikator periode terbaru dari `indikator_kecamatan`, atau `null` bila belum dihitung.
+- Arus Anggaran: jumlah paket dan total HPS tahun anggaran berjalan, hanya paket berlokasi tingkat kelurahan atau kecamatan dan tidak batal; `null` bila tidak ada paket. Label `proksi` karena kecamatan ditentukan dari nama paket (ANG-02), atau `simulasi` bila ada paket simulasi; `provenance_id` menunjuk pengambilan LPSE terbaru di antara paket itu.
+- Wakilku: dapil dan anggotanya, dengan anggota komisi pengawas semua tema aktif lebih dahulu.
 
 ### WIL-03 Peta
 
