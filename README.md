@@ -1,16 +1,19 @@
 # Rantai
 
-Web transparansi publik untuk DKI Jakarta yang menyambungkan layanan, uang, dan tanggung jawab dalam satu wilayah. Setiap angka bisa ditelusuri ke sumbernya.
+Web transparansi publik untuk DKI Jakarta: siapa wakilku di DPRD, ke mana uang kotaku mengalir, dan apakah layanan dasar di wilayahku cukup. Setiap angka bisa ditelusuri ke sumbernya.
 
 ## Deskripsi
 
-Warga mengetik alamat atau kelurahan, lalu melihat wilayahnya lewat tiga lensa:
+Warga mengetik alamat, kelurahan, atau kecamatan, lalu membuka halaman kecamatannya. Rantai terdiri dari inti tetap dan tema yang bisa ditambah:
 
-| Lensa | Pertanyaan warga |
+| Modul inti | Isi |
 | --- | --- |
-| Layanan | Apakah kursi sekolah di wilayahku cukup untuk lulusan tahun ini? |
-| Uang | Proyek apa yang dibiayai di sini, berapa nilainya, sampai mana buktinya? |
-| Tanggung Jawab | Instansi mana yang berwenang, komisi DPRD mana yang mengawasi, dan siapa wakil dapilku? |
+| Wilayah | Pencarian, peta, halaman kecamatan, lencana sumber di setiap angka |
+| Wakilku | Dapil dan anggota DPRD DKI, profil, jejak kegiatan dari rilis resmi dan media terverifikasi |
+| Arus Anggaran | Paket pengadaan LPSE per kecamatan, penyedia, jadwal, masa pemeliharaan |
+| Aksi | Tanya Rantai, Paket Aspirasi, Data yang Belum Dibuka |
+
+Tema pertama adalah **Pendidikan**: apakah kursi SMP negeri di sebuah kecamatan cukup untuk lulusan SD-nya, ke mana belanja sekolah mengalir, dan siapa yang berwenang.
 
 Karya cabang Web In Action, MIA 2026 (UPNVJ), tema "Designing Digital Futures, Powering Public Transparency".
 
@@ -43,12 +46,12 @@ make impor-wilayah
 - [x] Struktur monorepo
 - [x] Lingkungan lokal Docker Compose
 - [x] Server API dan skema wilayah
-- [ ] Lensa Layanan
-- [ ] Lensa Uang
-- [ ] Lensa Tanggung Jawab
+- [ ] Kerangka tema dan Tema Pendidikan
+- [ ] Arus Anggaran
+- [ ] Wakilku
 - [ ] Frontend
-- [ ] Laporan warga
-- [ ] Tanya Rantai
+- [ ] Tanya Rantai dan Paket Aspirasi
+- [ ] Akun dan hak jawab
 
 ## Sumber data
 

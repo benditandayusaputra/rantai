@@ -1,6 +1,6 @@
 # Rencana Kerja: Rantai
 
-Versi 1.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` dan `docs/SPEC.md`.
+Versi 2.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` v2.0 dan `docs/SPEC.md` v2.0.
 
 ## Cara memakai
 
@@ -8,8 +8,9 @@ Versi 1.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` dan `docs/SPEC.md`.
 - Satu tugas, satu commit, langsung `git push origin main`. Contoh pesan commit di setiap tugas adalah titik awal; sesuaikan dengan pekerjaan yang benar-benar dilakukan, tetap memakai gitmoji dan bahasa Indonesia.
 - **[GERBANG DATA GD-xx]**: sebelum menulis kode, verifikasi sumber sesuai SPEC bagian 1 dan catat hasilnya di `docs/data-sources.md`. Bila verifikasi gagal, jalankan cadangan yang tertulis di SPEC, atau tulis di "Catatan blokir" dan lanjut ke tugas berikutnya yang tidak bergantung.
 - **[BOLEH PECAH]**: tugas ini boleh dipecah menjadi beberapa commit yang masing-masing lulus `make lint` dan `make test`.
-- **[BUTUH DESAIN]**: tugas UI. Wajib membaca `docs/DESIGN.md` lebih dulu. Bila berkas itu belum ada, lewati dan catat di "Catatan blokir".
+- **[BUTUH DESAIN]**: tugas UI. Wajib membaca `docs/DESIGN.md` lebih dulu. Bila layar yang dibutuhkan belum ada di sana, lewati dan catat di "Catatan blokir".
 - "Selesai bila" adalah kriteria terima. Tugas belum boleh dicentang sebelum semuanya terpenuhi dan tes lulus.
+- Fase 0 dan 1 dikerjakan dengan ID fitur v1.0; padanannya ada di awal SPEC.
 
 ## Fase 0. Fondasi repo
 
@@ -40,54 +41,62 @@ Versi 1.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` dan `docs/SPEC.md`.
   - Job `wilayah`: impor kota, kecamatan, kelurahan DKI beserta alias nama dan titik tengah.
   - Commit: `✨ Impor batas dan alias wilayah DKI Jakarta`
   - Selesai bila: 6 kota/kabupaten administrasi, seluruh kecamatan dan kelurahan DKI tersimpan; tes menghitung jumlah dan memeriksa satu alias.
-- [x] **T-104** Pencarian wilayah (DASAR-01)
+- [x] **T-104** Pencarian wilayah (WIL-01)
   - `GET /wilayah/cari`, `GET /wilayah/titik`, `GET /wilayah/{kode}`.
   - Commit: `✨ Tambah API pencarian wilayah berdasarkan nama dan titik`
-  - Selesai bila: kriteria terima DASAR-01 terpenuhi dalam tes integrasi.
-- [x] **T-105** Provenance (DASAR-02)
+  - Selesai bila: kriteria terima WIL-01 terpenuhi dalam tes integrasi.
+- [x] **T-105** Provenance (WIL-04)
   - `GET /provenance/{id}` dan tipe `Angka` di lapisan delivery.
   - Commit: `✨ Tambah API provenance dan tipe Angka berlabel`
   - Selesai bila: setiap `Angka` di respons wajib membawa label dan `provenance_id` (dites).
 - [x] **T-106** Pengaman HTTP
-  - Batas laju per IP, header keamanan (SPEC 10), CORS untuk origin frontend dari konfigurasi.
+  - Batas laju per IP, header keamanan (SPEC 12), CORS untuk origin frontend dari konfigurasi.
   - Commit: `🔒️ Pasang batas laju dan header keamanan pada API`
   - Selesai bila: tes 429 dengan `Retry-After` dan tes keberadaan header lulus.
 
-## Fase 2. Data Lensa Layanan
+## Fase 2. Kerangka tema dan data Pendidikan
 
-- [ ] **T-201** Impor sekolah dan rombel **[GERBANG DATA GD-04, GD-05]** **[BOLEH PECAH]**
-  - Migrasi `sekolah`, `sekolah_rombel`, `daya_tampung_resmi`; job `dapodik` untuk SD, MI, SMP, MTs, SMA, SMK, MA di DKI.
-  - Commit: `✨ Impor data sekolah dan rombel per tingkat dari Dapodik`
-  - Selesai bila: setiap kecamatan DKI punya data sekolah; tes parser memakai fixture.
-- [ ] **T-202** Rumus kesenjangan kursi (LAY-01)
-  - `config/layanan.yaml`, usecase perhitungan, materialized view `kesenjangan_kecamatan`.
-  - Commit: `✨ Hitung kursi proksi dan kesenjangan lulusan per kecamatan`
-  - Selesai bila: tes tabel mencakup semua kasus tepi LAY-01; tidak ada angka 32 atau 36 tertulis langsung di kode.
-- [ ] **T-203** API Lensa Layanan (LAY-02, LAY-03)
-  - `GET /wilayah/{kode}/layanan`, `GET /kecamatan/{kode}/sekolah`, `GET /peta/kesenjangan`.
-  - Commit: `✨ Tambah API kesenjangan kursi dan daftar sekolah kecamatan`
+- [ ] **T-201** Kerangka tema (SPEC 4)
+  - Migrasi `tema`, `indikator_kecamatan`; `config/tema/pendidikan.yaml`; job `tema` dengan validasi kontrak; `GET /tema`, `GET /tema/{kode}`.
+  - Commit: `✨ Tambah konfigurasi tema berbasis basis data`
+  - Selesai bila: validator menolak entri tanggung jawab tanpa dasar hukum, `ambang_rasio` tidak berurutan, regex rusak, dan placeholder tak dikenal (dites); tema Pendidikan termuat dari YAML ke basis data.
+- [ ] **T-202** Impor sekolah dan lokasi **[GERBANG DATA GD-06]** **[BOLEH PECAH]**
+  - Migrasi `sekolah`, `sekolah_rombel`; job `dapodik` untuk SD, MI, SMP, MTs di DKI; kecamatan sekolah ditentukan dari koordinat dengan `ST_Covers`, cadangan pencocokan nama.
+  - Commit: `✨ Impor sekolah, lokasi, dan rombel per tingkat dari Dapodik`
+  - Selesai bila: setiap kecamatan DKI punya data sekolah; tes parser memakai fixture; sekolah tanpa koordinat dilaporkan, tidak ditebak.
+- [ ] **T-203** Daya tampung resmi **[GERBANG DATA GD-04, GD-05]**
+  - Migrasi `daya_tampung`; ekstraksi lampiran Kepkadis 258/2026 dan daftar SPMB Bersama ke CSV di `data/snapshot/`; job `daya_tampung` mencocokkan NPSN.
+  - Commit: `✨ Impor daya tampung SMP negeri dan kursi SPMB Bersama`
+  - Selesai bila: total kursi negeri yang terimpor sama dengan 73.289 atau selisihnya dijelaskan di `docs/data-sources.md`; NPSN tak cocok dicetak sebagai laporan.
+- [ ] **T-204** Calon lulusan per kecamatan **[GERBANG DATA GD-12]**
+  - Migrasi `calon_lulusan_kecamatan`; job `calon_lulusan` dengan metode per sekolah, agregat resmi, atau estimasi total SD ÷ 6 sesuai hasil gerbang.
+  - Commit: `✨ Hitung calon lulusan SD per kecamatan dengan label metode`
+  - Selesai bila: setiap kecamatan punya angka dengan label dan metode; metode estimasi berlabel `estimasi` dan rumusnya tercatat di provenance (dites).
+- [ ] **T-205** Indikator kesenjangan kursi (PEN-01)
+  - `config/pendidikan.yaml`, rumus domain, aturan label terlemah, penghitung `kesenjangan_kursi_smp` menulis ke `indikator_kecamatan`.
+  - Commit: `✨ Hitung kesenjangan kursi SMP negeri per kecamatan`
+  - Selesai bila: tes tabel mencakup semua kasus tepi PEN-01 dan aturan label terlemah; tidak ada angka 32 atau 6 tertulis langsung di kode.
+- [ ] **T-206** API Tema Pendidikan (PEN-02, PEN-03)
+  - `GET /peta/tema/{kode}`, `GET /tema/pendidikan/kecamatan/{kode}`, `GET /tema/pendidikan/kecamatan/{kode}/sekolah`.
+  - Commit: `✨ Tambah API peta indikator dan detail sekolah kecamatan`
   - Selesai bila: GeoJSON choropleth di bawah 300 KB untuk seluruh DKI; tes integrasi lulus.
-- [ ] **T-204** Sekolah terdekat (LAY-04)
+- [ ] **T-207** Sekolah terdekat (PEN-06)
   - `GET /sekolah/terdekat` dengan tekanan radius.
   - Commit: `✨ Tambah API sekolah terdekat dan tekanan kursi radius`
   - Selesai bila: tes dengan data uji tiga sekolah di jarak berbeda lulus.
-- [ ] **T-205** Keterbukaan daya tampung (LAY-05) **[GERBANG DATA GD-06]**
-  - Job `juknis_spmb` impor CSV, `GET /keterbukaan/daya-tampung`.
-  - Commit: `✨ Tambah rapor keterbukaan daya tampung sekolah negeri`
-  - Selesai bila: status `diumumkan` dan `tidak_ditemukan` dites.
 
-## Fase 3. Data Lensa Uang
+## Fase 3. Data Arus Anggaran
 
 - [ ] **T-301** Klien SPSE yang santun **[GERBANG DATA GD-01]**
-  - Klien HTTP dengan batas 1 permintaan per detik per domain, User-Agent dari konfigurasi, cek robots.txt, berhenti pada 403 atau 429. Parser halaman pengumuman tender dan non-tender.
+  - Klien HTTP bersama dengan batas 1 permintaan per detik per domain, User-Agent dari konfigurasi, cek robots.txt, berhenti pada 403 atau 429. Klien endpoint JSON daftar paket (pola pyproc) dan parser halaman pengumuman tender dan non-tender.
   - Commit: `✨ Tambah klien SPSE berbatas laju dan parser pengumuman paket`
-  - Selesai bila: parser lulus tes dengan minimal 5 fixture HTML (SPEC UANG-01); tidak ada permintaan jaringan di tes.
+  - Selesai bila: parser lulus tes dengan minimal 5 fixture (SPEC ANG-01); tidak ada permintaan jaringan di tes.
 - [ ] **T-302** Skema pengadaan
-  - Migrasi `instansi`, `rup`, `penyedia`, `paket`, `riwayat_penyedia`, `sinyal` (SPEC 2.3).
+  - Migrasi `instansi`, `rup`, `penyedia`, `paket`, `riwayat_penyedia`, `sinyal` (SPEC 2.4).
   - Commit: `🗃️ Tambah skema instansi, RUP, penyedia, paket, dan sinyal`
   - Selesai bila: migrasi naik dan turun; indeks GiST di `paket.lokasi`.
-- [ ] **T-303** Job impor paket (UANG-01) **[BOLEH PECAH]**
-  - Job `lpse_daftar` dan `lpse_detail`, normalisasi nama penyedia, pencatatan perubahan tahap.
+- [ ] **T-303** Job impor paket (ANG-01) **[BOLEH PECAH]**
+  - Job `lpse_daftar` dan `lpse_detail`, normalisasi nama penyedia, pencatatan perubahan tahap; snapshot hasil impor untuk lingkungan di luar Indonesia.
   - Commit: `✨ Jalankan impor harian paket LPSE DKI dengan pencatatan tahap`
   - Selesai bila: menjalankan job dua kali tidak menggandakan data; `ingest_run` tercatat.
 - [ ] **T-304** Pemenang dan kontrak **[GERBANG DATA GD-02]**
@@ -98,200 +107,222 @@ Versi 1.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` dan `docs/SPEC.md`.
   - Job `sirup` untuk kode RUP yang ditemukan.
   - Commit: `✨ Tautkan paket ke rencana umum pengadaan`
   - Selesai bila: paket tanpa RUP tetap tersimpan dengan `kode_rup` kosong.
-- [ ] **T-306** Geocoding nama paket (UANG-02)
+- [ ] **T-306** Penentuan lokasi paket (ANG-02)
   - Gazetir dari tabel wilayah, ekstraksi RT/RW, penyaringan kota instansi, pergeseran titik deterministik.
   - Commit: `✨ Petakan paket ke kelurahan dan kecamatan dari nama paket`
-  - Selesai bila: tiga tes wajib UANG-02 lulus; cakupan dicetak oleh perintah `make laporan-geocode`.
-- [ ] **T-307** Kategori dan pembanding (UANG-04)
-  - `config/kategori.yaml`, penentuan kategori dan sektor, `GET /paket/{kode}/pembanding`.
-  - Commit: `✨ Kategorikan paket dan bandingkan HPS paket sejenis`
-  - Selesai bila: pembanding tidak tampil di bawah `min_pembanding`; tes kuartil lulus.
-- [ ] **T-308** Estimasi masa pemeliharaan (UANG-06)
+  - Selesai bila: tiga tes wajib ANG-02 lulus; uji 100 nama paket nyata dicatat; cakupan dicetak oleh `make laporan-geocode`.
+- [ ] **T-307** Estimasi masa pemeliharaan (ANG-04)
   - `config/pemeliharaan.yaml` dan usecase status.
   - Commit: `✨ Estimasi masa pemeliharaan paket konstruksi`
   - Selesai bila: keempat status dan perubahan label menjadi `resmi` dites dengan jam tiruan.
-- [ ] **T-309** Sinyal pola (UANG-05) **[GERBANG DATA GD-09]**
-  - `config/sinyal.yaml`, aturan S-01 sampai S-05, tes kosakata terlarang atas berkas i18n dan pesan backend.
-  - Commit: `✨ Hitung sinyal pola pengadaan dengan ambang terkonfigurasi`
-  - Selesai bila: setiap sinyal punya tes positif dan negatif; tes kosakata terlarang lulus.
-- [ ] **T-310** API Lensa Uang (UANG-03)
-  - `GET /paket/{kode}` berbentuk rantai, `GET /wilayah/{kode}/uang`, `GET /peta/paket`, `GET /paket/terdekat`.
-  - Commit: `✨ Tambah API Rantai Rupiah dan daftar paket per wilayah`
-  - Selesai bila: setiap mata rantai mengembalikan status ada, putus, menunggu, atau estimasi sesuai tabel UANG-03.
-- [ ] **T-311** Riwayat penyedia (UANG-07) **[GERBANG DATA GD-11]**
+- [ ] **T-308** Filter anggaran tema dan API Arus Anggaran (ANG-03)
+  - Penandaan `paket.tema_kode` dari `filter_anggaran`; `GET /paket/{kode}` berbentuk rantai, `GET /kecamatan/{kode}/paket`, `GET /peta/paket`, `GET /paket/terdekat`.
+  - Commit: `✨ Tambah API halaman paket dan daftar paket per kecamatan`
+  - Selesai bila: setiap mata rantai mengembalikan status ada, putus, menunggu, atau estimasi sesuai tabel ANG-03; filter tema dites.
+- [ ] **T-309** Kesenjangan vs Belanja (PEN-04)
+  - `GET /tema/{kode}/belanja` dari `indikator_kecamatan` dan paket bertema.
+  - Commit: `✨ Bandingkan kesenjangan kursi dengan belanja sekolah per kecamatan`
+  - Selesai bila: paket berlokasi tingkat kota dikeluarkan dari angka kecamatan dan dilaporkan terpisah (dites).
+- [ ] **T-310** Kategori, pembanding, dan sinyal (ANG-06) **[GERBANG DATA GD-09]**
+  - `config/kategori.yaml`, `config/sinyal.yaml`, `GET /paket/{kode}/pembanding`, aturan S-01 sampai S-05, tes kosakata terlarang atas berkas i18n dan pesan backend.
+  - Commit: `✨ Bandingkan HPS paket sejenis dan hitung sinyal perlu ditanyakan`
+  - Selesai bila: pembanding tidak tampil di bawah `min_pembanding`; setiap sinyal punya tes positif dan negatif; tes kosakata terlarang lulus.
+- [ ] **T-311** Riwayat penyedia (ANG-07) **[GERBANG DATA GD-11]**
   - Impor Opentender 2014 sampai 2023 untuk pembeli Pemprov DKI, `GET /penyedia/{id}`.
   - Commit: `✨ Impor riwayat Opentender dan tambah API profil penyedia`
   - Selesai bila: respons memuat atribusi ODbL; tidak ada skor atau peringkat.
 
-## Fase 4. Data Lensa Tanggung Jawab
+## Fase 4. Data Wakilku
 
-- [ ] **T-401** Dapil dan anggota **[GERBANG DATA GD-07]**
-  - Migrasi `dapil`, `dapil_wilayah`, `anggota`; job `kpu_dprd`.
+- [ ] **T-401** Dapil dan anggota (WAK-01) **[GERBANG DATA GD-07]**
+  - Migrasi `dapil`, `dapil_wilayah`, `anggota`; job `kpu_dprd` bagian dapil dan anggota.
   - Commit: `✨ Impor dapil dan anggota DPRD DKI periode 2024 sampai 2029`
   - Selesai bila: 10 dapil, 106 anggota, setiap kecamatan DKI masuk tepat satu dapil.
-- [ ] **T-402** Komisi **[GERBANG DATA GD-08]**
-  - Migrasi `komisi`, keanggotaan komisi.
-  - Commit: `✨ Impor komisi DPRD DKI dan keanggotaannya`
+- [ ] **T-402** Komisi dan alat kelengkapan (WAK-02) **[GERBANG DATA GD-08]**
+  - Migrasi `komisi`, `anggota_akd`; job `kpu_dprd` bagian komisi, AKD, dan tautan profil.
+  - Commit: `✨ Impor komisi dan alat kelengkapan DPRD DKI`
   - Selesai bila: setiap komisi punya bidang; anggota tanpa data komisi ditandai, tidak ditebak.
-- [ ] **T-403** Peta kewenangan (TJ-01)
-  - `config/kewenangan.yaml` dengan dasar hukum, pemuat dan validasi, `GET /kewenangan`, `GET /kewenangan/daftar`.
-  - Commit: `✨ Tambah peta kewenangan masalah ke instansi dan komisi`
-  - Selesai bila: pemuat menolak entri tanpa dasar hukum (dites); minimal 8 jenis masalah terisi.
-- [ ] **T-404** API Tanggung Jawab (TJ-02, TJ-03, TJ-04)
-  - `GET /wilayah/{kode}/tanggung-jawab`, `GET /anggota/{id}`, `GET /dapil/{id}`, konfigurasi jalur aspirasi.
-  - Commit: `✨ Tambah API wakil dapil, profil anggota, dan jalur aspirasi`
-  - Selesai bila: urutan anggota komisi pengawas lebih dahulu dites.
-- [ ] **T-405** Ringkasan tiga lensa (DASAR-03)
-  - `GET /wilayah/{kode}/ringkasan`.
-  - Commit: `✨ Tambah ringkasan tiga lensa per wilayah`
-  - Selesai bila: kelurahan memakai data Layanan kecamatannya dengan keterangan.
+- [ ] **T-403** API Wakilku (WAK-01, WAK-02)
+  - `GET /kecamatan/{kode}/wakil?tema=`, `GET /anggota/{id}`, `GET /dapil/{id}`.
+  - Commit: `✨ Tambah API wakil dapil dan profil anggota`
+  - Selesai bila: urutan anggota komisi pengawas tema lebih dahulu dites; tidak ada angka kinerja di respons.
+- [ ] **T-404** Umpan rilis resmi DPRD (WAK-03) **[GERBANG DATA GD-13]**
+  - Migrasi `umpan_kegiatan`, `umpan_anggota`; job `umpan_dprd`; penandaan `tag_isu` dari tema.
+  - Commit: `✨ Impor rilis kegiatan resmi DPRD per anggota`
+  - Selesai bila: parser lulus tes fixture; item tidak disimpan dengan teks berita penuh.
+- [ ] **T-405** Umpan media terverifikasi (WAK-03) **[GERBANG DATA GD-14]**
+  - `config/media.yaml`; job `umpan_media`; disambiguasi nama plus "DPRD DKI" atau fraksi.
+  - Commit: `✨ Impor liputan media terverifikasi dengan disambiguasi nama`
+  - Selesai bila: fixture nama sama tanpa "DPRD DKI" dibuang dan dengan fraksi dipautkan (dites); domain di luar daftar media ditolak.
+- [ ] **T-406** Ringkasan netral dan API umpan (WAK-03)
+  - Klien LLM bersama (model dari env), job `ringkas_umpan` dengan validator, `GET /anggota/{id}/umpan`.
+  - Commit: `✨ Ringkas umpan wakil rakyat secara netral dan tambah API umpan`
+  - Selesai bila: tes memakai klien LLM tiruan; ringkasan dengan kosakata terlarang atau angka karangan ditolak dan jatuh ke judul saja.
+- [ ] **T-407** Ringkasan halaman kecamatan (WIL-02 sisi backend)
+  - `GET /kecamatan/{kode}/ringkasan` untuk bagian Tema, Arus Anggaran, dan Wakilku.
+  - Commit: `✨ Tambah ringkasan halaman kecamatan`
+  - Selesai bila: kode kelurahan diarahkan ke kecamatannya dengan keterangan; setiap angka berbentuk `Angka` (dites).
 
 ## Fase 5. Data demo
 
-- [ ] **T-501** Mode demo (DASAR-07 sisi backend)
-  - `data/snapshot/skenario_demo.yaml` (SPEC 11), `make seed-demo`, `RANTAI_MODE=demo` mematikan job pengambilan.
+- [ ] **T-501** Mode demo (DSR-01 sisi backend)
+  - `data/snapshot/skenario_demo.yaml` (SPEC 13), `make seed-demo`, `RANTAI_MODE=demo` mematikan job pengambilan.
   - Commit: `🗃️ Tambah skenario dan snapshot data demo`
-  - Selesai bila: semua data simulasi bertanda `is_simulation = true` dan tidak terhubung ke paket atau penyedia sungguhan (dites).
+  - Selesai bila: semua data simulasi bertanda `is_simulation = true` dan tidak terhubung ke paket, penyedia, atau anggota sungguhan (dites).
 
 ## Fase 6. Frontend inti
 
+Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman kecamatan dengan tiga bagian, profil anggota dengan umpan dua sumber, Kesenjangan vs Belanja, dan Data yang Belum Dibuka.
+
 - [ ] **T-601** Kerangka SvelteKit **[BUTUH DESAIN]**
-  - SvelteKit 2, Svelte 5 runes, TypeScript strict, Tailwind dari token DESIGN.md, tema terang dan gelap, ESLint, Prettier, svelte-check, Vitest. Tambahkan lint dan tes frontend ke CI.
+  - SvelteKit 2, Svelte 5 runes, TypeScript strict, Tailwind dari token DESIGN.md, i18n dengan pesan Indonesia, rute berawalan `/id`, ESLint, Prettier, svelte-check, Vitest. Tambahkan lint dan tes frontend ke CI.
   - Commit: `🎉 Inisialisasi frontend SvelteKit dengan token desain`
-  - Selesai bila: `make lint` dan `make test` mencakup frontend; tidak ada warna atau ukuran ditulis langsung di komponen.
-- [ ] **T-602** Dua bahasa (DASAR-06)
-  - Rute `/id` dan `/en`, berkas pesan, pengalih bahasa.
-  - Commit: `🌐 Tambah rute dua bahasa dan pengalih bahasa`
-  - Selesai bila: tes memastikan setiap kunci ada di kedua bahasa.
-- [ ] **T-603** Klien API dan lencana provenance (DASAR-02) **[BUTUH DESAIN]**
+  - Selesai bila: `make lint` dan `make test` mencakup frontend; tidak ada warna atau ukuran ditulis langsung di komponen; tidak ada teks hardcode di komponen.
+- [ ] **T-602** Klien API dan lencana sumber (WIL-04) **[BUTUH DESAIN]**
   - Klien bertipe, tipe `Angka`, komponen `LencanaProvenance` dengan panel sumber.
-  - Commit: `✨ Tambah klien API bertipe dan lencana provenance`
+  - Commit: `✨ Tambah klien API bertipe dan lencana sumber`
   - Selesai bila: komponen dites untuk keempat label; panel bisa dibuka dengan papan ketik.
-- [ ] **T-604** Beranda dan pencarian (DASAR-01) **[BUTUH DESAIN]**
+- [ ] **T-603** Beranda dan pencarian (WIL-01) **[BUTUH DESAIN]**
   - Commit: `✨ Bangun beranda dengan pencarian wilayah dan lokasi`
-  - Selesai bila: memilih hasil membuka Wilayahku; tombol lokasi menangani izin ditolak.
-- [ ] **T-605** Wilayahku (DASAR-03) **[BUTUH DESAIN]**
-  - Header, kartu ringkas tiga lensa, tab dengan URL sendiri.
-  - Commit: `✨ Bangun halaman Wilayahku dengan tiga tab lensa`
-  - Selesai bila: tab bisa dibuka langsung dari URL; status kosong, memuat, dan error ada.
-- [ ] **T-606** Tab Layanan dan detail kecamatan (LAY-03) **[BUTUH DESAIN]**
+  - Selesai bila: memilih hasil membuka halaman kecamatan, kelurahan tersorot; tombol lokasi menangani izin ditolak.
+- [ ] **T-604** Halaman kecamatan (WIL-02) **[BUTUH DESAIN]**
+  - Header, kartu ringkas, bagian Tema, Arus Anggaran, Wakilku dengan URL sendiri.
+  - Commit: `✨ Bangun halaman kecamatan dengan bagian tema, anggaran, dan wakil`
+  - Selesai bila: bagian bisa dibuka langsung dari URL; status kosong, memuat, dan error ada.
+- [ ] **T-605** Detail Pendidikan (PEN-03) **[BUTUH DESAIN]**
   - Commit: `✨ Tampilkan kesenjangan kursi dan daftar sekolah kecamatan`
-  - Selesai bila: keterbatasan domisili tampil; grafik punya tabel alternatif.
-- [ ] **T-607** Peta (DASAR-04, LAY-02) **[BUTUH DESAIN]** **[BOLEH PECAH]**
-  - MapLibre, lapisan kesenjangan, proyek, sekolah; legenda; tabel alternatif.
-  - Commit: `✨ Tambah peta kesenjangan kursi dan lapisan proyek`
+  - Selesai bila: keterbatasan domisili tampil; grafik punya tabel alternatif; label tiap jenis kursi terlihat.
+- [ ] **T-606** Peta (WIL-03, PEN-02) **[BUTUH DESAIN]** **[BOLEH PECAH]**
+  - MapLibre, lapisan indikator tema, proyek, sekolah; legenda; tabel alternatif.
+  - Commit: `✨ Tambah peta indikator tema dan lapisan proyek`
   - Selesai bila: semua lapisan bisa dinyalakan dan dimatikan dengan papan ketik.
-- [ ] **T-608** Tab Uang **[BUTUH DESAIN]**
-  - Daftar paket wilayah dengan filter sektor dan tahun, chip sinyal, status pemeliharaan.
-  - Commit: `✨ Tampilkan daftar paket dan status pemeliharaan per wilayah`
-  - Selesai bila: paket simulasi berlabel "Data simulasi" di setiap tempat ia muncul.
-- [ ] **T-609** Rantai Rupiah (UANG-03) **[BUTUH DESAIN]**
-  - Halaman paket dengan rantai, sinyal, pembanding, hak jawab.
-  - Commit: `✨ Bangun halaman Rantai Rupiah untuk detail paket`
-  - Selesai bila: rantai horizontal di 1024 px ke atas dan vertikal di bawahnya; mata rantai putus terbaca jelas.
-- [ ] **T-610** Tab Tanggung Jawab dan profil anggota (TJ-01 sampai TJ-04) **[BUTUH DESAIN]**
-  - Commit: `✨ Tampilkan instansi berwenang, komisi, dan wakil dapil`
-  - Selesai bila: tidak ada angka kinerja atau peringkat politisi di layar.
-- [ ] **T-611** Tentang Data (DASAR-08) **[BUTUH DESAIN]**
+- [ ] **T-607** Arus Anggaran dan halaman paket (ANG-03, ANG-04) **[BUTUH DESAIN]**
+  - Daftar paket kecamatan dengan filter tema dan tahun, status pemeliharaan, halaman paket berbentuk rantai.
+  - Commit: `✨ Bangun daftar paket dan halaman rantai paket`
+  - Selesai bila: rantai horizontal di 1024 px ke atas dan vertikal di bawahnya; mata rantai putus terbaca jelas; paket simulasi berlabel "Data simulasi" di setiap tempat ia muncul.
+- [ ] **T-608** Kesenjangan vs Belanja (PEN-04) **[BUTUH DESAIN]**
+  - Commit: `✨ Tampilkan grafik kesenjangan kursi dibanding belanja sekolah`
+  - Selesai bila: kecamatan aktif tersorot; tabel alternatif dan kalimat pendamping wajib tampil.
+- [ ] **T-609** Wakilku dan profil anggota (WAK-01 sampai WAK-03) **[BUTUH DESAIN]**
+  - Daftar wakil dapil, profil anggota, umpan dua sumber berlencana, pernyataan bias liputan.
+  - Commit: `✨ Tampilkan wakil dapil, profil anggota, dan jejak kegiatan`
+  - Selesai bila: tidak ada angka kinerja atau peringkat politisi di layar; lencana jenis sumber selalu terlihat.
+- [ ] **T-610** Tentang Data (WIL-05) **[BUTUH DESAIN]**
   - Commit: `📝 Tambah halaman Tentang Data dengan rumus dan sumber`
   - Selesai bila: tanggal ambil terakhir tiap sumber diambil dari API, bukan ditulis tangan.
 
 ### Titik FDS (1 November 2026)
 
 - [ ] **T-650** Siap FDS
-  - Deploy pratinjau, README lengkap (judul, deskripsi, tech stack, cara menjalankan, progres pengerjaan dengan centang fitur), tangkapan layar beranda dan Wilayahku di `docs/screenshots/`.
+  - Deploy pratinjau, README lengkap (judul, deskripsi, tech stack, cara menjalankan, progres pengerjaan dengan centang fitur), tangkapan layar beranda dan halaman kecamatan di `docs/screenshots/`.
   - Commit: `📝 Lengkapi README dan tangkapan layar untuk FDS`
   - Selesai bila: repo publik bisa dijalankan orang lain dari README dengan `make up`, `make migrate`, `make seed-demo`.
 
-## Fase 7. Akun dan laporan warga
+## Fase 7. Aksi
 
-- [ ] **T-701** Autentikasi OTP (DASAR-05)
-  - Migrasi `pengguna`, `otp`, `sesi_refresh`; endpoint `/auth/*`; pengirim email lewat SMTP dari env.
-  - Commit: `🔒️ Tambah masuk dengan OTP email dan token berotasi`
-  - Selesai bila: batas percobaan, kedaluwarsa, dan rotasi refresh dites.
-- [ ] **T-702** Masuk di frontend **[BUTUH DESAIN]**
-  - Commit: `✨ Tambah alur masuk OTP di frontend`
-  - Selesai bila: token akses hanya di memori; muat ulang memakai refresh.
-- [ ] **T-703** Terima laporan (UANG-08 sisi backend)
-  - Migrasi laporan, pemrosesan foto (magic bytes, enkode ulang, buang EXIF, thumbnail), MinIO, pembulatan lokasi publik.
-  - Commit: `✨ Terima laporan warga dengan foto tanpa metadata`
-  - Selesai bila: tes memastikan foto hasil tidak memuat EXIF dan lokasi publik terbulatkan.
-- [ ] **T-704** Verifikasi laporan (UANG-09)
-  - Mesin status di domain, konfirmasi, riwayat.
-  - Commit: `✨ Tambah mesin status verifikasi dan konfirmasi saksi`
-  - Selesai bila: semua tes wajib UANG-09 lulus.
-- [ ] **T-705** Alur Lapor Bukti seluler **[BUTUH DESAIN]** **[BOLEH PECAH]**
-  - Commit: `✨ Bangun alur Lapor Bukti untuk layar ponsel`
-  - Selesai bila: alur selesai di lebar 360 px; akurasi lokasi buruk ditolak dengan saran.
-- [ ] **T-706** Linimasa dan lapisan laporan **[BUTUH DESAIN]**
-  - Commit: `✨ Tampilkan linimasa status laporan dan lapisan peta laporan`
-  - Selesai bila: laporan simulasi berlabel di peta dan linimasa.
-- [ ] **T-707** Moderasi (LINTAS-04) **[BUTUH DESAIN]**
-  - Commit: `✨ Tambah panel moderasi laporan`
-  - Selesai bila: setiap aksi tercatat di riwayat.
-- [ ] **T-708** Panel Instansi dan hak jawab (LINTAS-02) **[BUTUH DESAIN]** **[BOLEH PECAH]**
-  - Commit: `✨ Tambah Panel Instansi dan hak jawab publik`
-  - Selesai bila: hak jawab tidak bisa dihapus; isi tanggal serah terima mengubah label pemeliharaan menjadi `resmi`.
-
-## Fase 8. Tanya Rantai
-
-- [ ] **T-801** Fungsi alat
-  - Sepuluh fungsi LINTAS-01 sebagai usecase yang sudah ada, dibungkus registry alat.
+- [ ] **T-701** Fungsi alat Tanya Rantai
+  - Sepuluh fungsi AKS-01 sebagai usecase yang sudah ada, dibungkus registry alat.
   - Commit: `✨ Daftarkan fungsi data untuk Tanya Rantai`
   - Selesai bila: setiap fungsi dites dan mengembalikan `provenance_id`.
-- [ ] **T-802** Orkestrasi dan streaming
-  - Klien LLM dengan tool use, model dari `TANYA_MODEL`, SSE ke klien, batas laju.
+- [ ] **T-702** Orkestrasi dan streaming
+  - Tool use dengan klien LLM bersama, model dari `TANYA_MODEL`, SSE ke klien, batas laju.
   - Commit: `✨ Jalankan Tanya Rantai dengan pemanggilan alat dan SSE`
   - Selesai bila: tes memakai klien LLM tiruan; kunci API hanya dari env.
-- [ ] **T-803** Validator jawaban
+- [ ] **T-703** Validator jawaban
   - Cek angka bersumber dan kosakata terlarang; pesan aman bila gagal.
   - Commit: `🔒️ Validasi angka dan kosakata pada jawaban Tanya Rantai`
   - Selesai bila: jawaban dengan angka karangan ditolak dalam tes.
-- [ ] **T-804** Antarmuka Tanya **[BUTUH DESAIN]**
-  - Halaman `/tanya` dan panel geser di Wilayahku, rujukan `[n]` yang bisa diklik.
+- [ ] **T-704** Antarmuka Tanya **[BUTUH DESAIN]**
+  - Halaman `/tanya` dan panel geser di halaman kecamatan, rujukan `[n]` yang bisa diklik.
   - Commit: `✨ Bangun antarmuka Tanya Rantai dengan rujukan sumber`
-  - Selesai bila: rujukan membuka panel provenance.
-- [ ] **T-805** Cache demo
+  - Selesai bila: rujukan membuka panel sumber.
+- [ ] **T-705** Cache demo
   - Jawaban tercache untuk `tanya_demo.json` saat `RANTAI_MODE=demo`.
   - Commit: `✨ Sediakan jawaban tercache Tanya Rantai untuk mode demo`
   - Selesai bila: tiga pertanyaan demo terjawab tanpa internet.
+- [ ] **T-706** Paket Aspirasi dan jalur aspirasi (AKS-02, AKS-03)
+  - `POST /aspirasi` dari templat tema, teks siap salin dan PDF dari server; `config/jalur_aspirasi.yaml`, `GET /jalur-aspirasi`.
+  - Commit: `✨ Susun Paket Aspirasi berbasis tema dalam teks dan PDF`
+  - Selesai bila: setiap angka di PDF punya sumber dan tanggal; kanal yang tepat tercantum.
+- [ ] **T-707** Antarmuka Paket Aspirasi **[BUTUH DESAIN]**
+  - Commit: `✨ Bangun alur Paket Aspirasi`
+  - Selesai bila: dari halaman kecamatan ke unduhan PDF dalam 2 menit pada uji manual.
+- [ ] **T-708** Data yang Belum Dibuka (AKS-04) **[BUTUH DESAIN]**
+  - `config/data_belum_dibuka.yaml`, `GET /data-belum-dibuka`, `POST /data-belum-dibuka/{kode}/permohonan`, halaman dengan templat PPID.
+  - Commit: `✨ Tambah halaman Data yang Belum Dibuka dan templat permohonan PPID`
+  - Selesai bila: keempat data dan penggantinya tampil; surat permohonan berisi dasar UU 14/2008.
 
-## Fase 9. Fitur pelengkap
+## Fase 8. Akun dan hak jawab
 
-- [ ] **T-901** Paket Aspirasi (TJ-05) **[BUTUH DESAIN]**
-  - `POST /aspirasi`, teks siap salin dan PDF dari server.
-  - Commit: `✨ Susun Paket Aspirasi dalam teks dan PDF`
-  - Selesai bila: setiap angka di PDF punya sumber dan tanggal.
-- [ ] **T-902** Cek Sekolahku (LAY-04) **[BUTUH DESAIN]**
-  - Commit: `✨ Bangun fitur Cek Sekolahku berbasis radius`
-- [ ] **T-903** Profil penyedia (UANG-07) **[BUTUH DESAIN]**
+- [ ] **T-801** Autentikasi OTP (DSR-02)
+  - Migrasi `pengguna`, `otp`, `sesi_refresh`; endpoint `/auth/*`; peran warga, anggota, instansi, moderator, admin; pengirim email lewat SMTP dari env.
+  - Commit: `🔒️ Tambah masuk dengan OTP email dan token berotasi`
+  - Selesai bila: batas percobaan, kedaluwarsa, dan rotasi refresh dites.
+- [ ] **T-802** Masuk di frontend **[BUTUH DESAIN]**
+  - Commit: `✨ Tambah alur masuk OTP di frontend`
+  - Selesai bila: token akses hanya di memori; muat ulang memakai refresh.
+- [ ] **T-803** Panel Instansi dan hak jawab (DSR-03, WAK-07) **[BUTUH DESAIN]** **[BOLEH PECAH]**
+  - Migrasi `hak_jawab`; panel untuk instansi dan anggota; hak jawab pada sinyal, paket, laporan, dan item umpan.
+  - Commit: `✨ Tambah Panel Instansi dan hak jawab publik`
+  - Selesai bila: hak jawab tidak bisa dihapus; isi tanggal serah terima mengubah label pemeliharaan menjadi `resmi`; hak jawab langsung tampil di halaman publik.
+
+## Fase 9. Fitur P1
+
+- [ ] **T-901** Isu yang Disuarakan (WAK-04) dan isu sekolah Komisi E (PEN-05) **[BUTUH DESAIN]**
+  - `GET /anggota/{id}/isu`, `GET /kecamatan/{kode}/wakil?dengan_umpan=true`, tampilan di profil dan bagian Tema.
+  - Commit: `✨ Tampilkan isu yang disuarakan anggota dengan jumlah sumber`
+  - Selesai bila: tidak ada perbandingan antaranggota; label jumlah sumber memisahkan rilis resmi dan media.
+- [ ] **T-902** Sikap Fraksi dan Aspirasi Reses (WAK-05, WAK-06) **[GERBANG DATA GD-15]**
+  - Migrasi `sikap_fraksi`, `aspirasi_reses`; job `paripurna` impor CSV kurasi; API dan tampilan.
+  - Commit: `✨ Tambah sikap fraksi dan aspirasi reses dari dokumen paripurna`
+  - Selesai bila: setiap entri punya tautan sumber; aspirasi tampil dengan catatan "per bidang, bukan per anggota".
+- [ ] **T-903** Aspirasi ke Anggaran (ANG-05)
+  - `GET /aspirasi-reses/{id}/paket-terkait` dan tampilan di halaman paket dan Wakilku.
+  - Commit: `✨ Cocokkan aspirasi reses dengan paket yang kemungkinan terkait`
+  - Selesai bila: hasil selalu berlabel "kemungkinan terkait"; kasus tanpa kecocokan dites.
+- [ ] **T-904** Terima laporan (ANG-08 sisi backend)
+  - Migrasi laporan, pemrosesan foto (magic bytes, enkode ulang, buang EXIF, thumbnail), MinIO, pembulatan lokasi publik.
+  - Commit: `✨ Terima laporan warga dengan foto tanpa metadata`
+  - Selesai bila: tes memastikan foto hasil tidak memuat EXIF dan lokasi publik terbulatkan.
+- [ ] **T-905** Verifikasi laporan (ANG-08)
+  - Mesin status di domain, konfirmasi, riwayat.
+  - Commit: `✨ Tambah mesin status verifikasi dan konfirmasi saksi`
+  - Selesai bila: semua tes wajib verifikasi ANG-08 lulus.
+- [ ] **T-906** Alur Lapor Bukti seluler **[BUTUH DESAIN]** **[BOLEH PECAH]**
+  - Commit: `✨ Bangun alur Lapor Bukti untuk layar ponsel`
+  - Selesai bila: alur selesai di lebar 360 px; akurasi lokasi buruk ditolak dengan saran; laporan simulasi berlabel di peta dan linimasa.
+- [ ] **T-907** Panel moderasi (DSR-03) **[BUTUH DESAIN]**
+  - Moderasi laporan dan item umpan yang salah atribusi.
+  - Commit: `✨ Tambah panel moderasi laporan dan umpan`
+  - Selesai bila: setiap aksi tercatat di riwayat.
+- [ ] **T-908** Profil penyedia (ANG-07) **[BUTUH DESAIN]**
   - Commit: `✨ Bangun halaman profil penyedia`
-- [ ] **T-904** Pantau Wilayahku, feed (LINTAS-03) **[BUTUH DESAIN]**
+- [ ] **T-909** Cek Sekolahku (PEN-06) **[BUTUH DESAIN]**
+  - Commit: `✨ Bangun fitur Cek Sekolahku berbasis radius`
+- [ ] **T-910** Pantau Wilayahku, feed (WIL-06) **[BUTUH DESAIN]**
   - Migrasi `langganan`, `notifikasi`; pembuat kejadian di job `turunan`; feed di aplikasi.
-  - Commit: `✨ Tambah langganan wilayah dan feed notifikasi`
-- [ ] **T-905** Web Push (LINTAS-03)
+  - Commit: `✨ Tambah langganan kecamatan dan feed notifikasi`
+- [ ] **T-911** Web Push (WIL-06)
   - VAPID dari env, service worker.
   - Commit: `✨ Kirim notifikasi Pantau lewat Web Push`
-- [ ] **T-906** Rapor keterbukaan (LAY-05) **[BUTUH DESAIN]**
-  - Commit: `✨ Tampilkan rapor keterbukaan daya tampung`
 
 ## Fase 10. Kualitas dan rilis
 
 - [ ] **T-1001** Tes alur demo
-  - `e2e/alur-demo.spec.ts` pada 390 px dan 1440 px dalam mode demo.
+  - `e2e/alur-demo.spec.ts` untuk delapan langkah Alur Demo PRD pada 390 px dan 1440 px dalam mode demo.
   - Commit: `✅ Tambah tes end-to-end alur demo utama`
 - [ ] **T-1002** Aksesibilitas
   - Audit axe pada semua halaman utama, perbaiki temuan.
   - Commit: `♿️ Perbaiki temuan audit aksesibilitas halaman utama`
   - Selesai bila: tidak ada pelanggaran serius atau kritis.
 - [ ] **T-1003** Performa
-  - Commit: `⚡️ Percepat muat halaman Wilayahku dan peta`
-  - Selesai bila: Lighthouse mobile 90 ke atas untuk Beranda dan Wilayahku; API p95 di bawah 300 ms pada data penuh.
+  - Commit: `⚡️ Percepat muat halaman kecamatan dan peta`
+  - Selesai bila: Lighthouse mobile 90 ke atas untuk beranda dan halaman kecamatan; API p95 di bawah 300 ms pada data penuh.
 - [ ] **T-1004** Deploy
-  - Compose produksi dengan Caddy, cadangan basis data harian.
+  - Compose produksi dengan Caddy, cadangan basis data harian; server di Indonesia untuk job LPSE dan SiRUP.
   - Atur proxy tepercaya di Fiber (`TrustProxy`) agar batas laju per IP dan HSTS bekerja di belakang Caddy.
   - Commit: `🔧 Siapkan deploy produksi dengan Caddy`
-- [ ] **T-1005** Snapshot luring final (DASAR-07)
+- [ ] **T-1005** Snapshot luring final (DSR-01)
   - Snapshot data, PMTiles wilayah DKI, uji jalan tanpa internet.
   - Commit: `🗃️ Perbarui snapshot data dan tile peta untuk demo luring`
   - Selesai bila: alur demo lulus dengan jaringan dimatikan.
@@ -300,10 +331,12 @@ Versi 1.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` dan `docs/SPEC.md`.
 
 ## Cadangan P2 (setelah semua di atas)
 
-- [ ] **T-1101** Tren rasio kursi (LAY-06) · `✨ Tampilkan tren rasio kursi antar tahun ajaran`
-- [ ] **T-1102** Unduh CSV paket (UANG-10) · `✨ Tambah unduhan CSV paket per wilayah`
-- [ ] **T-1103** Bagikan sebagai gambar (LINTAS-05) · `✨ Buat kartu ringkasan wilayah untuk dibagikan`
-- [ ] **T-1104** Ringkasan mingguan via email (LINTAS-03) · `✨ Kirim ringkasan mingguan Pantau lewat email`
+- [ ] **T-1101** Tren kesenjangan antar tahun (PEN-07) · `✨ Tampilkan tren kesenjangan kursi antar tahun ajaran`
+- [ ] **T-1102** Unduh CSV paket (ANG-09) · `✨ Tambah unduhan CSV paket per wilayah`
+- [ ] **T-1103** Bagikan sebagai gambar (AKS-05) · `✨ Buat kartu ringkasan kecamatan untuk dibagikan`
+- [ ] **T-1104** Bahasa Inggris dan pengalih bahasa (DSR-04) · `🌐 Tambah terjemahan Inggris dan pengalih bahasa`
+- [ ] **T-1105** Pengalih tema terang dan gelap (DSR-04) · `💄 Tambah pengalih tema terang dan gelap`
+- [ ] **T-1106** Ringkasan mingguan via email (WIL-06) · `✨ Kirim ringkasan mingguan Pantau lewat email`
 
 ## Keluaran lomba di luar kode
 
@@ -311,6 +344,9 @@ Dikerjakan tim, bukan tugas commit. Dicatat di sini agar urutannya terlihat.
 
 | Tenggat | Keluaran | Bergantung pada |
 | --- | --- | --- |
+| Secepatnya | Permohonan informasi kehadiran dan laporan reses ke PPID DPRD DKI (untuk disebut saat pitching) | - |
+| Secepatnya | Cek Sekolah Kita untuk data kelas 6 per kecamatan (risiko terbesar) | GD-12 |
+| Sebelum Fase 6 | `docs/DESIGN.md` diperbarui ke layar PRD v2.0 | SPEC 14 |
 | 1 November | PDF FDS maks 10 halaman (`WIA_FSDMIA2026_NamaTim`): konsep, sitemap, wireframe, fitur, tangkapan layar landing + 1 halaman | T-650 |
 | 11 November | Proposal maks 30 halaman (`WIA_PenyisihanMIA2026_NamaTim`), surat orisinalitas bermaterai, video maks 5 menit di YouTube publik | Fase 7 dan 8 |
 | 28 November | Deck maks 15 halaman, prototipe daring dan cadangan luring | T-1005 |
