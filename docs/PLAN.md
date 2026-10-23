@@ -138,7 +138,7 @@ Versi 2.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` v2.0 dan `docs/SPEC.
   - Migrasi `dapil`, `dapil_wilayah`, `anggota`; job `kpu_dprd` bagian dapil dan anggota.
   - Commit: `✨ Impor dapil dan anggota DPRD DKI periode 2024 sampai 2029`
   - Selesai bila: 10 dapil, 106 anggota, setiap kecamatan DKI masuk tepat satu dapil.
-- [ ] **T-402** Komisi dan alat kelengkapan (WAK-02) **[GERBANG DATA GD-08]**
+- [x] **T-402** Komisi dan alat kelengkapan (WAK-02) **[GERBANG DATA GD-08]**
   - Migrasi `komisi`, `anggota_akd`; job `kpu_dprd` bagian komisi, AKD, dan tautan profil.
   - Commit: `✨ Impor komisi dan alat kelengkapan DPRD DKI`
   - Selesai bila: setiap komisi punya bidang; anggota tanpa data komisi ditandai, tidak ditebak.

@@ -121,6 +121,7 @@ func buatImporDPRD(pool *pgxpool.Pool) (job, error) {
 		TahunPemilu:      cfg.DapilKPU.TahunPemilu,
 		URLLHKPN:         cfg.URLLHKPN,
 		PolaURLProfil:    cfg.Sumber.URLDasar + cfg.Sumber.HalamanProfil,
+		Laporkan:         func(pesan string) { log.Println(pesan) },
 	}
 	return impor.Jalankan, nil
 }

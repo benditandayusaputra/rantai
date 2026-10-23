@@ -4,11 +4,17 @@ import (
 	"bytes"
 	"fmt"
 	"regexp"
+	"slices"
 	"strings"
 
 	"github.com/benditandayusaputra/rantai/backend/internal/domain"
 	"golang.org/x/net/html"
 	"golang.org/x/net/html/atom"
+)
+
+const (
+	awalanBidang      = "Meliputi"
+	kataPenutupDaftar = "serta"
 )
 
 var polaSlugProfil = regexp.MustCompile(`/profile/([^/?#]+)/?$`)
@@ -116,4 +122,37 @@ func teks(n *html.Node) string {
 		}
 	}
 	return strings.Join(strings.Fields(isi.String()), " ")
+}
+
+func UraiBidangKomisi(isi []byte, kataAwalUnit []string) ([]string, error) {
+	akar, err := html.Parse(bytes.NewReader(isi))
+	if err != nil {
+		return nil, fmt.Errorf("urai halaman komisi: %w", err)
+	}
+	for n := range akar.Descendants() {
+		if n.DataAtom != atom.P {
+			continue
+		}
+		if daftar, ada := strings.CutPrefix(teks(n), awalanBidang); ada {
+			return pisahkanUnit(strings.TrimLeft(daftar, " :"), kataAwalUnit), nil
+		}
+	}
+	return []string{}, nil
+}
+
+func pisahkanUnit(daftar string, kataAwalUnit []string) []string {
+	unit := []string{}
+	for _, potongan := range strings.Split(strings.TrimSuffix(daftar, "."), ",") {
+		potongan = strings.TrimSpace(potongan)
+		kataPertama, _, _ := strings.Cut(potongan, " ")
+		switch {
+		case kataPertama == kataPenutupDaftar:
+			continue
+		case len(unit) == 0 || slices.Contains(kataAwalUnit, kataPertama):
+			unit = append(unit, potongan)
+		default:
+			unit[len(unit)-1] += ", " + potongan
+		}
+	}
+	return unit
 }

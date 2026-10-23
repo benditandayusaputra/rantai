@@ -141,9 +141,9 @@ Fungsi SQL `hierarki_wilayah(kode)` mengembalikan leluhur sebuah wilayah sebagai
 | --- | --- |
 | `dapil` | `id`, `nomor`, `nama`, `tahun_pemilu`, `jumlah_kursi`, `provenance_id`; unik (`tahun_pemilu`, `nomor`) |
 | `dapil_wilayah` | `dapil_id`, `kode_kecamatan` (unik: satu kecamatan satu dapil) |
-| `komisi` | `id`, `kode` (A sampai E), `nama`, `bidang` text[] |
-| `anggota` | `id` (slug halaman profil DPRD), `nama`, `nama_lain` text[] (untuk disambiguasi), `partai`, `fraksi`, `dapil_id`, `komisi_id` nullable, `url_profil`, `lhkpn_url`, `provenance_id` |
-| `anggota_akd` | `anggota_id`, `alat_kelengkapan` (contoh: Badan Anggaran, Bapemperda), `jabatan` |
+| `komisi` | `kode` PK (A sampai E), `nama`, `bidang` text[] (mitra kerja dari situs DPRD, minimal satu), `provenance_id` |
+| `anggota` | `id` (slug halaman profil DPRD), `nama`, `nama_lain` text[] (untuk disambiguasi), `partai`, `fraksi`, `dapil_id`, `komisi_kode` nullable (kosong untuk pimpinan DPRD atau data tidak tersedia), `url_profil`, `lhkpn_url`, `provenance_id` |
+| `anggota_akd` | `anggota_id`, `alat_kelengkapan` (contoh: Pimpinan DPRD, Komisi E Bidang Kesejahteraan Rakyat, Badan Anggaran), `jabatan` apa adanya dari situs, `provenance_id`; PK (`anggota_id`, `alat_kelengkapan`) |
 | `umpan_kegiatan` | `id`, `jenis_sumber` (resmi_dprd, media), `media_nama`, `media_domain`, `judul`, `ringkasan` nullable, `url` unik, `terbit_pada`, `tag_isu` text[], `disembunyikan`, `provenance_id` |
 | `umpan_anggota` | `umpan_id`, `anggota_id`, `dasar_cocok` (nama_dan_dprd, nama_dan_fraksi, situs_resmi) |
 | `sikap_fraksi` | `id`, `fraksi`, `agenda` (raperda, apbd), `judul_agenda`, `tanggal`, `ringkasan`, `url`, `provenance_id` |

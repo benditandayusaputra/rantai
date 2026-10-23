@@ -63,6 +63,7 @@ type Anggota struct {
 	Fraksi     string
 	NomorDapil int
 	URLProfil  string
+	KodeKomisi string
 }
 
 func ValidasiCakupanDapil(daftar []Dapil, kecamatanDKI map[string]string) error {

@@ -46,3 +46,26 @@ func TestUraiHalamanStruktur_FraksiNasDem_MemuatAnggotaPPP(t *testing.T) {
 		t.Errorf("harap %+v ada di daftar fraksi", harap)
 	}
 }
+
+func TestUraiBidangKomisi_KomisiB_NamaDinasBerkomaTetapUtuh(t *testing.T) {
+	kataAwal := []string{"Dinas", "Badan", "Biro", "Perusahaan"}
+
+	bidang, err := UraiBidangKomisi(bacaFixture(t, "komisi_komisi-b-bidang-perekonomian.html"), kataAwal)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	harap := []string{
+		"Dinas Pangan, Pertanian dan Kelautan",
+		"Dinas Perindustrian, Perdagangan, Koperasi, Usaha Kecil dan Menengah",
+		"Dinas Pariwisata dan Ekonomi Kreatif",
+		"Dinas Penanaman Modal dan Pelayanan Terpadu Satu Pintu",
+		"Dinas Perhubungan",
+		"Dinas Tenaga Kerja, Transmigrasi dan Energi",
+		"Badan Pembinaan Badan Usaha Milik Daerah (BUMD)",
+		"Perusahaan Daerah",
+	}
+	if !slices.Equal(bidang, harap) {
+		t.Errorf("bidang = %q", bidang)
+	}
+}

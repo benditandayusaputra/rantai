@@ -27,19 +27,34 @@ SELECT d.id, x.kode
 FROM unnest($2::int[], $3::text[]) AS x (nomor, kode)
 JOIN dapil d ON d.tahun_pemilu = $1 AND d.nomor = x.nomor`
 
-	sqlSimpanAnggota = `INSERT INTO anggota (id, nama, nama_lain, partai, fraksi, dapil_id, url_profil, lhkpn_url, provenance_id)
-SELECT $1, $2, $3, $4, $5, d.id, $8, $9, $10
+	sqlSimpanKomisi = `INSERT INTO komisi (kode, nama, bidang, provenance_id)
+VALUES ($1, $2, $3, $4)
+ON CONFLICT (kode) DO UPDATE SET
+    nama = EXCLUDED.nama, bidang = EXCLUDED.bidang, provenance_id = EXCLUDED.provenance_id, diubah_pada = now()
+WHERE (komisi.nama, komisi.bidang) IS DISTINCT FROM (EXCLUDED.nama, EXCLUDED.bidang)
+RETURNING (xmax = 0) AS baru`
+
+	sqlSimpanAnggota = `INSERT INTO anggota (id, nama, nama_lain, partai, fraksi, dapil_id, url_profil, lhkpn_url, provenance_id, komisi_kode)
+SELECT $1, $2, $3, $4, $5, d.id, $8, $9, $10, NULLIF($11, '')
 FROM dapil d WHERE d.tahun_pemilu = $6 AND d.nomor = $7
 ON CONFLICT (id) DO UPDATE SET
     nama = EXCLUDED.nama, nama_lain = EXCLUDED.nama_lain, partai = EXCLUDED.partai, fraksi = EXCLUDED.fraksi,
     dapil_id = EXCLUDED.dapil_id, url_profil = EXCLUDED.url_profil, lhkpn_url = EXCLUDED.lhkpn_url,
-    provenance_id = EXCLUDED.provenance_id, diubah_pada = now()
-WHERE (anggota.nama, anggota.nama_lain, anggota.partai, anggota.fraksi, anggota.dapil_id, anggota.url_profil, anggota.lhkpn_url)
-    IS DISTINCT FROM (EXCLUDED.nama, EXCLUDED.nama_lain, EXCLUDED.partai, EXCLUDED.fraksi, EXCLUDED.dapil_id, EXCLUDED.url_profil, EXCLUDED.lhkpn_url)
+    komisi_kode = EXCLUDED.komisi_kode, provenance_id = EXCLUDED.provenance_id, diubah_pada = now()
+WHERE (anggota.nama, anggota.nama_lain, anggota.partai, anggota.fraksi, anggota.dapil_id, anggota.url_profil, anggota.lhkpn_url, anggota.komisi_kode)
+    IS DISTINCT FROM (EXCLUDED.nama, EXCLUDED.nama_lain, EXCLUDED.partai, EXCLUDED.fraksi, EXCLUDED.dapil_id, EXCLUDED.url_profil, EXCLUDED.lhkpn_url, EXCLUDED.komisi_kode)
 RETURNING (xmax = 0) AS baru`
+
+	sqlHapusJabatan = `DELETE FROM anggota_akd`
+
+	sqlSimpanJabatan = `INSERT INTO anggota_akd (anggota_id, alat_kelengkapan, jabatan, provenance_id)
+SELECT DISTINCT ON (anggota_id, alat_kelengkapan) anggota_id, alat_kelengkapan, jabatan, $4
+FROM unnest($1::text[], $2::text[], $3::text[]) AS x (anggota_id, alat_kelengkapan, jabatan)`
 
 	sqlHapusAnggotaLama = `DELETE FROM anggota WHERE NOT (id = ANY ($1))`
 )
+
+type langkahSimpanWakil func(ctx context.Context, tx pgx.Tx, data usecase.DataSimpanWakil) (usecase.HasilImpor, error)
 
 type WakilRepository struct {
 	DB Basisdata
@@ -76,18 +91,43 @@ func simpanSemuaWakil(ctx context.Context, tx pgx.Tx, data usecase.DataSimpanWak
 	if err := errors.Join(simpanProvenance(ctx, tx, data.ProvenanceDapil), simpanProvenance(ctx, tx, data.ProvenanceAnggota)); err != nil {
 		return usecase.HasilImpor{}, err
 	}
-	hasilDapil, err := simpanDapil(ctx, tx, data)
-	if err != nil {
-		return usecase.HasilImpor{}, err
+	total := usecase.HasilImpor{}
+	for _, langkah := range []langkahSimpanWakil{simpanDapil, simpanKomisi, simpanAnggota, simpanJabatan} {
+		hasil, err := langkah(ctx, tx, data)
+		if err != nil {
+			return usecase.HasilImpor{}, err
+		}
+		total.JumlahBaru += hasil.JumlahBaru
+		total.JumlahBerubah += hasil.JumlahBerubah
 	}
-	hasilAnggota, err := simpanAnggota(ctx, tx, data)
-	if err != nil {
-		return usecase.HasilImpor{}, err
+	return total, nil
+}
+
+func simpanKomisi(ctx context.Context, tx pgx.Tx, data usecase.DataSimpanWakil) (usecase.HasilImpor, error) {
+	hasil := usecase.HasilImpor{}
+	for _, k := range data.Komisi {
+		baru, berubah, err := tulisBaris(tx.QueryRow(ctx, sqlSimpanKomisi, k.Kode, k.Nama, k.Bidang, data.ProvenanceAnggota.ID))
+		if err != nil {
+			return usecase.HasilImpor{}, fmt.Errorf("simpan komisi %s: %w", k.Kode, err)
+		}
+		hasil.JumlahBaru += hitungJika(baru)
+		hasil.JumlahBerubah += hitungJika(berubah)
 	}
-	return usecase.HasilImpor{
-		JumlahBaru:    hasilDapil.JumlahBaru + hasilAnggota.JumlahBaru,
-		JumlahBerubah: hasilDapil.JumlahBerubah + hasilAnggota.JumlahBerubah,
-	}, nil
+	return hasil, nil
+}
+
+func simpanJabatan(ctx context.Context, tx pgx.Tx, data usecase.DataSimpanWakil) (usecase.HasilImpor, error) {
+	anggota, alat, jabatan := []string{}, []string{}, []string{}
+	for _, j := range data.Jabatan {
+		anggota, alat, jabatan = append(anggota, j.AnggotaID), append(alat, j.AlatKelengkapan), append(jabatan, j.Jabatan)
+	}
+	if _, err := tx.Exec(ctx, sqlHapusJabatan); err != nil {
+		return usecase.HasilImpor{}, fmt.Errorf("hapus jabatan alat kelengkapan lama: %w", err)
+	}
+	if _, err := tx.Exec(ctx, sqlSimpanJabatan, anggota, alat, jabatan, data.ProvenanceAnggota.ID); err != nil {
+		return usecase.HasilImpor{}, fmt.Errorf("simpan jabatan alat kelengkapan: %w", err)
+	}
+	return usecase.HasilImpor{}, nil
 }
 
 func simpanDapil(ctx context.Context, tx pgx.Tx, data usecase.DataSimpanWakil) (usecase.HasilImpor, error) {
@@ -140,7 +180,7 @@ func simpanAnggota(ctx context.Context, tx pgx.Tx, data usecase.DataSimpanWakil)
 func simpanSatuAnggota(ctx context.Context, tx pgx.Tx, a domain.Anggota, data usecase.DataSimpanWakil) (baru, berubah bool, err error) {
 	return tulisBaris(tx.QueryRow(ctx, sqlSimpanAnggota,
 		a.ID, a.Nama, a.NamaLain, a.Partai, a.Fraksi, data.TahunPemilu, a.NomorDapil,
-		a.URLProfil, data.URLLHKPN, data.ProvenanceAnggota.ID))
+		a.URLProfil, data.URLLHKPN, data.ProvenanceAnggota.ID, a.KodeKomisi))
 }
 
 func tulisBaris(baris pgx.Row) (baru, berubah bool, err error) {

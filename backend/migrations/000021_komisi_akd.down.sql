@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS anggota_akd;
+ALTER TABLE anggota DROP COLUMN IF EXISTS komisi_kode;
+DROP TABLE IF EXISTS komisi;

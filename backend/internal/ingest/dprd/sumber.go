@@ -2,6 +2,7 @@ package dprd
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -16,18 +17,26 @@ import (
 
 const formatTanggalRaw = "2006-01-02"
 
-type Fraksi struct {
+type Halaman struct {
 	Nama    string `yaml:"nama"`
 	Halaman string `yaml:"halaman"`
 }
 
+type HalamanKomisi struct {
+	Kode    string `yaml:"kode"`
+	Halaman `yaml:",inline"`
+}
+
 type KonfigurasiSumber struct {
-	URLDasar      string   `yaml:"url_dasar"`
-	URLRujukan    string   `yaml:"url_rujukan"`
-	Catatan       string   `yaml:"catatan"`
-	HalamanDapil  string   `yaml:"halaman_dapil"`
-	HalamanProfil string   `yaml:"halaman_profil"`
-	Fraksi        []Fraksi `yaml:"fraksi"`
+	URLDasar        string          `yaml:"url_dasar"`
+	URLRujukan      string          `yaml:"url_rujukan"`
+	Catatan         string          `yaml:"catatan"`
+	HalamanDapil    string          `yaml:"halaman_dapil"`
+	HalamanProfil   string          `yaml:"halaman_profil"`
+	Fraksi          []Halaman       `yaml:"fraksi"`
+	Komisi          []HalamanKomisi `yaml:"komisi"`
+	KataAwalUnit    []string        `yaml:"kata_awal_unit"`
+	AlatKelengkapan []Halaman       `yaml:"alat_kelengkapan"`
 }
 
 type KonfigurasiDapilKPU struct {
@@ -63,20 +72,59 @@ type pengunduh struct {
 
 func (s Sumber) Ambil(ctx context.Context) (usecase.DataSumberDPRD, error) {
 	u := &pengunduh{Sumber: s, diambilPada: s.Sekarang()}
-	barisDapil, err := u.ambilSemuaDapil(ctx)
+	data := usecase.DataSumberDPRD{}
+	var err error
+	if data.BarisDapil, err = u.ambilSemuaDapil(ctx); err != nil {
+		return usecase.DataSumberDPRD{}, err
+	}
+	if data.AnggotaFraksi, err = u.ambilSemuaFraksi(ctx); err != nil {
+		return usecase.DataSumberDPRD{}, err
+	}
+	if data.Komisi, data.Struktur, err = u.ambilSemuaKomisi(ctx); err != nil {
+		return usecase.DataSumberDPRD{}, err
+	}
+	akd, err := u.ambilSemuaAlatKelengkapan(ctx)
 	if err != nil {
 		return usecase.DataSumberDPRD{}, err
 	}
-	anggotaFraksi, err := u.ambilSemuaFraksi(ctx)
-	if err != nil {
-		return usecase.DataSumberDPRD{}, err
+	data.Struktur = append(data.Struktur, akd...)
+	data.ProvenanceDapil = s.provenanceDapil(u.diambilPada)
+	data.ProvenanceAnggota = s.provenanceAnggota(u.semuaIsi, u.diambilPada)
+	return data, nil
+}
+
+func (u *pengunduh) ambilSemuaKomisi(ctx context.Context) ([]domain.Komisi, []domain.HalamanStruktur, error) {
+	komisi, halaman := []domain.Komisi{}, []domain.HalamanStruktur{}
+	for _, k := range u.Konfigurasi.Sumber.Komisi {
+		isi, err := u.ambil(ctx, k.Halaman.Halaman)
+		if err != nil {
+			return nil, nil, err
+		}
+		bidang, errBidang := UraiBidangKomisi(isi, u.Konfigurasi.Sumber.KataAwalUnit)
+		baris, errBaris := UraiHalamanStruktur(isi)
+		if err := errors.Join(errBidang, errBaris); err != nil {
+			return nil, nil, fmt.Errorf("%s: %w", k.Nama, err)
+		}
+		komisi = append(komisi, domain.Komisi{Kode: k.Kode, Nama: k.Nama, Bidang: bidang})
+		halaman = append(halaman, domain.HalamanStruktur{AlatKelengkapan: k.Nama, KodeKomisi: k.Kode, Baris: baris})
 	}
-	return usecase.DataSumberDPRD{
-		BarisDapil:        barisDapil,
-		AnggotaFraksi:     anggotaFraksi,
-		ProvenanceDapil:   s.provenanceDapil(u.diambilPada),
-		ProvenanceAnggota: s.provenanceAnggota(u.semuaIsi, u.diambilPada),
-	}, nil
+	return komisi, halaman, nil
+}
+
+func (u *pengunduh) ambilSemuaAlatKelengkapan(ctx context.Context) ([]domain.HalamanStruktur, error) {
+	halaman := []domain.HalamanStruktur{}
+	for _, a := range u.Konfigurasi.Sumber.AlatKelengkapan {
+		isi, err := u.ambil(ctx, a.Halaman)
+		if err != nil {
+			return nil, err
+		}
+		baris, err := UraiHalamanStruktur(isi)
+		if err != nil {
+			return nil, fmt.Errorf("%s: %w", a.Nama, err)
+		}
+		halaman = append(halaman, domain.HalamanStruktur{AlatKelengkapan: a.Nama, Baris: baris})
+	}
+	return halaman, nil
 }
 
 func (u *pengunduh) ambilSemuaDapil(ctx context.Context) ([]domain.BarisDapil, error) {

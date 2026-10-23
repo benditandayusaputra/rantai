@@ -23,6 +23,34 @@ sumber:
       halaman: /fraksi/periode-2024-2029/partai-demokrat/
     - nama: Fraksi Partai Solidaritas Indonesia
       halaman: /fraksi/periode-2024-2029/partai-solidaritas-indonesia/
+  komisi:
+    - kode: A
+      nama: Komisi A Bidang Pemerintahan
+      halaman: /akd/komisi/periode-2024-2029/komisi-a-bidang-pemerintahan/
+    - kode: B
+      nama: Komisi B Bidang Perekonomian
+      halaman: /akd/komisi/periode-2024-2029/komisi-b-bidang-perekonomian/
+    - kode: C
+      nama: Komisi C Bidang Keuangan
+      halaman: /akd/komisi/periode-2024-2029/komisi-c-bidang-keuangan/
+    - kode: D
+      nama: Komisi D Bidang Pembangunan
+      halaman: /akd/komisi/periode-2024-2029/komisi-d-bidang-pembangunan/
+    - kode: E
+      nama: Komisi E Bidang Kesejahteraan Rakyat
+      halaman: /akd/komisi/periode-2024-2029/komisi-e-bidang-kesra/
+  kata_awal_unit: [Dinas, Badan, Biro, Satpol, Sekretariat, Perusahaan, RSUD, Inspektorat]
+  alat_kelengkapan:
+    - nama: Pimpinan DPRD
+      halaman: /akd/pimpinan-dprd/
+    - nama: Badan Musyawarah
+      halaman: /akd/badan-musyawarah/
+    - nama: Badan Anggaran
+      halaman: /akd/badan-anggaran/
+    - nama: Badan Pembentukan Peraturan Daerah
+      halaman: /akd/badan-pembentukan-peraturan-daerah/
+    - nama: Badan Kehormatan
+      halaman: /akd/badan-kehormatan/
 
 pengunduh:
   user_agent: RantaiBot/1.0 (+https://github.com/benditandayusaputra/rantai)

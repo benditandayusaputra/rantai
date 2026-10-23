@@ -33,18 +33,29 @@ func (p pencocokAnggota) cocokkanSemua(barisDapil []BarisDapil) ([]Anggota, []st
 	dipakai := map[string]bool{}
 	for _, b := range barisDapil {
 		f, ada := p.cariFraksi(b)
-		if !ada || dipakai[f.Slug] {
+		id := p.tentukanID(b, f)
+		if !ada || id == "" || dipakai[id] {
 			tidakCocok = append(tidakCocok, fmt.Sprintf("dapil %d %q", b.NomorDapil, b.Nama))
 			continue
 		}
-		dipakai[f.Slug] = true
-		hasil = append(hasil, buatAnggota(b, f))
+		dipakai[id] = true
+		hasil = append(hasil, buatAnggota(id, b, f))
 	}
 	return hasil, tidakCocok
 }
 
+func (p pencocokAnggota) tentukanID(b BarisDapil, f AnggotaFraksi) string {
+	if f.Slug != "" {
+		return f.Slug
+	}
+	if len(p.dapilPerSlug[b.Slug]) == 1 {
+		return b.Slug
+	}
+	return ""
+}
+
 func (p pencocokAnggota) cariFraksi(b BarisDapil) (AnggotaFraksi, bool) {
-	if len(p.dapilPerSlug[b.Slug]) == 1 && len(p.fraksiPerSlug[b.Slug]) == 1 {
+	if b.Slug != "" && len(p.dapilPerSlug[b.Slug]) == 1 && len(p.fraksiPerSlug[b.Slug]) == 1 {
 		return p.fraksiPerSlug[b.Slug][0], true
 	}
 	kunci := KunciNama(b.Nama)
@@ -54,12 +65,12 @@ func (p pencocokAnggota) cariFraksi(b BarisDapil) (AnggotaFraksi, bool) {
 	return AnggotaFraksi{}, false
 }
 
-func buatAnggota(b BarisDapil, f AnggotaFraksi) Anggota {
+func buatAnggota(id string, b BarisDapil, f AnggotaFraksi) Anggota {
 	namaLain := []string{NamaTanpaGelar(b.Nama), f.Nama, NamaTanpaGelar(f.Nama)}
 	slices.Sort(namaLain)
 	namaLain = slices.DeleteFunc(slices.Compact(namaLain), func(n string) bool { return n == b.Nama || n == "" })
 	return Anggota{
-		ID:         f.Slug,
+		ID:         id,
 		Nama:       b.Nama,
 		NamaLain:   namaLain,
 		Partai:     b.Partai,

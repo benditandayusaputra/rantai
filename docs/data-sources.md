@@ -54,3 +54,17 @@ Catatan hasil Gerbang Data (SPEC bagian 1). Setiap entri memuat URL, tanggal cek
 - **Identitas anggota**: `anggota.id` adalah slug profil dari halaman fraksi (unik di sana), contoh `ima-mahdiah`.
 - **LHKPN**: tautan ke halaman pengumuman e-LHKPN KPK (`https://elhkpn.kpk.go.id/portal/user/login#announ`); data LHKPN tidak disalin.
 - **robots.txt** `dprd-dkijakartaprov.go.id`: hanya `Disallow: /wp-admin/` untuk semua agen. Job memberi jeda 1 detik antarhalaman (19 halaman) dan memakai User-Agent RantaiBot.
+
+## GD-08 Komisi, alat kelengkapan, dan fraksi DPRD DKI Jakarta
+
+- **Status**: lolos. Keanggotaan komisi tersedia, jadi WAK-01 bisa mengurutkan anggota komisi pengawas lebih dahulu.
+- **Tanggal cek**: 23 Oktober 2026
+- **Komisi** `/akd/komisi/periode-2024-2029/komisi-{a..e}-.../`: judul "KOMISI X | Bidang ...", paragraf "Meliputi: ..." berisi mitra kerja (dipakai sebagai `komisi.bidang`), lalu kartu anggota (`h3` nama, `h4` jabatan: Koordinator, Ketua, Wakil Ketua, Sekretaris, Anggota). Total kartu 106 = 101 anggota komisi + 5 koordinator.
+  - Daftar mitra memuat nama dinas yang mengandung koma ("Dinas Pangan, Pertanian dan Kelautan"). Pemisahan memakai daftar kata awal unit kerja di `config/dprd.yaml`.
+- **Alat kelengkapan** `/akd/pimpinan-dprd/`, `/akd/badan-musyawarah/`, `/akd/badan-anggaran/`, `/akd/badan-pembentukan-peraturan-daerah/`, `/akd/badan-kehormatan/`: kartu dengan struktur yang sama. Sekretaris DPRD tercantum sebagai "Sekretaris Bukan Anggota" tanpa tautan profil; dilaporkan job dan tidak disimpan.
+- **Fraksi**: lihat GD-07.
+- **Aturan komisi**: PP 12/2018 Pasal 46 mewajibkan setiap anggota DPRD, kecuali pimpinan DPRD, menjadi anggota satu komisi. Kelima pimpinan muncul di halaman komisi sebagai Koordinator, sehingga `anggota.komisi_kode` mereka kosong dan perannya disimpan di `anggota_akd`. Anggota yang tercatat di dua komisi juga dikosongkan dan dilaporkan; tidak ada yang ditebak.
+- **Kesalahan di situs yang ditangani**:
+  - Jabatan Basri Baco di Komisi B tertulis "Koordintor". Karena itu pimpinan dikenali dari halaman Pimpinan DPRD, bukan dari teks jabatan.
+  - Kartu Pandapotan Sinaga di halaman fraksi tidak bertaut profil. ID diambil dari slug di halaman dapil karena slug itu unik di sana.
+- **Pencocokan kartu ke anggota**: nama tanpa gelar (termasuk `nama_lain`) bila menunjuk tepat satu anggota, lalu slug profil. Slug kosong tidak pernah dipakai.

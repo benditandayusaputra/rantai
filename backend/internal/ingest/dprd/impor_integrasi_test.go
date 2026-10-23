@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"slices"
+	"strings"
 	"testing"
 	"time"
 
@@ -32,9 +34,12 @@ func namaFixture(halaman string) string {
 	if _, err := fmt.Sscanf(halaman, "/akd/dapil/dki-jakarta-%d/", &nomor); err == nil {
 		return fmt.Sprintf("dapil_dki-jakarta-%d.html", nomor)
 	}
-	var fraksi string
-	if _, err := fmt.Sscanf(halaman, "/fraksi/periode-2024-2029/%s", &fraksi); err == nil {
-		return "fraksi_" + fraksi[:len(fraksi)-1] + ".html"
+	for _, padanan := range [][2]string{
+		{"/fraksi/periode-2024-2029/", "fraksi_"}, {"/akd/komisi/periode-2024-2029/", "komisi_"}, {"/akd/", "akd_"},
+	} {
+		if nama, ada := strings.CutPrefix(halaman, padanan[0]); ada {
+			return padanan[1] + strings.TrimSuffix(nama, "/") + ".html"
+		}
 	}
 	return halaman
 }
@@ -48,8 +53,9 @@ func konfigurasiUji(t *testing.T) Konfigurasi {
 	return cfg
 }
 
-func jalankanImporDPRDUji(t *testing.T, tx pgx.Tx) {
+func jalankanImporDPRDUji(t *testing.T, tx pgx.Tx) []string {
 	t.Helper()
+	laporan := []string{}
 	ujiwilayah.MuatDKI(t, tx)
 	cfg := konfigurasiUji(t)
 	impor := usecase.ImporDPRD{
@@ -66,10 +72,12 @@ func jalankanImporDPRDUji(t *testing.T, tx pgx.Tx) {
 		TahunPemilu:      cfg.DapilKPU.TahunPemilu,
 		URLLHKPN:         cfg.URLLHKPN,
 		PolaURLProfil:    cfg.Sumber.URLDasar + cfg.Sumber.HalamanProfil,
+		Laporkan:         func(pesan string) { laporan = append(laporan, pesan) },
 	}
 	if err := impor.Jalankan(t.Context()); err != nil {
 		t.Fatal(err)
 	}
+	return laporan
 }
 
 func hitung(t *testing.T, tx pgx.Tx, sql string) int {
@@ -132,5 +140,43 @@ func TestImporDPRD_AnggotaPPPdiFraksiNasDem_FraksiDariHalamanFraksi(t *testing.T
 	}
 	if partai != "Partai Persatuan Pembangunan" || fraksi != "Fraksi Partai NasDem" || url != "https://dprd-dkijakartaprov.go.id/profile/h-matnoor-tindoan-sh/" {
 		t.Errorf("dapat partai %q fraksi %q url %q", partai, fraksi, url)
+	}
+}
+
+func TestImporDPRD_FixtureKomisi_SetiapKomisiPunyaBidangDanAnggota(t *testing.T) {
+	tx := ujidb.BukaTransaksi(t)
+
+	laporan := jalankanImporDPRDUji(t, tx)
+
+	if n := hitung(t, tx, `SELECT count(*) FROM komisi WHERE cardinality(bidang) > 0`); n != 5 {
+		t.Errorf("komisi berbidang = %d, harap 5", n)
+	}
+	if n := hitung(t, tx, `SELECT count(DISTINCT komisi_kode) FROM anggota`); n != 5 {
+		t.Errorf("komisi yang punya anggota = %d, harap 5", n)
+	}
+	if n := hitung(t, tx, `SELECT count(*) FROM anggota WHERE komisi_kode IS NULL`); n != 5 {
+		t.Errorf("anggota tanpa komisi = %d, harap 5 pimpinan DPRD", n)
+	}
+	if n := hitung(t, tx, `SELECT count(*) FROM anggota WHERE id = ''`); n != 0 {
+		t.Errorf("%d anggota tanpa ID", n)
+	}
+	if !slices.ContainsFunc(laporan, func(p string) bool { return strings.Contains(p, "anggota tanpa data komisi (5)") }) {
+		t.Errorf("harap anggota tanpa komisi dilaporkan, laporan %q", laporan)
+	}
+}
+
+func TestImporDPRD_PimpinanDPRD_KoordinatorTanpaKomisiTetapiPunyaJabatan(t *testing.T) {
+	tx := ujidb.BukaTransaksi(t)
+
+	jalankanImporDPRDUji(t, tx)
+
+	var komisi *string
+	if err := tx.QueryRow(t.Context(), `SELECT komisi_kode FROM anggota WHERE id = 'ima-mahdiah'`).Scan(&komisi); err != nil {
+		t.Fatal(err)
+	}
+	jabatan := hitung(t, tx, `SELECT count(*) FROM anggota_akd WHERE anggota_id = 'ima-mahdiah'
+AND (alat_kelengkapan, jabatan) IN (('Komisi A Bidang Pemerintahan', 'Koordinator'), ('Pimpinan DPRD', 'Wakil Ketua DPRD Provinsi DKI Jakarta'))`)
+	if komisi != nil || jabatan != 2 {
+		t.Errorf("komisi = %v, jabatan cocok = %d, harap tanpa komisi dan 2 jabatan", komisi, jabatan)
 	}
 }

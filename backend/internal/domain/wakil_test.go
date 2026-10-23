@@ -140,3 +140,23 @@ func TestGabungkanAnggota_TanpaPasangan_DilaporkanTidakDitebak(t *testing.T) {
 		t.Errorf("harap ErrAnggotaTidakCocok tanpa hasil, dapat %+v, %v", anggota, err)
 	}
 }
+
+func TestGabungkanAnggota_KartuFraksiTanpaTautan_IDDariSlugDapil(t *testing.T) {
+	dapil := []BarisDapil{{NomorDapil: 1, Nama: "Pandapotan Sinaga, S.E., M.M.", Slug: "pandapotan-sinaga-se-mm"}}
+	fraksi := []AnggotaFraksi{{Fraksi: "F", BarisStruktur: BarisStruktur{Nama: "Pandapotan Sinaga, SE., MM"}}}
+
+	anggota, err := GabungkanAnggota(dapil, fraksi)
+
+	if err != nil || anggota[0].ID != "pandapotan-sinaga-se-mm" {
+		t.Fatalf("harap ID dari slug dapil, dapat %+v, %v", anggota, err)
+	}
+}
+
+func TestGabungkanAnggota_TanpaSlugSamaSekali_DilaporkanTanpaID(t *testing.T) {
+	dapil := []BarisDapil{{NomorDapil: 1, Nama: "Nama Saja"}}
+	fraksi := []AnggotaFraksi{{Fraksi: "F", BarisStruktur: BarisStruktur{Nama: "Nama Saja"}}}
+
+	if _, err := GabungkanAnggota(dapil, fraksi); !errors.Is(err, ErrAnggotaTidakCocok) {
+		t.Errorf("harap ErrAnggotaTidakCocok, dapat %v", err)
+	}
+}
