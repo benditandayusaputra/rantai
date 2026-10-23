@@ -1,0 +1,9 @@
+DROP TABLE IF EXISTS sinyal;
+DROP TABLE IF EXISTS riwayat_penyedia;
+DROP TABLE IF EXISTS paket_riwayat_tahap;
+DROP TABLE IF EXISTS paket;
+DROP TABLE IF EXISTS penyedia;
+DROP TABLE IF EXISTS rup;
+DROP TABLE IF EXISTS instansi;
+DROP TYPE IF EXISTS jenis_sinyal;
+DROP TYPE IF EXISTS jenis_instansi;

@@ -91,7 +91,7 @@ Versi 2.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` v2.0 dan `docs/SPEC.
   - Klien HTTP bersama dengan batas 1 permintaan per detik per domain, User-Agent dari konfigurasi, cek robots.txt, berhenti pada 403 atau 429. Klien endpoint JSON daftar paket (pola pyproc) dan parser halaman pengumuman tender dan non-tender.
   - Commit: `✨ Tambah klien SPSE berbatas laju dan parser pengumuman paket`
   - Selesai bila: parser lulus tes dengan minimal 5 fixture (SPEC ANG-01); tidak ada permintaan jaringan di tes.
-- [ ] **T-302** Skema pengadaan
+- [x] **T-302** Skema pengadaan
   - Migrasi `instansi`, `rup`, `penyedia`, `paket`, `riwayat_penyedia`, `sinyal` (SPEC 2.4).
   - Commit: `🗃️ Tambah skema instansi, RUP, penyedia, paket, dan sinyal`
   - Selesai bila: migrasi naik dan turun; indeks GiST di `paket.lokasi`.
