@@ -196,7 +196,7 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - MapLibre, lapisan indikator tema, proyek, sekolah; legenda; tabel alternatif.
   - Commit: `✨ Tambah peta indikator tema dan lapisan proyek`
   - Selesai bila: semua lapisan bisa dinyalakan dan dimatikan dengan papan ketik.
-- [ ] **T-607** Arus Anggaran dan halaman paket (ANG-03, ANG-04) **[BUTUH DESAIN]**
+- [x] **T-607** Arus Anggaran dan halaman paket (ANG-03, ANG-04) **[BUTUH DESAIN]**
   - Daftar paket kecamatan dengan filter tema dan tahun, status pemeliharaan, halaman paket berbentuk rantai.
   - Commit: `✨ Bangun daftar paket dan halaman rantai paket`
   - Selesai bila: rantai horizontal di 1024 px ke atas dan vertikal di bawahnya; mata rantai putus terbaca jelas; paket simulasi berlabel "Data simulasi" di setiap tempat ia muncul.

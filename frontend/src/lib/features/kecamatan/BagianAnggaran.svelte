@@ -1,10 +1,17 @@
 <script lang="ts">
-	import type { Anggaran } from '$lib/api/tipe';
+	import type { Anggaran, TemaKecamatan } from '$lib/api/tipe';
 	import EmptyState from '$lib/components/EmptyState.svelte';
 	import KeyNumberCard from '$lib/components/KeyNumberCard.svelte';
 	import { t } from '$lib/i18n';
+	import DaftarPaket from './DaftarPaket.svelte';
 
-	let { anggaran }: { anggaran: Anggaran | null } = $props();
+	interface Props {
+		anggaran: Anggaran | null;
+		kodeKecamatan: string;
+		tema: TemaKecamatan[];
+	}
+
+	let { anggaran, kodeKecamatan, tema }: Props = $props();
 </script>
 
 {#if anggaran}
@@ -23,3 +30,7 @@
 {:else}
 	<EmptyState title={t('money.empty')} />
 {/if}
+
+<div class="mt-10">
+	<DaftarPaket {kodeKecamatan} {tema} tahunAwal={anggaran?.tahun ?? new Date().getFullYear()} />
+</div>

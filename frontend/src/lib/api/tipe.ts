@@ -208,3 +208,112 @@ export interface SekitarTitik {
 	};
 	keterbatasan: Keterbatasan[];
 }
+
+export interface LokasiPaket {
+	tingkat: Tingkat | '';
+	kode_wilayah: string;
+	nama_wilayah: string;
+	titik?: Titik;
+	rt?: number;
+	rw?: number;
+}
+
+export interface PaketRingkas {
+	kode: string;
+	nama: string;
+	tahap: string;
+	jenis_pengadaan: string;
+	metode: string;
+	tahun_anggaran: number;
+	hps: Angka | null;
+	nilai_kontrak: Angka | null;
+	sektor: Sektor;
+	tema: string[];
+	lokasi: LokasiPaket;
+	penyedia: string;
+	is_simulation: boolean;
+	provenance_id: string;
+}
+
+export type StatusMata = 'ada' | 'putus' | 'menunggu' | 'estimasi';
+export type KodeMata =
+	| 'rencana'
+	| 'pemilihan'
+	| 'pemenang'
+	| 'pelaksanaan'
+	| 'lokasi'
+	| 'serah_terima'
+	| 'masa_pemeliharaan'
+	| 'bukti_warga';
+
+export interface MataRantai {
+	kode: KodeMata;
+	status: StatusMata;
+	alasan?: string;
+}
+
+export type JenisSinyal = 'S-01' | 'S-02' | 'S-03' | 'S-04' | 'S-05';
+
+export interface Sinyal {
+	jenis: JenisSinyal;
+	alasan: string;
+	pembanding: Record<string, unknown>;
+}
+
+export type StatusPemeliharaan =
+	'pelaksanaan' | 'pemeliharaan' | 'pemeliharaan_berakhir' | 'tidak_dapat_diestimasi';
+
+export interface Pemeliharaan {
+	berlaku: boolean;
+	status: StatusPemeliharaan;
+	akhir_pelaksanaan: string | null;
+	akhir_pemeliharaan: string | null;
+	sisa_hari: Angka | null;
+	label: 'resmi' | 'estimasi';
+	provenance_id: string;
+}
+
+export interface RUP {
+	kode: string;
+	nama: string;
+	sumber_dana: string;
+	pagu: Angka | null;
+	detail_tersedia: boolean;
+	pelaksanaan_mulai: string | null;
+	pelaksanaan_selesai: string | null;
+	url: string;
+	provenance_id: string;
+}
+
+export interface DetailPaket {
+	kode: string;
+	kode_spse: string;
+	nama: string;
+	tahap: string;
+	jenis_pengadaan: string;
+	metode: string;
+	jenis_kontrak: string;
+	is_tender: boolean;
+	is_batal: boolean;
+	is_simulation: boolean;
+	tahun_anggaran: number;
+	instansi: string;
+	kategori: string;
+	sektor: Sektor;
+	tema: string[];
+	pagu: Angka | null;
+	hps: Angka | null;
+	nilai_kontrak: Angka | null;
+	jumlah_peserta: Angka | null;
+	tanggal_dibuat: string | null;
+	tanggal_kontrak: string | null;
+	tanggal_serah_terima: string | null;
+	url_sumber: string;
+	rup: RUP | null;
+	penyedia: { id: number; nama: string } | null;
+	lokasi: LokasiPaket;
+	pemeliharaan: Pemeliharaan;
+	rantai: MataRantai[];
+	sinyal: Sinyal[];
+	provenance_id: string;
+}

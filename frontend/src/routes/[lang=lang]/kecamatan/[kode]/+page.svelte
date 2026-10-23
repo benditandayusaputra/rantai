@@ -124,7 +124,11 @@
 					{#if bagianAktif === 'tema'}
 						<BagianTema tema={ringkasan.tema} kodeKecamatan={ringkasan.kecamatan.kode} />
 					{:else if bagianAktif === 'anggaran'}
-						<BagianAnggaran anggaran={ringkasan.anggaran} />
+						<BagianAnggaran
+							anggaran={ringkasan.anggaran}
+							kodeKecamatan={ringkasan.kecamatan.kode}
+							tema={ringkasan.tema}
+						/>
 					{:else}
 						<BagianWakilku wakilku={ringkasan.wakilku} />
 					{/if}

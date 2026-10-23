@@ -1,7 +1,9 @@
 import { env } from '$env/dynamic/public';
 import type {
 	Amplop,
+	DetailPaket,
 	DetailPendidikan,
+	PaketRingkas,
 	PetaPaket,
 	PetaTema,
 	Provenance,
@@ -126,4 +128,26 @@ export function ambilSekolahTerdekat(
 		lng: titik.lng,
 		radius_m: radiusM
 	});
+}
+
+export interface FilterPaket {
+	tema?: string;
+	tahun?: number;
+	halaman?: number;
+}
+
+export function ambilPaketKecamatan(
+	fetchFn: Fetch,
+	kode: string,
+	filter: FilterPaket
+): Promise<Amplop<PaketRingkas[]>> {
+	return ambilAmplop<PaketRingkas[]>(fetchFn, `/kecamatan/${encodeURIComponent(kode)}/paket`, {
+		tema: filter.tema,
+		tahun: filter.tahun,
+		halaman: filter.halaman
+	});
+}
+
+export function ambilPaket(fetchFn: Fetch, kode: string): Promise<DetailPaket> {
+	return ambilData<DetailPaket>(fetchFn, `/paket/${encodeURIComponent(kode)}`);
 }

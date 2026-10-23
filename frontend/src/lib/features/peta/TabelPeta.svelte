@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { PetaPaket, PetaTema, SekolahTerdekat } from '$lib/api/tipe';
-	import CertaintyBadge from '$lib/components/CertaintyBadge.svelte';
 	import EmptyState from '$lib/components/EmptyState.svelte';
 	import GapClassChip from '$lib/components/GapClassChip.svelte';
+	import SimRibbon from '$lib/components/SimRibbon.svelte';
 	import { tampilkanAngka } from '$lib/features/kecamatan/kecamatan';
 	import { formatJarak } from '$lib/format';
 	import { bahasaBawaan, t } from '$lib/i18n';
@@ -86,7 +86,7 @@
 											<a href="/{bahasaBawaan}/paket/{p.kode}" class="font-semibold underline"
 												>{p.nama}</a
 											>
-											{#if p.is_simulation}<CertaintyBadge level="simulasi" class="ml-2" />{/if}
+											{#if p.is_simulation}<span class="mt-1 block"><SimRibbon /></span>{/if}
 										</th>
 										<td class="p-3">{t('map.location.titik')}</td>
 									{:else}
