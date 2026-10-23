@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS sekolah_rombel;
+DROP TABLE IF EXISTS sekolah;

@@ -115,7 +115,7 @@ Fungsi SQL `hierarki_wilayah(kode)` mengembalikan leluhur sebuah wilayah sebagai
 
 | Tabel | Kolom penting |
 | --- | --- |
-| `sekolah` | `npsn` PK, `nama`, `bentuk` (SD, MI, SMP, MTs), `jenjang` (dasar, menengah_pertama), `status` (negeri, swasta), `is_madrasah`, `kode_kecamatan`, `kode_kelurahan` nullable, `lokasi` Point, `provenance_id` |
+| `sekolah` | `npsn` PK, `nama`, `bentuk` (SD, MI, SMP, MTs), `jenjang` (dasar, menengah_pertama), `status` (negeri, swasta), `is_madrasah`, `kode_kecamatan`, `kode_kelurahan` nullable, `lokasi` Point nullable (kosong bila sumber tanpa koordinat), `provenance_id` |
 | `sekolah_rombel` | `npsn`, `tahun_ajaran`, `tingkat` (1 sampai 9), `jumlah_rombel`, `jumlah_siswa`, `provenance_id`; PK (`npsn`, `tahun_ajaran`, `tingkat`) |
 | `daya_tampung` | `npsn`, `tahun_ajaran`, `jalur` (negeri, spmb_bersama), `kursi`, `provenance_id`; PK (`npsn`, `tahun_ajaran`, `jalur`) |
 | `calon_lulusan_kecamatan` | `kode_kecamatan`, `tahun_ajaran`, `jumlah`, `label`, `metode` (per_sekolah, agregat_resmi, estimasi_total_sd), `provenance_id` |
@@ -169,7 +169,7 @@ Worker Go (`cmd/worker <job>`) menjalankan job. Setiap job: ambil, simpan mentah
 | --- | --- | --- |
 | `wilayah` | sekali, manual | Batas wilayah dan alias (GD-10) |
 | `tema` | saat konfigurasi berubah | Muat `config/tema/*.yaml` ke tabel `tema` dengan validasi |
-| `dapodik` | per semester | Sekolah, lokasi, rombel dan siswa per tingkat (GD-06) |
+| `dapodik` | per semester | Sekolah, lokasi, rombel dan siswa per tingkat dari API Sekolah Kita yang menyajikan data Dapodik (GD-06) |
 | `daya_tampung` | tahunan, manual | Impor CSV hasil ekstraksi Kepkadis 258/2026 dan SPMB Bersama (GD-04, GD-05) |
 | `calon_lulusan` | per semester | Siswa kelas 6 per kecamatan (GD-12) |
 | `lpse_daftar` | harian 02.00 WIB | Daftar paket tender dan non-tender tahun berjalan dan sebelumnya |

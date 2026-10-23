@@ -156,3 +156,20 @@ Catatan hasil Gerbang Data (SPEC bagian 1). Setiap entri memuat URL, tanggal cek
 - **Field yang dipakai**: `buyer.id` (Pemprov DKI = `D69`, nama "Pemerintah Daerah Provinsi DKI Jakarta"), `parties[].additionalIdentifiers[].legalName` pihak pembeli (satker, contoh "DINAS SUMBER DAYA AIR"), `awards[].id`, `date`, `title`, `value.amount`, `suppliers[].name`. Kode sumber riwayat adalah `awards[].id` plus urutan pemasok.
 - **Cakupan uji**: 133.846 proses nasional di berkas 2023, 552 di antaranya berpembeli Pemprov DKI.
 - **Fixture**: `backend/internal/ingest/opentender/testdata/sampel_2023.jsonl.gz` (5 proses nyata) dengan berkas `ATRIBUSI.md`.
+
+## GD-06 Sekolah, lokasi, dan rombel (Dapodik)
+
+- **Status**: lolos melalui layanan Sekolah Kita. Situs Dapodik langsung tidak dipakai.
+- **Tanggal cek**: 23 Oktober 2026
+- **Dapodik langsung**: `dapo.kemendikdasmen.go.id` menolak permintaan RantaiBot dengan 403 dari WAF, termasuk untuk `robots.txt`; `dapo.dikdasmen.go.id` tidak bisa di-resolve. Sesuai aturan pengambilan, tidak ada upaya mengakali penolakan.
+- **Sumber yang dipakai**: API publik [Sekolah Kita](https://sekolah.data.kemendikdasmen.go.id) milik Pusdatin Kemendikdasmen, yang menyajikan data Dapodik semester berjalan (`semester_id` 20261, "2026/2027 Gasal"). Dasar URL `https://sekolah.data.kemendikdasmen.go.id/v1/sekolah-service/sekolah`:
+  - `POST /cari-sekolah` dengan `{page, size, keyword, kabupaten_kota, bentuk_pendidikan, status_sekolah}`. `page` mulai dari 0, `size` maksimal 100. `kabupaten_kota` memakai nama (`Kota Adm. Jakarta Utara`), bukan kode. Field: `sekolah_id`, `npsn`, `nama`, `bentuk_pendidikan`, `status_sekolah`, `kecamatan`, `kabupaten`.
+  - `GET /full-detail/{sekolah_id}`: `sekolah[0]` memuat `lintang`, `bujur`, `kecamatan` (contoh `Kec. Kelapa Gading`), `semester_id`.
+  - `GET /rombongan-belajar/{sekolah_id}`: `rombel_1` sampai `rombel_13`.
+  - `GET /peserta-didik/{sekolah_id}`: `pd_tkt_{n}_l` dan `pd_tkt_{n}_p` per tingkat.
+- **Jumlah sekolah DKI per 23 Oktober 2026**: SD 2.170, MI 479, SMP 1.039, MTs 256 (enam kota/kabupaten administrasi).
+- **Madrasah**: MI dan MTs punya identitas dan koordinat, tetapi rombel dan peserta didik kosong (contoh MTsN 39 Jakarta, NPSN 20178210), karena datanya dikelola EMIS Kemenag. Keterbatasan: kursi madrasah (proksi rombel kelas 7) dan siswa kelas 6 MI belum bisa dihitung. Job hanya meminta rombel untuk `bentuk_dengan_rombel` di `config/dapodik.yaml`.
+- **Cadangan Data Referensi**: [referensi.data.kemendikdasmen.go.id](https://referensi.data.kemendikdasmen.go.id/pendidikan/dikdas/010000/1) dapat diakses (`robots.txt` 404) dan memuat daftar per kecamatan beserta lintang/bujur di halaman per NPSN, tetapi tanpa rombel per tingkat. Tidak dipakai.
+- **robots.txt**: `sekolah.data.kemendikdasmen.go.id/robots.txt` mengembalikan halaman aplikasi (bukan berkas robots), sehingga tidak ada pembatasan tertulis. Job memberi jeda 1 detik antarpermintaan, berhenti pada 403 atau 429, dan menyimpan setiap respons di `data/raw/dapodik/<tanggal>/` sebagai cache. Pengambilan ulang di hari yang sama tidak mengirim permintaan baru.
+- **Penentuan kecamatan**: `ST_Covers` atas titik sekolah. Bila sekolah tidak punya koordinat, atau titiknya di luar batas DKI, kecamatan diambil dari pencocokan nama `kecamatan` sumber (huruf kecil, tanpa awalan `Kec.`, tanpa spasi), dan lokasi tidak diisi. Sekolah tanpa koordinat dan sekolah yang tidak terpetakan dicetak sebagai laporan job.
+

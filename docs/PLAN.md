@@ -60,7 +60,7 @@ Versi 2.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` v2.0 dan `docs/SPEC.
   - Migrasi `tema`, `indikator_kecamatan`; `config/tema/pendidikan.yaml`; job `tema` dengan validasi kontrak; `GET /tema`, `GET /tema/{kode}`.
   - Commit: `✨ Tambah konfigurasi tema berbasis basis data`
   - Selesai bila: validator menolak entri tanggung jawab tanpa dasar hukum, `ambang_rasio` tidak berurutan, regex rusak, dan placeholder tak dikenal (dites); tema Pendidikan termuat dari YAML ke basis data.
-- [ ] **T-202** Impor sekolah dan lokasi **[GERBANG DATA GD-06]** **[BOLEH PECAH]**
+- [x] **T-202** Impor sekolah dan lokasi **[GERBANG DATA GD-06]** **[BOLEH PECAH]**
   - Migrasi `sekolah`, `sekolah_rombel`; job `dapodik` untuk SD, MI, SMP, MTs di DKI; kecamatan sekolah ditentukan dari koordinat dengan `ST_Covers`, cadangan pencocokan nama.
   - Commit: `✨ Impor sekolah, lokasi, dan rombel per tingkat dari Dapodik`
   - Selesai bila: setiap kecamatan DKI punya data sekolah; tes parser memakai fixture; sekolah tanpa koordinat dilaporkan, tidak ditebak.

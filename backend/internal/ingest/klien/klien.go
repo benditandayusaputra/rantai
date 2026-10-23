@@ -1,6 +1,7 @@
 package klien
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
@@ -56,6 +57,15 @@ func (k *Klien) KirimForm(ctx context.Context, alamat string, form url.Values) (
 		return nil, err
 	}
 	permintaan.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	return k.kirimSantun(permintaan)
+}
+
+func (k *Klien) KirimJSON(ctx context.Context, alamat string, badan []byte) ([]byte, error) {
+	permintaan, err := http.NewRequestWithContext(ctx, http.MethodPost, alamat, bytes.NewReader(badan))
+	if err != nil {
+		return nil, err
+	}
+	permintaan.Header.Set("Content-Type", "application/json")
 	return k.kirimSantun(permintaan)
 }
 

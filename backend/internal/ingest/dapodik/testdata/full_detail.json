@@ -1,0 +1,40 @@
+{
+ "status_code": 200,
+ "message": "success",
+ "data": {
+  "sekolah": [
+   {
+    "provinsi": "Prov. D.K.I. Jakarta",
+    "akreditasi": "A",
+    "alamat_jalan": "Jl. Acordion",
+    "kabupaten": "Kota Adm. Jakarta Utara",
+    "nama_dusun": "Pegangsaan Dua",
+    "luas_tanah_milik": 32032,
+    "luas_tanah_bukan_milik": 0,
+    "daya_listrik": 16500,
+    "kode_pos": "14250",
+    "npsn": "20104886",
+    "nama": "SD NEGERI PERCONTOHAN PEGANGSAAN DUA 07 PAGI",
+    "nomor_telepon": "0214529337",
+    "bentuk_pendidikan": "SD",
+    "akses_internet": "Fibre Optic",
+    "sekolah_id": "002BB794-2BF5-E011-9477-67A74022F833",
+    "rt": 1,
+    "rw": 20,
+    "bujur": 106.9113,
+    "semester_id": "20261",
+    "sumber_listrik": "PLN",
+    "akses_internet_2": "Broadband",
+    "waktu_penyelenggaraan": "Pagi/5 hari",
+    "email": "sdnpegangsaanduanoltujuh@gmail.com",
+    "website": "http://sdnpegangsaanduanoltujuh.com",
+    "lintang": -6.1744,
+    "kecamatan": "Kec. Kelapa Gading",
+    "yayasan_id": null,
+    "status_sekolah": "NEGERI",
+    "yayasan": null,
+    "semester_keterangan": "2026/2027 Gasal"
+   }
+  ]
+ }
+}

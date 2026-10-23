@@ -1,0 +1,16 @@
+url_api: https://sekolah.data.kemendikdasmen.go.id/v1/sekolah-service/sekolah
+url_rujukan: https://sekolah.data.kemendikdasmen.go.id
+catatan: Data Dapodik melalui layanan Sekolah Kita Kemendikdasmen; rombel dan peserta didik per tingkat semester berjalan
+pengunduh:
+  user_agent: RantaiBot/1.0 (+https://github.com/benditandayusaputra/rantai)
+  jeda_permintaan: 1s
+ukuran_halaman: 100
+kota:
+  - Kab. Adm. Kep. Seribu
+  - Kota Adm. Jakarta Pusat
+  - Kota Adm. Jakarta Utara
+  - Kota Adm. Jakarta Barat
+  - Kota Adm. Jakarta Selatan
+  - Kota Adm. Jakarta Timur
+bentuk: [SD, MI, SMP, MTs]
+bentuk_dengan_rombel: [SD, SMP]

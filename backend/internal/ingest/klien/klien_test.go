@@ -2,6 +2,7 @@ package klien
 
 import (
 	"errors"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -111,6 +112,20 @@ func TestKirimForm_FormTerkirimDenganUserAgent(t *testing.T) {
 	isi, err := klienUji(server, 0).KirimForm(t.Context(), server.URL+"/dt", url.Values{"draw": {"7"}})
 
 	if err != nil || string(isi) != "POST 7" {
+		t.Errorf("isi = %q, err = %v", isi, err)
+	}
+}
+
+func TestKirimJSON_BadanDanJenisKontenTerkirim(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		badan, _ := io.ReadAll(r.Body)
+		_, _ = w.Write([]byte(r.Method + " " + r.Header.Get("Content-Type") + " " + string(badan)))
+	}))
+	defer server.Close()
+
+	isi, err := klienUji(server, 0).KirimJSON(t.Context(), server.URL+"/cari", []byte(`{"page":0}`))
+
+	if err != nil || string(isi) != `POST application/json {"page":0}` {
 		t.Errorf("isi = %q, err = %v", isi, err)
 	}
 }

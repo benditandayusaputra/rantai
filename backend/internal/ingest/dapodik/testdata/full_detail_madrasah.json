@@ -1,0 +1,40 @@
+{
+ "status_code": 200,
+ "message": "success",
+ "data": {
+  "sekolah": [
+   {
+    "provinsi": "Prov. D.K.I. Jakarta",
+    "akreditasi": "A",
+    "alamat_jalan": "Jl. H. Amsir No. 71 Rt.012/03",
+    "kabupaten": "Kota Adm. Jakarta Utara",
+    "nama_dusun": null,
+    "luas_tanah_milik": 0,
+    "luas_tanah_bukan_milik": 0,
+    "daya_listrik": null,
+    "kode_pos": null,
+    "npsn": "20178210",
+    "nama": "MTSN 39 JAKARTA",
+    "nomor_telepon": null,
+    "bentuk_pendidikan": "MTs",
+    "akses_internet": null,
+    "sekolah_id": "C7A9A3EB-796E-49BF-9A1F-1FB37BFBA772",
+    "rt": null,
+    "rw": null,
+    "bujur": 106.8686,
+    "semester_id": "20261",
+    "sumber_listrik": null,
+    "akses_internet_2": null,
+    "waktu_penyelenggaraan": null,
+    "email": null,
+    "website": null,
+    "lintang": -6.1555,
+    "kecamatan": "Kec. Tanjung Priok",
+    "yayasan_id": null,
+    "status_sekolah": "NEGERI",
+    "yayasan": null,
+    "semester_keterangan": "2026/2027 Gasal"
+   }
+  ]
+ }
+}

@@ -16,6 +16,7 @@ type SumberData string
 const (
 	SumberKemendagri SumberData = "kemendagri"
 	SumberRantai     SumberData = "rantai"
+	SumberDapodik    SumberData = "dapodik"
 )
 
 type Provenance struct {
