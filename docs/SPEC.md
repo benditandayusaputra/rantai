@@ -322,6 +322,8 @@ Konstanta di `config/pendidikan.yaml`: `batas_murid_per_rombel_smp: 32` (Kepmend
 
 Keterbatasan yang wajib ditampilkan: SPMB Jakarta tidak membatasi pendaftaran pada kecamatan, sehingga angka kecamatan menggambarkan tekanan lokal, bukan peluang pasti seorang anak. PEN-06 melengkapi dengan tampilan radius.
 
+Calon lulusan memakai siswa kelas 6 SD per sekolah (metode `per_sekolah`). Lulusan MI belum termasuk karena data peserta didik madrasah tidak tersedia di sumber (GD-12); API mengirim kunci keterbatasan `calon_lulusan_tanpa_mi`, dan `kursi_madrasah_tidak_tersedia` bila rombel MTs tidak ada.
+
 Kasus tepi yang wajib dites: kecamatan tanpa SMP negeri (kursi 0, rasio 0); calon lulusan 0 (rasio tidak didefinisikan, tampil "tidak ada data lulusan"); sekolah di keputusan daya tampung yang NPSN-nya tidak ada di Dapodik (dikeluarkan dan dilaporkan sebagai "sekolah tidak terpetakan"); calon lulusan dari estimasi membuat label kesenjangan `estimasi`.
 
 ### PEN-02 Peta kesenjangan

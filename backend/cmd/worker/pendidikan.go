@@ -6,9 +6,11 @@ import (
 	"time"
 
 	"github.com/benditandayusaputra/rantai/backend/internal/config"
+	"github.com/benditandayusaputra/rantai/backend/internal/domain"
 	"github.com/benditandayusaputra/rantai/backend/internal/ingest/dapodik"
 	"github.com/benditandayusaputra/rantai/backend/internal/ingest/dayatampung"
 	"github.com/benditandayusaputra/rantai/backend/internal/ingest/klien"
+	"github.com/benditandayusaputra/rantai/backend/internal/provenance"
 	"github.com/benditandayusaputra/rantai/backend/internal/repository"
 	"github.com/benditandayusaputra/rantai/backend/internal/usecase"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -17,6 +19,7 @@ import (
 const (
 	pathKonfigurasiDapodik = "config/dapodik.yaml"
 	pathDayaTampung        = "config/daya_tampung.yaml"
+	pathPendidikan         = "config/pendidikan.yaml"
 )
 
 func pilihJobPendidikan(nama string, pool *pgxpool.Pool) (job, error) {
@@ -25,6 +28,8 @@ func pilihJobPendidikan(nama string, pool *pgxpool.Pool) (job, error) {
 		return buatImporSekolah(pool)
 	case usecase.JobDayaTampung:
 		return buatImporDayaTampung(pool)
+	case usecase.JobCalonLulusan:
+		return buatHitungCalonLulusan(pool)
 	default:
 		return nil, fmt.Errorf("job tidak dikenal: %s", nama)
 	}
@@ -63,4 +68,21 @@ func buatImporDayaTampung(pool *pgxpool.Pool) (job, error) {
 		Pelapor:   pelaporLog{},
 	}
 	return impor.Jalankan, nil
+}
+
+func buatHitungCalonLulusan(pool *pgxpool.Pool) (job, error) {
+	var konstanta usecase.KonstantaPendidikan
+	if err := config.BacaYAML(pathPendidikan, &konstanta); err != nil {
+		return nil, err
+	}
+	repo := repository.CalonLulusanRepository{DB: pool}
+	hitung := usecase.HitungCalonLulusan{
+		Pembaca: repo, Penyimpan: repo, Pencatat: repository.IngestRunRepository{DB: pool},
+		Pelapor: pelaporLog{}, Konstanta: konstanta, BuatProvenance: buatProvenanceTurunan,
+	}
+	return hitung.Jalankan, nil
+}
+
+func buatProvenanceTurunan(catatan usecase.CatatanProvenance) domain.Provenance {
+	return provenance.Baru(provenance.Catatan(catatan), []byte(catatan.Catatan), time.Now())
 }

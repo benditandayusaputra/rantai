@@ -35,3 +35,7 @@ func (pelaporLog) LaporkanDayaTampung(daftar []usecase.LaporanDayaTampung) {
 		cetakDaftar("sekolah tidak terpetakan", tidakTerpetakan)
 	}
 }
+
+func (pelaporLog) LaporkanKecamatanTanpaCalonLulusan(kode []string) {
+	cetakDaftar("kecamatan tanpa data calon lulusan", kode)
+}

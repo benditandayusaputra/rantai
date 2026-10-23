@@ -68,7 +68,7 @@ Versi 2.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` v2.0 dan `docs/SPEC.
   - Migrasi `daya_tampung`; ekstraksi lampiran Kepkadis 258/2026 dan daftar SPMB Bersama ke CSV di `data/snapshot/`; job `daya_tampung` mencocokkan NPSN.
   - Commit: `✨ Impor daya tampung SMP negeri dan kursi SPMB Bersama`
   - Selesai bila: total kursi negeri yang terimpor sama dengan 73.289 atau selisihnya dijelaskan di `docs/data-sources.md`; NPSN tak cocok dicetak sebagai laporan.
-- [ ] **T-204** Calon lulusan per kecamatan **[GERBANG DATA GD-12]**
+- [x] **T-204** Calon lulusan per kecamatan **[GERBANG DATA GD-12]**
   - Migrasi `calon_lulusan_kecamatan`; job `calon_lulusan` dengan metode per sekolah, agregat resmi, atau estimasi total SD ÷ 6 sesuai hasil gerbang.
   - Commit: `✨ Hitung calon lulusan SD per kecamatan dengan label metode`
   - Selesai bila: setiap kecamatan punya angka dengan label dan metode; metode estimasi berlabel `estimasi` dan rumusnya tercatat di provenance (dites).

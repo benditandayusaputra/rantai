@@ -191,3 +191,10 @@ Catatan hasil Gerbang Data (SPEC bagian 1). Setiap entri memuat URL, tanggal cek
 - **Ekstraksi**: `data/snapshot/spmb_bersama_smp_2026.csv` (`no,nama,kategori,npsn,kursi`). Halaman 39 sampai 42 berlapis teks asli. Halaman 43 hasil pindai ber-OCR; kedelapan barisnya dicocokkan manual dengan gambar halaman, dan nomor 134 (SMP Mitra Reformasi) dikoreksi dari 10 hasil OCR menjadi **12** sesuai dokumen. Setelah koreksi, total sama dengan 1.597.
 - **Catatan**: Lampiran VII dokumen yang sama berisi wilayah prioritas penerimaan per sekolah, tidak dipakai.
 
+## GD-12 Siswa kelas 6 per sekolah
+
+- **Status**: lolos untuk SD melalui sumber GD-06. Metode `per_sekolah`.
+- **Tanggal cek**: 23 Oktober 2026
+- **Sumber**: `GET /peserta-didik/{sekolah_id}` Sekolah Kita, field `pd_tkt_6_l` + `pd_tkt_6_p`, semester 20261 (tahun ajaran 2026/2027). Siswa kelas 6 tahun ajaran ini adalah lulusan SD pertengahan 2027.
+- **Keterbatasan**: MI tidak punya data peserta didik di sumber, sehingga calon lulusan per kecamatan tidak termasuk lulusan MI. Ini tercatat di provenance dan dikirim API sebagai kunci keterbatasan `calon_lulusan_tanpa_mi`. Cadangan `estimasi_total_sd` tetap tersedia di kode untuk kecamatan yang hanya punya total siswa.
+- **Pasangan periode**: daya tampung terbit terakhir adalah untuk penerimaan 2026/2027. Indikator membandingkan calon lulusan 2026/2027 dengan daya tampung terbit terakhir itu, dan menyebut tahun keduanya di provenance.

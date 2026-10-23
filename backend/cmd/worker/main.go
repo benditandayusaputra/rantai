@@ -55,7 +55,7 @@ const (
 type job func(ctx context.Context) error
 
 var jobTersedia = []string{usecase.JobWilayah, usecase.JobTema, usecase.JobKPUDPRD, usecase.JobLPSEDaftar, usecase.JobLPSEDetail, usecase.JobSIRUP, usecase.JobOpentender, usecase.JobTurunan, jobLaporanGeocode, usecase.JobUmpanDPRD, usecase.JobUmpanMedia, usecase.JobRingkasUmpan,
-	usecase.JobDapodik, usecase.JobDayaTampung}
+	usecase.JobDapodik, usecase.JobDayaTampung, usecase.JobCalonLulusan}
 
 func main() {
 	if err := jalankan(os.Args[1:]); err != nil {
