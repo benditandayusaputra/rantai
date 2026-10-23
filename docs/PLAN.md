@@ -127,7 +127,7 @@ Versi 2.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` v2.0 dan `docs/SPEC.
   - `config/kategori.yaml`, `config/sinyal.yaml`, `GET /paket/{kode}/pembanding`, aturan S-01 sampai S-05, tes kosakata terlarang atas berkas i18n dan pesan backend.
   - Commit: `✨ Bandingkan HPS paket sejenis dan hitung sinyal perlu ditanyakan`
   - Selesai bila: pembanding tidak tampil di bawah `min_pembanding`; setiap sinyal punya tes positif dan negatif; tes kosakata terlarang lulus.
-- [ ] **T-311** Riwayat penyedia (ANG-07) **[GERBANG DATA GD-11]**
+- [x] **T-311** Riwayat penyedia (ANG-07) **[GERBANG DATA GD-11]**
   - Impor Opentender 2014 sampai 2023 untuk pembeli Pemprov DKI, `GET /penyedia/{id}`.
   - Commit: `✨ Impor riwayat Opentender dan tambah API profil penyedia`
   - Selesai bila: respons memuat atribusi ODbL; tidak ada skor atau peringkat.

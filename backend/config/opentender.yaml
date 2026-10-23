@@ -1,0 +1,10 @@
+url_unduhan: https://data.open-contracting.org/en/publication/101/download?name={tahun}.jsonl.gz
+url_rujukan: https://data.open-contracting.org/en/publication/101
+atribusi: Data Opentender oleh Indonesia Corruption Watch (ICW) melalui OCP Data Registry, lisensi Open Data Commons Open Database License (ODbL) 1.0. Turunan data dibuka dengan lisensi yang sama.
+tahun: [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023]
+id_pembeli: [D69]
+klien:
+  user_agent: RantaiBot/1.0 (+https://github.com/benditandayusaputra/rantai)
+  jeda_permintaan: 1s
+  percobaan_ulang: 2
+  jeda_ulang: 30s

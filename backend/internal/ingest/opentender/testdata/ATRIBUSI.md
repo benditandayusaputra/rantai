@@ -1,0 +1,1 @@
+Sampel berasal dari data Opentender oleh Indonesia Corruption Watch (ICW), diambil melalui OCP Data Registry (https://data.open-contracting.org/en/publication/101), berlisensi Open Data Commons Open Database License (ODbL) 1.0.

@@ -144,3 +144,15 @@ Catatan hasil Gerbang Data (SPEC bagian 1). Setiap entri memuat URL, tanggal cek
 - **Sebelumnya**: Perpres 12/2021 menetapkan Rp200.000.000,00 untuk Pekerjaan Konstruksi.
 - **Berlaku**: Perpres 46/2025 berlaku 30 April 2025. `config/sinyal.yaml` menyimpan kedua ambang dengan tanggal berlaku; S-03 memilih ambang berdasarkan tanggal pembuatan paket.
 - **Catatan sinyal lain**: S-01 membutuhkan jumlah peserta paket tender atau seleksi, yang tertutup di SPSE DKI (GD-01), sehingga S-01 praktis belum menyala untuk data nyata. S-05 menunggu laporan warga terverifikasi (Fase 9).
+
+## GD-11 Opentender OCDS
+
+- **Status**: lolos dengan sumber pengganti.
+- **Tanggal cek**: 23 Oktober 2026.
+- **opentender.net**: dialihkan ke `dev.opentender.net`, yang mengembalikan 502 dan robots.txt `User-agent: *` `Disallow: /`. Rantai tidak mengambil dari situs ini.
+- **Sumber yang dipakai**: OCP Data Registry, publikasi "Indonesia: Indonesia Corruption Watch (ICW)" (`https://data.open-contracting.org/en/publication/101`), dikumpulkan bulanan oleh Kingfisher Collect dari `v3.opentender.net`. robots.txt registry: `Disallow:` kosong.
+- **Lisensi**: Open Data Commons Open Database License (ODbL) 1.0. Atribusi disimpan di `config/opentender.yaml`, dicatat di provenance, dan dikirim di respons `GET /penyedia/{id}`; turunan data dibuka dengan lisensi yang sama.
+- **Unduhan**: `download?name=<tahun>.jsonl.gz`, satu proses pengadaan per baris (compiled release). Ukuran 2014 sampai 2023: 35 sampai 57 MB per tahun.
+- **Field yang dipakai**: `buyer.id` (Pemprov DKI = `D69`, nama "Pemerintah Daerah Provinsi DKI Jakarta"), `parties[].additionalIdentifiers[].legalName` pihak pembeli (satker, contoh "DINAS SUMBER DAYA AIR"), `awards[].id`, `date`, `title`, `value.amount`, `suppliers[].name`. Kode sumber riwayat adalah `awards[].id` plus urutan pemasok.
+- **Cakupan uji**: 133.846 proses nasional di berkas 2023, 552 di antaranya berpembeli Pemprov DKI.
+- **Fixture**: `backend/internal/ingest/opentender/testdata/sampel_2023.jsonl.gz` (5 proses nyata) dengan berkas `ATRIBUSI.md`.

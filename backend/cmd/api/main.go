@@ -23,6 +23,7 @@ const (
 	pathKonfigurasiArusAnggaran = "config/arus_anggaran.yaml"
 	pathKonfigurasiPemeliharaan = "config/pemeliharaan.yaml"
 	pathKonfigurasiSinyal       = "config/sinyal.yaml"
+	pathKonfigurasiOpentender   = "config/opentender.yaml"
 )
 
 func main() {
@@ -68,6 +69,10 @@ func susunLayanan(pool *pgxpool.Pool) (deliveryhttp.Layanan, error) {
 	if err := config.BacaYAML(pathKonfigurasiSinyal, &sinyal); err != nil {
 		return deliveryhttp.Layanan{}, err
 	}
+	penyedia, err := buatBacaPenyedia(pool, paket.Aturan.BatasDaftarPenyedia)
+	if err != nil {
+		return deliveryhttp.Layanan{}, err
+	}
 	return deliveryhttp.Layanan{
 		Wilayah:    usecase.CariWilayah{Pembaca: wilayah},
 		Provenance: usecase.AmbilProvenance{Pembaca: repository.ProvenanceRepository{DB: pool}},
@@ -78,9 +83,20 @@ func susunLayanan(pool *pgxpool.Pool) (deliveryhttp.Layanan, error) {
 			Wilayah: wilayah, Tema: tema, Indikator: ringkasan, Anggaran: ringkasan, Wakil: wakil, Sekarang: time.Now,
 		},
 		Paket:      paket,
+		Penyedia:   penyedia,
 		Pembanding: usecase.BandingPaket{Pembaca: repository.PaketRepository{DB: pool}, MinPembanding: sinyal.MinPembanding},
 		Belanja:    usecase.BandingBelanja{Tema: tema, Pembaca: repository.BelanjaTemaRepository{DB: pool}, Sekarang: time.Now},
 	}, nil
+}
+
+func buatBacaPenyedia(pool *pgxpool.Pool, batas int) (usecase.BacaPenyedia, error) {
+	var cfg struct {
+		Atribusi string `yaml:"atribusi"`
+	}
+	if err := config.BacaYAML(pathKonfigurasiOpentender, &cfg); err != nil {
+		return usecase.BacaPenyedia{}, err
+	}
+	return usecase.BacaPenyedia{Pembaca: repository.PenyediaRepository{DB: pool}, Batas: batas, Atribusi: cfg.Atribusi}, nil
 }
 
 func buatBacaPaket(pool *pgxpool.Pool) (usecase.BacaPaket, error) {

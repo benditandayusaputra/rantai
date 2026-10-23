@@ -32,14 +32,15 @@ type PembacaPaket interface {
 }
 
 type AturanBacaPaket struct {
-	PerHalaman    int     `yaml:"per_halaman"`
-	RadiusBawaanM float64 `yaml:"radius_bawaan_m"`
-	RadiusMaksM   float64 `yaml:"radius_maks_m"`
-	BatasTerdekat int     `yaml:"batas_terdekat"`
-	ToleransiPeta float64 `yaml:"toleransi_peta"`
-	LuasKotakMaks float64 `yaml:"luas_kotak_maks_derajat"`
-	URLSPSE       string  `yaml:"url_spse"`
-	URLSIRUP      string  `yaml:"url_sirup"`
+	PerHalaman          int     `yaml:"per_halaman"`
+	RadiusBawaanM       float64 `yaml:"radius_bawaan_m"`
+	RadiusMaksM         float64 `yaml:"radius_maks_m"`
+	BatasTerdekat       int     `yaml:"batas_terdekat"`
+	ToleransiPeta       float64 `yaml:"toleransi_peta"`
+	LuasKotakMaks       float64 `yaml:"luas_kotak_maks_derajat"`
+	URLSPSE             string  `yaml:"url_spse"`
+	URLSIRUP            string  `yaml:"url_sirup"`
+	BatasDaftarPenyedia int     `yaml:"batas_daftar_penyedia"`
 }
 
 type BacaPaket struct {

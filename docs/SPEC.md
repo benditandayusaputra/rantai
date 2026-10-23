@@ -84,7 +84,7 @@ Tugas bertanda **[GERBANG DATA]** di PLAN.md dimulai dengan verifikasi ini. Hasi
 | GD-08 | Situs DPRD DKI: lima komisi dan bidangnya, keanggotaan komisi, alat kelengkapan dewan, fraksi, halaman profil per anggota periode 2024 sampai 2029 | Bila keanggotaan komisi tidak tersedia, WAK-01 menampilkan anggota dapil tanpa urutan komisi dan menyebut komisi pengawas saja |
 | GD-09 | Ambang nilai pengadaan langsung Pekerjaan Konstruksi menurut Perpres 16/2018 beserta perubahan terakhirnya (Perpres 12/2021, Perpres 46/2025) | Sinyal S-03 dimatikan bila ambang tidak bisa dipastikan. **Lolos**: Rp200 juta sampai 29 April 2025, Rp400 juta sejak 30 April 2025 |
 | GD-10 | Batas kelurahan dan kecamatan DKI dengan kode Kemendagri | Cadangan: GADM tingkat 4 dengan tabel padanan kode. **Lolos**, lihat `docs/data-sources.md` |
-| GD-11 | Opentender OCDS: unduhan per tahun, field buyer, supplier, nilai, tanggal | ANG-07 hanya memakai data LPSE |
+| GD-11 | Opentender OCDS: unduhan per tahun, field buyer, supplier, nilai, tanggal | ANG-07 hanya memakai data LPSE. **Lolos** lewat salinan OCP Data Registry (situs Opentender melarang bot), lihat `docs/data-sources.md` |
 | GD-12 | Siswa kelas 6 per sekolah atau per kecamatan untuk tahun ajaran berjalan: Sekolah Kita atau Dapodik | Cadangan berurutan: Satu Data Jakarta, permintaan data resmi, estimasi `total siswa SD ÷ 6` berlabel `estimasi` |
 | GD-13 | Berita situs DPRD DKI: daftar dan halaman berita, struktur judul, tanggal, nama anggota yang disebut, robots.txt | Cadangan: impor manual tautan rilis untuk anggota di skenario demo |
 | GD-14 | Liputan media: daftar perusahaan pers terverifikasi Dewan Pers, RSS per media atau RSS pencarian per nama anggota, ketentuan pemakaian dan robots.txt | Bila RSS pencarian tidak diizinkan, pakai RSS kanal tiap media terverifikasi lalu saring nama secara lokal |
@@ -548,7 +548,7 @@ API: `GET /paket/{kode}/pembanding`. Respons memuat `tersedia: false` tanpa stat
 
 Halaman `/{bahasa}/penyedia/{id}`: nama, jumlah dan total nilai paket per tahun (grafik batang dengan tabel), kategori utama, instansi pemberi paket terbanyak, daftar paket di Rantai, riwayat Opentender 2014 sampai 2023 dengan atribusi ODbL. Tanpa skor atau peringkat.
 
-API: `GET /penyedia/{id}`.
+API: `GET /penyedia/{id}`. Kategori utama dan instansi pemberi tampil sebagai daftar nama berurutan frekuensi, tanpa angka skor; jumlah dan total per tahun dipisah per sumber (`lpse`, `opentender`).
 
 ### ANG-08 Lapor Bukti dan verifikasi
 
