@@ -66,8 +66,8 @@ PostgreSQL 16 dengan PostGIS. Semua tabel punya `dibuat_pada` dan `diubah_pada` 
 | Tabel | Kolom penting |
 | --- | --- |
 | `wilayah` | `kode` PK, `tingkat` (provinsi, kota, kecamatan, kelurahan), `nama`, `induk_kode`, `alias` text[], `geom` MultiPolygon, `titik_tengah` Point |
-| `provenance` | `id` PK (ULID), `sumber` (lpse, sirup, dapodik, kpu, dprd, opentender, juknis_spmb, rantai, simulasi), `url`, `diambil_pada`, `label`, `hash_konten`, `catatan` |
-| `ingest_run` | `id`, `sumber`, `mulai`, `selesai`, `status`, `jumlah_baru`, `jumlah_berubah`, `pesan_error` |
+| `provenance` | `id` PK (ULID), `sumber` (kemendagri, lpse, sirup, dapodik, kpu, dprd, opentender, juknis_spmb, rantai, simulasi), `url`, `diambil_pada`, `label`, `hash_konten`, `catatan` |
+| `ingest_run` | `id`, `sumber` (nama job), `mulai`, `selesai`, `status`, `jumlah_baru`, `jumlah_berubah`, `pesan_error` |
 
 ### 2.2 Lensa Layanan
 

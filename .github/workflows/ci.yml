@@ -30,6 +30,6 @@ jobs:
           go-version-file: backend/go.mod
           cache-dependency-path: backend/go.mod
       - run: make up
-      - name: Migrasi
-        run: make migrate
+      - name: Migrasi naik, turun, naik
+        run: make migrate && make migrate-down && make migrate
       - run: make test

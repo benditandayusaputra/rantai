@@ -32,7 +32,7 @@ Versi 1.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` dan `docs/SPEC.md`.
   - Pemuat konfigurasi YAML + env, `cmd/api` dengan GoFiber v3, amplop respons dan pemetaan error (SPEC 0.3), endpoint `GET /api/v1/kesehatan`.
   - Commit: `🧱 Bangun server API dengan amplop respons dan pemetaan error`
   - Selesai bila: tes handler kesehatan dan tes pemetaan error domain ke kode HTTP lulus.
-- [ ] **T-102** Skema wilayah dan provenance
+- [x] **T-102** Skema wilayah dan provenance
   - Migrasi ekstensi `postgis`, `pg_trgm`; tabel `wilayah`, `provenance`, `ingest_run` (SPEC 2.1).
   - Commit: `🗃️ Tambah skema wilayah, provenance, dan riwayat ingest`
   - Selesai bila: migrasi naik dan turun tanpa error.
