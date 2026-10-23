@@ -150,7 +150,7 @@ Versi 2.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` v2.0 dan `docs/SPEC.
   - Migrasi `umpan_kegiatan`, `umpan_anggota`; job `umpan_dprd`; penandaan `tag_isu` dari tema.
   - Commit: `✨ Impor rilis kegiatan resmi DPRD per anggota`
   - Selesai bila: parser lulus tes fixture; item tidak disimpan dengan teks berita penuh.
-- [ ] **T-405** Umpan media terverifikasi (WAK-03) **[GERBANG DATA GD-14]**
+- [x] **T-405** Umpan media terverifikasi (WAK-03) **[GERBANG DATA GD-14]**
   - `config/media.yaml`; job `umpan_media`; disambiguasi nama plus "DPRD DKI" atau fraksi.
   - Commit: `✨ Impor liputan media terverifikasi dengan disambiguasi nama`
   - Selesai bila: fixture nama sama tanpa "DPRD DKI" dibuang dan dengan fraksi dipautkan (dites); domain di luar daftar media ditolak.

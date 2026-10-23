@@ -18,6 +18,7 @@ import (
 	"github.com/benditandayusaputra/rantai/backend/internal/ingest/dprd"
 	"github.com/benditandayusaputra/rantai/backend/internal/ingest/klien"
 	"github.com/benditandayusaputra/rantai/backend/internal/ingest/lpse"
+	"github.com/benditandayusaputra/rantai/backend/internal/ingest/media"
 	"github.com/benditandayusaputra/rantai/backend/internal/ingest/sirup"
 	"github.com/benditandayusaputra/rantai/backend/internal/ingest/tema"
 	"github.com/benditandayusaputra/rantai/backend/internal/ingest/wilayah"
@@ -30,6 +31,7 @@ const (
 	pathKonfigurasiWilayah = "config/wilayah.yaml"
 	dirKonfigurasiTema     = "config/tema"
 	pathKonfigurasiDPRD    = "config/dprd.yaml"
+	pathKonfigurasiMedia   = "config/media.yaml"
 	pathKonfigurasiLPSE    = "config/lpse.yaml"
 	pathKonfigurasiSIRUP   = "config/sirup.yaml"
 	urlRujukanTema         = "https://github.com/benditandayusaputra/rantai/tree/main/backend/config/tema"
@@ -39,7 +41,7 @@ const (
 
 type job func(ctx context.Context) error
 
-var jobTersedia = []string{usecase.JobWilayah, usecase.JobTema, usecase.JobKPUDPRD, usecase.JobLPSEDaftar, usecase.JobLPSEDetail, usecase.JobSIRUP, usecase.JobUmpanDPRD}
+var jobTersedia = []string{usecase.JobWilayah, usecase.JobTema, usecase.JobKPUDPRD, usecase.JobLPSEDaftar, usecase.JobLPSEDetail, usecase.JobSIRUP, usecase.JobUmpanDPRD, usecase.JobUmpanMedia}
 
 func main() {
 	if err := jalankan(os.Args[1:]); err != nil {
@@ -79,6 +81,8 @@ func pilihJob(nama string, pool *pgxpool.Pool) (job, error) {
 		return buatImporRUP(pool)
 	case usecase.JobUmpanDPRD:
 		return buatImporUmpanDPRD(pool)
+	case usecase.JobUmpanMedia:
+		return buatImporUmpanMedia(pool)
 	default:
 		return nil, fmt.Errorf("job tidak dikenal: %s", nama)
 	}
@@ -210,6 +214,32 @@ func buatImporRUP(pool *pgxpool.Pool) (job, error) {
 		Penyimpan:      repository.RUPRepository{DB: pool},
 		Pencatat:       repository.IngestRunRepository{DB: pool},
 		AturanInstansi: cfgLPSE.Instansi,
+	}
+	return impor.Jalankan, nil
+}
+
+func buatImporUmpanMedia(pool *pgxpool.Pool) (job, error) {
+	var cfg media.Konfigurasi
+	if err := config.BacaYAML(pathKonfigurasiMedia, &cfg); err != nil {
+		return nil, err
+	}
+	umpan := repository.UmpanRepository{DB: pool}
+	impor := usecase.ImporUmpan{
+		Job:           usecase.JobUmpanMedia,
+		JenisSumber:   domain.SumberUmpanMedia,
+		MulaiBawaan:   cfg.Mulai,
+		TumpangTindih: cfg.TumpangTindih,
+		Pengambil: media.Sumber{
+			Konfigurasi: cfg,
+			Pengunduh:   klien.Baru(&http.Client{Timeout: batasWaktuUnduh}, cfg.Pengunduh),
+			DirRaw:      dirRaw(),
+			Sekarang:    time.Now,
+		},
+		Anggota:   umpan,
+		Tema:      usecase.BacaTema{Pembaca: repository.TemaRepository{DB: pool}},
+		Penyimpan: umpan,
+		Pencatat:  repository.IngestRunRepository{DB: pool},
+		Pautkan:   cfg.Aturan().Pautkan,
 	}
 	return impor.Jalankan, nil
 }

@@ -1,0 +1,48 @@
+pengunduh:
+  user_agent: RantaiBot/1.0 (+https://github.com/benditandayusaputra/rantai)
+  jeda_permintaan: 1s
+
+url_rujukan: https://dewanpers.or.id/data
+catatan: Judul dan cuplikan dari RSS kanal perusahaan pers dalam daftar tertutup; Rantai menyimpan judul, cuplikan pendek, dan tautan, bukan isi berita
+mulai: 2026-10-01T00:00:00+07:00
+tumpang_tindih: 24h
+
+konteks_dprd:
+  - DPRD DKI
+  - DPRD DKI Jakarta
+  - DPRD Jakarta
+  - DPRD Provinsi DKI Jakarta
+  - Dewan Perwakilan Rakyat Daerah DKI Jakarta
+
+alias_fraksi:
+  Fraksi Partai Keadilan Sejahtera: [Fraksi PKS, Fraksi Partai Keadilan Sejahtera]
+  Fraksi Partai Demokrasi Indonesia Perjuangan: [Fraksi PDIP, Fraksi PDI Perjuangan, Fraksi PDI-P, Fraksi Partai Demokrasi Indonesia Perjuangan]
+  Fraksi Partai Gerindra: [Fraksi Gerindra, Fraksi Partai Gerindra]
+  Fraksi Partai NasDem: [Fraksi NasDem, Fraksi Partai NasDem]
+  Fraksi Partai Golkar: [Fraksi Golkar, Fraksi Partai Golkar]
+  Fraksi Partai Kebangkitan Bangsa: [Fraksi PKB, Fraksi Partai Kebangkitan Bangsa]
+  Fraksi Partai Amanat Nasional: [Fraksi PAN, Fraksi Partai Amanat Nasional]
+  Fraksi Partai Demokrat dan Partai Perindo: [Fraksi Demokrat, Fraksi Partai Demokrat, Fraksi Demokrat Perindo]
+  Fraksi Partai Solidaritas Indonesia: [Fraksi PSI, Fraksi Partai Solidaritas Indonesia]
+
+media:
+  - nama: ANTARA
+    domain: antaranews.com
+    status_dewan_pers: perlu dikonfirmasi manual di dewanpers.or.id/data
+    rss:
+      - https://www.antaranews.com/rss/metro.xml
+  - nama: detikcom
+    domain: detik.com
+    status_dewan_pers: perlu dikonfirmasi manual di dewanpers.or.id/data
+    rss:
+      - https://news.detik.com/berita/rss
+  - nama: Republika
+    domain: republika.co.id
+    status_dewan_pers: perlu dikonfirmasi manual di dewanpers.or.id/data
+    rss:
+      - https://www.republika.co.id/rss/news/metropolitan
+  - nama: CNN Indonesia
+    domain: cnnindonesia.com
+    status_dewan_pers: perlu dikonfirmasi manual di dewanpers.or.id/data
+    rss:
+      - https://www.cnnindonesia.com/nasional/rss

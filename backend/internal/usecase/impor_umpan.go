@@ -10,7 +10,10 @@ import (
 	"github.com/benditandayusaputra/rantai/backend/internal/domain"
 )
 
-const JobUmpanDPRD = "umpan_dprd"
+const (
+	JobUmpanDPRD  = "umpan_dprd"
+	JobUmpanMedia = "umpan_media"
+)
 
 type DataSumberUmpan struct {
 	Item       []domain.ItemUmpan

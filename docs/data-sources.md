@@ -105,3 +105,23 @@ Catatan hasil Gerbang Data (SPEC bagian 1). Setiap entri memuat URL, tanggal cek
 - **Field** (tabel `td.label-left`): Kode RUP, Nama Paket, Nama KLPD, Satuan Kerja, Tahun Anggaran, Lokasi Pekerjaan, Sumber Dana (tabel: sumber dana, T.A., KLPD, MAK, pagu), Total Pagu (bilangan bulat tanpa pemisah), Jenis Pengadaan, Metode Pemilihan, Pemanfaatan Barang/Jasa, Jadwal Pelaksanaan Kontrak dan Jadwal Pemilihan Penyedia (bulan dan tahun, contoh "September 2026"), Tanggal Umumkan Paket.
 - **Kode tidak dikenal**: respons 500 berisi halaman kesalahan. Job `sirup` mencatatnya sebagai "detail tidak tersedia" dan tetap melanjutkan; RUP tetap tercatat dari pengumuman LPSE.
 - **Pemakaian**: jadwal pelaksanaan kontrak disimpan sebagai awal bulan mulai sampai akhir bulan selesai dan menjadi dasar estimasi pelaksanaan (ANG-04).
+
+## GD-14 Liputan media terverifikasi
+
+- **Status**: lolos dengan cadangan SPEC. RSS pencarian per nama tidak tersedia secara terbuka, jadi job memakai RSS kanal tiap media dalam daftar tertutup lalu menyaring nama secara lokal.
+- **Tanggal cek**: 23 Oktober 2026
+- **Daftar media** (`backend/config/media.yaml`):
+
+  | Media | RSS | robots.txt untuk `*` |
+  | --- | --- | --- |
+  | ANTARA | `https://www.antaranews.com/rss/metro.xml` (20 item) | `Allow: /`, kecuali `/ajax/*`, `/ucnews/*` |
+  | detikcom | `https://news.detik.com/berita/rss` (100 item) | `Allow: /` |
+  | Republika | `https://www.republika.co.id/rss/news/metropolitan` (15 item) | `/rss/` tidak dilarang (`/feed/*` dilarang) |
+  | CNN Indonesia | `https://www.cnnindonesia.com/nasional/rss` (100 item) | `Allow: /` |
+
+  Ditolak: Kompas (`/getrss/megapolitan` 404), Tempo (`rss.tempo.co/metro` 403), Tribunnews (403), Suara, Liputan6, Beritasatu (404).
+- **Status Dewan Pers belum terkonfirmasi**: halaman `https://dewanpers.or.id/data` memuat basis data perusahaan pers lewat JavaScript sehingga tidak bisa diperiksa otomatis. Keempat media perlu dikonfirmasi manual oleh tim; sementara itu `status_dewan_pers` di konfigurasi bertuliskan "perlu dikonfirmasi manual".
+- **Catatan etika**: robots.txt ANTARA dan Republika melarang secara eksplisit bot pelatihan AI (ClaudeBot, GPTBot, anthropic-ai, dan sejenisnya). RantaiBot bukan bot pelatihan, tetapi ringkasan netral T-406 dibuat model bahasa dari judul dan cuplikan mereka. Tim perlu memutuskan apakah ringkasan untuk kedua media ini dimatikan (hanya judul yang tampil).
+- **Field RSS**: `title`, `link` (cadangan `guid`), `pubDate` (RFC 1123 dengan zona), `description` (HTML dengan gambar; tag dibuang, dipotong 300 karakter).
+- **Disambiguasi** (`domain.AturanMedia`): nama anggota (aturan pencarian sama dengan GD-13) harus muncul di judul atau cuplikan bersama salah satu `konteks_dprd` (`nama_dan_dprd`) atau alias fraksi anggota itu, contoh "Fraksi PKS" (`nama_dan_fraksi`). Tautan di luar domain daftar media ditolak.
+- **Jadwal**: harian. RSS hanya memuat berita terbaru, jadi umpan media terkumpul sejak job pertama berjalan (`mulai` di konfigurasi), tidak mundur ke awal periode. Uji 23 Oktober 2026: 235 item, belum ada yang lolos disambiguasi.

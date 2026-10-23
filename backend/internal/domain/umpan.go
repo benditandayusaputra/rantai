@@ -56,12 +56,15 @@ type UmpanTerpaut struct {
 }
 
 type PencariNama struct {
-	polaPerAnggota map[string][]string
+	polaPerAnggota   map[string][]string
+	fraksiPerAnggota map[string]string
 }
 
 func BuatPencariNama(anggota []Anggota) PencariNama {
 	pemilik := map[string][]string{}
+	fraksi := map[string]string{}
 	for _, a := range anggota {
+		fraksi[a.ID] = a.Fraksi
 		for _, nama := range namaPencarian(a) {
 			pemilik[nama] = append(pemilik[nama], a.ID)
 		}
@@ -72,7 +75,7 @@ func BuatPencariNama(anggota []Anggota) PencariNama {
 			polaPerAnggota[id[0]] = append(polaPerAnggota[id[0]], polaSebutan(nama)...)
 		}
 	}
-	return PencariNama{polaPerAnggota: polaPerAnggota}
+	return PencariNama{polaPerAnggota: polaPerAnggota, fraksiPerAnggota: fraksi}
 }
 
 func namaPencarian(a Anggota) []string {
