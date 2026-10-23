@@ -346,6 +346,8 @@ Per kecamatan: rasio dari `indikator_kecamatan` dibanding total nilai paket yang
 
 Kalimat pendamping wajib: "Belanja yang lokasinya hanya diketahui sampai tingkat kota tidak ikut dihitung; grafik ini menunjukkan sebaran, bukan penilaian." Jumlah dan nilai paket tingkat kota disebut terpisah.
 
+Belanja dihitung sebagai jumlah paket dan total HPS paket bertema pada tahun anggaran yang diminta (bawaan tahun berjalan), tanpa paket batal; indikator memakai periode terbaru tiap kecamatan. Respons memuat seluruh 44 kecamatan dan daftar `luar_kecamatan` untuk paket bertema berlokasi tingkat kota atau provinsi.
+
 API: `GET /tema/{kode}/belanja?tahun=`.
 
 ### PEN-05 Anggota Komisi E yang menyuarakan isu sekolah

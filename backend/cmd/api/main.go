@@ -71,7 +71,8 @@ func susunLayanan(pool *pgxpool.Pool) (deliveryhttp.Layanan, error) {
 		Ringkasan: usecase.RingkasKecamatan{
 			Wilayah: wilayah, Tema: tema, Indikator: ringkasan, Anggaran: ringkasan, Wakil: wakil, Sekarang: time.Now,
 		},
-		Paket: paket,
+		Paket:   paket,
+		Belanja: usecase.BandingBelanja{Tema: tema, Pembaca: repository.BelanjaTemaRepository{DB: pool}, Sekarang: time.Now},
 	}, nil
 }
 

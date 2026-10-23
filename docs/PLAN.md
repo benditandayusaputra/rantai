@@ -119,7 +119,7 @@ Versi 2.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` v2.0 dan `docs/SPEC.
   - Penandaan `paket.tema_kode` dari `filter_anggaran`; `GET /paket/{kode}` berbentuk rantai, `GET /kecamatan/{kode}/paket`, `GET /peta/paket`, `GET /paket/terdekat`.
   - Commit: `✨ Tambah API halaman paket dan daftar paket per kecamatan`
   - Selesai bila: setiap mata rantai mengembalikan status ada, putus, menunggu, atau estimasi sesuai tabel ANG-03; filter tema dites.
-- [ ] **T-309** Kesenjangan vs Belanja (PEN-04)
+- [x] **T-309** Kesenjangan vs Belanja (PEN-04)
   - `GET /tema/{kode}/belanja` dari `indikator_kecamatan` dan paket bertema.
   - Commit: `✨ Bandingkan kesenjangan kursi dengan belanja sekolah per kecamatan`
   - Selesai bila: paket berlokasi tingkat kota dikeluarkan dari angka kecamatan dan dilaporkan terpisah (dites).
