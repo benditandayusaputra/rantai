@@ -1,0 +1,26 @@
+url_dasar: https://spse.inaproc.id/jakarta
+klien:
+  user_agent: RantaiBot/1.0 (+https://github.com/benditandayusaputra/rantai)
+  jeda_permintaan: 1s
+ukuran_halaman: 1000
+tahun_anggaran: [2025, 2026]
+jenis_pengadaan_detail:
+  - Pekerjaan Konstruksi
+  - Jasa Konsultansi Badan Usaha Konstruksi
+instansi:
+  jenis:
+    - jenis: sudin
+      awalan: ["suku dinas", "sudin"]
+    - jenis: dinas
+      awalan: ["dinas"]
+    - jenis: badan
+      awalan: ["badan"]
+    - jenis: kelurahan
+      awalan: ["kelurahan"]
+  kota:
+    "31.01": ["kepulauan seribu", "kep seribu", "kepseribu"]
+    "31.71": ["jakarta pusat", "jakpus"]
+    "31.72": ["jakarta utara", "jakut"]
+    "31.73": ["jakarta barat", "jakbar"]
+    "31.74": ["jakarta selatan", "jaksel"]
+    "31.75": ["jakarta timur", "jaktim"]

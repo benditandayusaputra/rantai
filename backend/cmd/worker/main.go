@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/http/cookiejar"
 	"os"
 	"os/signal"
 	"strings"
@@ -15,6 +16,7 @@ import (
 	"github.com/benditandayusaputra/rantai/backend/internal/config"
 	"github.com/benditandayusaputra/rantai/backend/internal/ingest/dprd"
 	"github.com/benditandayusaputra/rantai/backend/internal/ingest/klien"
+	"github.com/benditandayusaputra/rantai/backend/internal/ingest/lpse"
 	"github.com/benditandayusaputra/rantai/backend/internal/ingest/tema"
 	"github.com/benditandayusaputra/rantai/backend/internal/ingest/wilayah"
 	"github.com/benditandayusaputra/rantai/backend/internal/repository"
@@ -26,6 +28,7 @@ const (
 	pathKonfigurasiWilayah = "config/wilayah.yaml"
 	dirKonfigurasiTema     = "config/tema"
 	pathKonfigurasiDPRD    = "config/dprd.yaml"
+	pathKonfigurasiLPSE    = "config/lpse.yaml"
 	urlRujukanTema         = "https://github.com/benditandayusaputra/rantai/tree/main/backend/config/tema"
 	dirRawBawaan           = "../data/raw"
 	batasWaktuUnduh        = time.Minute
@@ -33,7 +36,7 @@ const (
 
 type job func(ctx context.Context) error
 
-var jobTersedia = []string{usecase.JobWilayah, usecase.JobTema, usecase.JobKPUDPRD}
+var jobTersedia = []string{usecase.JobWilayah, usecase.JobTema, usecase.JobKPUDPRD, usecase.JobLPSEDaftar, usecase.JobLPSEDetail}
 
 func main() {
 	if err := jalankan(os.Args[1:]); err != nil {
@@ -67,6 +70,8 @@ func pilihJob(nama string, pool *pgxpool.Pool) (job, error) {
 		return buatImporTema(pool), nil
 	case usecase.JobKPUDPRD:
 		return buatImporDPRD(pool)
+	case usecase.JobLPSEDaftar, usecase.JobLPSEDetail:
+		return buatImporLPSE(nama, pool)
 	default:
 		return nil, fmt.Errorf("job tidak dikenal: %s", nama)
 	}
@@ -124,6 +129,33 @@ func buatImporDPRD(pool *pgxpool.Pool) (job, error) {
 		Laporkan:         func(pesan string) { log.Println(pesan) },
 	}
 	return impor.Jalankan, nil
+}
+
+func buatImporLPSE(nama string, pool *pgxpool.Pool) (job, error) {
+	var cfg lpse.Konfigurasi
+	if err := config.BacaYAML(pathKonfigurasiLPSE, &cfg); err != nil {
+		return nil, err
+	}
+	toples, err := cookiejar.New(nil)
+	if err != nil {
+		return nil, err
+	}
+	sumber := lpse.Sumber{
+		Klien:    klien.Baru(&http.Client{Timeout: batasWaktuUnduh, Jar: toples}, cfg.Klien),
+		URLDasar: cfg.URLDasar,
+		Ukuran:   cfg.UkuranHalaman,
+		DirRaw:   dirRaw(),
+		Sekarang: time.Now,
+	}
+	paket := repository.PaketRepository{DB: pool}
+	pencatat := repository.IngestRunRepository{DB: pool}
+	if nama == usecase.JobLPSEDaftar {
+		return usecase.ImporDaftarPaket{Pengambil: sumber, Penyimpan: paket, Pencatat: pencatat, Tahun: cfg.TahunAnggaran}.Jalankan, nil
+	}
+	return usecase.ImporDetailPaket{
+		Pengambil: sumber, Penyimpan: paket, Pencatat: pencatat,
+		AturanInstansi: cfg.Instansi, JenisPengadaan: cfg.JenisPengadaanDetail,
+	}.Jalankan, nil
 }
 
 func dirRaw() string {

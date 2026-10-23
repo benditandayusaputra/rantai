@@ -95,7 +95,7 @@ Versi 2.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` v2.0 dan `docs/SPEC.
   - Migrasi `instansi`, `rup`, `penyedia`, `paket`, `riwayat_penyedia`, `sinyal` (SPEC 2.4).
   - Commit: `🗃️ Tambah skema instansi, RUP, penyedia, paket, dan sinyal`
   - Selesai bila: migrasi naik dan turun; indeks GiST di `paket.lokasi`.
-- [ ] **T-303** Job impor paket (ANG-01) **[BOLEH PECAH]**
+- [x] **T-303** Job impor paket (ANG-01) **[BOLEH PECAH]**
   - Job `lpse_daftar` dan `lpse_detail`, normalisasi nama penyedia, pencatatan perubahan tahap; snapshot hasil impor untuk lingkungan di luar Indonesia.
   - Commit: `✨ Jalankan impor harian paket LPSE DKI dengan pencatatan tahap`
   - Selesai bila: menjalankan job dua kali tidak menggandakan data; `ingest_run` tercatat.

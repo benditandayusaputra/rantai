@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/benditandayusaputra/rantai/backend/internal/domain"
 	"golang.org/x/net/html"
 )
 
@@ -15,18 +16,12 @@ const (
 
 var ErrBukanPengumuman = errors.New("halaman bukan pengumuman paket")
 
-type RUPTercatat struct {
-	Kode       string
-	Nama       string
-	SumberDana string
-}
-
 type Pengumuman struct {
 	Kode           string
 	Nama           string
 	IsBatal        bool
 	AlasanBatal    string
-	RUP            []RUPTercatat
+	RUP            []domain.RUPTercatat
 	TanggalDibuat  time.Time
 	Tahap          string
 	Instansi       string
@@ -89,15 +84,15 @@ func lengkapiNilai(p *Pengumuman, tabel tabelLabel) error {
 	return nil
 }
 
-func uraiRUPTercatat(sel *html.Node) []RUPTercatat {
-	daftar := []RUPTercatat{}
+func uraiRUPTercatat(sel *html.Node) []domain.RUPTercatat {
+	daftar := []domain.RUPTercatat{}
 	if sel == nil {
 		return daftar
 	}
 	for _, baris := range cariSemua(sel, func(n *html.Node) bool { return isElemen(n, "tr") }) {
 		kolom := selBaris(baris)
 		if len(kolom) == jumlahKolomRUP && kolom[0] != "" {
-			daftar = append(daftar, RUPTercatat{Kode: kolom[0], Nama: kolom[1], SumberDana: kolom[2]})
+			daftar = append(daftar, domain.RUPTercatat{Kode: kolom[0], Nama: kolom[1], SumberDana: kolom[2]})
 		}
 	}
 	return daftar
