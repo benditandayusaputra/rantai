@@ -23,9 +23,11 @@ migrate-down:
 
 lint:
 	cd backend && golangci-lint run ./... && go run ./tools/cekkomentar
+	cd frontend && npm run lint
 
 test:
 	cd backend && go test ./...
+	cd frontend && npm test
 
 impor-wilayah:
 	cd backend && go run ./cmd/worker wilayah

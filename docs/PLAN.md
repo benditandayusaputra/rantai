@@ -174,7 +174,7 @@ Versi 2.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` v2.0 dan `docs/SPEC.
 
 Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman kecamatan dengan tiga bagian, profil anggota dengan umpan dua sumber, Kesenjangan vs Belanja, dan Data yang Belum Dibuka.
 
-- [ ] **T-601** Kerangka SvelteKit **[BUTUH DESAIN]**
+- [x] **T-601** Kerangka SvelteKit **[BUTUH DESAIN]**
   - SvelteKit 2, Svelte 5 runes, TypeScript strict, Tailwind dari token DESIGN.md, i18n dengan pesan Indonesia, rute berawalan `/id`, ESLint, Prettier, svelte-check, Vitest. Tambahkan lint dan tes frontend ke CI.
   - Commit: `🎉 Inisialisasi frontend SvelteKit dengan token desain`
   - Selesai bila: `make lint` dan `make test` mencakup frontend; tidak ada warna atau ukuran ditulis langsung di komponen; tidak ada teks hardcode di komponen.

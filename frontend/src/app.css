@@ -1,0 +1,76 @@
+@import './lib/styles/tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	html {
+		@apply bg-page font-sans text-fg antialiased;
+	}
+	:focus-visible {
+		outline: none;
+		box-shadow: var(--ring);
+	}
+	::selection {
+		background: var(--secondary);
+		color: var(--on-secondary);
+	}
+}
+
+@layer components {
+	.num {
+		font-variant-numeric: tabular-nums lining-nums;
+		font-feature-settings:
+			'tnum' 1,
+			'lnum' 1;
+	}
+	.t-display {
+		@apply text-balance font-serif text-display lg:text-display-lg;
+	}
+	.t-h1 {
+		@apply text-balance font-serif text-h1 lg:text-h1-lg;
+	}
+	.t-h2 {
+		@apply text-h2 lg:text-h2-lg;
+	}
+	.t-h3 {
+		@apply text-h3 lg:text-h3-lg;
+	}
+	.t-lead {
+		@apply text-body-lg text-muted lg:text-body-lg-lg;
+		text-wrap: pretty;
+	}
+	.t-over {
+		@apply text-overline uppercase text-muted;
+	}
+	.n-xl {
+		@apply num text-num-xl lg:text-num-xl-lg;
+	}
+	.n-lg {
+		@apply num text-num-lg lg:text-num-lg-lg;
+	}
+	.n-md {
+		@apply num text-num-md lg:text-num-md-lg;
+	}
+	.wrap {
+		@apply mx-auto w-full max-w-content px-4 md:px-6 lg:px-8 xl:px-0;
+	}
+	.glass {
+		background: var(--glass);
+		backdrop-filter: blur(12px);
+		-webkit-backdrop-filter: blur(12px);
+	}
+	.hatch-sim {
+		background: repeating-linear-gradient(
+			-45deg,
+			var(--cert-sim-bg) 0 4px,
+			var(--cert-sim-stripe) 4px 8px
+		);
+	}
+	.skel {
+		background: linear-gradient(90deg, var(--skel) 0, var(--skel-hi) 40%, var(--skel) 80%);
+		background-size: 640px 100%;
+		@apply animate-shimmer motion-reduce:animate-none;
+	}
+}
