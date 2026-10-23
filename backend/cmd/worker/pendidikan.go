@@ -7,6 +7,7 @@ import (
 
 	"github.com/benditandayusaputra/rantai/backend/internal/config"
 	"github.com/benditandayusaputra/rantai/backend/internal/ingest/dapodik"
+	"github.com/benditandayusaputra/rantai/backend/internal/ingest/dayatampung"
 	"github.com/benditandayusaputra/rantai/backend/internal/ingest/klien"
 	"github.com/benditandayusaputra/rantai/backend/internal/repository"
 	"github.com/benditandayusaputra/rantai/backend/internal/usecase"
@@ -15,12 +16,15 @@ import (
 
 const (
 	pathKonfigurasiDapodik = "config/dapodik.yaml"
+	pathDayaTampung        = "config/daya_tampung.yaml"
 )
 
 func pilihJobPendidikan(nama string, pool *pgxpool.Pool) (job, error) {
 	switch nama {
 	case usecase.JobDapodik:
 		return buatImporSekolah(pool)
+	case usecase.JobDayaTampung:
+		return buatImporDayaTampung(pool)
 	default:
 		return nil, fmt.Errorf("job tidak dikenal: %s", nama)
 	}
@@ -41,6 +45,20 @@ func buatImporSekolah(pool *pgxpool.Pool) (job, error) {
 		},
 		Pemeta:    repo,
 		Penyimpan: repo,
+		Pencatat:  repository.IngestRunRepository{DB: pool},
+		Pelapor:   pelaporLog{},
+	}
+	return impor.Jalankan, nil
+}
+
+func buatImporDayaTampung(pool *pgxpool.Pool) (job, error) {
+	var cfg dayatampung.Konfigurasi
+	if err := config.BacaYAML(pathDayaTampung, &cfg); err != nil {
+		return nil, err
+	}
+	impor := usecase.ImporDayaTampung{
+		Pengambil: dayatampung.Sumber{Konfigurasi: cfg, Sekarang: time.Now},
+		Penyimpan: repository.DayaTampungRepository{DB: pool},
 		Pencatat:  repository.IngestRunRepository{DB: pool},
 		Pelapor:   pelaporLog{},
 	}

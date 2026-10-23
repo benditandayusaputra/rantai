@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"strings"
 
@@ -21,5 +22,16 @@ func cetakDaftar(judul string, daftar []string) {
 	log.Printf("%s: %d", judul, len(daftar))
 	if len(daftar) > 0 {
 		log.Print("  " + strings.Join(daftar, "\n  "))
+	}
+}
+
+func (pelaporLog) LaporkanDayaTampung(daftar []usecase.LaporanDayaTampung) {
+	for _, l := range daftar {
+		log.Printf("daya tampung %s: kursi di dokumen %d, terimpor %d, selisih %d", l.Jalur, l.KursiDokumen, l.KursiTerimpor, l.KursiDokumen-l.KursiTerimpor)
+		tidakTerpetakan := make([]string, len(l.TidakTerpetakan))
+		for i, b := range l.TidakTerpetakan {
+			tidakTerpetakan[i] = fmt.Sprintf("NPSN %q %s (%d kursi)", b.NPSN, b.Nama, b.Kursi)
+		}
+		cetakDaftar("sekolah tidak terpetakan", tidakTerpetakan)
 	}
 }

@@ -64,7 +64,7 @@ Versi 2.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` v2.0 dan `docs/SPEC.
   - Migrasi `sekolah`, `sekolah_rombel`; job `dapodik` untuk SD, MI, SMP, MTs di DKI; kecamatan sekolah ditentukan dari koordinat dengan `ST_Covers`, cadangan pencocokan nama.
   - Commit: `✨ Impor sekolah, lokasi, dan rombel per tingkat dari Dapodik`
   - Selesai bila: setiap kecamatan DKI punya data sekolah; tes parser memakai fixture; sekolah tanpa koordinat dilaporkan, tidak ditebak.
-- [ ] **T-203** Daya tampung resmi **[GERBANG DATA GD-04, GD-05]**
+- [x] **T-203** Daya tampung resmi **[GERBANG DATA GD-04, GD-05]**
   - Migrasi `daya_tampung`; ekstraksi lampiran Kepkadis 258/2026 dan daftar SPMB Bersama ke CSV di `data/snapshot/`; job `daya_tampung` mencocokkan NPSN.
   - Commit: `✨ Impor daya tampung SMP negeri dan kursi SPMB Bersama`
   - Selesai bila: total kursi negeri yang terimpor sama dengan 73.289 atau selisihnya dijelaskan di `docs/data-sources.md`; NPSN tak cocok dicetak sebagai laporan.

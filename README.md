@@ -41,6 +41,7 @@ make migrate
 make impor-wilayah
 make impor-tema
 make impor-sekolah
+make impor-daya-tampung
 ```
 
 `make impor-sekolah` mengambil sekitar 4.000 sekolah dengan jeda 1 detik per permintaan, sehingga butuh beberapa jam. Setiap respons disimpan di `data/raw/dapodik/<tanggal>/`, jadi job yang terputus dapat dijalankan ulang pada hari yang sama tanpa mengulang permintaan.

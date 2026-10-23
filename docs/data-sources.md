@@ -173,3 +173,21 @@ Catatan hasil Gerbang Data (SPEC bagian 1). Setiap entri memuat URL, tanggal cek
 - **robots.txt**: `sekolah.data.kemendikdasmen.go.id/robots.txt` mengembalikan halaman aplikasi (bukan berkas robots), sehingga tidak ada pembatasan tertulis. Job memberi jeda 1 detik antarpermintaan, berhenti pada 403 atau 429, dan menyimpan setiap respons di `data/raw/dapodik/<tanggal>/` sebagai cache. Pengambilan ulang di hari yang sama tidak mengirim permintaan baru.
 - **Penentuan kecamatan**: `ST_Covers` atas titik sekolah. Bila sekolah tidak punya koordinat, atau titiknya di luar batas DKI, kecamatan diambil dari pencocokan nama `kecamatan` sumber (huruf kecil, tanpa awalan `Kec.`, tanpa spasi), dan lokasi tidak diisi. Sekolah tanpa koordinat dan sekolah yang tidak terpetakan dicetak sebagai laporan job.
 
+## GD-04 Daya tampung SMP negeri (Kepkadis 258/2026)
+
+- **Status**: lolos. Lampiran dapat diekstrak per sekolah beserta NPSN.
+- **Tanggal cek**: 23 Oktober 2026
+- **Dokumen**: [Keputusan Kepala Dinas Pendidikan Provinsi DKI Jakarta Nomor 258 Tahun 2026](https://dokumen-jkt.spmb.id/2026/20260612/SK%20Kadis%20Nomor%20258%20Tentang%20Daya%20Tampung%20Satuan%20Pendidikan%20Negeri%20Pada%20Penerimaan%20Murid%20Baru-berkas--260612061433.pdf), 54 halaman, berlapis teks asli (bukan hasil pindai). Ditautkan dari laman unduhan SPMB 2026/2027; `spmb.jakarta.go.id` sendiri tidak dapat dibuka karena sertifikat TLS-nya kedaluwarsa per tanggal cek.
+- **Bagian C (SMP)**: 301 baris (nomor, nama, NPSN, daya tampung murid), jumlah **73.289**, sama dengan angka di dokumen. SMPN 296, 297, 298, dan 299 Jakarta (900 kursi) tertulis tanpa NPSN dan belum ada di Dapodik, sehingga tidak terpetakan ke sekolah dan dilaporkan job, tidak ditebak.
+- **Perubahan**: [Keputusan Nomor 315 Tahun 2026](https://dokumen-jkt.spmb.id/2026/20260612/SK%20Kadis%20Nomor%20315%20Tentang%20Perubahan%20atas%20Keputusan%20Kepala%20Dinas%20Pendidikan%20Nomor%20258%20Tahun%202026%20tentang%20Daya%20Tampung%20Satuan%20Pendidikan%20Negeri%20pada%20PMB-berkas--260612061834.pdf) (hasil pindai, 4 halaman, dibaca manual) hanya mengubah satu baris SD, jumlah SD, dua baris SMK, jumlah SMK, dan satu baris SLB. Bagian SMP tidak berubah.
+- **Ekstraksi**: `data/snapshot/daya_tampung_smp_negeri_2026.csv` (`no,nama,npsn,kursi`) dari `pdftotext -layout`. Skrip ekstraksi memeriksa nomor urut 1 sampai 301 lengkap dan total 73.289.
+- **robots.txt**: `dokumen-jkt.spmb.id/robots.txt` mengembalikan halaman HTML aplikasi, tidak ada pembatasan tertulis. Dokumen diunduh sekali.
+
+## GD-05 Kursi SMP swasta SPMB Bersama
+
+- **Status**: lolos. Daftar tersedia per sekolah beserta NPSN.
+- **Tanggal cek**: 23 Oktober 2026
+- **Dokumen**: [Keputusan Kepala Dinas Pendidikan Nomor 262 Tahun 2026 tentang Petunjuk Teknis Pelaksanaan PMB Bersama](https://dokumen-jkt.spmb.id/2026/20260612/Petunjuk%20Teknis%20Pelaksanaan%20Penerimaan%20Murid%20Baru%20Bersama-berkas--260612061506.pdf), 114 halaman. Lampiran IV "Daftar Nama dan Daya Tampung SMP Swasta Peserta PMB Bersama" ada di halaman PDF 39 sampai 43: 137 sekolah (nomor, nama, kategori, NPSN, daya tampung), jumlah **1.597**.
+- **Ekstraksi**: `data/snapshot/spmb_bersama_smp_2026.csv` (`no,nama,kategori,npsn,kursi`). Halaman 39 sampai 42 berlapis teks asli. Halaman 43 hasil pindai ber-OCR; kedelapan barisnya dicocokkan manual dengan gambar halaman, dan nomor 134 (SMP Mitra Reformasi) dikoreksi dari 10 hasil OCR menjadi **12** sesuai dokumen. Setelah koreksi, total sama dengan 1.597.
+- **Catatan**: Lampiran VII dokumen yang sama berisi wilayah prioritas penerimaan per sekolah, tidak dipakai.
+

@@ -7,7 +7,7 @@ export DATABASE_URL TEST_DATABASE_URL
 COMPOSE := docker compose
 MIGRATE := $(COMPOSE) run --rm --build migrate
 
-.PHONY: up down migrate migrate-down lint test impor-wilayah impor-tema impor-kpu-dprd impor-lpse impor-sirup impor-opentender turunan laporan-geocode snapshot-paket muat-snapshot-paket impor-umpan-dprd impor-umpan-media ringkas-umpan impor-sekolah
+.PHONY: up down migrate migrate-down lint test impor-wilayah impor-tema impor-kpu-dprd impor-lpse impor-sirup impor-opentender turunan laporan-geocode snapshot-paket muat-snapshot-paket impor-umpan-dprd impor-umpan-media ringkas-umpan impor-sekolah impor-daya-tampung
 
 up:
 	$(COMPOSE) up -d --wait db minio
@@ -71,3 +71,6 @@ ringkas-umpan:
 
 impor-sekolah:
 	cd backend && go run ./cmd/worker dapodik
+
+impor-daya-tampung:
+	cd backend && go run ./cmd/worker daya_tampung

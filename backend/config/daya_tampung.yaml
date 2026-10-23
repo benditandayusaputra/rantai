@@ -1,0 +1,10 @@
+tahun_ajaran: 2026/2027
+berkas:
+  - path: ../data/snapshot/daya_tampung_smp_negeri_2026.csv
+    jalur: negeri
+    url: https://dokumen-jkt.spmb.id/2026/20260612/SK%20Kadis%20Nomor%20258%20Tentang%20Daya%20Tampung%20Satuan%20Pendidikan%20Negeri%20Pada%20Penerimaan%20Murid%20Baru-berkas--260612061433.pdf
+    catatan: Lampiran bagian C Keputusan Kepala Dinas Pendidikan Provinsi DKI Jakarta Nomor 258 Tahun 2026 (bagian SMP tidak diubah oleh Keputusan Nomor 315 Tahun 2026), diekstrak ke CSV tanpa perubahan angka
+  - path: ../data/snapshot/spmb_bersama_smp_2026.csv
+    jalur: spmb_bersama
+    url: https://dokumen-jkt.spmb.id/2026/20260612/Petunjuk%20Teknis%20Pelaksanaan%20Penerimaan%20Murid%20Baru%20Bersama-berkas--260612061506.pdf
+    catatan: Lampiran IV Keputusan Kepala Dinas Pendidikan Provinsi DKI Jakarta Nomor 262 Tahun 2026 tentang Petunjuk Teknis PMB Bersama, daftar nama dan daya tampung SMP swasta peserta, diekstrak ke CSV
