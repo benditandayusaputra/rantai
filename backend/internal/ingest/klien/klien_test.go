@@ -74,6 +74,37 @@ func TestAmbil_PathDilarangRobots_TidakMengirimPermintaan(t *testing.T) {
 	}
 }
 
+func TestKirimForm_Galat5xxSekali_DiulangDenganBadanSama(t *testing.T) {
+	gagal := 1
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/robots.txt" && gagal > 0 {
+			gagal--
+			w.WriteHeader(http.StatusBadGateway)
+			return
+		}
+		_, _ = w.Write([]byte(r.FormValue("draw")))
+	}))
+	t.Cleanup(server.Close)
+	k := Baru(server.Client(), Konfigurasi{UserAgent: userAgentUji, PercobaanUlang: 2})
+
+	isi, err := k.KirimForm(t.Context(), server.URL+"/dt", url.Values{"draw": {"9"}})
+
+	if err != nil || string(isi) != "9" {
+		t.Errorf("isi = %q, err = %v", isi, err)
+	}
+}
+
+func TestAmbil_Status403_TidakDiulang(t *testing.T) {
+	server, waktu := serverUji(t, "", http.StatusForbidden)
+	k := Baru(server.Client(), Konfigurasi{UserAgent: userAgentUji, PercobaanUlang: 3})
+
+	_, err := k.Ambil(t.Context(), server.URL+"/a")
+
+	if !errors.Is(err, ErrDitolakServer) || len(*waktu) != 1 {
+		t.Errorf("err = %v, permintaan = %d", err, len(*waktu))
+	}
+}
+
 func TestKirimForm_FormTerkirimDenganUserAgent(t *testing.T) {
 	server, _ := serverUji(t, "", http.StatusOK)
 

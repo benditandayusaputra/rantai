@@ -2,7 +2,9 @@ url_dasar: https://spse.inaproc.id/jakarta
 klien:
   user_agent: RantaiBot/1.0 (+https://github.com/benditandayusaputra/rantai)
   jeda_permintaan: 1s
-ukuran_halaman: 1000
+  percobaan_ulang: 3
+  jeda_ulang: 30s
+ukuran_halaman: 500
 tahun_anggaran: [2025, 2026]
 jenis_pengadaan_detail:
   - Pekerjaan Konstruksi

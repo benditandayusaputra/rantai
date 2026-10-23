@@ -18,8 +18,10 @@ var (
 )
 
 type Konfigurasi struct {
-	UserAgent string        `yaml:"user_agent"`
-	Jeda      time.Duration `yaml:"jeda_permintaan"`
+	UserAgent      string        `yaml:"user_agent"`
+	Jeda           time.Duration `yaml:"jeda_permintaan"`
+	PercobaanUlang int           `yaml:"percobaan_ulang"`
+	JedaUlang      time.Duration `yaml:"jeda_ulang"`
 }
 
 type Klien struct {
@@ -64,11 +66,46 @@ func (k *Klien) kirimSantun(permintaan *http.Request) ([]byte, error) {
 	if !aturan.Mengizinkan(permintaan.URL.EscapedPath()) {
 		return nil, fmt.Errorf("%s: %w", permintaan.URL, ErrDilarangRobots)
 	}
-	status, isi, err := k.kirim(permintaan)
+	status, isi, err := k.kirimDenganUlang(permintaan)
 	if err != nil {
 		return nil, err
 	}
 	return isi, periksaStatus(permintaan.URL, status)
+}
+
+func (k *Klien) kirimDenganUlang(permintaan *http.Request) (int, []byte, error) {
+	for percobaan := 1; ; percobaan++ {
+		status, isi, err := k.kirim(permintaan)
+		if !layakDiulang(permintaan.Context(), status, err) || percobaan > k.cfg.PercobaanUlang {
+			return status, isi, err
+		}
+		if err := tunggu(permintaan.Context(), k.cfg.JedaUlang*time.Duration(percobaan)); err != nil {
+			return 0, nil, err
+		}
+		if permintaan, err = salinPermintaan(permintaan); err != nil {
+			return 0, nil, err
+		}
+	}
+}
+
+func layakDiulang(ctx context.Context, status int, err error) bool {
+	if err != nil {
+		return ctx.Err() == nil
+	}
+	return status >= http.StatusInternalServerError
+}
+
+func salinPermintaan(permintaan *http.Request) (*http.Request, error) {
+	salinan := permintaan.Clone(permintaan.Context())
+	if permintaan.GetBody == nil {
+		return salinan, nil
+	}
+	badan, err := permintaan.GetBody()
+	if err != nil {
+		return nil, fmt.Errorf("salin badan permintaan %s: %w", permintaan.URL, err)
+	}
+	salinan.Body = badan
+	return salinan, nil
 }
 
 func (k *Klien) kirim(permintaan *http.Request) (int, []byte, error) {
@@ -100,11 +137,14 @@ func periksaStatus(alamat *url.URL, status int) error {
 }
 
 func (k *Klien) tungguGiliran(ctx context.Context, host string) error {
-	giliran := k.pesanGiliran(host)
+	return tunggu(ctx, time.Until(k.pesanGiliran(host)))
+}
+
+func tunggu(ctx context.Context, lama time.Duration) error {
 	select {
 	case <-ctx.Done():
 		return ctx.Err()
-	case <-time.After(time.Until(giliran)):
+	case <-time.After(lama):
 		return nil
 	}
 }
