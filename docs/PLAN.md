@@ -40,7 +40,7 @@ Versi 1.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` dan `docs/SPEC.md`.
   - Job `wilayah`: impor kota, kecamatan, kelurahan DKI beserta alias nama dan titik tengah.
   - Commit: `✨ Impor batas dan alias wilayah DKI Jakarta`
   - Selesai bila: 6 kota/kabupaten administrasi, seluruh kecamatan dan kelurahan DKI tersimpan; tes menghitung jumlah dan memeriksa satu alias.
-- [ ] **T-104** Pencarian wilayah (DASAR-01)
+- [x] **T-104** Pencarian wilayah (DASAR-01)
   - `GET /wilayah/cari`, `GET /wilayah/titik`, `GET /wilayah/{kode}`.
   - Commit: `✨ Tambah API pencarian wilayah berdasarkan nama dan titik`
   - Selesai bila: kriteria terima DASAR-01 terpenuhi dalam tes integrasi.

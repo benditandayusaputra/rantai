@@ -93,3 +93,26 @@ func (a AturanAlias) singkat(nama string) string {
 	}
 	return strings.Join(kata, " ")
 }
+
+type Titik struct {
+	Lat float64
+	Lng float64
+}
+
+type RingkasanWilayah struct {
+	Kode    string
+	Nama    string
+	Tingkat Tingkat
+}
+
+type WilayahDitemukan struct {
+	RingkasanWilayah
+	Hierarki []RingkasanWilayah
+}
+
+type DetailWilayah struct {
+	WilayahDitemukan
+	Alias        []string
+	TitikTengah  Titik
+	ProvenanceID string
+}

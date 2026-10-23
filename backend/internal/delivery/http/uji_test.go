@@ -16,7 +16,7 @@ type hasilPanggilan struct {
 }
 
 func appUji() *fiber.App {
-	return NewApp(config.Server{})
+	return NewApp(config.Server{}, Layanan{})
 }
 
 func panggil(t *testing.T, app *fiber.App, path string) hasilPanggilan {

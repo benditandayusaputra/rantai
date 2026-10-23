@@ -7,7 +7,11 @@ import (
 
 const prefiksAPI = "/api/v1"
 
-func NewApp(cfg config.Server) *fiber.App {
+type Layanan struct {
+	Wilayah LayananWilayah
+}
+
+func NewApp(cfg config.Server, layanan Layanan) *fiber.App {
 	app := fiber.New(fiber.Config{
 		ErrorHandler: tanganiError,
 		ReadTimeout:  cfg.BatasWaktuBaca,
@@ -15,5 +19,12 @@ func NewApp(cfg config.Server) *fiber.App {
 	})
 	api := app.Group(prefiksAPI)
 	api.Get("/kesehatan", periksaKesehatan)
+	daftarkanWilayah(api, handlerWilayah{layanan: layanan.Wilayah})
 	return app
+}
+
+func daftarkanWilayah(api fiber.Router, h handlerWilayah) {
+	api.Get("/wilayah/cari", h.cari)
+	api.Get("/wilayah/titik", h.diTitik)
+	api.Get("/wilayah/:kode", h.ambil)
 }

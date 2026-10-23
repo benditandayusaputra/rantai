@@ -10,7 +10,10 @@ import (
 
 	"github.com/benditandayusaputra/rantai/backend/internal/config"
 	deliveryhttp "github.com/benditandayusaputra/rantai/backend/internal/delivery/http"
+	"github.com/benditandayusaputra/rantai/backend/internal/repository"
+	"github.com/benditandayusaputra/rantai/backend/internal/usecase"
 	"github.com/gofiber/fiber/v3"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 const pathKonfigurasiBawaan = "config/api.yaml"
@@ -26,14 +29,24 @@ func jalankan() error {
 	if err != nil {
 		return err
 	}
-	app := deliveryhttp.NewApp(cfg.Server)
 	ctx, berhenti := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer berhenti()
+	pool, err := pgxpool.New(ctx, cfg.DatabaseURL)
+	if err != nil {
+		return fmt.Errorf("sambung basis data: %w", err)
+	}
+	defer pool.Close()
+	app := deliveryhttp.NewApp(cfg.Server, susunLayanan(pool))
 	go hentikanSaatSinyal(ctx, app, cfg.Server)
 	if err := app.Listen(":" + cfg.Server.Port); err != nil {
 		return fmt.Errorf("jalankan server: %w", err)
 	}
 	return nil
+}
+
+func susunLayanan(pool *pgxpool.Pool) deliveryhttp.Layanan {
+	wilayah := repository.WilayahRepository{DB: pool}
+	return deliveryhttp.Layanan{Wilayah: usecase.CariWilayah{Pembaca: wilayah}}
 }
 
 func pathKonfigurasi() string {
