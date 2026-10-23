@@ -1,0 +1,157 @@
+package klien
+
+import (
+	"context"
+	"errors"
+	"fmt"
+	"io"
+	"net/http"
+	"net/url"
+	"strings"
+	"sync"
+	"time"
+)
+
+var (
+	ErrDitolakServer  = errors.New("server menolak permintaan, pengambilan dihentikan")
+	ErrDilarangRobots = errors.New("path dilarang robots.txt")
+)
+
+type Konfigurasi struct {
+	UserAgent string        `yaml:"user_agent"`
+	Jeda      time.Duration `yaml:"jeda_permintaan"`
+}
+
+type Klien struct {
+	http     *http.Client
+	cfg      Konfigurasi
+	kunci    sync.Mutex
+	terakhir map[string]time.Time
+	robots   map[string]aturanRobots
+}
+
+func Baru(klienHTTP *http.Client, cfg Konfigurasi) *Klien {
+	return &Klien{
+		http:     klienHTTP,
+		cfg:      cfg,
+		terakhir: map[string]time.Time{},
+		robots:   map[string]aturanRobots{},
+	}
+}
+
+func (k *Klien) Ambil(ctx context.Context, alamat string) ([]byte, error) {
+	permintaan, err := http.NewRequestWithContext(ctx, http.MethodGet, alamat, nil)
+	if err != nil {
+		return nil, err
+	}
+	return k.kirimSantun(permintaan)
+}
+
+func (k *Klien) KirimForm(ctx context.Context, alamat string, form url.Values) ([]byte, error) {
+	permintaan, err := http.NewRequestWithContext(ctx, http.MethodPost, alamat, strings.NewReader(form.Encode()))
+	if err != nil {
+		return nil, err
+	}
+	permintaan.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	return k.kirimSantun(permintaan)
+}
+
+func (k *Klien) kirimSantun(permintaan *http.Request) ([]byte, error) {
+	aturan, err := k.aturanRobotsUntuk(permintaan.Context(), permintaan.URL)
+	if err != nil {
+		return nil, err
+	}
+	if !aturan.Mengizinkan(permintaan.URL.EscapedPath()) {
+		return nil, fmt.Errorf("%s: %w", permintaan.URL, ErrDilarangRobots)
+	}
+	status, isi, err := k.kirim(permintaan)
+	if err != nil {
+		return nil, err
+	}
+	return isi, periksaStatus(permintaan.URL, status)
+}
+
+func (k *Klien) kirim(permintaan *http.Request) (int, []byte, error) {
+	if err := k.tungguGiliran(permintaan.Context(), permintaan.URL.Host); err != nil {
+		return 0, nil, err
+	}
+	permintaan.Header.Set("User-Agent", k.cfg.UserAgent)
+	respons, err := k.http.Do(permintaan)
+	if err != nil {
+		return 0, nil, fmt.Errorf("kirim %s: %w", permintaan.URL, err)
+	}
+	defer func() { _ = respons.Body.Close() }()
+	isi, err := io.ReadAll(respons.Body)
+	if err != nil {
+		return 0, nil, fmt.Errorf("baca %s: %w", permintaan.URL, err)
+	}
+	return respons.StatusCode, isi, nil
+}
+
+func periksaStatus(alamat *url.URL, status int) error {
+	switch status {
+	case http.StatusOK:
+		return nil
+	case http.StatusForbidden, http.StatusTooManyRequests:
+		return fmt.Errorf("%s status %d: %w", alamat, status, ErrDitolakServer)
+	default:
+		return fmt.Errorf("%s: status %d", alamat, status)
+	}
+}
+
+func (k *Klien) tungguGiliran(ctx context.Context, host string) error {
+	giliran := k.pesanGiliran(host)
+	select {
+	case <-ctx.Done():
+		return ctx.Err()
+	case <-time.After(time.Until(giliran)):
+		return nil
+	}
+}
+
+func (k *Klien) pesanGiliran(host string) time.Time {
+	k.kunci.Lock()
+	defer k.kunci.Unlock()
+	giliran := time.Now()
+	if berikutnya := k.terakhir[host].Add(k.cfg.Jeda); berikutnya.After(giliran) {
+		giliran = berikutnya
+	}
+	k.terakhir[host] = giliran
+	return giliran
+}
+
+func (k *Klien) aturanRobotsUntuk(ctx context.Context, alamat *url.URL) (aturanRobots, error) {
+	k.kunci.Lock()
+	aturan, ada := k.robots[alamat.Host]
+	k.kunci.Unlock()
+	if ada {
+		return aturan, nil
+	}
+	aturan, err := k.ambilRobots(ctx, alamat)
+	if err != nil {
+		return aturanRobots{}, err
+	}
+	k.kunci.Lock()
+	k.robots[alamat.Host] = aturan
+	k.kunci.Unlock()
+	return aturan, nil
+}
+
+func (k *Klien) ambilRobots(ctx context.Context, alamat *url.URL) (aturanRobots, error) {
+	alamatRobots := url.URL{Scheme: alamat.Scheme, Host: alamat.Host, Path: "/robots.txt"}
+	permintaan, err := http.NewRequestWithContext(ctx, http.MethodGet, alamatRobots.String(), nil)
+	if err != nil {
+		return aturanRobots{}, err
+	}
+	status, isi, err := k.kirim(permintaan)
+	switch {
+	case err != nil:
+		return aturanRobots{}, fmt.Errorf("ambil robots.txt: %w", err)
+	case status == http.StatusOK:
+		return uraiRobots(string(isi), k.cfg.UserAgent), nil
+	case status >= http.StatusInternalServerError:
+		return aturanRobots{}, fmt.Errorf("robots.txt %s status %d: %w", alamat.Host, status, ErrDilarangRobots)
+	default:
+		return aturanRobots{}, nil
+	}
+}

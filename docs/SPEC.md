@@ -74,7 +74,7 @@ Tugas bertanda **[GERBANG DATA]** di PLAN.md dimulai dengan verifikasi ini. Hasi
 
 | ID | Yang diverifikasi | Bila tidak sesuai |
 | --- | --- | --- |
-| GD-01 | SPSE LPSE DKI (`spse.inaproc.id/jakarta`): endpoint JSON daftar tender dan non-tender yang dipakai halaman (pola yang sama dengan pustaka pyproc), halaman pengumuman paket (kode paket, kode RUP, satker, pagu, HPS, jenis kontrak, lokasi, jumlah peserta), robots.txt, dan apakah bisa diakses dari IP luar Indonesia | Bila daftar tertutup, pakai ISB Satu Data LKPP sebagai sumber daftar dan SPSE hanya untuk detail. Bila IP luar diblokir, jalankan importer dari server Indonesia dan isi lingkungan lain dari snapshot |
+| GD-01 | SPSE LPSE DKI (`spse.inaproc.id/jakarta`): endpoint JSON daftar tender dan non-tender yang dipakai halaman (pola yang sama dengan pustaka pyproc), halaman pengumuman paket (kode paket, kode RUP, satker, pagu, HPS, jenis kontrak, lokasi, jumlah peserta), robots.txt, dan apakah bisa diakses dari IP luar Indonesia | Bila daftar tertutup, pakai API Gateway Inaproc (pengganti ISB LKPP) sebagai sumber daftar dan SPSE hanya untuk detail. Bila IP luar diblokir, jalankan importer dari server Indonesia dan isi lingkungan lain dari snapshot. **Lolos sebagian**: detail tender tertutup untuk publik, lihat `docs/data-sources.md` |
 | GD-02 | Halaman pemenang tender dan pemenang berkontrak: nama penyedia, nilai kontrak, tanggal kontrak, jadwal pelaksanaan | Bila nilai kontrak tidak tersedia, tampilkan HPS saja dan sembunyikan perbandingan kontrak |
 | GD-03 | SiRUP atau ISB Satu Data LKPP: detail paket per kode RUP (nama, satker, pagu, sumber dana, waktu pemilihan) | Mata rantai RUP tampil sebagai "kode RUP tercatat, detail tidak tersedia" |
 | GD-04 | Keputusan Kadis Pendidikan DKI No. 258 Tahun 2026: lampiran daya tampung SMP negeri per sekolah dengan NPSN; total 73.289 kursi | Bila lampiran tidak bisa diekstrak per sekolah, pakai total per kota dari dokumen yang sama dan tampilkan peringatan tingkat kota |
@@ -429,14 +429,15 @@ Akun berperan `anggota` bisa menulis hak jawab pada item umpan yang dipautkan ke
 ### ANG-01 Impor paket dan taut RUP
 
 - Sumber: GD-01, GD-02, GD-03. Lingkup: semua jenis pengadaan TA 2025 dan 2026; prioritas tampil Pekerjaan Konstruksi.
-- Daftar paket diambil dari endpoint JSON yang dipakai halaman SPSE (pola yang sama dengan pustaka pyproc), diimplementasikan di Go; detail dari halaman pengumuman. Bila GD-01 menetapkan ISB Satu Data LKPP, sumber daftar diganti tanpa mengubah usecase.
+- Daftar paket diambil dari endpoint JSON yang dipakai halaman SPSE (pola yang sama dengan pustaka pyproc), diimplementasikan di Go; detail dari halaman pengumuman. Bila kelak memakai API Gateway Inaproc, sumber diganti tanpa mengubah usecase.
+- Hasil GD-01: halaman detail dan evaluasi tender tertutup untuk publik. Paket tender disimpan dari kolom daftar saja (kode, nama, tahap, HPS ringkas, metode, jenis pengadaan, tahun anggaran, nilai kontrak); `kode_rup`, satker, pagu, jumlah peserta, dan pemenang tender kosong, dan instansinya K/L/PD. HPS ringkas dibulatkan sumber ke satu desimal juta atau miliar; provenance mencatat pembulatan ini. Paket non-tender memakai halaman pengumuman lengkap.
 - Paket ditautkan ke `rup` lewat kode RUP di halaman paket.
 - `instansi` dibuat dari nama satuan kerja; kota instansi diambil dari nama dan dipakai penentuan lokasi.
 - `penyedia.nama_normal`: huruf kecil, buang "pt", "cv", "tbk", "persero", tanda baca, spasi ganda. Pencocokan penyedia lintas sumber memakai `nama_normal` persis; tidak ada pencocokan fuzzy otomatis.
 - Perubahan tahap paket dicatat agar notifikasi "paket baru" dan "tahap berubah" bisa dibuat.
 - `paket.tema_kode` diisi job `turunan` dari `filter_anggaran` setiap tema aktif.
 
-Kriteria terima: importer lulus tes dengan fixture minimal 5 halaman paket (tender, non-tender, tanpa kode RUP, tanpa pemenang, dengan pemenang); tidak ada permintaan jaringan di tes.
+Kriteria terima: importer lulus tes dengan fixture minimal 5 berkas (daftar tender, daftar non-tender, pengumuman non-tender, paket tanpa pemenang, paket dengan pemenang); kasus tanpa kode RUP dites dengan potongan HTML; tidak ada permintaan jaringan di tes.
 
 ### ANG-02 Penentuan lokasi paket
 

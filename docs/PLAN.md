@@ -87,7 +87,7 @@ Versi 2.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` v2.0 dan `docs/SPEC.
 
 ## Fase 3. Data Arus Anggaran
 
-- [ ] **T-301** Klien SPSE yang santun **[GERBANG DATA GD-01]**
+- [x] **T-301** Klien SPSE yang santun **[GERBANG DATA GD-01]**
   - Klien HTTP bersama dengan batas 1 permintaan per detik per domain, User-Agent dari konfigurasi, cek robots.txt, berhenti pada 403 atau 429. Klien endpoint JSON daftar paket (pola pyproc) dan parser halaman pengumuman tender dan non-tender.
   - Commit: `✨ Tambah klien SPSE berbatas laju dan parser pengumuman paket`
   - Selesai bila: parser lulus tes dengan minimal 5 fixture (SPEC ANG-01); tidak ada permintaan jaringan di tes.
@@ -355,4 +355,4 @@ Dikerjakan tim, bukan tugas commit. Dicatat di sini agar urutannya terlihat.
 
 Format: `- T-xxx · tanggal · alasan · tugas yang dikerjakan sebagai gantinya`
 
-(belum ada)
+- T-301 · 23 Oktober 2026 · halaman detail dan evaluasi tender SPSE DKI tertutup untuk publik (403, "Akses Ditolak"); detail tender butuh token API Gateway Inaproc (peran Data Integrator, surat ke LKPP) · paket tender disimpan dari kolom daftar, non-tender memakai halaman pengumuman lengkap
