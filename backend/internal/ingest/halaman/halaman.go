@@ -1,4 +1,4 @@
-package lpse
+package halaman
 
 import (
 	"bytes"
@@ -8,41 +8,43 @@ import (
 	"golang.org/x/net/html"
 )
 
-const kelasLabel = "bgwarning"
+type TabelLabel map[string]*html.Node
 
-type tabelLabel map[string]*html.Node
-
-func bacaTabelLabel(isi []byte) (tabelLabel, error) {
+func BacaTabelLabel(isi []byte, tagLabel, kelasLabel string) (TabelLabel, error) {
 	dokumen, err := html.Parse(bytes.NewReader(isi))
 	if err != nil {
 		return nil, err
 	}
-	tabel := tabelLabel{}
-	for _, th := range cariSemua(dokumen, isLabel) {
-		if nilai := elemenBerikut(th); nilai != nil {
-			tabel[teks(th)] = nilai
+	tabel := TabelLabel{}
+	isLabel := func(n *html.Node) bool { return IsElemen(n, tagLabel) && BerkelasCSS(n, kelasLabel) }
+	for _, label := range CariSemua(dokumen, isLabel) {
+		if _, sudahAda := tabel[Teks(label)]; sudahAda {
+			continue
+		}
+		if nilai := elemenBerikut(label); nilai != nil {
+			tabel[Teks(label)] = nilai
 		}
 	}
 	return tabel, nil
 }
 
-func (t tabelLabel) teks(label string) string {
+func (t TabelLabel) Teks(label string) string {
 	if simpul, ada := t[label]; ada {
-		return teks(simpul)
+		return Teks(simpul)
 	}
 	return ""
 }
 
-func isLabel(n *html.Node) bool {
-	return isElemen(n, "th") && slices.Contains(strings.Fields(atribut(n, "class")), kelasLabel)
+func BerkelasCSS(n *html.Node, kelas string) bool {
+	return slices.Contains(strings.Fields(atribut(n, "class")), kelas)
 }
 
-func isElemen(n *html.Node, tag string) bool {
+func IsElemen(n *html.Node, tag string) bool {
 	return n.Type == html.ElementNode && n.Data == tag
 }
 
-func isLencana(n *html.Node) bool {
-	return isElemen(n, "span") && slices.Contains(strings.Fields(atribut(n, "class")), "badge")
+func IsLencana(n *html.Node) bool {
+	return IsElemen(n, "span") && BerkelasCSS(n, "badge")
 }
 
 func atribut(n *html.Node, kunci string) string {
@@ -54,7 +56,7 @@ func atribut(n *html.Node, kunci string) string {
 	return ""
 }
 
-func cariSemua(akar *html.Node, cocok func(*html.Node) bool) []*html.Node {
+func CariSemua(akar *html.Node, cocok func(*html.Node) bool) []*html.Node {
 	hasil := []*html.Node{}
 	for n := range akar.Descendants() {
 		if cocok(n) {
@@ -73,12 +75,12 @@ func elemenBerikut(n *html.Node) *html.Node {
 	return nil
 }
 
-func teks(n *html.Node) string {
-	return rapikan(kumpulkanTeks(n, func(*html.Node) bool { return false }))
+func Teks(n *html.Node) string {
+	return Rapikan(kumpulkanTeks(n, func(*html.Node) bool { return false }))
 }
 
-func teksTanpaLencana(n *html.Node) string {
-	return rapikan(kumpulkanTeks(n, isLencana))
+func TeksTanpaLencana(n *html.Node) string {
+	return Rapikan(kumpulkanTeks(n, IsLencana))
 }
 
 func kumpulkanTeks(n *html.Node, lewati func(*html.Node) bool) string {
@@ -103,15 +105,15 @@ func kumpulkanTeks(n *html.Node, lewati func(*html.Node) bool) string {
 	return b.String()
 }
 
-func rapikan(s string) string {
+func Rapikan(s string) string {
 	return strings.Join(strings.Fields(strings.ReplaceAll(s, " ", " ")), " ")
 }
 
-func selBaris(baris *html.Node) []string {
+func SelBaris(baris *html.Node) []string {
 	sel := []string{}
 	for anak := baris.FirstChild; anak != nil; anak = anak.NextSibling {
-		if isElemen(anak, "td") {
-			sel = append(sel, teks(anak))
+		if IsElemen(anak, "td") {
+			sel = append(sel, Teks(anak))
 		}
 	}
 	return sel

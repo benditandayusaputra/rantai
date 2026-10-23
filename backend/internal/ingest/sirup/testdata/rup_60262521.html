@@ -1,0 +1,277 @@
+<script type="55ff279d2140ab9ba07502e0-text/javascript" language="javascript" src="/sirup/public/javascripts/printThis.js"></script>
+<script type="55ff279d2140ab9ba07502e0-text/javascript">
+        let x = document.querySelectorAll(".rupiah2");
+        for (let i = 0, len = x.length; i < len; i++) {
+            let num = Number(x[i].innerHTML)
+                      .toLocaleString('id');
+            x[i].innerHTML = num;
+            x[i].classList.add("currSign");
+        }
+    </script>
+<style>
+  td, th {
+  text-align: left;
+}
+ .label-left{
+ 	width : 20%;
+ }
+ .mid{
+ 	width : 50%;
+ }
+  .small{
+	  width : 20%;
+  }
+ .currSign:before {
+ 	content: 'Rp. ';
+ }
+
+</style>
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	<div class="modal-title"><h4 style="font-size: medium;">Paket Penyedia</h4></div>
+</div>
+<div class="modal-body" id="modal-body-id">
+	
+	
+	<div class="tabData">
+		<ul class="nav nav-tabs">
+			<li role="presentation" class="active" id="paket-info"><a href="#">Detil Paket</a></li>
+		</ul>
+	</div>
+	
+
+	<div id="detil">
+		<div class="row">
+			<div class="col-md-12 col-xs-12">
+				
+
+			</div>
+		</div>
+		<table class="table">
+			<tr>
+				<td class="label-left">Kode RUP</td>
+				<td>60262521</td>
+			</tr>
+			<tr>
+				<td class="label-left">Nama Paket</td>
+				<td>Pembangunan Pintu Air Kp. Kandang RT 08 RW 04, Kel. Semper Barat, Kec. Cilincing</td>
+			</tr>
+			<tr>
+				<td class="label-left">Nama KLPD</td>
+				<td>Provinsi DKI Jakarta</td>
+			</tr>
+			<tr>
+				<td class="label-left">Satuan Kerja</td>
+				<td>SUKU DINAS SUMBER DAYA AIR KOTA ADMINISTRASI JAKARTA UTARA</td>
+			</tr>
+			
+			<tr>
+				<td class="label-left">Tahun Anggaran</td>
+				<td>2025</td>
+			</tr>
+			
+			<tr>
+				<td class="label-left">Lokasi Pekerjaan</td>
+				<td> <!--dalam sini ada list lokasi-->
+					<table class="table table-striped table-hover" style="font-size : x-small;">
+						<tr>
+							<th>No.</th>
+							<th>Provinsi</th>
+							<th>Kabupaten/Kota</th>
+							<th>Detail Lokasi</th>
+						</tr>
+						
+						
+						
+						<tr>
+							<td>1.</td>
+							<td>DKI Jakarta</td>
+							<td>Jakarta Utara (Kota)</td>
+							<td>Jakarta Utara</td>
+						</tr>
+						
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td class="label-left">Volume Pekerjaan</td>
+				<td>1 Paket</td>
+			</tr>
+			<tr>
+				<td class="label-left">Uraian Pekerjaan</td>
+				<td>Ruang Lingkup di KAK</td>
+			</tr>
+			<tr>
+				<td class="label-left">Spesifikasi Pekerjaan</td>
+				<td>Spesifikasi di KAK</td>
+			</tr>
+			<tr>
+				<td class="label-left">Produk Dalam Negeri</td>
+				<td><span class="badge">Ya</span></td>
+			</tr>
+			<tr>
+				<td class="label-left">Usaha Kecil</td>
+				<td><span class="badge">Ya</span></td>
+			</tr>
+			
+			
+			<tr>
+				<td class="label-left">Pengadaan Berkelanjutan atau Sustainable Public Procurement (SPP)</td>
+				<td>
+					<table class="table table-striped table-hover" style="font-size : x-small;">
+						<tr>
+							<td>Aspek Ekonomi</td>
+							<td><span class="badge">Tidak</span></td>
+						</tr>
+						<tr>
+							<td>Aspek Sosial</td>
+							<td><span class="badge">Tidak</span></td>
+						</tr>
+						<tr>
+							<td>Aspek Lingkungan</td>
+							<td><span class="badge">Tidak</span></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td class="label-left">Pra DIPA / DPA</td>
+				<td><span class="badge">Tidak</span></td>
+			</tr>
+			
+			<tr>
+				<td class="label-left">Sumber Dana</td>
+				<td> <!--dalam sini ada list paket anggaran-->
+					<table class="table table-striped table-hover" style="font-size : x-small;">
+						<tr>
+							<th>No.</th>
+							<th>Sumber Dana</th>
+							<th>T.A.</th>
+							<th>KLPD</th>
+							<th>MAK</th>
+							<th>Pagu</th>
+						</tr>
+						
+						
+						
+						<tr>
+							<td>1.</td>
+							
+							
+							<td>APBD</td>
+							
+							<td>2025</td>
+							<td>Provinsi DKI Jakarta</td>
+							<td>1.03.02.1.01.0109.5.2.04.02.01.0008.</td>
+							<td style="text-align:right"><span class="rupiah2">129739808</span></td>
+						</tr>
+						
+						<tr>
+							<th colspan="5" align="right">Total Pagu</th>
+							<th style="text-align:right"><span class="rupiah2"> 129739808</span></th>
+						</tr>
+					</table>
+				</td>
+				
+			</tr>
+			<tr>
+				<td class="label-left">Jenis Pengadaan</td>
+				<td>Pekerjaan Konstruksi,</td>
+			</tr>
+			<tr>
+				<td class="label-left">Total Pagu</td>
+				<td class="rupiah2">129739808</td>
+			</tr>
+			<tr>
+				<td class="label-left">Metode Pemilihan</td>
+				<td>Pengadaan Langsung</td>
+			</tr>
+			<tr>
+				<td class="label-left">Pemanfaatan Barang/Jasa</td>
+				<td>
+					<table class="table table-striped table-hover" style="font-size : x-small;">
+						<tr>
+							<th class="mid">Mulai</th>
+							<th class="mid">Akhir</th>
+						</tr>
+						<tr>
+							<td class="mid">Oktober 2025</td>
+							<td class="mid">Desember 2025</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td class="label-left">Jadwal Pelaksanaan Kontrak</td>
+				<td>
+					<table class="table table-striped table-hover" style="font-size : x-small;">
+						<tr>
+							<th class="mid">Mulai</th>
+							<th class="mid">Akhir</th>
+						</tr>
+						<tr>
+							<td class="mid">September 2025</td>
+							<td class="mid">Oktober 2025</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td class="label-left">Jadwal Pemilihan Penyedia</td>
+				<td>
+					<table class="table table-striped table-hover" style="font-size : x-small;">
+						<tr>
+							<th class="mid">Mulai</th>
+							<th class="mid">Akhir</th>
+						</tr>
+						<tr>
+							<td class="mid">Agustus 2025</td>
+							<td class="mid"> September 2025</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+
+			
+			
+			<tr>
+				<td class="label-left">Tanggal Umumkan Paket</td>
+				<td>12 Agustus 2025 10:27:37</td>
+			</tr>
+		</table> <!--tabel konten end-->
+	</div>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-rup btn-redPastel" data-dismiss="modal">Tutup</button>
+	<button type="button" class="btn btn-primary" onclick="if (!window.__cfRLUnblockHandlers) return false; printId();" data-cf-modified-55ff279d2140ab9ba07502e0-="">Print</button>
+</div>
+<script type="55ff279d2140ab9ba07502e0-text/javascript">
+    function printId(){
+         $("#modal-body-id").printThis({
+            debug: false,
+            importCSS: true,
+            importStyle: true,
+            printContainer: true,
+            pageTitle: "Detail Paket",
+            removeInline: false,
+            printDelay: 10,
+            header: null,
+            formValues: true
+        });
+    }
+	$('#renja').hide();
+    $('#renja-info').click(function() {
+		$('#detil').hide();
+		$('#renja').show();
+		$('#renja-info').addClass('active');
+		$('#paket-info').removeClass('active');
+	});
+
+	$('#paket-info').click(function() {
+		$('#renja').hide();
+		$('#detil').show();
+		$('#renja-info').removeClass('active');
+		$('#paket-info').addClass('active');
+	});
+</script>
+<script src="/cdn-cgi/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js" data-cf-settings="55ff279d2140ab9ba07502e0-|49" defer></script>

@@ -95,3 +95,13 @@ Catatan hasil Gerbang Data (SPEC bagian 1). Setiap entri memuat URL, tanggal cek
 - **Tidak tersedia**: tanggal kontrak pasti dan jadwal pelaksanaan pekerjaan tidak tampil di halaman publik SPSE. Jadwal pelaksanaan diambil dari SiRUP (GD-03) dengan ketelitian bulan. Pemenang tender tertutup (lihat GD-01); untuk tender hanya nilai kontrak dari kolom daftar.
 - **Pemakaian**: Rantai menyimpan nama penyedia dan harga kontrak; alamat dan NPWP tidak disimpan. Nilai kontrak hanya diisi dari halaman pemenang berkontrak; hasil negosiasi tanpa kontrak tidak dianggap nilai kontrak.
 - **Privasi**: job detail hanya berjalan untuk Pekerjaan Konstruksi dan Jasa Konsultansi Badan Usaha Konstruksi, sehingga pemenang perorangan (misalnya PJLP) tidak diambil.
+
+## GD-03 SiRUP
+
+- **Status**: lolos.
+- **Tanggal cek**: 23 Oktober 2026.
+- **URL**: `https://sirup.inaproc.id/sirup/home/detailPaketPenyediaPublic2017/<kode RUP>` (publik, tanpa masuk). Beranda `sirup.inaproc.id` mengarah ke halaman masuk, tetapi halaman detail paket penyedia terbuka. Domain lama `sirup.lkpp.go.id` tidak lagi bisa di-resolve.
+- **robots.txt**: `https://sirup.inaproc.id/robots.txt` mengembalikan 404, tidak ada pembatasan.
+- **Field** (tabel `td.label-left`): Kode RUP, Nama Paket, Nama KLPD, Satuan Kerja, Tahun Anggaran, Lokasi Pekerjaan, Sumber Dana (tabel: sumber dana, T.A., KLPD, MAK, pagu), Total Pagu (bilangan bulat tanpa pemisah), Jenis Pengadaan, Metode Pemilihan, Pemanfaatan Barang/Jasa, Jadwal Pelaksanaan Kontrak dan Jadwal Pemilihan Penyedia (bulan dan tahun, contoh "September 2026"), Tanggal Umumkan Paket.
+- **Kode tidak dikenal**: respons 500 berisi halaman kesalahan. Job `sirup` mencatatnya sebagai "detail tidak tersedia" dan tetap melanjutkan; RUP tetap tercatat dari pengumuman LPSE.
+- **Pemakaian**: jadwal pelaksanaan kontrak disimpan sebagai awal bulan mulai sampai akhir bulan selesai dan menjadi dasar estimasi pelaksanaan (ANG-04).

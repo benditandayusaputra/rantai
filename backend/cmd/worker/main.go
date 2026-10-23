@@ -18,6 +18,7 @@ import (
 	"github.com/benditandayusaputra/rantai/backend/internal/ingest/dprd"
 	"github.com/benditandayusaputra/rantai/backend/internal/ingest/klien"
 	"github.com/benditandayusaputra/rantai/backend/internal/ingest/lpse"
+	"github.com/benditandayusaputra/rantai/backend/internal/ingest/sirup"
 	"github.com/benditandayusaputra/rantai/backend/internal/ingest/tema"
 	"github.com/benditandayusaputra/rantai/backend/internal/ingest/wilayah"
 	"github.com/benditandayusaputra/rantai/backend/internal/repository"
@@ -30,6 +31,7 @@ const (
 	dirKonfigurasiTema     = "config/tema"
 	pathKonfigurasiDPRD    = "config/dprd.yaml"
 	pathKonfigurasiLPSE    = "config/lpse.yaml"
+	pathKonfigurasiSIRUP   = "config/sirup.yaml"
 	urlRujukanTema         = "https://github.com/benditandayusaputra/rantai/tree/main/backend/config/tema"
 	dirRawBawaan           = "../data/raw"
 	batasWaktuUnduh        = time.Minute
@@ -37,7 +39,7 @@ const (
 
 type job func(ctx context.Context) error
 
-var jobTersedia = []string{usecase.JobWilayah, usecase.JobTema, usecase.JobKPUDPRD, usecase.JobLPSEDaftar, usecase.JobLPSEDetail, usecase.JobUmpanDPRD}
+var jobTersedia = []string{usecase.JobWilayah, usecase.JobTema, usecase.JobKPUDPRD, usecase.JobLPSEDaftar, usecase.JobLPSEDetail, usecase.JobSIRUP, usecase.JobUmpanDPRD}
 
 func main() {
 	if err := jalankan(os.Args[1:]); err != nil {
@@ -73,6 +75,8 @@ func pilihJob(nama string, pool *pgxpool.Pool) (job, error) {
 		return buatImporDPRD(pool)
 	case usecase.JobLPSEDaftar, usecase.JobLPSEDetail:
 		return buatImporLPSE(nama, pool)
+	case usecase.JobSIRUP:
+		return buatImporRUP(pool)
 	case usecase.JobUmpanDPRD:
 		return buatImporUmpanDPRD(pool)
 	default:
@@ -183,6 +187,29 @@ func buatImporUmpanDPRD(pool *pgxpool.Pool) (job, error) {
 		Penyimpan: umpan,
 		Pencatat:  repository.IngestRunRepository{DB: pool},
 		Pautkan:   domain.PencariNama.PautkanRilisResmi,
+	}
+	return impor.Jalankan, nil
+}
+
+func buatImporRUP(pool *pgxpool.Pool) (job, error) {
+	var cfg sirup.Konfigurasi
+	var cfgLPSE lpse.Konfigurasi
+	if err := config.BacaYAML(pathKonfigurasiSIRUP, &cfg); err != nil {
+		return nil, err
+	}
+	if err := config.BacaYAML(pathKonfigurasiLPSE, &cfgLPSE); err != nil {
+		return nil, err
+	}
+	impor := usecase.ImporRUP{
+		Pengambil: sirup.Sumber{
+			Klien:     klien.Baru(&http.Client{Timeout: batasWaktuUnduh}, cfg.Klien),
+			URLDetail: cfg.URLDetail,
+			DirRaw:    dirRaw(),
+			Sekarang:  time.Now,
+		},
+		Penyimpan:      repository.RUPRepository{DB: pool},
+		Pencatat:       repository.IngestRunRepository{DB: pool},
+		AturanInstansi: cfgLPSE.Instansi,
 	}
 	return impor.Jalankan, nil
 }

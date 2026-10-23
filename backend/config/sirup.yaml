@@ -1,0 +1,5 @@
+url_detail: https://sirup.inaproc.id/sirup/home/detailPaketPenyediaPublic2017/
+klien:
+  user_agent: RantaiBot/1.0 (+https://github.com/benditandayusaputra/rantai)
+  jeda_permintaan: 1s
+  percobaan_ulang: 0

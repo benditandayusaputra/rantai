@@ -7,7 +7,7 @@ export DATABASE_URL TEST_DATABASE_URL
 COMPOSE := docker compose
 MIGRATE := $(COMPOSE) run --rm --build migrate
 
-.PHONY: up down migrate migrate-down lint test impor-wilayah impor-tema impor-kpu-dprd impor-lpse snapshot-paket muat-snapshot-paket impor-umpan-dprd
+.PHONY: up down migrate migrate-down lint test impor-wilayah impor-tema impor-kpu-dprd impor-lpse impor-sirup snapshot-paket muat-snapshot-paket impor-umpan-dprd
 
 up:
 	$(COMPOSE) up -d --wait db minio
@@ -38,6 +38,9 @@ impor-kpu-dprd:
 
 impor-lpse:
 	cd backend && go run ./cmd/worker lpse_daftar && go run ./cmd/worker lpse_detail
+
+impor-sirup:
+	cd backend && go run ./cmd/worker sirup
 
 SNAPSHOT_PAKET := data/snapshot/paket.sql.gz
 TABEL_PAKET := -t provenance -t instansi -t rup -t penyedia -t paket -t paket_riwayat_tahap

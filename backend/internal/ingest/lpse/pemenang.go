@@ -3,6 +3,7 @@ package lpse
 import (
 	"bytes"
 	"fmt"
+	"github.com/benditandayusaputra/rantai/backend/internal/ingest/halaman"
 	"time"
 
 	"golang.org/x/net/html"
@@ -33,14 +34,14 @@ func UraiPemenang(isi []byte) ([]Pemenang, error) {
 		return nil, fmt.Errorf("urai html pemenang: %w", err)
 	}
 	daftar := []Pemenang{}
-	for _, tabel := range cariSemua(dokumen, func(n *html.Node) bool { return isElemen(n, "table") }) {
+	for _, tabel := range halaman.CariSemua(dokumen, func(n *html.Node) bool { return halaman.IsElemen(n, "table") }) {
 		daftar = append(daftar, pemenangDariTabel(tabel)...)
 	}
 	return daftar, nil
 }
 
 func pemenangDariTabel(tabel *html.Node) []Pemenang {
-	baris := cariSemua(tabel, func(n *html.Node) bool { return isElemen(n, "tr") })
+	baris := halaman.CariSemua(tabel, func(n *html.Node) bool { return halaman.IsElemen(n, "tr") })
 	if len(baris) == 0 {
 		return nil
 	}
@@ -81,8 +82,8 @@ func nilaiPemenang(sel []string, kepala map[string]int) float64 {
 func selSemua(baris *html.Node) []string {
 	sel := []string{}
 	for anak := baris.FirstChild; anak != nil; anak = anak.NextSibling {
-		if isElemen(anak, "td") || isElemen(anak, "th") {
-			sel = append(sel, teks(anak))
+		if halaman.IsElemen(anak, "td") || halaman.IsElemen(anak, "th") {
+			sel = append(sel, halaman.Teks(anak))
 		}
 	}
 	return sel
@@ -93,8 +94,8 @@ func UraiTanggalKontrak(isi []byte) (time.Time, bool, error) {
 	if err != nil {
 		return time.Time{}, false, fmt.Errorf("urai html jadwal: %w", err)
 	}
-	for _, baris := range cariSemua(dokumen, func(n *html.Node) bool { return isElemen(n, "tr") }) {
-		sel := selBaris(baris)
+	for _, baris := range halaman.CariSemua(dokumen, func(n *html.Node) bool { return halaman.IsElemen(n, "tr") }) {
+		sel := halaman.SelBaris(baris)
 		if len(sel) >= jumlahKolomJadwalMin && sel[kolomTahapJadwal] == tahapTandaTangan {
 			tanggal, err := uraiTanggal(sel[kolomSelesaiJadwal])
 			return tanggal, err == nil, err

@@ -103,7 +103,7 @@ Versi 2.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` v2.0 dan `docs/SPEC.
   - Parser pemenang tender dan pemenang berkontrak.
   - Commit: `✨ Ambil pemenang dan nilai kontrak paket`
   - Selesai bila: fixture paket tanpa pemenang dan dengan pemenang dites.
-- [ ] **T-305** Taut RUP **[GERBANG DATA GD-03]**
+- [x] **T-305** Taut RUP **[GERBANG DATA GD-03]**
   - Job `sirup` untuk kode RUP yang ditemukan.
   - Commit: `✨ Tautkan paket ke rencana umum pengadaan`
   - Selesai bila: paket tanpa RUP tetap tersimpan dengan `kode_rup` kosong.

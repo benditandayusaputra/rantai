@@ -3,6 +3,7 @@ package lpse
 import (
 	"errors"
 	"fmt"
+	"github.com/benditandayusaputra/rantai/backend/internal/ingest/halaman"
 	"time"
 
 	"github.com/benditandayusaputra/rantai/backend/internal/domain"
@@ -12,6 +13,8 @@ import (
 const (
 	lencanaBatal   = "Paket Batal"
 	jumlahKolomRUP = 3
+	tagLabel       = "th"
+	kelasLabel     = "bgwarning"
 )
 
 var ErrBukanPengumuman = errors.New("halaman bukan pengumuman paket")
@@ -37,11 +40,11 @@ type Pengumuman struct {
 }
 
 func UraiPengumuman(isi []byte) (Pengumuman, error) {
-	tabel, err := bacaTabelLabel(isi)
+	tabel, err := halaman.BacaTabelLabel(isi, tagLabel, kelasLabel)
 	if err != nil {
 		return Pengumuman{}, fmt.Errorf("urai html pengumuman: %w", err)
 	}
-	if tabel.teks("Kode Paket") == "" {
+	if tabel.Teks("Kode Paket") == "" {
 		return Pengumuman{}, ErrBukanPengumuman
 	}
 	p := identitasPengumuman(tabel)
@@ -51,36 +54,36 @@ func UraiPengumuman(isi []byte) (Pengumuman, error) {
 	return p, nil
 }
 
-func identitasPengumuman(tabel tabelLabel) Pengumuman {
+func identitasPengumuman(tabel halaman.TabelLabel) Pengumuman {
 	nama := tabel["Nama Paket"]
 	return Pengumuman{
-		Kode:           tabel.teks("Kode Paket"),
-		Nama:           teksTanpaLencana(nama),
+		Kode:           tabel.Teks("Kode Paket"),
+		Nama:           halaman.TeksTanpaLencana(nama),
 		IsBatal:        memuatLencana(nama, lencanaBatal),
-		AlasanBatal:    tabel.teks("Alasan Pembatalan"),
+		AlasanBatal:    tabel.Teks("Alasan Pembatalan"),
 		RUP:            uraiRUPTercatat(tabel["Rencana Umum Pengadaan"]),
-		Tahap:          tabel.teks("Tahap Paket Saat Ini"),
-		Instansi:       tabel.teks("K/L/PD/Instansi Lainnya"),
-		SatuanKerja:    tabel.teks("Satuan Kerja"),
-		JenisPengadaan: tabel.teks("Jenis Pengadaan"),
-		Metode:         tabel.teks("Metode Pengadaan"),
-		JenisKontrak:   tabel.teks("Jenis Kontrak"),
+		Tahap:          tabel.Teks("Tahap Paket Saat Ini"),
+		Instansi:       tabel.Teks("K/L/PD/Instansi Lainnya"),
+		SatuanKerja:    tabel.Teks("Satuan Kerja"),
+		JenisPengadaan: tabel.Teks("Jenis Pengadaan"),
+		Metode:         tabel.Teks("Metode Pengadaan"),
+		JenisKontrak:   tabel.Teks("Jenis Kontrak"),
 		Lokasi:         uraiDaftarButir(tabel["Lokasi Pekerjaan"]),
 	}
 }
 
-func lengkapiNilai(p *Pengumuman, tabel tabelLabel) error {
-	tanggal, err := uraiTanggal(tabel.teks("Tanggal Pembuatan"))
+func lengkapiNilai(p *Pengumuman, tabel halaman.TabelLabel) error {
+	tanggal, err := uraiTanggal(tabel.Teks("Tanggal Pembuatan"))
 	if err != nil {
 		return err
 	}
 	p.TanggalDibuat = tanggal
-	if tahun := uraiDaftarTahun(tabel.teks("Tahun Anggaran")); len(tahun) > 0 {
+	if tahun := uraiDaftarTahun(tabel.Teks("Tahun Anggaran")); len(tahun) > 0 {
 		p.TahunAnggaran = tahun[len(tahun)-1]
 	}
-	p.Pagu, _ = uraiRupiah(tabel.teks("Nilai Pagu Paket"))
-	p.HPS, _ = uraiRupiah(tabel.teks("Nilai HPS Paket"))
-	p.JumlahPeserta, _ = uraiBilanganPertama(tabel.teks("Peserta Non Tender") + tabel.teks("Peserta Tender"))
+	p.Pagu, _ = uraiRupiah(tabel.Teks("Nilai Pagu Paket"))
+	p.HPS, _ = uraiRupiah(tabel.Teks("Nilai HPS Paket"))
+	p.JumlahPeserta, _ = uraiBilanganPertama(tabel.Teks("Peserta Non Tender") + tabel.Teks("Peserta Tender"))
 	return nil
 }
 
@@ -89,8 +92,8 @@ func uraiRUPTercatat(sel *html.Node) []domain.RUPTercatat {
 	if sel == nil {
 		return daftar
 	}
-	for _, baris := range cariSemua(sel, func(n *html.Node) bool { return isElemen(n, "tr") }) {
-		kolom := selBaris(baris)
+	for _, baris := range halaman.CariSemua(sel, func(n *html.Node) bool { return halaman.IsElemen(n, "tr") }) {
+		kolom := halaman.SelBaris(baris)
 		if len(kolom) == jumlahKolomRUP && kolom[0] != "" {
 			daftar = append(daftar, domain.RUPTercatat{Kode: kolom[0], Nama: kolom[1], SumberDana: kolom[2]})
 		}
@@ -103,8 +106,8 @@ func uraiDaftarButir(sel *html.Node) []string {
 	if sel == nil {
 		return daftar
 	}
-	for _, butir := range cariSemua(sel, func(n *html.Node) bool { return isElemen(n, "li") }) {
-		daftar = append(daftar, teks(butir))
+	for _, butir := range halaman.CariSemua(sel, func(n *html.Node) bool { return halaman.IsElemen(n, "li") }) {
+		daftar = append(daftar, halaman.Teks(butir))
 	}
 	return daftar
 }
@@ -113,8 +116,8 @@ func memuatLencana(sel *html.Node, judul string) bool {
 	if sel == nil {
 		return false
 	}
-	for _, lencana := range cariSemua(sel, isLencana) {
-		if teks(lencana) == judul {
+	for _, lencana := range halaman.CariSemua(sel, halaman.IsLencana) {
+		if halaman.Teks(lencana) == judul {
 			return true
 		}
 	}

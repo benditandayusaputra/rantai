@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/benditandayusaputra/rantai/backend/internal/ingest/halaman"
 	"net/url"
 	"regexp"
 	"strconv"
@@ -187,7 +188,7 @@ func kolomTeks(baris []*string) []string {
 func namaTanpaLencana(nama string) string {
 	dokumen, err := html.Parse(strings.NewReader(nama))
 	if err != nil {
-		return rapikan(nama)
+		return halaman.Rapikan(nama)
 	}
-	return teksTanpaLencana(dokumen)
+	return halaman.TeksTanpaLencana(dokumen)
 }

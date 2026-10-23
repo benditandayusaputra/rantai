@@ -15,6 +15,7 @@ import (
 var (
 	ErrDitolakServer  = errors.New("server menolak permintaan, pengambilan dihentikan")
 	ErrDilarangRobots = errors.New("path dilarang robots.txt")
+	ErrStatusTidakOK  = errors.New("status respons bukan 200")
 )
 
 type Konfigurasi struct {
@@ -132,7 +133,7 @@ func periksaStatus(alamat *url.URL, status int) error {
 	case http.StatusForbidden, http.StatusTooManyRequests:
 		return fmt.Errorf("%s status %d: %w", alamat, status, ErrDitolakServer)
 	default:
-		return fmt.Errorf("%s: status %d", alamat, status)
+		return fmt.Errorf("%s status %d: %w", alamat, status, ErrStatusTidakOK)
 	}
 }
 
