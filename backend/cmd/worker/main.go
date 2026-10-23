@@ -8,10 +8,12 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
 	"github.com/benditandayusaputra/rantai/backend/internal/config"
+	"github.com/benditandayusaputra/rantai/backend/internal/ingest/tema"
 	"github.com/benditandayusaputra/rantai/backend/internal/ingest/wilayah"
 	"github.com/benditandayusaputra/rantai/backend/internal/repository"
 	"github.com/benditandayusaputra/rantai/backend/internal/usecase"
@@ -20,11 +22,15 @@ import (
 
 const (
 	pathKonfigurasiWilayah = "config/wilayah.yaml"
+	dirKonfigurasiTema     = "config/tema"
+	urlRujukanTema         = "https://github.com/benditandayusaputra/rantai/tree/main/backend/config/tema"
 	dirRawBawaan           = "../data/raw"
 	batasWaktuUnduh        = time.Minute
 )
 
 type job func(ctx context.Context) error
+
+var jobTersedia = []string{usecase.JobWilayah, usecase.JobTema}
 
 func main() {
 	if err := jalankan(os.Args[1:]); err != nil {
@@ -34,7 +40,7 @@ func main() {
 
 func jalankan(argumen []string) error {
 	if len(argumen) != 1 {
-		return errors.New("pemakaian: worker <job>; job tersedia: " + usecase.JobWilayah)
+		return errors.New("pemakaian: worker <job>; job tersedia: " + strings.Join(jobTersedia, ", "))
 	}
 	ctx, berhenti := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer berhenti()
@@ -54,6 +60,8 @@ func pilihJob(nama string, pool *pgxpool.Pool) (job, error) {
 	switch nama {
 	case usecase.JobWilayah:
 		return buatImporWilayah(pool)
+	case usecase.JobTema:
+		return buatImporTema(pool), nil
 	default:
 		return nil, fmt.Errorf("job tidak dikenal: %s", nama)
 	}
@@ -77,6 +85,15 @@ func buatImporWilayah(pool *pgxpool.Pool) (job, error) {
 		Provinsi:    cfg.Provinsi,
 	}
 	return impor.Jalankan, nil
+}
+
+func buatImporTema(pool *pgxpool.Pool) job {
+	impor := usecase.ImporTema{
+		Pengambil: tema.Sumber{Dir: dirKonfigurasiTema, URLRujukan: urlRujukanTema, Sekarang: time.Now},
+		Penyimpan: repository.TemaRepository{DB: pool},
+		Pencatat:  repository.IngestRunRepository{DB: pool},
+	}
+	return impor.Jalankan
 }
 
 func dirRaw() string {

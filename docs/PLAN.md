@@ -56,7 +56,7 @@ Versi 2.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` v2.0 dan `docs/SPEC.
 
 ## Fase 2. Kerangka tema dan data Pendidikan
 
-- [ ] **T-201** Kerangka tema (SPEC 4)
+- [x] **T-201** Kerangka tema (SPEC 4)
   - Migrasi `tema`, `indikator_kecamatan`; `config/tema/pendidikan.yaml`; job `tema` dengan validasi kontrak; `GET /tema`, `GET /tema/{kode}`.
   - Commit: `✨ Tambah konfigurasi tema berbasis basis data`
   - Selesai bila: validator menolak entri tanggung jawab tanpa dasar hukum, `ambang_rasio` tidak berurutan, regex rusak, dan placeholder tak dikenal (dites); tema Pendidikan termuat dari YAML ke basis data.

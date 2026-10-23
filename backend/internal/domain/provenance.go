@@ -13,7 +13,10 @@ const (
 
 type SumberData string
 
-const SumberKemendagri SumberData = "kemendagri"
+const (
+	SumberKemendagri SumberData = "kemendagri"
+	SumberRantai     SumberData = "rantai"
+)
 
 type Provenance struct {
 	ID          string

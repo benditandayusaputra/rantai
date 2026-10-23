@@ -1,0 +1,27 @@
+kode: pendidikan
+nama: { id: Pendidikan, en: Education }
+aktif: true
+urutan: 1
+indikator:
+  penghitung: kesenjangan_kursi_smp
+  satuan_kebutuhan: siswa
+  satuan_kapasitas: kursi
+  judul: { id: "Kursi SMP negeri dibanding lulusan SD", en: "Public junior high seats vs primary graduates" }
+  ambang_rasio: { sangat_kurang: 0.5, kurang: 0.8, hampir_cukup: 1.0 }
+filter_anggaran:
+  instansi_pola: ["dinas pendidikan", "suku dinas pendidikan"]
+  kata_kunci: ["ruang kelas", "rehab sekolah", "pembangunan smp", "gedung sekolah", "\\b(sdn|smpn)\\b"]
+tanggung_jawab:
+  - masalah: kursi_smp_kurang
+    label: { id: "Kursi SMP negeri kurang", en: "Not enough public junior high seats" }
+    instansi_pelaksana: Dinas Pendidikan Provinsi DKI Jakarta
+    unit_wilayah: "Suku Dinas Pendidikan {kota}"
+    komisi: E
+    dasar_hukum: "UU 23/2014 lampiran I.A pembagian urusan pendidikan; UU 2/2024 tentang Provinsi Daerah Khusus Jakarta"
+    dasar_hukum_url: "https://peraturan.bpk.go.id/"
+tag_isu: [sekolah, spmb, zonasi, daya tampung, guru]
+templat_aspirasi:
+  judul: { id: "Kekurangan kursi SMP negeri di Kecamatan {kecamatan}", en: "Shortage of public junior high seats in {kecamatan} District" }
+  pertanyaan:
+    - id: "Berapa rencana penambahan rombel SMP negeri di Kecamatan {kecamatan} untuk tahun ajaran {tahun_depan}?"
+      en: "How many additional public junior high classes are planned in {kecamatan} District for the {tahun_depan} school year?"

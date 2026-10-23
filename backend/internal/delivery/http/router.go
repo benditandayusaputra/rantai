@@ -10,6 +10,7 @@ const prefiksAPI = "/api/v1"
 type Layanan struct {
 	Wilayah    LayananWilayah
 	Provenance LayananProvenance
+	Tema       LayananTema
 }
 
 func NewApp(cfg config.Server, layanan Layanan) *fiber.App {
@@ -23,6 +24,7 @@ func NewApp(cfg config.Server, layanan Layanan) *fiber.App {
 	api.Get("/kesehatan", periksaKesehatan)
 	daftarkanWilayah(api, handlerWilayah{layanan: layanan.Wilayah})
 	api.Get("/provenance/:id", handlerProvenance{layanan: layanan.Provenance}.ambil)
+	daftarkanTema(api, handlerTema{layanan: layanan.Tema})
 	return app
 }
 
@@ -30,4 +32,9 @@ func daftarkanWilayah(api fiber.Router, h handlerWilayah) {
 	api.Get("/wilayah/cari", h.cari)
 	api.Get("/wilayah/titik", h.diTitik)
 	api.Get("/wilayah/:kode", h.ambil)
+}
+
+func daftarkanTema(api fiber.Router, h handlerTema) {
+	api.Get("/tema", h.daftar)
+	api.Get("/tema/:kode", h.ambil)
 }

@@ -48,6 +48,7 @@ func susunLayanan(pool *pgxpool.Pool) deliveryhttp.Layanan {
 	return deliveryhttp.Layanan{
 		Wilayah:    usecase.CariWilayah{Pembaca: repository.WilayahRepository{DB: pool}},
 		Provenance: usecase.AmbilProvenance{Pembaca: repository.ProvenanceRepository{DB: pool}},
+		Tema:       usecase.BacaTema{Pembaca: repository.TemaRepository{DB: pool}},
 	}
 }
 

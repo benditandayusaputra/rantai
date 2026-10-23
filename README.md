@@ -39,6 +39,7 @@ cp .env.example .env
 make up
 make migrate
 make impor-wilayah
+make impor-tema
 ```
 
 ## Progres pengerjaan
