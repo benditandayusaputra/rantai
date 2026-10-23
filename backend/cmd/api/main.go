@@ -17,7 +17,11 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-const pathKonfigurasiBawaan = "config/api.yaml"
+const (
+	pathKonfigurasiBawaan       = "config/api.yaml"
+	pathKonfigurasiArusAnggaran = "config/arus_anggaran.yaml"
+	pathKonfigurasiPemeliharaan = "config/pemeliharaan.yaml"
+)
 
 func main() {
 	if err := jalankan(); err != nil {
@@ -37,7 +41,11 @@ func jalankan() error {
 		return fmt.Errorf("sambung basis data: %w", err)
 	}
 	defer pool.Close()
-	app := deliveryhttp.NewApp(cfg.Server, susunLayanan(pool))
+	layanan, err := susunLayanan(pool)
+	if err != nil {
+		return err
+	}
+	app := deliveryhttp.NewApp(cfg.Server, layanan)
 	go hentikanSaatSinyal(ctx, app, cfg.Server)
 	if err := app.Listen(":" + cfg.Server.Port); err != nil {
 		return fmt.Errorf("jalankan server: %w", err)
@@ -45,11 +53,15 @@ func jalankan() error {
 	return nil
 }
 
-func susunLayanan(pool *pgxpool.Pool) deliveryhttp.Layanan {
+func susunLayanan(pool *pgxpool.Pool) (deliveryhttp.Layanan, error) {
 	tema := usecase.BacaTema{Pembaca: repository.TemaRepository{DB: pool}}
 	wilayah := repository.WilayahRepository{DB: pool}
 	wakil := usecase.BacaWakil{Pembaca: repository.WakilRepository{DB: pool}, Tema: tema}
 	ringkasan := repository.RingkasanKecamatanRepository{DB: pool}
+	paket, err := buatBacaPaket(pool)
+	if err != nil {
+		return deliveryhttp.Layanan{}, err
+	}
 	return deliveryhttp.Layanan{
 		Wilayah:    usecase.CariWilayah{Pembaca: wilayah},
 		Provenance: usecase.AmbilProvenance{Pembaca: repository.ProvenanceRepository{DB: pool}},
@@ -59,7 +71,19 @@ func susunLayanan(pool *pgxpool.Pool) deliveryhttp.Layanan {
 		Ringkasan: usecase.RingkasKecamatan{
 			Wilayah: wilayah, Tema: tema, Indikator: ringkasan, Anggaran: ringkasan, Wakil: wakil, Sekarang: time.Now,
 		},
+		Paket: paket,
+	}, nil
+}
+
+func buatBacaPaket(pool *pgxpool.Pool) (usecase.BacaPaket, error) {
+	u := usecase.BacaPaket{Pembaca: repository.PaketRepository{DB: pool}, Sekarang: time.Now}
+	if err := config.BacaYAML(pathKonfigurasiArusAnggaran, &u.Aturan); err != nil {
+		return usecase.BacaPaket{}, err
 	}
+	if err := config.BacaYAML(pathKonfigurasiPemeliharaan, &u.Pemeliharaan); err != nil {
+		return usecase.BacaPaket{}, err
+	}
+	return u, nil
 }
 
 func pathKonfigurasi() string {

@@ -222,7 +222,7 @@ templat_aspirasi:
 | Bagian | Dipakai oleh | Aturan validasi |
 | --- | --- | --- |
 | `indikator` | Halaman kecamatan, peta, Tanya Rantai | `penghitung` harus terdaftar di kode; `ambang_rasio` naik berurutan |
-| `filter_anggaran` | Arus Anggaran, PEN-04 | Minimal satu pola instansi atau kata kunci; regex harus bisa dikompilasi |
+| `filter_anggaran` | Arus Anggaran, PEN-04 | Minimal satu pola instansi atau kata kunci; regex harus bisa dikompilasi. Paket bertema bila nama instansinya memuat salah satu pola instansi **atau** namanya cocok dengan salah satu kata kunci (tidak peka huruf besar) |
 | `tanggung_jawab` | Wakilku, Paket Aspirasi | Setiap entri wajib punya `dasar_hukum`, `dasar_hukum_url`, dan `komisi` A sampai E |
 | `tag_isu` | Umpan Wakilku, WAK-04, PEN-05 | Minimal satu tag, huruf kecil |
 | `templat_aspirasi` | Paket Aspirasi | Hanya placeholder yang dikenal: `{kecamatan}`, `{kota}`, `{tahun_depan}` |
@@ -481,6 +481,8 @@ Bagian bawah: tema yang cocok, sinyal aktif beserta alasannya, hak jawab instans
 API: `GET /paket/{kode}`, `GET /kecamatan/{kode}/paket?tema=&tahun=&halaman=`, `GET /paket/terdekat?lat=&lng=&radius_m=`.
 
 Kriteria terima: setiap mata rantai mengembalikan status ada, putus, menunggu, atau estimasi sesuai tabel.
+
+Rincian status yang dipakai: rencana `putus` dengan alasan "kode RUP paket tender tidak dibuka di SPSE" untuk tender, dan `ada` dengan alasan "kode RUP tercatat, detail tidak tersedia" bila SiRUP tidak memuat kodenya; pelaksanaan `estimasi` dari jadwal pelaksanaan kontrak SiRUP atau `putus` bila tidak ada; lokasi tingkat kota atau provinsi `putus`; bukti warga `menunggu` sampai ada laporan. `GET /peta/paket` mengembalikan GeoJSON berisi titik paket tingkat kelurahan dan satu area per kecamatan untuk paket tingkat kecamatan (properti `paket` berisi daftar kode). `GET /paket/terdekat` hanya memuat paket bertitik (tingkat kelurahan), radius bawaan dan maksimum di `config/arus_anggaran.yaml`; jarak berlabel `estimasi`.
 
 ### ANG-04 Estimasi masa pemeliharaan
 

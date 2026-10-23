@@ -14,6 +14,7 @@ type Layanan struct {
 	Wakil      LayananWakil
 	Umpan      LayananUmpan
 	Ringkasan  LayananRingkasanKecamatan
+	Paket      LayananPaket
 }
 
 func NewApp(cfg config.Server, layanan Layanan) *fiber.App {
@@ -31,6 +32,7 @@ func NewApp(cfg config.Server, layanan Layanan) *fiber.App {
 	daftarkanWakil(api, handlerWakil{layanan: layanan.Wakil})
 	api.Get("/anggota/:id/umpan", handlerUmpan{layanan: layanan.Umpan}.umpanAnggota)
 	api.Get("/kecamatan/:kode/ringkasan", handlerRingkasanKecamatan{layanan: layanan.Ringkasan}.ringkas)
+	daftarkanPaket(api, handlerPaket{layanan: layanan.Paket})
 	return app
 }
 

@@ -1,0 +1,8 @@
+per_halaman: 20
+radius_bawaan_m: 500
+radius_maks_m: 3000
+batas_terdekat: 50
+toleransi_peta: 0.0005
+luas_kotak_maks_derajat: 1
+url_spse: https://spse.inaproc.id/jakarta
+url_sirup: https://sirup.inaproc.id/sirup/home/detailPaketPenyediaPublic2017/

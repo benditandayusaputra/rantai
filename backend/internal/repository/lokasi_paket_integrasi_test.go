@@ -1,7 +1,9 @@
 package repository_test
 
 import (
+	"slices"
 	"testing"
+	"time"
 
 	"github.com/benditandayusaputra/rantai/backend/internal/domain"
 	"github.com/benditandayusaputra/rantai/backend/internal/repository"
@@ -27,9 +29,11 @@ func turunanUji(t *testing.T) (pgx.Tx, usecase.TurunanPaket) {
 	}
 	lokasi := repository.LokasiPaketRepository{DB: tx}
 	return tx, usecase.TurunanPaket{
-		Gazetir:  lokasi,
-		Lokasi:   lokasi,
-		Pencatat: repository.IngestRunRepository{DB: tx},
+		Gazetir:   lokasi,
+		Lokasi:    lokasi,
+		Tema:      repository.TemaRepository{DB: tx},
+		TemaPaket: lokasi,
+		Pencatat:  repository.IngestRunRepository{DB: tx},
 		AturanLokasi: domain.AturanLokasi{
 			Singkatan:           map[string]string{"kel.": "kelurahan", "kec.": "kecamatan"},
 			PergeseranMaksMeter: 150,
@@ -72,5 +76,33 @@ func TestTurunanPaket_DijalankanDuaKali_TidakAdaPerubahanKedua(t *testing.T) {
 	var berubah int
 	if err := tx.QueryRow(t.Context(), `SELECT jumlah_berubah FROM ingest_run WHERE sumber = 'turunan' ORDER BY id DESC LIMIT 1`).Scan(&berubah); err != nil || berubah != 0 {
 		t.Errorf("perubahan kedua = %d, err = %v", berubah, err)
+	}
+}
+
+func simpanTemaUji(t *testing.T, tx pgx.Tx) {
+	t.Helper()
+	tema := domain.Tema{Kode: "pendidikan", Nama: domain.Teks{ID: "Pendidikan", EN: "Education"}, Aktif: true, Urutan: 1}
+	tema.FilterAnggaran = domain.FilterAnggaran{InstansiPola: []string{"dinas pendidikan"}, KataKunci: []string{"pintu air"}}
+	prov := domain.Provenance{ID: "prv_uji_tema_paket", Sumber: domain.SumberRantai, Label: domain.LabelResmi, DiambilPada: time.Now()}
+	if _, err := (repository.TemaRepository{DB: tx}).SimpanTema(t.Context(), usecase.DataSumberTema{Tema: []domain.Tema{tema}, Provenance: prov}); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestTurunanPaket_FilterAnggaranTema_TemaKodeTerisi(t *testing.T) {
+	tx, turunan := turunanUji(t)
+	simpanTemaUji(t, tx)
+
+	if err := turunan.Jalankan(t.Context()); err != nil {
+		t.Fatal(err)
+	}
+
+	var temaPintuAir, temaATK []string
+	err := tx.QueryRow(t.Context(), `SELECT (SELECT tema_kode FROM paket WHERE kode = 'nontender-1'), (SELECT tema_kode FROM paket WHERE kode = 'nontender-2')`).Scan(&temaPintuAir, &temaATK)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !slices.Equal(temaPintuAir, []string{"pendidikan"}) || len(temaATK) != 0 {
+		t.Errorf("tema pintu air %v, tema ATK %v", temaPintuAir, temaATK)
 	}
 }

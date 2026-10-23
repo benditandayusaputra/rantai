@@ -23,9 +23,16 @@ type PenyimpanLokasiPaket interface {
 	SimpanLokasiPaket(ctx context.Context, daftar []LokasiTerhitung) (int, error)
 }
 
+type PenyimpanTemaPaket interface {
+	DaftarPaketUntukTema(ctx context.Context) ([]domain.MasukanTema, error)
+	SimpanTemaPaket(ctx context.Context, temaPerPaket map[string][]string) (int, error)
+}
+
 type TurunanPaket struct {
 	Gazetir      PembacaGazetir
 	Lokasi       PenyimpanLokasiPaket
+	Tema         PembacaTema
+	TemaPaket    PenyimpanTemaPaket
 	Pencatat     PencatatIngest
 	AturanLokasi domain.AturanLokasi
 }
@@ -35,11 +42,43 @@ func (u TurunanPaket) Jalankan(ctx context.Context) error {
 }
 
 func (u TurunanPaket) hitung(ctx context.Context) (HasilImpor, error) {
-	berubah, err := u.tentukanLokasi(ctx)
-	if err != nil {
-		return HasilImpor{}, err
+	total := 0
+	for _, langkah := range []func(context.Context) (int, error){u.tentukanLokasi, u.tandaiTema} {
+		berubah, err := langkah(ctx)
+		if err != nil {
+			return HasilImpor{}, err
+		}
+		total += berubah
 	}
-	return HasilImpor{JumlahBerubah: berubah}, nil
+	return HasilImpor{JumlahBerubah: total}, nil
+}
+
+func (u TurunanPaket) tandaiTema(ctx context.Context) (int, error) {
+	daftarTema, err := u.Tema.DaftarTemaAktif(ctx)
+	if err != nil {
+		return 0, fmt.Errorf("baca tema aktif: %w", err)
+	}
+	penanda, err := domain.PenandaTemaBaru(temaDari(daftarTema))
+	if err != nil {
+		return 0, err
+	}
+	masukan, err := u.TemaPaket.DaftarPaketUntukTema(ctx)
+	if err != nil {
+		return 0, fmt.Errorf("baca paket untuk tema: %w", err)
+	}
+	temaPerPaket := make(map[string][]string, len(masukan))
+	for _, m := range masukan {
+		temaPerPaket[m.KodePaket] = penanda.Tandai(m)
+	}
+	return u.TemaPaket.SimpanTemaPaket(ctx, temaPerPaket)
+}
+
+func temaDari(daftar []domain.TemaTersimpan) []domain.Tema {
+	hasil := make([]domain.Tema, len(daftar))
+	for i, t := range daftar {
+		hasil[i] = t.Tema
+	}
+	return hasil
 }
 
 func (u TurunanPaket) tentukanLokasi(ctx context.Context) (int, error) {

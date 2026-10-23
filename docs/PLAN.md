@@ -115,7 +115,7 @@ Versi 2.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` v2.0 dan `docs/SPEC.
   - `config/pemeliharaan.yaml` dan usecase status.
   - Commit: `✨ Estimasi masa pemeliharaan paket konstruksi`
   - Selesai bila: keempat status dan perubahan label menjadi `resmi` dites dengan jam tiruan.
-- [ ] **T-308** Filter anggaran tema dan API Arus Anggaran (ANG-03)
+- [x] **T-308** Filter anggaran tema dan API Arus Anggaran (ANG-03)
   - Penandaan `paket.tema_kode` dari `filter_anggaran`; `GET /paket/{kode}` berbentuk rantai, `GET /kecamatan/{kode}/paket`, `GET /peta/paket`, `GET /paket/terdekat`.
   - Commit: `✨ Tambah API halaman paket dan daftar paket per kecamatan`
   - Selesai bila: setiap mata rantai mengembalikan status ada, putus, menunggu, atau estimasi sesuai tabel ANG-03; filter tema dites.

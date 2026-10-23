@@ -267,6 +267,8 @@ func buatTurunan(pool *pgxpool.Pool) (job, error) {
 	turunan := usecase.TurunanPaket{
 		Gazetir:      lokasi,
 		Lokasi:       lokasi,
+		Tema:         repository.TemaRepository{DB: pool},
+		TemaPaket:    lokasi,
 		Pencatat:     repository.IngestRunRepository{DB: pool},
 		AturanLokasi: aturan,
 	}
