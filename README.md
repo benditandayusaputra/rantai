@@ -48,6 +48,10 @@ make hitung-indikator
 
 `make impor-sekolah` mengambil sekitar 4.000 sekolah dengan jeda 1 detik per permintaan, sehingga butuh beberapa jam. Setiap respons disimpan di `data/raw/dapodik/<tanggal>/`, jadi job yang terputus dapat dijalankan ulang pada hari yang sama tanpa mengulang permintaan.
 
+### Mode demo
+
+`make snapshot-demo` menyimpan seluruh data ke `data/snapshot/rantai.sql.gz` di mesin yang datanya sudah lengkap. Di mesin lain, `make up`, `make migrate`, lalu `make seed-demo` memuat snapshot itu dan skenario `data/snapshot/skenario_demo.yaml`. Dengan `RANTAI_MODE=demo` di `.env`, worker menolak job yang mengambil data dari internet.
+
 ## Progres pengerjaan
 
 - [x] Struktur monorepo

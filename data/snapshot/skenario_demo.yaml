@@ -1,0 +1,49 @@
+kota_demo: "31.72"
+kecamatan_demo: ""
+
+paket_simulasi:
+  kode: simulasi-ruang-kelas-1
+  nama: Rehabilitasi Ruang Kelas SMP Contoh Simulasi
+  instansi: Instansi Contoh Simulasi
+  penyedia: CV Contoh Simulasi
+  kategori: ruang_kelas
+  sektor: pendidikan
+  tema_kode: [pendidikan]
+  jenis_pengadaan: Pekerjaan Konstruksi
+  metode: Pengadaan Langsung
+  tahun_anggaran: 2026
+  pagu: 190000000
+  hps: 185000000
+  nilai_kontrak: 182500000
+  tahap: Paket Sudah Selesai
+  tanggal_kontrak: 2026-03-02
+  jadwal_mulai: 2026-03-01
+  jadwal_selesai: 2026-06-30
+
+laporan_simulasi:
+  - kondisi: selesai_baik
+    catatan: Ruang kelas sudah dipakai belajar, atap dan jendela baru.
+    konfirmasi: 2
+  - kondisi: selesai_rusak
+    catatan: Plafon satu ruang kelas retak di sudut dekat jendela.
+    konfirmasi: 2
+
+akun_demo:
+  - peran: warga
+    email: warga@demo.rantai.test
+    nama_tampilan: Warga Contoh Simulasi
+  - peran: instansi
+    email: petugas@demo.rantai.test
+    nama_tampilan: Petugas Contoh Simulasi
+    instansi: Dinas Pendidikan Provinsi DKI Jakarta
+  - peran: anggota
+    email: anggota@demo.rantai.test
+    nama_tampilan: Anggota Contoh Simulasi
+  - peran: moderator
+    email: moderator@demo.rantai.test
+    nama_tampilan: Moderator Contoh Simulasi
+
+tanya_demo:
+  - Kenapa SMP negeri di kecamatanku penuh?
+  - Proyek sekolah apa yang dibiayai di kecamatanku tahun ini?
+  - Siapa wakil dapilku yang duduk di Komisi E?

@@ -55,7 +55,7 @@ const (
 type job func(ctx context.Context) error
 
 var jobTersedia = []string{usecase.JobWilayah, usecase.JobTema, usecase.JobKPUDPRD, usecase.JobLPSEDaftar, usecase.JobLPSEDetail, usecase.JobSIRUP, usecase.JobOpentender, usecase.JobTurunan, jobLaporanGeocode, usecase.JobUmpanDPRD, usecase.JobUmpanMedia, usecase.JobRingkasUmpan,
-	usecase.JobDapodik, usecase.JobDayaTampung, usecase.JobCalonLulusan, usecase.JobIndikator}
+	usecase.JobDapodik, usecase.JobDayaTampung, usecase.JobCalonLulusan, usecase.JobIndikator, usecase.JobSkenarioDemo}
 
 func main() {
 	if err := jalankan(os.Args[1:]); err != nil {
@@ -66,6 +66,9 @@ func main() {
 func jalankan(argumen []string) error {
 	if len(argumen) != 1 {
 		return errors.New("pemakaian: worker <job>; job tersedia: " + strings.Join(jobTersedia, ", "))
+	}
+	if err := usecase.IzinkanJob(os.Getenv("RANTAI_MODE"), argumen[0]); err != nil {
+		return err
 	}
 	ctx, berhenti := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer berhenti()

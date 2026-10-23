@@ -7,7 +7,7 @@ export DATABASE_URL TEST_DATABASE_URL
 COMPOSE := docker compose
 MIGRATE := $(COMPOSE) run --rm --build migrate
 
-.PHONY: up down migrate migrate-down lint test impor-wilayah impor-tema impor-kpu-dprd impor-lpse impor-sirup impor-opentender turunan laporan-geocode snapshot-paket muat-snapshot-paket impor-umpan-dprd impor-umpan-media ringkas-umpan impor-sekolah impor-daya-tampung hitung-calon-lulusan hitung-indikator
+.PHONY: up down migrate migrate-down lint test impor-wilayah impor-tema impor-kpu-dprd impor-lpse impor-sirup impor-opentender turunan laporan-geocode snapshot-paket muat-snapshot-paket impor-umpan-dprd impor-umpan-media ringkas-umpan impor-sekolah impor-daya-tampung hitung-calon-lulusan hitung-indikator snapshot-demo seed-demo
 
 up:
 	$(COMPOSE) up -d --wait db minio
@@ -80,3 +80,13 @@ hitung-calon-lulusan:
 
 hitung-indikator:
 	cd backend && go run ./cmd/worker indikator
+
+SNAPSHOT_DEMO := data/snapshot/rantai.sql.gz
+
+snapshot-demo:
+	$(COMPOSE) exec -T db pg_dump -U rantai -d rantai --data-only --disable-triggers --inserts --on-conflict-do-nothing -n public -T schema_migrations -T spatial_ref_sys | gzip > $(SNAPSHOT_DEMO)
+
+seed-demo:
+	@test -f $(SNAPSHOT_DEMO) || { echo "$(SNAPSHOT_DEMO) belum ada; buat dengan make snapshot-demo di mesin yang datanya lengkap"; exit 1; }
+	gunzip -c $(SNAPSHOT_DEMO) | $(COMPOSE) exec -T db psql -q -v ON_ERROR_STOP=1 -U rantai -d rantai
+	cd backend && go run ./cmd/worker skenario_demo

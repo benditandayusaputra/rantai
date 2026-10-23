@@ -165,7 +165,7 @@ Versi 2.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` v2.0 dan `docs/SPEC.
 
 ## Fase 5. Data demo
 
-- [ ] **T-501** Mode demo (DSR-01 sisi backend)
+- [x] **T-501** Mode demo (DSR-01 sisi backend)
   - `data/snapshot/skenario_demo.yaml` (SPEC 13), `make seed-demo`, `RANTAI_MODE=demo` mematikan job pengambilan.
   - Commit: `🗃️ Tambah skenario dan snapshot data demo`
   - Selesai bila: semua data simulasi bertanda `is_simulation = true` dan tidak terhubung ke paket, penyedia, atau anggota sungguhan (dites).
@@ -237,7 +237,7 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - Commit: `✨ Bangun antarmuka Tanya Rantai dengan rujukan sumber`
   - Selesai bila: rujukan membuka panel sumber.
 - [ ] **T-705** Cache demo
-  - Jawaban tercache untuk `tanya_demo.json` saat `RANTAI_MODE=demo`.
+  - Jawaban tercache untuk `tanya_demo.json` saat `RANTAI_MODE=demo`; daftar pertanyaan diambil dari `tanya_demo` di `skenario_demo.yaml`.
   - Commit: `✨ Sediakan jawaban tercache Tanya Rantai untuk mode demo`
   - Selesai bila: tiga pertanyaan demo terjawab tanpa internet.
 - [ ] **T-706** Paket Aspirasi dan jalur aspirasi (AKS-02, AKS-03)
@@ -256,6 +256,7 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
 
 - [ ] **T-801** Autentikasi OTP (DSR-02)
   - Migrasi `pengguna`, `otp`, `sesi_refresh`; endpoint `/auth/*`; peran warga, anggota, instansi, moderator, admin; pengirim email lewat SMTP dari env.
+  - Job `skenario_demo` ikut memasang `akun_demo` dari `skenario_demo.yaml`.
   - Commit: `🔒️ Tambah masuk dengan OTP email dan token berotasi`
   - Selesai bila: batas percobaan, kedaluwarsa, dan rotasi refresh dites.
 - [ ] **T-802** Masuk di frontend **[BUTUH DESAIN]**
@@ -282,6 +283,7 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - Selesai bila: hasil selalu berlabel "kemungkinan terkait"; kasus tanpa kecocokan dites.
 - [ ] **T-904** Terima laporan (ANG-08 sisi backend)
   - Migrasi laporan, pemrosesan foto (magic bytes, enkode ulang, buang EXIF, thumbnail), MinIO, pembulatan lokasi publik.
+  - Job `skenario_demo` ikut memasang `laporan_simulasi` dari `skenario_demo.yaml` ke paket simulasi, dengan foto ilustrasi bebas lisensi.
   - Commit: `✨ Terima laporan warga dengan foto tanpa metadata`
   - Selesai bila: tes memastikan foto hasil tidak memuat EXIF dan lokasi publik terbulatkan.
 - [ ] **T-905** Verifikasi laporan (ANG-08)
@@ -323,7 +325,7 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - Atur proxy tepercaya di Fiber (`TrustProxy`) agar batas laju per IP dan HSTS bekerja di belakang Caddy.
   - Commit: `🔧 Siapkan deploy produksi dengan Caddy`
 - [ ] **T-1005** Snapshot luring final (DSR-01)
-  - Snapshot data, PMTiles wilayah DKI, uji jalan tanpa internet.
+  - Snapshot data (`make snapshot-demo` di mesin dengan data lengkap), kunci `kecamatan_demo` di `skenario_demo.yaml`, PMTiles wilayah DKI, uji jalan tanpa internet.
   - Commit: `🗃️ Perbarui snapshot data dan tile peta untuk demo luring`
   - Selesai bila: alur demo lulus dengan jaringan dimatikan.
 - [ ] **T-1006** README final

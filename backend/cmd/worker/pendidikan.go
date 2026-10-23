@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
@@ -33,7 +32,7 @@ func pilihJobPendidikan(nama string, pool *pgxpool.Pool) (job, error) {
 	case usecase.JobIndikator:
 		return buatHitungIndikator(pool)
 	default:
-		return nil, fmt.Errorf("job tidak dikenal: %s", nama)
+		return pilihJobDemo(nama, pool)
 	}
 }
 

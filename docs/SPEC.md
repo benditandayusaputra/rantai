@@ -670,7 +670,8 @@ Kartu ringkasan kecamatan 1080 × 1350 dirender server (SVG ke PNG) dengan angka
 
 ### DSR-01 Mode demo luring
 
-- `make seed-demo` memuat `data/snapshot/` (dump terkompresi) ke database lokal.
+- `make snapshot-demo` menulis seluruh data skema `public` ke `data/snapshot/rantai.sql.gz` (data saja, idempoten). `make seed-demo` memuat dump itu ke database yang sudah dimigrasi, lalu menjalankan job `skenario_demo` yang memasang data simulasi dari `skenario_demo.yaml`.
+- Job pengambilan yang ditolak saat `RANTAI_MODE=demo`: `wilayah`, `kpu_dprd`, `lpse_daftar`, `lpse_detail`, `sirup`, `opentender`, `umpan_dprd`, `umpan_media`, `ringkas_umpan`, `dapodik`. Job yang hanya membaca berkas lokal atau database tetap berjalan.
 - `RANTAI_MODE=demo` mematikan job pengambilan data, menampilkan pita "Mode demo, data per {tanggal snapshot}", dan memakai cache jawaban Tanya Rantai serta ringkasan umpan yang sudah tersimpan.
 - Tile peta untuk wilayah DKI ikut di-bundle (PMTiles) agar peta tetap tampil tanpa internet.
 
@@ -736,10 +737,10 @@ API: `GET /panel/antrean`, `POST /hak-jawab`, `PATCH /panel/paket/{kode}/serah-t
 
 Skenario demo dikunci di `data/snapshot/skenario_demo.yaml`:
 
-- `kecamatan_demo`: kecamatan di Jakarta Utara dengan rasio kursi SMP negeri terendah yang datanya lengkap, dipilih setelah PEN-01 terhitung.
-- `paket_simulasi`: satu paket kategori `ruang_kelas` di kecamatan demo, penyedia fiktif "CV Contoh Simulasi", `is_simulation = true`.
+- `kecamatan_demo`: kecamatan di Jakarta Utara (`kota_demo`) dengan rasio kursi SMP negeri terendah yang datanya lengkap (rasio terdefinisi, label `resmi`, periode terbaru), dipilih setelah PEN-01 terhitung. Selama `kecamatan_demo` kosong, job `skenario_demo` memilihnya dengan aturan ini dan mencetak kodenya untuk dikunci di berkas.
+- `paket_simulasi`: satu paket kategori `ruang_kelas` di titik tengah kecamatan demo, kode berawalan `simulasi-`, penyedia contoh "CV Contoh Simulasi" dan instansi contoh "Instansi Contoh Simulasi", provenance berlabel `simulasi`, `is_simulation = true`. Nama penyedia dan instansi wajib memuat kata "Simulasi"; job menolak berjalan bila keduanya sudah tertaut ke paket, RUP, atau riwayat penyedia sungguhan.
 - `laporan_simulasi`: dua laporan dan konfirmasi yang cukup untuk status TERVERIFIKASI, seluruhnya `is_simulation = true`, foto ilustrasi bebas lisensi.
-- `akun_demo`: satu warga, satu petugas instansi Dinas Pendidikan, satu akun anggota contoh yang tidak ditautkan ke anggota sungguhan, satu moderator.
+- `akun_demo`: satu warga, satu petugas instansi Dinas Pendidikan, satu akun anggota contoh yang tidak ditautkan ke anggota sungguhan (`anggota_id` kosong, divalidasi), satu moderator.
 - `tanya_demo`: tiga pertanyaan dan jawaban tercache, termasuk "Kenapa SMP negeri di kecamatanku penuh?".
 
 Data simulasi tidak pernah ditautkan ke paket, penyedia, anggota, atau warga sungguhan (dites).

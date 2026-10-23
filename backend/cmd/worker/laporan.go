@@ -39,3 +39,7 @@ func (pelaporLog) LaporkanDayaTampung(daftar []usecase.LaporanDayaTampung) {
 func (pelaporLog) LaporkanKecamatanTanpaCalonLulusan(kode []string) {
 	cetakDaftar("kecamatan tanpa data calon lulusan", kode)
 }
+
+func (pelaporLog) LaporkanKecamatanDemoTerpilih(kode string) {
+	log.Printf("kecamatan demo terpilih: %s; kunci kode ini di kecamatan_demo skenario_demo.yaml", kode)
+}
