@@ -1,5 +1,12 @@
 import { env } from '$env/dynamic/public';
-import type { Amplop, Provenance, RingkasanKecamatan, WilayahDitemukan } from './tipe';
+import type {
+	Amplop,
+	DetailPendidikan,
+	Provenance,
+	RingkasanKecamatan,
+	Sekolah,
+	WilayahDitemukan
+} from './tipe';
 
 const alamatBawaan = 'http://localhost:8080/api/v1';
 
@@ -67,4 +74,32 @@ export function ambilWilayahDiTitik(
 
 export function ambilRingkasanKecamatan(fetchFn: Fetch, kode: string): Promise<RingkasanKecamatan> {
 	return ambilData<RingkasanKecamatan>(fetchFn, `/kecamatan/${encodeURIComponent(kode)}/ringkasan`);
+}
+
+export function ambilDetailPendidikan(fetchFn: Fetch, kode: string): Promise<DetailPendidikan> {
+	return ambilData<DetailPendidikan>(
+		fetchFn,
+		`/tema/pendidikan/kecamatan/${encodeURIComponent(kode)}`
+	);
+}
+
+export function ambilSekolahKecamatan(fetchFn: Fetch, kode: string): Promise<Sekolah[]> {
+	return ambilData<Sekolah[]>(
+		fetchFn,
+		`/tema/pendidikan/kecamatan/${encodeURIComponent(kode)}/sekolah`
+	);
+}
+
+export type Hasil<T> = { ok: true; data: T } | { ok: false; galat: GalatAPI };
+
+function keGalatAPI(galat: unknown): GalatAPI {
+	if (galat instanceof GalatAPI) return galat;
+	return new GalatAPI(0, galat instanceof Error ? galat.message : String(galat));
+}
+
+export function tangkap<T>(permintaan: Promise<T>): Promise<Hasil<T>> {
+	return permintaan.then(
+		(data) => ({ ok: true, data }),
+		(galat: unknown) => ({ ok: false, galat: keGalatAPI(galat) })
+	);
 }

@@ -189,7 +189,7 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - Header, kartu ringkas, bagian Tema, Arus Anggaran, Wakilku dengan URL sendiri.
   - Commit: `✨ Bangun halaman kecamatan dengan bagian tema, anggaran, dan wakil`
   - Selesai bila: bagian bisa dibuka langsung dari URL; status kosong, memuat, dan error ada.
-- [ ] **T-605** Detail Pendidikan (PEN-03) **[BUTUH DESAIN]**
+- [x] **T-605** Detail Pendidikan (PEN-03) **[BUTUH DESAIN]**
   - Commit: `✨ Tampilkan kesenjangan kursi dan daftar sekolah kecamatan`
   - Selesai bila: keterbatasan domisili tampil; grafik punya tabel alternatif; label tiap jenis kursi terlihat.
 - [ ] **T-606** Peta (WIL-03, PEN-02) **[BUTUH DESAIN]** **[BOLEH PECAH]**

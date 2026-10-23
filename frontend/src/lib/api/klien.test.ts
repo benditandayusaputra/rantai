@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { ambilData, GalatAPI } from './klien';
+import { ambilData, GalatAPI, tangkap } from './klien';
 
 vi.mock('$env/dynamic/public', () => ({ env: { PUBLIC_API_URL: 'http://api.uji/api/v1' } }));
 
@@ -21,5 +21,15 @@ describe('ambilData', () => {
 		await expect(ambilData(fetchFn, '/paket/x')).rejects.toEqual(
 			new GalatAPI(404, 'paket tidak ditemukan')
 		);
+	});
+});
+
+describe('tangkap', () => {
+	it('mengubah penolakan menjadi hasil gagal tanpa melempar', async () => {
+		await expect(tangkap(Promise.reject(new GalatAPI(404, 'x')))).resolves.toEqual({
+			ok: false,
+			galat: new GalatAPI(404, 'x')
+		});
+		await expect(tangkap(Promise.resolve(1))).resolves.toEqual({ ok: true, data: 1 });
 	});
 });

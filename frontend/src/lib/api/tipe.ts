@@ -112,3 +112,45 @@ export interface RingkasanKecamatan {
 	anggaran: Anggaran | null;
 	wakilku: WakilKecamatan;
 }
+
+export interface Titik {
+	lat: number;
+	lng: number;
+}
+
+export type Keterbatasan =
+	| 'spmb_tidak_dibatasi_kecamatan'
+	| 'calon_lulusan_tanpa_mi'
+	| 'kursi_madrasah_tidak_tersedia'
+	| 'tidak_ada_data_lulusan'
+	| 'jarak_garis_lurus';
+
+export type MetodeCalonLulusan = 'per_sekolah' | 'agregat_resmi' | 'estimasi_total_sd' | '';
+
+export interface DetailPendidikan {
+	kode: string;
+	nama: string;
+	periode: string;
+	kelas: KelasRasio;
+	label: Label;
+	provenance_id: string;
+	metode_calon_lulusan: MetodeCalonLulusan;
+	calon_lulusan: Angka | null;
+	kursi_negeri: Angka | null;
+	kursi_spmb_bersama: Angka | null;
+	kursi_madrasah: Angka | null;
+	kesenjangan: Angka;
+	kesenjangan_dengan_spmb_bersama: Angka | null;
+	rasio: Angka | null;
+	keterbatasan: Keterbatasan[];
+}
+
+export interface Sekolah {
+	npsn: string;
+	nama: string;
+	bentuk: 'SD' | 'MI' | 'SMP' | 'MTs';
+	status: 'negeri' | 'swasta';
+	lokasi: Titik | null;
+	jalur: 'negeri' | 'spmb_bersama' | null;
+	daya_tampung: Angka | null;
+}
