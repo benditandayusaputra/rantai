@@ -178,7 +178,7 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - SvelteKit 2, Svelte 5 runes, TypeScript strict, Tailwind dari token DESIGN.md, i18n dengan pesan Indonesia, rute berawalan `/id`, ESLint, Prettier, svelte-check, Vitest. Tambahkan lint dan tes frontend ke CI.
   - Commit: `🎉 Inisialisasi frontend SvelteKit dengan token desain`
   - Selesai bila: `make lint` dan `make test` mencakup frontend; tidak ada warna atau ukuran ditulis langsung di komponen; tidak ada teks hardcode di komponen.
-- [ ] **T-602** Klien API dan lencana sumber (WIL-04) **[BUTUH DESAIN]**
+- [x] **T-602** Klien API dan lencana sumber (WIL-04) **[BUTUH DESAIN]**
   - Klien bertipe, tipe `Angka`, komponen `LencanaProvenance` dengan panel sumber.
   - Commit: `✨ Tambah klien API bertipe dan lencana sumber`
   - Selesai bila: komponen dites untuk keempat label; panel bisa dibuka dengan papan ketik.

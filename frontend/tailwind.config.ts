@@ -94,6 +94,8 @@ export default {
 				mono: ['13px', { lineHeight: '20px' }]
 			},
 			spacing: {
+				5.5: '22px',
+				6.5: '26px',
 				14: '56px',
 				18: '72px'
 			},

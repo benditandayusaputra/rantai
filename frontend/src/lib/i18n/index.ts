@@ -15,3 +15,7 @@ export function t(kunci: KunciPesan, parameter: ParameterPesan = {}): string {
 		nama in parameter ? String(parameter[nama]) : asli
 	);
 }
+
+export function isKunciPesan(kunci: string): kunci is KunciPesan {
+	return kunci in katalog[bahasaBawaan];
+}

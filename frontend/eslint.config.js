@@ -22,7 +22,8 @@ export default ts.config(
 		plugins: { rantai: aturanRantai },
 		rules: {
 			'rantai/tanpa-komentar': 'error',
-			'@typescript-eslint/no-explicit-any': 'error'
+			'@typescript-eslint/no-explicit-any': 'error',
+			'svelte/no-navigation-without-resolve': ['error', { ignoreLinks: true }]
 		}
 	},
 	{
