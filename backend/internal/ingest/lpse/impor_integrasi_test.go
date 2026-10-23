@@ -30,11 +30,24 @@ type pengirimImpor struct {
 	kodeTambahan []string
 }
 
+var fixtureEvaluasi = map[string]string{
+	"11047442000/pemenangberkontrak": "kontrak_ada.html",
+	"11039162000/pemenangberkontrak": "kontrak_kosong.html",
+	"11039162000/pemenang":           "pemenang_ada.html",
+}
+
 func (p *pengirimImpor) Ambil(_ context.Context, alamat string) ([]byte, error) {
-	if strings.HasSuffix(alamat, "/pengumumanpl") {
-		return bacaFixture(p.t, fixturePengumuman[filepath.Base(filepath.Dir(alamat))]), nil
+	kode, halaman := filepath.Base(filepath.Dir(alamat)), filepath.Base(alamat)
+	switch {
+	case halaman == "pengumumanpl":
+		return bacaFixture(p.t, fixturePengumuman[kode]), nil
+	case halaman == "jadwal":
+		return bacaFixture(p.t, "jadwal.html"), nil
+	case fixtureEvaluasi[kode+"/"+halaman] != "":
+		return bacaFixture(p.t, fixtureEvaluasi[kode+"/"+halaman]), nil
+	default:
+		return bacaFixture(p.t, "halaman_nontender.html"), nil
 	}
-	return bacaFixture(p.t, "halaman_nontender.html"), nil
 }
 
 func (p *pengirimImpor) KirimForm(_ context.Context, alamat string, _ url.Values) ([]byte, error) {
@@ -150,5 +163,31 @@ func TestImporDaftarPaket_KodeSPSESamaTenderDanNonTender_KeduanyaTersimpan(t *te
 	n := hitungBaris(t, tx, "SELECT count(*) FROM paket WHERE kode_spse = '52767127' AND kode IN ('tender-52767127', 'nontender-52767127')")
 	if n != 2 {
 		t.Errorf("paket berkode SPSE sama = %d, harap 2", n)
+	}
+}
+
+func TestImporDetailPaket_PemenangBerkontrakDanBelumBerkontrak_PenyediaTersimpan(t *testing.T) {
+	tx, _, daftar, detail := siapkanImpor(t)
+	for _, job := range []func(context.Context) error{daftar.Jalankan, detail.Jalankan} {
+		if err := job(t.Context()); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	var nilaiKontrak *float64
+	var namaNormal string
+	var tanggalKontrak *time.Time
+	err := tx.QueryRow(t.Context(), `SELECT p.nilai_kontrak, s.nama_normal, p.tanggal_kontrak FROM paket p JOIN penyedia s ON s.id = p.penyedia_id
+WHERE p.kode = 'nontender-11047442000'`).Scan(&nilaiKontrak, &namaNormal, &tanggalKontrak)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if nilaiKontrak == nil || *nilaiKontrak != 196861000 || namaNormal != "herdina mitra prakarsa" || tanggalKontrak == nil {
+		t.Errorf("kontrak %v, penyedia %q, tanggal %v", nilaiKontrak, namaNormal, tanggalKontrak)
+	}
+	n := hitungBaris(t, tx, `SELECT count(*) FROM paket p JOIN penyedia s ON s.id = p.penyedia_id
+WHERE p.kode = 'nontender-11039162000' AND p.nilai_kontrak IS NULL AND s.nama_normal = 'tirta arjuno lestari'`)
+	if n != 1 {
+		t.Error("pemenang tanpa kontrak tidak tersimpan dengan nilai kontrak kosong")
 	}
 }

@@ -75,3 +75,41 @@ func TestAmbilDetailPaket_Pengumuman_KeDomain(t *testing.T) {
 		t.Errorf("url provenance = %s", data.Provenance.URL)
 	}
 }
+
+type pengirimPencatat struct {
+	pengirimFixture
+	pengumuman string
+	alamat     []string
+}
+
+func (p *pengirimPencatat) Ambil(ctx context.Context, alamat string) ([]byte, error) {
+	p.alamat = append(p.alamat, alamat)
+	if filepath.Base(alamat) == "pengumumanpl" {
+		return bacaFixture(p.t, p.pengumuman), nil
+	}
+	return p.pengirimFixture.Ambil(ctx, alamat)
+}
+
+func TestAmbilDetailPaket_PaketBatal_HalamanPemenangTidakDiambil(t *testing.T) {
+	pengirim := &pengirimPencatat{pengirimFixture: pengirimFixture{t: t}, pengumuman: "pengumuman_batal.html"}
+	s := sumberUji(t)
+	s.Klien = pengirim
+
+	data, err := s.AmbilDetailPaket(t.Context(), "10403852000")
+
+	if err != nil || data.Detail.Pemenang != nil || len(pengirim.alamat) != 1 {
+		t.Errorf("pemenang = %v, permintaan = %v, err = %v", data.Detail.Pemenang, pengirim.alamat, err)
+	}
+}
+
+func TestAmbilDetailPaket_TanpaPemenang_JadwalTidakDiambil(t *testing.T) {
+	pengirim := &pengirimPencatat{pengirimFixture: pengirimFixture{t: t}, pengumuman: "pengumuman_konstruksi.html"}
+	s := sumberUji(t)
+	s.Klien = pengirim
+
+	data, err := s.AmbilDetailPaket(t.Context(), "11047442000")
+
+	if err != nil || data.Detail.Pemenang != nil || len(pengirim.alamat) != 3 {
+		t.Errorf("pemenang = %v, permintaan = %v, err = %v", data.Detail.Pemenang, pengirim.alamat, err)
+	}
+}

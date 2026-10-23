@@ -26,6 +26,7 @@ type DetailPaketSumber struct {
 type DataSimpanDetailPaket struct {
 	Detail     domain.DetailPaket
 	Instansi   domain.Instansi
+	Penyedia   *domain.Penyedia
 	Provenance domain.Provenance
 }
 
@@ -108,12 +109,20 @@ func (u ImporDetailPaket) imporSatu(ctx context.Context, kodeSPSE string) error 
 	err = u.Penyimpan.SimpanDetailPaket(ctx, DataSimpanDetailPaket{
 		Detail:     sumber.Detail,
 		Instansi:   u.AturanInstansi.Klasifikasi(sumber.Detail.SatuanKerja),
+		Penyedia:   penyediaPemenang(sumber.Detail.Pemenang),
 		Provenance: sumber.Provenance,
 	})
 	if err != nil {
 		return fmt.Errorf("simpan detail paket non-tender %s: %w", kodeSPSE, err)
 	}
 	return nil
+}
+
+func penyediaPemenang(pemenang *domain.PemenangPaket) *domain.Penyedia {
+	if pemenang == nil {
+		return nil
+	}
+	return &domain.Penyedia{Nama: pemenang.NamaPenyedia, NamaNormal: domain.NormalisasiNamaPenyedia(pemenang.NamaPenyedia)}
 }
 
 func (h HasilImpor) tambah(lain HasilImpor) HasilImpor {

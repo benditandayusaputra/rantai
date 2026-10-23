@@ -48,8 +48,15 @@ ON CONFLICT (kode) DO NOTHING`
 	sqlSimpanDetailPaket = `UPDATE paket SET
     nama = $2, instansi_id = $3, kode_rup = $4, is_batal = $5, tanggal_dibuat = $6, jenis_pengadaan = $7,
     metode = $8, jenis_kontrak = $9, tahun_anggaran = $10, pagu = $11, hps = $12, jumlah_peserta = $13,
-    provenance_id = $14, detail_diambil_pada = $15, diubah_pada = now()
+    provenance_id = $14, detail_diambil_pada = $15, penyedia_id = $16,
+    nilai_kontrak = coalesce($17, nilai_kontrak), tanggal_kontrak = $18, diubah_pada = now()
 WHERE kode = $1 AND NOT is_simulation`
+
+	sqlSimpanPenyedia = `INSERT INTO penyedia (nama, nama_normal, alias) VALUES ($1, $2, ARRAY[$1])
+ON CONFLICT (nama_normal) DO UPDATE SET
+    alias = CASE WHEN $1 = ANY (penyedia.alias) THEN penyedia.alias ELSE array_append(penyedia.alias, $1) END,
+    diubah_pada = now()
+RETURNING id`
 )
 
 type PaketRepository struct {
@@ -144,7 +151,11 @@ func (r PaketRepository) SimpanDetailPaket(ctx context.Context, data usecase.Dat
 		if err != nil {
 			return err
 		}
-		return simpanDetail(ctx, tx, data, idInstansi, kodeRUP)
+		idPenyedia, err := simpanPenyedia(ctx, tx, data.Penyedia)
+		if err != nil {
+			return err
+		}
+		return simpanDetail(ctx, tx, data, relasiDetail{instansi: idInstansi, penyedia: idPenyedia, kodeRUP: kodeRUP})
 	})
 }
 
@@ -160,11 +171,35 @@ func simpanRUPTercatat(ctx context.Context, tx pgx.Tx, data usecase.DataSimpanDe
 	return &rup.Kode, nil
 }
 
-func simpanDetail(ctx context.Context, tx pgx.Tx, data usecase.DataSimpanDetailPaket, idInstansi int64, kodeRUP *string) error {
+type relasiDetail struct {
+	instansi int64
+	penyedia *int64
+	kodeRUP  *string
+}
+
+func simpanPenyedia(ctx context.Context, tx pgx.Tx, p *domain.Penyedia) (*int64, error) {
+	if p == nil {
+		return nil, nil
+	}
+	var id int64
+	if err := tx.QueryRow(ctx, sqlSimpanPenyedia, p.Nama, p.NamaNormal).Scan(&id); err != nil {
+		return nil, fmt.Errorf("simpan penyedia %s: %w", p.Nama, err)
+	}
+	return &id, nil
+}
+
+func nilaiKontrak(p *domain.PemenangPaket) *float64 {
+	if p == nil || !p.IsBerkontrak {
+		return nil
+	}
+	return &p.Nilai
+}
+
+func simpanDetail(ctx context.Context, tx pgx.Tx, data usecase.DataSimpanDetailPaket, relasi relasiDetail) error {
 	d := data.Detail
-	_, err := tx.Exec(ctx, sqlSimpanDetailPaket, d.Kode, d.Nama, idInstansi, kodeRUP, d.IsBatal, tanggalAtauKosong(d.TanggalDibuat),
+	_, err := tx.Exec(ctx, sqlSimpanDetailPaket, d.Kode, d.Nama, relasi.instansi, relasi.kodeRUP, d.IsBatal, tanggalAtauKosong(d.TanggalDibuat),
 		d.JenisPengadaan, d.Metode, d.JenisKontrak, d.TahunAnggaran, d.Pagu, d.HPS, d.JumlahPeserta,
-		data.Provenance.ID, data.Provenance.DiambilPada)
+		data.Provenance.ID, data.Provenance.DiambilPada, relasi.penyedia, nilaiKontrak(d.Pemenang), d.TanggalKontrak)
 	if err != nil {
 		return fmt.Errorf("simpan detail paket %s: %w", d.Kode, err)
 	}

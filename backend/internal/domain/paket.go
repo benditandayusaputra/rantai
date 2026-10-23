@@ -71,6 +71,19 @@ type DetailPaket struct {
 	Pagu           *float64
 	HPS            *float64
 	JumlahPeserta  *int
+	Pemenang       *PemenangPaket
+	TanggalKontrak *time.Time
+}
+
+type PemenangPaket struct {
+	NamaPenyedia string
+	Nilai        float64
+	IsBerkontrak bool
+}
+
+type Penyedia struct {
+	Nama       string
+	NamaNormal string
 }
 
 type AturanJenisInstansi struct {

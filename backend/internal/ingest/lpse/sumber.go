@@ -19,6 +19,7 @@ import (
 
 const (
 	formatTanggalRaw = "2006-01-02"
+	catatanDetail    = "Pengumuman, pemenang, dan jadwal paket non-tender SPSE LPSE Provinsi DKI Jakarta. Tanggal kontrak memakai akhir tahap Penandatanganan Kontrak di jadwal pemilihan."
 	catatanDaftar    = "Daftar paket SPSE LPSE Provinsi DKI Jakarta. HPS paket tender berasal dari kolom daftar yang dibulatkan sumber ke satu desimal (contoh 5,8 M); detail tender tidak dibuka untuk publik."
 )
 
@@ -59,19 +60,65 @@ func (s Sumber) AmbilDaftarPaket(ctx context.Context, tahun int) (usecase.Daftar
 
 func (s Sumber) AmbilDetailPaket(ctx context.Context, kodeSPSE string) (usecase.DetailPaketSumber, error) {
 	diambilPada := s.Sekarang()
-	alamat := s.URLDasar + "/nontender/" + url.PathEscape(kodeSPSE) + "/pengumumanpl"
-	isi, err := s.Klien.Ambil(ctx, alamat)
+	perekam := &perekamRespons{Pengirim: s.Klien}
+	alamat := s.alamatNonTender("/nontender/", kodeSPSE, "/pengumumanpl")
+	isi, err := perekam.Ambil(ctx, alamat)
 	if err != nil {
-		return usecase.DetailPaketSumber{}, err
-	}
-	if err := s.simpanMentah(usecase.JobLPSEDetail, diambilPada, map[string][]byte{kodeSPSE + ".html": isi}); err != nil {
 		return usecase.DetailPaketSumber{}, err
 	}
 	pengumuman, err := UraiPengumuman(isi)
 	if err != nil {
 		return usecase.DetailPaketSumber{}, err
 	}
-	return usecase.DetailPaketSumber{Detail: keDetailDomain(pengumuman), Provenance: s.provenance(alamat, "", isi, diambilPada)}, nil
+	detail := keDetailDomain(pengumuman)
+	if !detail.IsBatal {
+		if err := s.lengkapiPemenang(ctx, perekam, &detail); err != nil {
+			return usecase.DetailPaketSumber{}, err
+		}
+	}
+	if err := s.simpanMentah(usecase.JobLPSEDetail, diambilPada, perekam.isiBernama(kodeSPSE)); err != nil {
+		return usecase.DetailPaketSumber{}, err
+	}
+	return usecase.DetailPaketSumber{Detail: detail, Provenance: s.provenance(alamat, catatanDetail, perekam.gabungan(), diambilPada)}, nil
+}
+
+func (s Sumber) lengkapiPemenang(ctx context.Context, klien Pengirim, detail *domain.DetailPaket) error {
+	pemenang, err := s.ambilPemenang(ctx, klien, detail.KodeSPSE)
+	if err != nil || pemenang == nil {
+		return err
+	}
+	detail.Pemenang = pemenang
+	isi, err := klien.Ambil(ctx, s.alamatNonTender("/nontender/", detail.KodeSPSE, "/jadwal"))
+	if err != nil {
+		return err
+	}
+	tanggal, ada, err := UraiTanggalKontrak(isi)
+	detail.TanggalKontrak = nilaiBila(tanggal, ada)
+	return err
+}
+
+func (s Sumber) ambilPemenang(ctx context.Context, klien Pengirim, kodeSPSE string) (*domain.PemenangPaket, error) {
+	for _, halaman := range []struct {
+		path         string
+		isBerkontrak bool
+	}{{"/pemenangberkontrak", true}, {"/pemenang", false}} {
+		isi, err := klien.Ambil(ctx, s.alamatNonTender("/evaluasinontender/", kodeSPSE, halaman.path))
+		if err != nil {
+			return nil, err
+		}
+		daftar, err := UraiPemenang(isi)
+		if err != nil {
+			return nil, err
+		}
+		if len(daftar) > 0 {
+			return &domain.PemenangPaket{NamaPenyedia: daftar[0].Nama, Nilai: daftar[0].Nilai, IsBerkontrak: halaman.isBerkontrak}, nil
+		}
+	}
+	return nil, nil
+}
+
+func (s Sumber) alamatNonTender(awalan, kodeSPSE, akhiran string) string {
+	return s.URLDasar + awalan + url.PathEscape(kodeSPSE) + akhiran
 }
 
 func (s Sumber) provenance(alamat, catatan string, isi []byte, diambilPada time.Time) domain.Provenance {

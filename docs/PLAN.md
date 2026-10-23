@@ -99,7 +99,7 @@ Versi 2.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` v2.0 dan `docs/SPEC.
   - Job `lpse_daftar` dan `lpse_detail`, normalisasi nama penyedia, pencatatan perubahan tahap; snapshot hasil impor untuk lingkungan di luar Indonesia.
   - Commit: `✨ Jalankan impor harian paket LPSE DKI dengan pencatatan tahap`
   - Selesai bila: menjalankan job dua kali tidak menggandakan data; `ingest_run` tercatat.
-- [ ] **T-304** Pemenang dan kontrak **[GERBANG DATA GD-02]**
+- [x] **T-304** Pemenang dan kontrak **[GERBANG DATA GD-02]**
   - Parser pemenang tender dan pemenang berkontrak.
   - Commit: `✨ Ambil pemenang dan nilai kontrak paket`
   - Selesai bila: fixture paket tanpa pemenang dan dengan pemenang dites.

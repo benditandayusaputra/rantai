@@ -83,3 +83,15 @@ Catatan hasil Gerbang Data (SPEC bagian 1). Setiap entri memuat URL, tanggal cek
 - **Hasil uji 23 Oktober 2026**: 4.972 rilis sejak pelantikan 26 Agustus 2024 terpaut ke 104 dari 106 anggota.
 - **Jadwal**: impor awal dari `rilis.mulai` di `config/dprd.yaml`; berikutnya dari tanggal terbit terakhir dikurangi 24 jam (upsert per URL, tidak menggandakan). Batas pengaman 100 halaman per jalan.
 - **robots.txt**: hanya `/wp-admin/` yang dilarang. Jeda 1 detik per permintaan lewat klien bersama.
+
+## GD-02 Pemenang dan kontrak paket
+
+- **Status**: lolos sebagian, hanya untuk non-tender.
+- **Tanggal cek**: 23 Oktober 2026.
+- **Non-tender** (terbuka, tanpa tantangan):
+  - `GET /jakarta/evaluasinontender/<kode>/pemenang`: tabel bertajuk Nama Pemenang, Alamat, NPWP (tersamar), Harga Penawaran, Harga Terkoreksi, Hasil Negosiasi. Kosong untuk paket batal.
+  - `GET /jakarta/evaluasinontender/<kode>/pemenangberkontrak`: Nama Pemenang, Alamat, NPWP, Harga Kontrak, Nilai PDN, Nilai UMK, Status Kontrak. Kosong bila kontrak belum dibuat.
+  - `GET /jakarta/nontender/<kode>/jadwal`: tahap pemilihan beserta mulai dan sampai; tahap "Penandatanganan Kontrak" dipakai sebagai perkiraan tanggal kontrak.
+- **Tidak tersedia**: tanggal kontrak pasti dan jadwal pelaksanaan pekerjaan tidak tampil di halaman publik SPSE. Jadwal pelaksanaan diambil dari SiRUP (GD-03) dengan ketelitian bulan. Pemenang tender tertutup (lihat GD-01); untuk tender hanya nilai kontrak dari kolom daftar.
+- **Pemakaian**: Rantai menyimpan nama penyedia dan harga kontrak; alamat dan NPWP tidak disimpan. Nilai kontrak hanya diisi dari halaman pemenang berkontrak; hasil negosiasi tanpa kontrak tidak dianggap nilai kontrak.
+- **Privasi**: job detail hanya berjalan untuk Pekerjaan Konstruksi dan Jasa Konsultansi Badan Usaha Konstruksi, sehingga pemenang perorangan (misalnya PJLP) tidak diambil.
