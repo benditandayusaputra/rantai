@@ -29,7 +29,7 @@ Karya cabang Web In Action, MIA 2026 (UPNVJ), tema "Designing Digital Futures, P
 
 ## Cara menjalankan
 
-Prasyarat: Docker dengan Docker Compose, Go 1.25 ke atas, GNU Make.
+Prasyarat: Docker dengan Docker Compose, Go 1.26 ke atas, GNU Make.
 
 ```bash
 cp .env.example .env

@@ -28,7 +28,7 @@ Versi 1.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` dan `docs/SPEC.md`.
 
 ## Fase 1. Kerangka backend
 
-- [ ] **T-101** Server API dasar
+- [x] **T-101** Server API dasar
   - Pemuat konfigurasi YAML + env, `cmd/api` dengan GoFiber v3, amplop respons dan pemetaan error (SPEC 0.3), endpoint `GET /api/v1/kesehatan`.
   - Commit: `🧱 Bangun server API dengan amplop respons dan pemetaan error`
   - Selesai bila: tes handler kesehatan dan tes pemetaan error domain ke kode HTTP lulus.

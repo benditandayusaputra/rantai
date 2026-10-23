@@ -1,0 +1,5 @@
+server:
+  port: "8080"
+  batas_waktu_baca: 10s
+  batas_waktu_tulis: 15s
+  batas_waktu_henti: 10s
