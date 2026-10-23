@@ -17,7 +17,7 @@ Versi 1.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` dan `docs/SPEC.md`.
   - Struktur folder sesuai CLAUDE.md bagian 3, `go mod init`, README kerangka (judul, deskripsi, tech stack, cara menjalankan, progres pengerjaan), `.env.example`.
   - Commit: `🎉 Inisialisasi struktur monorepo Rantai`
   - Selesai bila: `go build ./...` lulus di folder backend; README memuat lima bagian wajib FDS walau isinya masih ringkas.
-- [ ] **T-002** Lingkungan lokal
+- [x] **T-002** Lingkungan lokal
   - `docker-compose.yml` untuk PostgreSQL 16 + PostGIS 3 dan MinIO; `Makefile` dengan target `up`, `down`, `migrate`, `lint`, `test`.
   - Commit: `🔧 Tambah Docker Compose PostGIS dan MinIO serta Makefile`
   - Selesai bila: `make up` lalu `make migrate` berjalan dari repo bersih.

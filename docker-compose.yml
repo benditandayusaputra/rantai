@@ -1,0 +1,52 @@
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-rantai}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-rantai}
+      POSTGRES_DB: ${POSTGRES_DB:-rantai}
+    ports:
+      - "${POSTGRES_PORT:-5433}:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+
+  minio:
+    image: pgsty/minio:RELEASE.2026-08-04T00-00-00Z
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-rantai}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-rantai-rahasia}
+    ports:
+      - "${MINIO_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+    volumes:
+      - minio-data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-fs", "http://localhost:9000/minio/health/live"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+
+  migrate:
+    build:
+      context: ./backend/migrations
+      dockerfile_inline: |
+        FROM migrate/migrate:v4.18.3
+        COPY *.sql /migrations/
+    profiles: ["alat"]
+    entrypoint:
+      - migrate
+      - -path=/migrations
+      - -database=postgres://${POSTGRES_USER:-rantai}:${POSTGRES_PASSWORD:-rantai}@db:5432/${POSTGRES_DB:-rantai}?sslmode=disable
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db-data:
+  minio-data:

@@ -40,7 +40,7 @@ make migrate
 ## Progres pengerjaan
 
 - [x] Struktur monorepo
-- [ ] Lingkungan lokal Docker Compose
+- [x] Lingkungan lokal Docker Compose
 - [ ] Server API dan skema wilayah
 - [ ] Lensa Layanan
 - [ ] Lensa Uang
