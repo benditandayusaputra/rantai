@@ -317,3 +317,16 @@ export interface DetailPaket {
 	sinyal: Sinyal[];
 	provenance_id: string;
 }
+
+export interface PengambilanSumber {
+	job: string;
+	status_terakhir: 'berhasil' | 'gagal' | 'berjalan';
+	dijalankan_pada: string;
+	berhasil_pada: string | null;
+}
+
+export interface InfoSumberData {
+	pengambilan: PengambilanSumber[];
+	media: { nama: string; domain: string }[];
+	atribusi_opentender: string;
+}

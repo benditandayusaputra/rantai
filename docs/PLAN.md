@@ -207,7 +207,7 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - Daftar wakil dapil, profil anggota, umpan dua sumber berlencana, pernyataan bias liputan.
   - Commit: `✨ Tampilkan wakil dapil, profil anggota, dan jejak kegiatan`
   - Selesai bila: tidak ada angka kinerja atau peringkat politisi di layar; lencana jenis sumber selalu terlihat.
-- [ ] **T-610** Tentang Data (WIL-05) **[BUTUH DESAIN]**
+- [x] **T-610** Tentang Data (WIL-05) **[BUTUH DESAIN]**
   - Commit: `📝 Tambah halaman Tentang Data dengan rumus dan sumber`
   - Selesai bila: tanggal ambil terakhir tiap sumber diambil dari API, bukan ditulis tangan.
 

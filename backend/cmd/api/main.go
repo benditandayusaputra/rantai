@@ -24,6 +24,7 @@ const (
 	pathKonfigurasiPemeliharaan = "config/pemeliharaan.yaml"
 	pathKonfigurasiSinyal       = "config/sinyal.yaml"
 	pathKonfigurasiOpentender   = "config/opentender.yaml"
+	pathKonfigurasiMedia        = "config/media.yaml"
 )
 
 func main() {
@@ -49,6 +50,9 @@ func jalankan() error {
 		return err
 	}
 	layanan = denganLayananPendidikan(layanan, pool, cfg)
+	if layanan.SumberData, err = buatBacaSumberData(pool); err != nil {
+		return err
+	}
 	app := deliveryhttp.NewApp(cfg.Server, layanan)
 	go hentikanSaatSinyal(ctx, app, cfg.Server)
 	if err := app.Listen(":" + cfg.Server.Port); err != nil {
@@ -90,14 +94,34 @@ func susunLayanan(pool *pgxpool.Pool) (deliveryhttp.Layanan, error) {
 	}, nil
 }
 
-func buatBacaPenyedia(pool *pgxpool.Pool, batas int) (usecase.BacaPenyedia, error) {
+func bacaAtribusiOpentender() (string, error) {
 	var cfg struct {
 		Atribusi string `yaml:"atribusi"`
 	}
-	if err := config.BacaYAML(pathKonfigurasiOpentender, &cfg); err != nil {
+	err := config.BacaYAML(pathKonfigurasiOpentender, &cfg)
+	return cfg.Atribusi, err
+}
+
+func buatBacaPenyedia(pool *pgxpool.Pool, batas int) (usecase.BacaPenyedia, error) {
+	atribusi, err := bacaAtribusiOpentender()
+	if err != nil {
 		return usecase.BacaPenyedia{}, err
 	}
-	return usecase.BacaPenyedia{Pembaca: repository.PenyediaRepository{DB: pool}, Batas: batas, Atribusi: cfg.Atribusi}, nil
+	return usecase.BacaPenyedia{Pembaca: repository.PenyediaRepository{DB: pool}, Batas: batas, Atribusi: atribusi}, nil
+}
+
+func buatBacaSumberData(pool *pgxpool.Pool) (usecase.BacaSumberData, error) {
+	var cfg struct {
+		Media []domain.MediaTerverifikasi `yaml:"media"`
+	}
+	if err := config.BacaYAML(pathKonfigurasiMedia, &cfg); err != nil {
+		return usecase.BacaSumberData{}, err
+	}
+	atribusi, err := bacaAtribusiOpentender()
+	if err != nil {
+		return usecase.BacaSumberData{}, err
+	}
+	return usecase.BacaSumberData{Pembaca: repository.IngestRunRepository{DB: pool}, Media: cfg.Media, AtribusiOpentender: atribusi}, nil
 }
 
 func buatBacaPaket(pool *pgxpool.Pool) (usecase.BacaPaket, error) {

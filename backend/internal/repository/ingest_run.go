@@ -4,7 +4,9 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/benditandayusaputra/rantai/backend/internal/domain"
 	"github.com/benditandayusaputra/rantai/backend/internal/usecase"
+	"github.com/jackc/pgx/v5"
 )
 
 const (
@@ -17,6 +19,11 @@ WHERE id = $1`
 	sqlGagalIngest = `UPDATE ingest_run
 SET selesai = now(), status = 'gagal', pesan_error = $2, diubah_pada = now()
 WHERE id = $1`
+
+	sqlPengambilanTerakhir = `SELECT DISTINCT ON (a.sumber) a.sumber, a.status::text, a.mulai,
+    (SELECT max(b.selesai) FROM ingest_run b WHERE b.sumber = a.sumber AND b.status = 'berhasil')
+FROM ingest_run a
+ORDER BY a.sumber, a.mulai DESC`
 )
 
 type IngestRunRepository struct {
@@ -43,4 +50,16 @@ func (r IngestRunRepository) Gagal(ctx context.Context, id int64, sebab error) e
 		return fmt.Errorf("catat gagal ingest %d: %w", id, err)
 	}
 	return nil
+}
+
+func (r IngestRunRepository) DaftarPengambilanTerakhir(ctx context.Context) ([]domain.PengambilanSumber, error) {
+	baris, err := r.DB.Query(ctx, sqlPengambilanTerakhir)
+	if err != nil {
+		return nil, fmt.Errorf("daftar pengambilan terakhir: %w", err)
+	}
+	return pgx.CollectRows(baris, func(b pgx.CollectableRow) (domain.PengambilanSumber, error) {
+		var p domain.PengambilanSumber
+		err := b.Scan(&p.Job, &p.StatusTerakhir, &p.DijalankanPada, &p.BerhasilPada)
+		return p, err
+	})
 }

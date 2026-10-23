@@ -3,6 +3,7 @@ import type {
 	Amplop,
 	DetailPaket,
 	DetailPendidikan,
+	InfoSumberData,
 	PaketRingkas,
 	PetaPaket,
 	PetaTema,
@@ -150,4 +151,8 @@ export function ambilPaketKecamatan(
 
 export function ambilPaket(fetchFn: Fetch, kode: string): Promise<DetailPaket> {
 	return ambilData<DetailPaket>(fetchFn, `/paket/${encodeURIComponent(kode)}`);
+}
+
+export function ambilSumberData(fetchFn: Fetch): Promise<InfoSumberData> {
+	return ambilData<InfoSumberData>(fetchFn, '/sumber-data');
 }
