@@ -444,16 +444,16 @@ Kriteria terima: importer lulus tes dengan fixture minimal 5 berkas (daftar tend
 Gazetir dibangun dari tabel `wilayah` (nama dan alias). Langkah:
 
 1. Normalisasi nama paket: huruf kecil, ganti "kel." menjadi "kelurahan", "kec." menjadi "kecamatan", "jl." menjadi "jalan", rapikan spasi.
-2. Ekstrak RT dan RW dengan pola `rt\s*0*(\d{1,3})` dan `rw\s*0*(\d{1,3})`.
-3. Cari semua kemunculan nama kelurahan dan kecamatan dari gazetir, utamakan yang didahului kata "kelurahan" atau "kecamatan".
+2. Ekstrak RT dan RW dengan pola `rt\.?\s*0*(\d{1,3})` dan `rw\.?\s*0*(\d{1,3})`, termasuk bentuk gabungan `RT.007/002`.
+3. Cari semua kemunculan nama kelurahan dan kecamatan dari gazetir (nama dan alias, dibandingkan tanpa spasi), utamakan yang didahului kata "kelurahan" atau "kecamatan". Nama yang tercakup di nama lain yang lebih panjang dibuang ("Kelapa Gading" di dalam "Kelapa Gading Barat").
 4. Saring kandidat dengan kota instansi: kandidat di luar kota instansi dibuang (sudin bekerja di kotanya sendiri; dinas provinsi tidak disaring).
 5. Tentukan hasil:
    - tepat satu kelurahan cocok dan konsisten dengan kecamatan yang disebut: `lokasi_tingkat = kelurahan`, titik di `titik_tengah` kelurahan;
    - tidak ada kelurahan tetapi tepat satu kecamatan: `lokasi_tingkat = kecamatan`;
    - selain itu: `lokasi_tingkat = kota` dari instansi dengan label "lokasi tingkat kota", atau `provinsi` untuk dinas provinsi.
-6. Titik beberapa paket di kelurahan yang sama diberi pergeseran deterministik kecil (berbasis hash kode paket) agar tidak menumpuk, dan ditandai "lokasi kelurahan, bukan titik pasti".
+6. Hanya tingkat kelurahan yang diberi titik; tingkat kecamatan ditampilkan sebagai area. Titik beberapa paket di kelurahan yang sama diberi pergeseran deterministik kecil (berbasis hash kode paket) agar tidak menumpuk, dan ditandai "lokasi kelurahan, bukan titik pasti".
 
-Target: minimal 70% paket Pekerjaan Konstruksi mendapat tingkat kecamatan atau lebih rinci. Sebelum dipakai, aturan diuji pada 100 nama paket nyata. Laporan cakupan dicetak `make laporan-geocode` dan tampil di Tentang Data.
+Target: minimal 70% paket Pekerjaan Konstruksi mendapat tingkat kecamatan atau lebih rinci. Uji pertama pada data TA 2025 mencapai 56% karena sekitar 40% nama paket konstruksi tidak menyebut wilayah; hasil dan contoh salah tercatat di `docs/data-sources.md`. Sebelum dipakai, aturan diuji pada 100 nama paket nyata. Laporan cakupan dicetak `make laporan-geocode` dan tampil di Tentang Data.
 
 Tes wajib: "Pembangunan Pintu Air Gg. Nusa Indah RT 04 RW 22 Gading Sengon (JPO Kali Betik), Kel. Kelapa Gading Barat, Kec. Kelapa Gading" menghasilkan kelurahan Kelapa Gading Barat, RT 4, RW 22; nama yang menyebut dua kelurahan berbeda menghasilkan tingkat kecamatan atau kota; nama tanpa wilayah menghasilkan tingkat kota.
 

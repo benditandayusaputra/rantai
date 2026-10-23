@@ -125,3 +125,13 @@ Catatan hasil Gerbang Data (SPEC bagian 1). Setiap entri memuat URL, tanggal cek
 - **Field RSS**: `title`, `link` (cadangan `guid`), `pubDate` (RFC 1123 dengan zona), `description` (HTML dengan gambar; tag dibuang, dipotong 300 karakter).
 - **Disambiguasi** (`domain.AturanMedia`): nama anggota (aturan pencarian sama dengan GD-13) harus muncul di judul atau cuplikan bersama salah satu `konteks_dprd` (`nama_dan_dprd`) atau alias fraksi anggota itu, contoh "Fraksi PKS" (`nama_dan_fraksi`). Tautan di luar domain daftar media ditolak.
 - **Jadwal**: harian. RSS hanya memuat berita terbaru, jadi umpan media terkumpul sejak job pertama berjalan (`mulai` di konfigurasi), tidak mundur ke awal periode. Uji 23 Oktober 2026: 235 item, belum ada yang lolos disambiguasi.
+
+## Uji penentuan lokasi paket (ANG-02)
+
+- **Tanggal uji**: 23 Oktober 2026, data nyata LPSE DKI TA 2025 (686 paket Pekerjaan Konstruksi, 100 nama diambil acak deterministik dengan urutan `md5(kode)`).
+- **Kondisi**: detail non-tender belum diambil, sehingga instansi semua paket masih K/L/PD dan penyaringan kota instansi belum aktif.
+- **Hasil 100 nama**: 56 tingkat kelurahan, 3 tingkat kecamatan, 41 tingkat provinsi.
+  - Dari 59 yang terpetakan, 56 benar, 2 salah di tingkat kelurahan ("Pagar Pengaman Waduk Muara Angke" terpetakan ke Kel. Angke di Tambora; "Turap Kali Duri RW16, Penjagalan, Penjaringan" ke Kel. Penjaringan karena ejaan resmi "Pejagalan"), dan 1 meragukan ("Pompa Kamal").
+  - 41 sisanya memang tidak menyebut kelurahan atau kecamatan (gedung kantor, Kompleks Balaikota, rumah pompa bernama jalan) atau menyebut dua kelurahan di kecamatan berbeda.
+- **Cakupan seluruh 686 paket konstruksi** (`make laporan-geocode`): kelurahan 349, kecamatan 35, provinsi 302; 56,0% tingkat kecamatan atau lebih rinci. Target 70% belum tercapai karena sekitar 40% nama paket konstruksi tidak memuat nama wilayah. Setelah detail non-tender diambil, paket sudin mendapat kota instansi sehingga sebagian bergeser dari provinsi ke kota, bukan ke kecamatan.
+- **Perbaikan dari uji**: pencocokan mengabaikan spasi ("Bale Kambang" cocok dengan Balekambang) dan pola RT/RW `RT.007/002`.

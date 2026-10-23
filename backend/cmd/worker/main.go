@@ -34,6 +34,10 @@ const (
 	pathKonfigurasiMedia   = "config/media.yaml"
 	pathKonfigurasiLPSE    = "config/lpse.yaml"
 	pathKonfigurasiSIRUP   = "config/sirup.yaml"
+	pathKonfigurasiGeocode = "config/geocode.yaml"
+	jobLaporanGeocode      = "laporan_geocode"
+	jenisPengadaanLaporan  = "Pekerjaan Konstruksi"
+	persenPenuh            = 100
 	urlRujukanTema         = "https://github.com/benditandayusaputra/rantai/tree/main/backend/config/tema"
 	dirRawBawaan           = "../data/raw"
 	batasWaktuUnduh        = time.Minute
@@ -41,7 +45,7 @@ const (
 
 type job func(ctx context.Context) error
 
-var jobTersedia = []string{usecase.JobWilayah, usecase.JobTema, usecase.JobKPUDPRD, usecase.JobLPSEDaftar, usecase.JobLPSEDetail, usecase.JobSIRUP, usecase.JobUmpanDPRD, usecase.JobUmpanMedia}
+var jobTersedia = []string{usecase.JobWilayah, usecase.JobTema, usecase.JobKPUDPRD, usecase.JobLPSEDaftar, usecase.JobLPSEDetail, usecase.JobSIRUP, usecase.JobTurunan, jobLaporanGeocode, usecase.JobUmpanDPRD, usecase.JobUmpanMedia}
 
 func main() {
 	if err := jalankan(os.Args[1:]); err != nil {
@@ -79,6 +83,10 @@ func pilihJob(nama string, pool *pgxpool.Pool) (job, error) {
 		return buatImporLPSE(nama, pool)
 	case usecase.JobSIRUP:
 		return buatImporRUP(pool)
+	case usecase.JobTurunan:
+		return buatTurunan(pool)
+	case jobLaporanGeocode:
+		return buatLaporanGeocode(pool), nil
 	case usecase.JobUmpanDPRD:
 		return buatImporUmpanDPRD(pool)
 	case usecase.JobUmpanMedia:
@@ -242,6 +250,47 @@ func buatImporUmpanMedia(pool *pgxpool.Pool) (job, error) {
 		Pautkan:   cfg.Aturan().Pautkan,
 	}
 	return impor.Jalankan, nil
+}
+
+func buatTurunan(pool *pgxpool.Pool) (job, error) {
+	var aturan domain.AturanLokasi
+	if err := config.BacaYAML(pathKonfigurasiGeocode, &aturan); err != nil {
+		return nil, err
+	}
+	lokasi := repository.LokasiPaketRepository{DB: pool}
+	turunan := usecase.TurunanPaket{
+		Gazetir:      lokasi,
+		Lokasi:       lokasi,
+		Pencatat:     repository.IngestRunRepository{DB: pool},
+		AturanLokasi: aturan,
+	}
+	return turunan.Jalankan, nil
+}
+
+func buatLaporanGeocode(pool *pgxpool.Pool) job {
+	return func(ctx context.Context) error {
+		cakupan, err := repository.LokasiPaketRepository{DB: pool}.CakupanLokasi(ctx, jenisPengadaanLaporan)
+		if err != nil {
+			return err
+		}
+		cetakCakupan(cakupan)
+		return nil
+	}
+}
+
+func cetakCakupan(cakupan map[string]int) {
+	total := 0
+	for _, jumlah := range cakupan {
+		total += jumlah
+	}
+	rinci := cakupan[string(domain.TingkatKelurahan)] + cakupan[string(domain.TingkatKecamatan)]
+	fmt.Printf("Cakupan lokasi paket %s (%d paket)\n", jenisPengadaanLaporan, total)
+	for _, tingkat := range []domain.Tingkat{domain.TingkatKelurahan, domain.TingkatKecamatan, domain.TingkatKota, domain.TingkatProvinsi} {
+		fmt.Printf("  %-10s %6d\n", tingkat, cakupan[string(tingkat)])
+	}
+	if total > 0 {
+		fmt.Printf("Kecamatan atau lebih rinci: %.1f%%\n", float64(rinci)*persenPenuh/float64(total))
+	}
 }
 
 func dirRaw() string {

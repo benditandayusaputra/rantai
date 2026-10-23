@@ -107,7 +107,7 @@ Versi 2.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` v2.0 dan `docs/SPEC.
   - Job `sirup` untuk kode RUP yang ditemukan.
   - Commit: `✨ Tautkan paket ke rencana umum pengadaan`
   - Selesai bila: paket tanpa RUP tetap tersimpan dengan `kode_rup` kosong.
-- [ ] **T-306** Penentuan lokasi paket (ANG-02)
+- [x] **T-306** Penentuan lokasi paket (ANG-02)
   - Gazetir dari tabel wilayah, ekstraksi RT/RW, penyaringan kota instansi, pergeseran titik deterministik.
   - Commit: `✨ Petakan paket ke kelurahan dan kecamatan dari nama paket`
   - Selesai bila: tiga tes wajib ANG-02 lulus; uji 100 nama paket nyata dicatat; cakupan dicetak oleh `make laporan-geocode`.
