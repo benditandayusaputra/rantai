@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS anggota;
+DROP TABLE IF EXISTS dapil_wilayah;
+DROP TABLE IF EXISTS dapil;

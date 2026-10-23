@@ -7,7 +7,7 @@ export DATABASE_URL TEST_DATABASE_URL
 COMPOSE := docker compose
 MIGRATE := $(COMPOSE) run --rm --build migrate
 
-.PHONY: up down migrate migrate-down lint test impor-wilayah impor-tema
+.PHONY: up down migrate migrate-down lint test impor-wilayah impor-tema impor-kpu-dprd
 
 up:
 	$(COMPOSE) up -d --wait db minio
@@ -32,3 +32,6 @@ impor-wilayah:
 
 impor-tema:
 	cd backend && go run ./cmd/worker tema
+
+impor-kpu-dprd:
+	cd backend && go run ./cmd/worker kpu_dprd

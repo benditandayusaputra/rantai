@@ -34,3 +34,23 @@ Catatan hasil Gerbang Data (SPEC bagian 1). Setiap entri memuat URL, tanggal cek
 - **Akibat**: paket tender hanya memuat data kolom daftar: kode, nama, tahap, HPS ringkas (dibulatkan satu desimal oleh sumber), metode, jenis pengadaan, tahun anggaran, nilai kontrak. Satuan kerja, kode RUP, pagu, lokasi pekerjaan, jumlah peserta, dan pemenang tender tidak tersedia. Instansi tender dicatat sebagai K/L/PD (Provinsi DKI Jakarta), sehingga penentuan lokasi tidak menyaring kota instansi.
 - **Cadangan yang diperiksa**: ISB LKPP dinonaktifkan per 31 Desember 2025 dan dipindah ke API Gateway Inaproc (`data.inaproc.id/api/v1`, termasuk `tender/pengumuman` dan `tender/tender-ekontrak`). Akses memerlukan akun peran Data Integrator, token yang terikat IP, dan surat permohonan ke LKPP; dicatat di Catatan blokir PLAN.md sebagai jalur untuk detail tender.
 - **Fixture**: `backend/internal/ingest/lpse/testdata/`, hanya paket dengan pemenang badan usaha; paket jasa perorangan (PJLP) tidak dijadikan fixture karena memuat nama orang.
+
+## GD-07 Dapil dan anggota DPRD DKI Jakarta 2024-2029
+
+- **Status**: lolos dengan cadangan. Daftar dapil per kecamatan dari PKPU; daftar anggota terpilih dari situs resmi DPRD DKI (cadangan yang disebut SPEC), karena situs KPU tidak menyediakan daftar calon terpilih per dapil dalam bentuk yang bisa diambil.
+- **Tanggal cek**: 23 Oktober 2026
+- **Dapil**: PKPU 6/2023 tentang Daerah Pemilihan dan Alokasi Kursi Pemilu 2024 ([berkas batang tubuh](https://peraturan.go.id/files/peraturan-kpu-no-6-tahun-2023.pdf); lampiran per provinsi tidak ikut di berkas itu). Pembagian kecamatan dicocokkan dengan Wikipedia "DPRD Provinsi DKI Jakarta" dan pemberitaan media; hasilnya dikurasi ke `backend/config/dprd.yaml`.
+  - 10 dapil, 106 kursi: 12, 9, 9, 10, 10, 10, 10, 12, 12, 12.
+  - Dapil 2 memuat seluruh Kabupaten Kepulauan Seribu (2 kecamatan) ditambah Koja, Cilincing, Kelapa Gading.
+  - Job `kpu_dprd` memvalidasi bahwa ke-44 kecamatan DKI masuk tepat satu dapil dan nama kecamatan sama dengan tabel `wilayah`. Basis data juga menjaga keunikan `dapil_wilayah.kode_kecamatan`.
+- **Anggota**: `https://dprd-dkijakartaprov.go.id` (WordPress).
+  - `/akd/dapil/dki-jakarta-{1..10}/`: nomor urut, nama bergelar, partai, tautan `/profile/{slug}/`. Total 106 baris.
+  - `/fraksi/periode-2024-2029/{partai}/`: 9 fraksi, kartu anggota berisi nama (`h3`), jabatan fraksi (`h4`), tautan profil. Total 106. Anggota PPP tergabung di Fraksi NasDem; anggota Perindo di Fraksi Demokrat dan Perindo.
+  - `/profile/{slug}/`: tempat dan tanggal lahir, agama, media sosial, pengalaman organisasi. Tidak diambil; Rantai hanya menautkan.
+- **Kesalahan di situs DPRD yang ditangani**:
+  - Teks "Meliputi Kecamatan" di halaman dapil keliru (Tebet muncul di dapil 7 dan 8; Kebayoran Lama, Pesanggrahan, Cilandak tidak ada; Kepulauan Seribu muncul di dapil 2 dan 3). Karena itu cakupan kecamatan tidak diambil dari situs DPRD.
+  - Dua tautan profil di halaman dapil salah tempel (Ida Mahmudah memakai slug Ima Mahdiah; Andika Wisnuadji memakai slug Francine Widjojo). Ejaan nama juga berbeda antarhalaman (contoh "Abdilah" dan "Abdillah").
+  - Pencocokan dapil ke fraksi: slug profil bila unik di kedua halaman, lalu nama tanpa gelar bila unik di kedua halaman. Sisanya tidak ditebak: job gagal dan mencetak nama yang tidak cocok.
+- **Identitas anggota**: `anggota.id` adalah slug profil dari halaman fraksi (unik di sana), contoh `ima-mahdiah`.
+- **LHKPN**: tautan ke halaman pengumuman e-LHKPN KPK (`https://elhkpn.kpk.go.id/portal/user/login#announ`); data LHKPN tidak disalin.
+- **robots.txt** `dprd-dkijakartaprov.go.id`: hanya `Disallow: /wp-admin/` untuk semua agen. Job memberi jeda 1 detik antarhalaman (19 halaman) dan memakai User-Agent RantaiBot.

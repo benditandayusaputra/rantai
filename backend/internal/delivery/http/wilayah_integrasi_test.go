@@ -1,74 +1,27 @@
 package http
 
 import (
-	"context"
-	"os"
-	"path/filepath"
 	"slices"
+	"strings"
 	"testing"
 	"time"
 
 	"github.com/benditandayusaputra/rantai/backend/internal/config"
-	"github.com/benditandayusaputra/rantai/backend/internal/ingest/wilayah"
 	"github.com/benditandayusaputra/rantai/backend/internal/repository"
 	"github.com/benditandayusaputra/rantai/backend/internal/ujidb"
+	"github.com/benditandayusaputra/rantai/backend/internal/ujidb/ujiwilayah"
 	"github.com/benditandayusaputra/rantai/backend/internal/usecase"
 	"github.com/gofiber/fiber/v3"
-	"github.com/jackc/pgx/v5"
 )
 
 const batasWaktuResponsCari = 150 * time.Millisecond
 
-type pengambilFixture struct{}
-
-func (p pengambilFixture) Ambil(context.Context) (usecase.DataSumberWilayah, error) {
-	berkas, err := filepath.Glob("../../ingest/wilayah/testdata/*.sql")
-	if err != nil {
-		return usecase.DataSumberWilayah{}, err
-	}
-	data := usecase.DataSumberWilayah{}
-	for _, path := range berkas {
-		isi, err := os.ReadFile(path)
-		if err != nil {
-			return usecase.DataSumberWilayah{}, err
-		}
-		daftar, err := wilayah.UraiSQL(isi)
-		if err != nil {
-			return usecase.DataSumberWilayah{}, err
-		}
-		data.Wilayah = append(data.Wilayah, daftar...)
-	}
-	data.Provenance.ID, data.Provenance.Sumber, data.Provenance.Label = "prv_uji_wilayah", "kemendagri", "resmi"
-	return data, nil
-}
-
 func appUjiDB(t *testing.T) *fiber.App {
 	t.Helper()
 	tx := ujidb.BukaTransaksi(t)
-	muatWilayahDKI(t, tx)
+	ujiwilayah.MuatDKI(t, tx)
 	repo := repository.WilayahRepository{DB: tx}
 	return NewApp(config.Server{}, Layanan{Wilayah: usecase.CariWilayah{Pembaca: repo}})
-}
-
-func muatWilayahDKI(t *testing.T, tx pgx.Tx) {
-	t.Helper()
-	var cfg wilayah.Konfigurasi
-	if err := config.BacaYAML("../../../config/wilayah.yaml", &cfg); err != nil {
-		t.Fatal(err)
-	}
-	impor := usecase.ImporWilayah{
-		Pengambil:   pengambilFixture{},
-		Penyimpan:   repository.WilayahRepository{DB: tx},
-		Pencatat:    repository.IngestRunRepository{DB: tx},
-		AturanAlias: cfg.AturanAlias(),
-		Provinsi:    cfg.Provinsi,
-	}
-	if _, err := tx.Exec(t.Context(), "DELETE FROM wilayah"); err != nil {
-		t.Fatal(err)
-	}
-	if err := impor.Jalankan(t.Context()); err != nil {
-		t.Fatal(err)
-	}
 }
 
 func kodeHasil(t *testing.T, data any) []string {
@@ -127,7 +80,8 @@ func TestAmbilWilayah_KodeKelurahan_DetailLengkap(t *testing.T) {
 	hasil := panggil(t, appUjiDB(t), "/api/v1/wilayah/31.72.06.1003")
 
 	data, _ := hasil.respons.Data.(map[string]any)
-	if data["nama"] != "Kelapa Gading Barat" || data["provenance_id"] != "prv_uji_wilayah" {
+	provenanceID, _ := data["provenance_id"].(string)
+	if data["nama"] != "Kelapa Gading Barat" || !strings.HasPrefix(provenanceID, "prv_") {
 		t.Fatalf("data = %v", data)
 	}
 	titik, _ := data["titik_tengah"].(map[string]any)

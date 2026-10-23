@@ -139,10 +139,10 @@ Fungsi SQL `hierarki_wilayah(kode)` mengembalikan leluhur sebuah wilayah sebagai
 
 | Tabel | Kolom penting |
 | --- | --- |
-| `dapil` | `id`, `nomor`, `nama`, `tahun_pemilu`, `jumlah_kursi` |
-| `dapil_wilayah` | `dapil_id`, `kode_kecamatan` |
+| `dapil` | `id`, `nomor`, `nama`, `tahun_pemilu`, `jumlah_kursi`, `provenance_id`; unik (`tahun_pemilu`, `nomor`) |
+| `dapil_wilayah` | `dapil_id`, `kode_kecamatan` (unik: satu kecamatan satu dapil) |
 | `komisi` | `id`, `kode` (A sampai E), `nama`, `bidang` text[] |
-| `anggota` | `id`, `nama`, `nama_lain` text[] (untuk disambiguasi), `fraksi`, `dapil_id`, `komisi_id` nullable, `url_profil`, `lhkpn_url`, `provenance_id` |
+| `anggota` | `id` (slug halaman profil DPRD), `nama`, `nama_lain` text[] (untuk disambiguasi), `partai`, `fraksi`, `dapil_id`, `komisi_id` nullable, `url_profil`, `lhkpn_url`, `provenance_id` |
 | `anggota_akd` | `anggota_id`, `alat_kelengkapan` (contoh: Badan Anggaran, Bapemperda), `jabatan` |
 | `umpan_kegiatan` | `id`, `jenis_sumber` (resmi_dprd, media), `media_nama`, `media_domain`, `judul`, `ringkasan` nullable, `url` unik, `terbit_pada`, `tag_isu` text[], `disembunyikan`, `provenance_id` |
 | `umpan_anggota` | `umpan_id`, `anggota_id`, `dasar_cocok` (nama_dan_dprd, nama_dan_fraksi, situs_resmi) |
@@ -176,7 +176,7 @@ Worker Go (`cmd/worker <job>`) menjalankan job. Setiap job: ambil, simpan mentah
 | `lpse_detail` | harian, setelah daftar | Detail paket baru dan paket yang tahapnya berubah; pemenang (GD-02) |
 | `sirup` | mingguan | Detail RUP untuk kode RUP yang ditemukan di paket |
 | `opentender` | sekali | Riwayat 2014 sampai 2023 untuk pembeli Pemprov DKI |
-| `kpu_dprd` | sekali per periode | Dapil, anggota, komisi, alat kelengkapan (GD-07, GD-08) |
+| `kpu_dprd` | sekali per periode | Dapil per kecamatan dari `config/dprd.yaml` (PKPU 6/2023), anggota, fraksi, komisi, alat kelengkapan dari situs DPRD DKI (GD-07, GD-08) |
 | `umpan_dprd` | harian | Berita situs DPRD DKI yang menyebut anggota (GD-13) |
 | `umpan_media` | harian | Liputan media terverifikasi per anggota (GD-14) |
 | `ringkas_umpan` | setelah job umpan | Ringkasan netral satu kalimat untuk item umpan baru |

@@ -134,7 +134,7 @@ Versi 2.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` v2.0 dan `docs/SPEC.
 
 ## Fase 4. Data Wakilku
 
-- [ ] **T-401** Dapil dan anggota (WAK-01) **[GERBANG DATA GD-07]**
+- [x] **T-401** Dapil dan anggota (WAK-01) **[GERBANG DATA GD-07]**
   - Migrasi `dapil`, `dapil_wilayah`, `anggota`; job `kpu_dprd` bagian dapil dan anggota.
   - Commit: `✨ Impor dapil dan anggota DPRD DKI periode 2024 sampai 2029`
   - Selesai bila: 10 dapil, 106 anggota, setiap kecamatan DKI masuk tepat satu dapil.
