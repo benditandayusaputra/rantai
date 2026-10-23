@@ -21,7 +21,7 @@ Versi 1.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` dan `docs/SPEC.md`.
   - `docker-compose.yml` untuk PostgreSQL 16 + PostGIS 3 dan MinIO; `Makefile` dengan target `up`, `down`, `migrate`, `lint`, `test`.
   - Commit: `🔧 Tambah Docker Compose PostGIS dan MinIO serta Makefile`
   - Selesai bila: `make up` lalu `make migrate` berjalan dari repo bersih.
-- [ ] **T-003** Linter dan CI
+- [x] **T-003** Linter dan CI
   - Konfigurasi golangci-lint (termasuk aturan panjang fungsi dan larangan komentar selain direktif), GitHub Actions untuk lint dan tes backend.
   - Commit: `🔧 Atur golangci-lint dan alur CI lint serta tes`
   - Selesai bila: CI hijau di main.

@@ -16,7 +16,7 @@ migrate-down:
 	$(MIGRATE) down -all
 
 lint:
-	cd backend && gofmt -l . | (! grep .) && go vet ./...
+	cd backend && golangci-lint run ./... && go run ./tools/cekkomentar
 
 test:
 	cd backend && go test ./...
