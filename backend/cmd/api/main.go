@@ -45,10 +45,12 @@ func jalankan() error {
 }
 
 func susunLayanan(pool *pgxpool.Pool) deliveryhttp.Layanan {
+	tema := usecase.BacaTema{Pembaca: repository.TemaRepository{DB: pool}}
 	return deliveryhttp.Layanan{
 		Wilayah:    usecase.CariWilayah{Pembaca: repository.WilayahRepository{DB: pool}},
 		Provenance: usecase.AmbilProvenance{Pembaca: repository.ProvenanceRepository{DB: pool}},
-		Tema:       usecase.BacaTema{Pembaca: repository.TemaRepository{DB: pool}},
+		Tema:       tema,
+		Wakil:      usecase.BacaWakil{Pembaca: repository.WakilRepository{DB: pool}, Tema: tema},
 	}
 }
 

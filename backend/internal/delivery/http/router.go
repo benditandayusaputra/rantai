@@ -11,6 +11,7 @@ type Layanan struct {
 	Wilayah    LayananWilayah
 	Provenance LayananProvenance
 	Tema       LayananTema
+	Wakil      LayananWakil
 }
 
 func NewApp(cfg config.Server, layanan Layanan) *fiber.App {
@@ -25,6 +26,7 @@ func NewApp(cfg config.Server, layanan Layanan) *fiber.App {
 	daftarkanWilayah(api, handlerWilayah{layanan: layanan.Wilayah})
 	api.Get("/provenance/:id", handlerProvenance{layanan: layanan.Provenance}.ambil)
 	daftarkanTema(api, handlerTema{layanan: layanan.Tema})
+	daftarkanWakil(api, handlerWakil{layanan: layanan.Wakil})
 	return app
 }
 
@@ -37,4 +39,10 @@ func daftarkanWilayah(api fiber.Router, h handlerWilayah) {
 func daftarkanTema(api fiber.Router, h handlerTema) {
 	api.Get("/tema", h.daftar)
 	api.Get("/tema/:kode", h.ambil)
+}
+
+func daftarkanWakil(api fiber.Router, h handlerWakil) {
+	api.Get("/kecamatan/:kode/wakil", h.wakilKecamatan)
+	api.Get("/dapil/:id", h.dapil)
+	api.Get("/anggota/:id", h.anggota)
 }

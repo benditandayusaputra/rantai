@@ -142,7 +142,7 @@ Versi 2.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` v2.0 dan `docs/SPEC.
   - Migrasi `komisi`, `anggota_akd`; job `kpu_dprd` bagian komisi, AKD, dan tautan profil.
   - Commit: `✨ Impor komisi dan alat kelengkapan DPRD DKI`
   - Selesai bila: setiap komisi punya bidang; anggota tanpa data komisi ditandai, tidak ditebak.
-- [ ] **T-403** API Wakilku (WAK-01, WAK-02)
+- [x] **T-403** API Wakilku (WAK-01, WAK-02)
   - `GET /kecamatan/{kode}/wakil?tema=`, `GET /anggota/{id}`, `GET /dapil/{id}`.
   - Commit: `✨ Tambah API wakil dapil dan profil anggota`
   - Selesai bila: urutan anggota komisi pengawas tema lebih dahulu dites; tidak ada angka kinerja di respons.
