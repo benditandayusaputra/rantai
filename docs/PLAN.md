@@ -182,7 +182,7 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - Klien bertipe, tipe `Angka`, komponen `LencanaProvenance` dengan panel sumber.
   - Commit: `✨ Tambah klien API bertipe dan lencana sumber`
   - Selesai bila: komponen dites untuk keempat label; panel bisa dibuka dengan papan ketik.
-- [ ] **T-603** Beranda dan pencarian (WIL-01) **[BUTUH DESAIN]**
+- [x] **T-603** Beranda dan pencarian (WIL-01) **[BUTUH DESAIN]**
   - Commit: `✨ Bangun beranda dengan pencarian wilayah dan lokasi`
   - Selesai bila: memilih hasil membuka halaman kecamatan, kelurahan tersorot; tombol lokasi menangani izin ditolak.
 - [ ] **T-604** Halaman kecamatan (WIL-02) **[BUTUH DESAIN]**

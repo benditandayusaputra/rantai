@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatAngka, formatJam, formatTanggal } from './format';
+import { formatAngka, formatJam, formatJarak, formatTanggal } from './format';
 
 describe('format', () => {
 	it('memakai pemisah ribuan titik dan desimal koma', () => {
@@ -15,5 +15,12 @@ describe('format', () => {
 
 	it('menulis jam 24 jam dengan pemisah titik', () => {
 		expect(formatJam(new Date('2026-10-14T01:14:00Z'))).toBe('08.14');
+	});
+});
+
+describe('formatJarak', () => {
+	it('memakai meter di bawah 1 km dan km satu desimal di atasnya', () => {
+		expect(formatJarak(480.4, 'id')).toBe('480 m');
+		expect(formatJarak(1234, 'id')).toBe('1,2 km');
 	});
 });

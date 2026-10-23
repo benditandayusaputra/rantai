@@ -31,3 +31,10 @@ export function formatJam(d: Date): string {
 		.format(d)
 		.replace(':', '.');
 }
+
+const meterPerKilometer = 1000;
+
+export function formatJarak(meter: number, bahasa: Bahasa): string {
+	if (meter < meterPerKilometer) return `${formatAngka(Math.round(meter), bahasa)} m`;
+	return `${formatAngka(meter / meterPerKilometer, bahasa, 1)} km`;
+}

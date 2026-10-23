@@ -23,7 +23,7 @@ export default ts.config(
 		rules: {
 			'rantai/tanpa-komentar': 'error',
 			'@typescript-eslint/no-explicit-any': 'error',
-			'svelte/no-navigation-without-resolve': ['error', { ignoreLinks: true }]
+			'svelte/no-navigation-without-resolve': ['error', { ignoreLinks: true, ignoreGoto: true }]
 		}
 	},
 	{

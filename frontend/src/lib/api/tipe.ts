@@ -30,3 +30,15 @@ export interface Provenance {
 	hash_konten: string;
 	catatan: string;
 }
+
+export type Tingkat = 'provinsi' | 'kota' | 'kecamatan' | 'kelurahan';
+
+export interface RingkasanWilayah {
+	kode: string;
+	nama: string;
+	tingkat: Tingkat;
+}
+
+export interface WilayahDitemukan extends RingkasanWilayah {
+	hierarki: RingkasanWilayah[];
+}

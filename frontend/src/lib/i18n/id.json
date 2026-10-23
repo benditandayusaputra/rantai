@@ -331,5 +331,10 @@
 	"source.labelShort": "Sumber angka, {level}",
 	"source.retrievedAt": "{date}, {time} WIB",
 	"source.failed": "Rincian sumber gagal dimuat.",
-	"source.loading": "Memuat rincian sumber..."
+	"source.loading": "Memuat rincian sumber...",
+	"brand.name": "rantai",
+	"brand.home": "Rantai, ke beranda",
+	"location.failed": "Lokasi tidak bisa ditentukan. Ketik nama kelurahan.",
+	"search.label": "Cari kelurahan atau kecamatan",
+	"search.hint": "Ketik minimal 3 huruf."
 }

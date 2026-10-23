@@ -96,7 +96,10 @@ export default {
 			spacing: {
 				5.5: '22px',
 				6.5: '26px',
+				7.5: '30px',
+				13: '52px',
 				14: '56px',
+				15: '60px',
 				18: '72px'
 			},
 			maxWidth: {
