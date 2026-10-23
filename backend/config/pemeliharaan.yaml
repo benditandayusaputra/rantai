@@ -1,0 +1,10 @@
+jenis_pengadaan: [Pekerjaan Konstruksi]
+jenis_masa_hari:
+  permanen: 180
+  semi_permanen: 90
+kategori:
+  ruang_kelas: { jenis: permanen, durasi_bawaan_hari: 120 }
+  pintu_air: { jenis: permanen, durasi_bawaan_hari: 90 }
+  saluran: { jenis: semi_permanen, durasi_bawaan_hari: 60 }
+  jalan: { jenis: semi_permanen, durasi_bawaan_hari: 60 }
+bawaan: { jenis: semi_permanen, durasi_bawaan_hari: 90 }

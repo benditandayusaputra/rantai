@@ -484,8 +484,8 @@ Konfigurasi per kategori di `config/pemeliharaan.yaml`: `permanen` (180 hari) at
 
 ```text
 akhir_pelaksanaan = tanggal_serah_terima bila diisi instansi
-                    selain itu jadwal_selesai bila ada
-                    selain itu tanggal_kontrak + durasi_bawaan_kategori
+                    selain itu jadwal_selesai bila ada (dari paket, atau akhir bulan jadwal pelaksanaan kontrak SiRUP)
+                    selain itu tanggal_kontrak + durasi_bawaan_kategori (tanggal kontrak diperkirakan dari jadwal tahap Penandatanganan Kontrak)
 akhir_pemeliharaan = akhir_pelaksanaan + masa_pemeliharaan_kategori
 ```
 

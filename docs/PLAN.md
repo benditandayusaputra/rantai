@@ -111,7 +111,7 @@ Versi 2.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` v2.0 dan `docs/SPEC.
   - Gazetir dari tabel wilayah, ekstraksi RT/RW, penyaringan kota instansi, pergeseran titik deterministik.
   - Commit: `✨ Petakan paket ke kelurahan dan kecamatan dari nama paket`
   - Selesai bila: tiga tes wajib ANG-02 lulus; uji 100 nama paket nyata dicatat; cakupan dicetak oleh `make laporan-geocode`.
-- [ ] **T-307** Estimasi masa pemeliharaan (ANG-04)
+- [x] **T-307** Estimasi masa pemeliharaan (ANG-04)
   - `config/pemeliharaan.yaml` dan usecase status.
   - Commit: `✨ Estimasi masa pemeliharaan paket konstruksi`
   - Selesai bila: keempat status dan perubahan label menjadi `resmi` dites dengan jam tiruan.
