@@ -12,6 +12,7 @@ type Layanan struct {
 	Provenance LayananProvenance
 	Tema       LayananTema
 	Wakil      LayananWakil
+	Umpan      LayananUmpan
 }
 
 func NewApp(cfg config.Server, layanan Layanan) *fiber.App {
@@ -27,6 +28,7 @@ func NewApp(cfg config.Server, layanan Layanan) *fiber.App {
 	api.Get("/provenance/:id", handlerProvenance{layanan: layanan.Provenance}.ambil)
 	daftarkanTema(api, handlerTema{layanan: layanan.Tema})
 	daftarkanWakil(api, handlerWakil{layanan: layanan.Wakil})
+	api.Get("/anggota/:id/umpan", handlerUmpan{layanan: layanan.Umpan}.umpanAnggota)
 	return app
 }
 

@@ -11,7 +11,9 @@ import (
 	"time"
 
 	"github.com/benditandayusaputra/rantai/backend/internal/config"
+	"github.com/benditandayusaputra/rantai/backend/internal/domain"
 	"github.com/benditandayusaputra/rantai/backend/internal/ingest/dprd"
+	"github.com/benditandayusaputra/rantai/backend/internal/ingest/tema"
 	"github.com/benditandayusaputra/rantai/backend/internal/repository"
 	"github.com/benditandayusaputra/rantai/backend/internal/ujidb/ujiwilayah"
 	"github.com/benditandayusaputra/rantai/backend/internal/usecase"
@@ -74,4 +76,47 @@ func (p pengunduhFixture) Ambil(_ context.Context, url string) ([]byte, error) {
 func akarBackend() string {
 	_, berkas, _, _ := runtime.Caller(0)
 	return filepath.Join(filepath.Dir(berkas), "../../..")
+}
+
+type pengunduhRilisFixture struct {
+	path string
+}
+
+func (p pengunduhRilisFixture) Ambil(context.Context, string) ([]byte, error) {
+	return os.ReadFile(p.path)
+}
+
+func MuatTema(t *testing.T, tx pgx.Tx) {
+	t.Helper()
+	impor := usecase.ImporTema{
+		Pengambil: tema.Sumber{Dir: filepath.Join(akarBackend(), "config/tema"), URLRujukan: "https://contoh.test", Sekarang: time.Now},
+		Penyimpan: repository.TemaRepository{DB: tx},
+		Pencatat:  repository.IngestRunRepository{DB: tx},
+	}
+	if err := impor.Jalankan(t.Context()); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func MuatUmpanDPRD(t *testing.T, tx pgx.Tx) {
+	t.Helper()
+	impor := usecase.ImporUmpan{
+		Job:         usecase.JobUmpanDPRD,
+		JenisSumber: domain.SumberUmpanResmiDPRD,
+		MulaiBawaan: time.Date(2024, time.August, 26, 0, 0, 0, 0, time.UTC),
+		Pengambil: dprd.SumberRilis{
+			Konfigurasi: dprd.KonfigurasiRilis{PerHalaman: 100, BatasHalaman: 1, MediaNama: "Situs DPRD", MediaDomain: "dprd-dkijakartaprov.go.id"},
+			Pengunduh:   pengunduhRilisFixture{path: filepath.Join(akarBackend(), "internal/ingest/dprd/testdata/rilis_halaman_1.json")},
+			DirRaw:      t.TempDir(),
+			Sekarang:    time.Now,
+		},
+		Anggota:   repository.UmpanRepository{DB: tx},
+		Tema:      usecase.BacaTema{Pembaca: repository.TemaRepository{DB: tx}},
+		Penyimpan: repository.UmpanRepository{DB: tx},
+		Pencatat:  repository.IngestRunRepository{DB: tx},
+		Pautkan:   domain.PencariNama.PautkanRilisResmi,
+	}
+	if err := impor.Jalankan(t.Context()); err != nil {
+		t.Fatal(err)
+	}
 }

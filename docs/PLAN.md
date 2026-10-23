@@ -154,7 +154,7 @@ Versi 2.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` v2.0 dan `docs/SPEC.
   - `config/media.yaml`; job `umpan_media`; disambiguasi nama plus "DPRD DKI" atau fraksi.
   - Commit: `✨ Impor liputan media terverifikasi dengan disambiguasi nama`
   - Selesai bila: fixture nama sama tanpa "DPRD DKI" dibuang dan dengan fraksi dipautkan (dites); domain di luar daftar media ditolak.
-- [ ] **T-406** Ringkasan netral dan API umpan (WAK-03)
+- [x] **T-406** Ringkasan netral dan API umpan (WAK-03)
   - Klien LLM bersama (model dari env), job `ringkas_umpan` dengan validator, `GET /anggota/{id}/umpan`.
   - Commit: `✨ Ringkas umpan wakil rakyat secara netral dan tambah API umpan`
   - Selesai bila: tes memakai klien LLM tiruan; ringkasan dengan kosakata terlarang atau angka karangan ditolak dan jatuh ke judul saja.

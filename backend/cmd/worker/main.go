@@ -13,6 +13,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/anthropics/anthropic-sdk-go"
 	"github.com/benditandayusaputra/rantai/backend/internal/config"
 	"github.com/benditandayusaputra/rantai/backend/internal/domain"
 	"github.com/benditandayusaputra/rantai/backend/internal/ingest/dprd"
@@ -22,6 +23,7 @@ import (
 	"github.com/benditandayusaputra/rantai/backend/internal/ingest/sirup"
 	"github.com/benditandayusaputra/rantai/backend/internal/ingest/tema"
 	"github.com/benditandayusaputra/rantai/backend/internal/ingest/wilayah"
+	"github.com/benditandayusaputra/rantai/backend/internal/llm"
 	"github.com/benditandayusaputra/rantai/backend/internal/repository"
 	"github.com/benditandayusaputra/rantai/backend/internal/usecase"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -32,6 +34,8 @@ const (
 	dirKonfigurasiTema     = "config/tema"
 	pathKonfigurasiDPRD    = "config/dprd.yaml"
 	pathKonfigurasiMedia   = "config/media.yaml"
+	pathKonfigurasiRingkas = "config/ringkasan.yaml"
+	pathKosakataTerlarang  = "config/kosakata_terlarang.yaml"
 	pathKonfigurasiLPSE    = "config/lpse.yaml"
 	pathKonfigurasiSIRUP   = "config/sirup.yaml"
 	pathKonfigurasiGeocode = "config/geocode.yaml"
@@ -45,7 +49,7 @@ const (
 
 type job func(ctx context.Context) error
 
-var jobTersedia = []string{usecase.JobWilayah, usecase.JobTema, usecase.JobKPUDPRD, usecase.JobLPSEDaftar, usecase.JobLPSEDetail, usecase.JobSIRUP, usecase.JobTurunan, jobLaporanGeocode, usecase.JobUmpanDPRD, usecase.JobUmpanMedia}
+var jobTersedia = []string{usecase.JobWilayah, usecase.JobTema, usecase.JobKPUDPRD, usecase.JobLPSEDaftar, usecase.JobLPSEDetail, usecase.JobSIRUP, usecase.JobTurunan, jobLaporanGeocode, usecase.JobUmpanDPRD, usecase.JobUmpanMedia, usecase.JobRingkasUmpan}
 
 func main() {
 	if err := jalankan(os.Args[1:]); err != nil {
@@ -91,6 +95,8 @@ func pilihJob(nama string, pool *pgxpool.Pool) (job, error) {
 		return buatImporUmpanDPRD(pool)
 	case usecase.JobUmpanMedia:
 		return buatImporUmpanMedia(pool)
+	case usecase.JobRingkasUmpan:
+		return buatRingkasUmpan(pool)
 	default:
 		return nil, fmt.Errorf("job tidak dikenal: %s", nama)
 	}
@@ -291,6 +297,38 @@ func cetakCakupan(cakupan map[string]int) {
 	if total > 0 {
 		fmt.Printf("Kecamatan atau lebih rinci: %.1f%%\n", float64(rinci)*persenPenuh/float64(total))
 	}
+}
+
+type konfigurasiRingkasan struct {
+	BatasPerJalan int      `yaml:"batas_per_jalan"`
+	MaksToken     int64    `yaml:"maks_token"`
+	Effort        string   `yaml:"effort"`
+	PromptSistem  string   `yaml:"prompt_sistem"`
+	KataPenilaian []string `yaml:"kata_penilaian"`
+}
+
+func buatRingkasUmpan(pool *pgxpool.Pool) (job, error) {
+	var cfg konfigurasiRingkasan
+	var terlarang domain.KosakataTerlarang
+	if err := errors.Join(config.BacaYAML(pathKonfigurasiRingkas, &cfg), config.BacaYAML(pathKosakataTerlarang, &terlarang)); err != nil {
+		return nil, err
+	}
+	klienLLM, err := llm.Baru(llm.Konfigurasi{
+		Model: os.Getenv("RINGKAS_MODEL"), MaksToken: cfg.MaksToken, Effort: anthropic.OutputConfigEffort(cfg.Effort),
+	})
+	if err != nil {
+		return nil, fmt.Errorf("RINGKAS_MODEL: %w", err)
+	}
+	umpan := repository.UmpanRepository{DB: pool}
+	ringkas := usecase.RingkasUmpan{
+		Umpan:    umpan,
+		Penulis:  llm.PeringkasUmpan{Penulis: klienLLM, PromptSistem: cfg.PromptSistem},
+		Pencatat: repository.IngestRunRepository{DB: pool},
+		Aturan:   domain.AturanRingkasan{Terlarang: terlarang, KataPenilaian: cfg.KataPenilaian},
+		Batas:    cfg.BatasPerJalan,
+		Laporkan: func(pesan string) { log.Println(pesan) },
+	}
+	return ringkas.Jalankan, nil
 }
 
 func dirRaw() string {

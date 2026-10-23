@@ -147,3 +147,31 @@ func PotongCuplikan(teks string) string {
 	}
 	return string([]rune(teks)[:BatasCuplikanUmpan])
 }
+
+type UmpanTampil struct {
+	ID           int64
+	JenisSumber  JenisSumberUmpan
+	MediaNama    string
+	MediaDomain  string
+	Judul        string
+	Ringkasan    string
+	URL          string
+	TerbitPada   time.Time
+	TagIsu       []string
+	DasarCocok   DasarCocok
+	ProvenanceID string
+}
+
+type FilterUmpan struct {
+	AnggotaID  string
+	Jenis      JenisSumberUmpan
+	Tag        string
+	Halaman    int
+	PerHalaman int
+}
+
+type HalamanUmpan struct {
+	Item       []UmpanTampil
+	Total      int
+	PerHalaman int
+}

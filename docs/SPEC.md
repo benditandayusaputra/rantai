@@ -580,7 +580,7 @@ API: `POST /laporan` (multipart), `GET /laporan/{id}`, `POST /laporan/{id}/konfi
 
 Antarmuka obrolan di `/{bahasa}/tanya` dan panel geser di halaman kecamatan (kecamatan aktif ikut sebagai konteks).
 
-Backend memanggil API LLM dengan tool use. Model dari env `TANYA_MODEL`, kunci dari env `TANYA_API_KEY`. Model hanya boleh menjawab dari hasil fungsi berikut:
+Backend memanggil API LLM dengan tool use. Model dari env `TANYA_MODEL`, kunci dari env `ANTHROPIC_API_KEY` (dipakai bersama job `ringkas_umpan` lewat klien LLM bersama `internal/llm`). Model hanya boleh menjawab dari hasil fungsi berikut:
 
 | Fungsi | Masukan | Keluaran |
 | --- | --- | --- |

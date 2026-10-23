@@ -41,6 +41,10 @@ func kirimData(c fiber.Ctx, data any) error {
 	return c.JSON(Respons{Code: fiber.StatusOK, Message: pesanOK, Data: data})
 }
 
+func kirimHalaman(c fiber.Ctx, data any, meta Meta) error {
+	return c.JSON(Respons{Code: fiber.StatusOK, Message: pesanOK, Data: data, Meta: &meta})
+}
+
 func tanganiError(c fiber.Ctx, err error) error {
 	kode, pesan := petakanError(err)
 	return c.Status(kode).JSON(Respons{Code: kode, Message: pesan})

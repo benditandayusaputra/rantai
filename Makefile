@@ -7,7 +7,7 @@ export DATABASE_URL TEST_DATABASE_URL
 COMPOSE := docker compose
 MIGRATE := $(COMPOSE) run --rm --build migrate
 
-.PHONY: up down migrate migrate-down lint test impor-wilayah impor-tema impor-kpu-dprd impor-lpse impor-sirup turunan laporan-geocode snapshot-paket muat-snapshot-paket impor-umpan-dprd impor-umpan-media
+.PHONY: up down migrate migrate-down lint test impor-wilayah impor-tema impor-kpu-dprd impor-lpse impor-sirup turunan laporan-geocode snapshot-paket muat-snapshot-paket impor-umpan-dprd impor-umpan-media ringkas-umpan
 
 up:
 	$(COMPOSE) up -d --wait db minio
@@ -62,3 +62,6 @@ impor-umpan-dprd:
 
 impor-umpan-media:
 	cd backend && go run ./cmd/worker umpan_media
+
+ringkas-umpan:
+	cd backend && go run ./cmd/worker ringkas_umpan
