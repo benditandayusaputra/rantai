@@ -48,6 +48,7 @@ func jalankan() error {
 	if err != nil {
 		return err
 	}
+	layanan = denganLayananPendidikan(layanan, pool, cfg)
 	app := deliveryhttp.NewApp(cfg.Server, layanan)
 	go hentikanSaatSinyal(ctx, app, cfg.Server)
 	if err := app.Listen(":" + cfg.Server.Port); err != nil {

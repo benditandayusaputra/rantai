@@ -76,7 +76,7 @@ Versi 2.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` v2.0 dan `docs/SPEC.
   - `config/pendidikan.yaml`, rumus domain, aturan label terlemah, penghitung `kesenjangan_kursi_smp` menulis ke `indikator_kecamatan`.
   - Commit: `✨ Hitung kesenjangan kursi SMP negeri per kecamatan`
   - Selesai bila: tes tabel mencakup semua kasus tepi PEN-01 dan aturan label terlemah; tidak ada angka 32 atau 6 tertulis langsung di kode.
-- [ ] **T-206** API Tema Pendidikan (PEN-02, PEN-03)
+- [x] **T-206** API Tema Pendidikan (PEN-02, PEN-03)
   - `GET /peta/tema/{kode}`, `GET /tema/pendidikan/kecamatan/{kode}`, `GET /tema/pendidikan/kecamatan/{kode}/sekolah`.
   - Commit: `✨ Tambah API peta indikator dan detail sekolah kecamatan`
   - Selesai bila: GeoJSON choropleth di bawah 300 KB untuk seluruh DKI; tes integrasi lulus.

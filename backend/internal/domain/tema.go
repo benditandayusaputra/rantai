@@ -9,7 +9,10 @@ import (
 	"strings"
 )
 
-const PenghitungKesenjanganKursiSMP = "kesenjangan_kursi_smp"
+const (
+	PenghitungKesenjanganKursiSMP = "kesenjangan_kursi_smp"
+	TemaPendidikan                = "pendidikan"
+)
 
 var (
 	ErrTemaTanpaKode                = errors.New("kode tema wajib diisi")

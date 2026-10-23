@@ -11,7 +11,13 @@ import (
 
 type Config struct {
 	Server      Server `yaml:"server"`
+	Peta        Peta   `yaml:"peta"`
 	DatabaseURL string `yaml:"-"`
+}
+
+type Peta struct {
+	ToleransiPenyederhanaan float64 `yaml:"toleransi_penyederhanaan"`
+	DesimalKoordinat        int     `yaml:"desimal_koordinat"`
 }
 
 type Server struct {

@@ -18,6 +18,7 @@ type Layanan struct {
 	Belanja    LayananBelanja
 	Pembanding LayananPembanding
 	Penyedia   LayananPenyedia
+	Indikator  LayananIndikator
 }
 
 func NewApp(cfg config.Server, layanan Layanan) *fiber.App {
@@ -39,6 +40,7 @@ func NewApp(cfg config.Server, layanan Layanan) *fiber.App {
 	api.Get("/tema/:kode/belanja", handlerBelanja{layanan: layanan.Belanja}.hitung)
 	api.Get("/paket/:kode/pembanding", handlerPembanding{layanan: layanan.Pembanding}.bandingkan)
 	api.Get("/penyedia/:id", handlerPenyedia{layanan: layanan.Penyedia}.ambil)
+	daftarkanPendidikan(api, handlerPendidikan{layanan: layanan.Indikator})
 	return app
 }
 
@@ -57,4 +59,10 @@ func daftarkanWakil(api fiber.Router, h handlerWakil) {
 	api.Get("/kecamatan/:kode/wakil", h.wakilKecamatan)
 	api.Get("/dapil/:id", h.dapil)
 	api.Get("/anggota/:id", h.anggota)
+}
+
+func daftarkanPendidikan(api fiber.Router, h handlerPendidikan) {
+	api.Get("/peta/tema/:kode", h.petaTema)
+	api.Get("/tema/pendidikan/kecamatan/:kode", h.detailKecamatan)
+	api.Get("/tema/pendidikan/kecamatan/:kode/sekolah", h.sekolahKecamatan)
 }

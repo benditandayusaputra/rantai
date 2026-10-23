@@ -9,3 +9,7 @@ server:
   cors:
     origin:
       - http://localhost:5173
+
+peta:
+  toleransi_penyederhanaan: 0.0003
+  desimal_koordinat: 5
