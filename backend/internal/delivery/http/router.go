@@ -16,6 +16,7 @@ type Layanan struct {
 	Ringkasan  LayananRingkasanKecamatan
 	Paket      LayananPaket
 	Belanja    LayananBelanja
+	Pembanding LayananPembanding
 }
 
 func NewApp(cfg config.Server, layanan Layanan) *fiber.App {
@@ -35,6 +36,7 @@ func NewApp(cfg config.Server, layanan Layanan) *fiber.App {
 	api.Get("/kecamatan/:kode/ringkasan", handlerRingkasanKecamatan{layanan: layanan.Ringkasan}.ringkas)
 	daftarkanPaket(api, handlerPaket{layanan: layanan.Paket})
 	api.Get("/tema/:kode/belanja", handlerBelanja{layanan: layanan.Belanja}.hitung)
+	api.Get("/paket/:kode/pembanding", handlerPembanding{layanan: layanan.Pembanding}.bandingkan)
 	return app
 }
 

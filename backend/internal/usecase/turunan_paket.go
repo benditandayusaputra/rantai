@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/benditandayusaputra/rantai/backend/internal/domain"
 )
@@ -29,12 +30,15 @@ type PenyimpanTemaPaket interface {
 }
 
 type TurunanPaket struct {
-	Gazetir      PembacaGazetir
-	Lokasi       PenyimpanLokasiPaket
-	Tema         PembacaTema
-	TemaPaket    PenyimpanTemaPaket
-	Pencatat     PencatatIngest
-	AturanLokasi domain.AturanLokasi
+	Gazetir        PembacaGazetir
+	Lokasi         PenyimpanLokasiPaket
+	Tema           PembacaTema
+	TemaPaket      PenyimpanTemaPaket
+	KategoriSinyal PenyimpanKategoriSinyal
+	Pencatat       PencatatIngest
+	AturanLokasi   domain.AturanLokasi
+	Anggaran       AturanTurunanAnggaran
+	Sekarang       func() time.Time
 }
 
 func (u TurunanPaket) Jalankan(ctx context.Context) error {
@@ -43,7 +47,7 @@ func (u TurunanPaket) Jalankan(ctx context.Context) error {
 
 func (u TurunanPaket) hitung(ctx context.Context) (HasilImpor, error) {
 	total := 0
-	for _, langkah := range []func(context.Context) (int, error){u.tentukanLokasi, u.tandaiTema} {
+	for _, langkah := range []func(context.Context) (int, error){u.tentukanLokasi, u.tandaiTema, u.golongkanKategori, u.hitungSinyal} {
 		berubah, err := langkah(ctx)
 		if err != nil {
 			return HasilImpor{}, err

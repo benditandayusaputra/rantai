@@ -1,0 +1,23 @@
+min_pembanding: 8
+s01:
+  metode: [Tender, Tender Cepat, Seleksi]
+s02:
+  pengali_iqr: 1.5
+s03:
+  metode: Pengadaan Langsung
+  jenis_pengadaan: Pekerjaan Konstruksi
+  jumlah_min: 3
+  jendela_hari: 30
+  porsi_ambang: 0.85
+  ambang:
+    - berlaku_mulai: 2021-02-02T00:00:00+07:00
+      nilai: 200000000
+      dasar: Perpres 12/2021 Pasal 38 ayat (3)
+    - berlaku_mulai: 2025-04-30T00:00:00+07:00
+      nilai: 400000000
+      dasar: Perpres 46/2025 Pasal 38 ayat (3) huruf b
+s04:
+  porsi_nilai_min: 0.4
+  jumlah_paket_min: 5
+s05:
+  tenggang_hari: 30

@@ -82,7 +82,7 @@ Tugas bertanda **[GERBANG DATA]** di PLAN.md dimulai dengan verifikasi ini. Hasi
 | GD-06 | Dapodik: data sekolah per NPSN (nama, bentuk, status, koordinat, kecamatan) untuk SD, MI, SMP, MTs di DKI; ketersediaan data madrasah | Cadangan: Data Referensi Kemendikdasmen per wilayah. Madrasah tanpa data per sekolah tampil sebagai catatan keterbatasan |
 | GD-07 | KPU: daftar 10 dapil DPRD DKI 2024 dan kecamatan anggotanya; 106 calon terpilih per dapil (9 sampai 12 kursi per dapil) | Cadangan: berita acara penetapan KPU DKI dan daftar resmi DPRD DKI |
 | GD-08 | Situs DPRD DKI: lima komisi dan bidangnya, keanggotaan komisi, alat kelengkapan dewan, fraksi, halaman profil per anggota periode 2024 sampai 2029 | Bila keanggotaan komisi tidak tersedia, WAK-01 menampilkan anggota dapil tanpa urutan komisi dan menyebut komisi pengawas saja |
-| GD-09 | Ambang nilai pengadaan langsung Pekerjaan Konstruksi menurut Perpres 16/2018 beserta perubahan terakhirnya (Perpres 12/2021, Perpres 46/2025) | Sinyal S-03 dimatikan bila ambang tidak bisa dipastikan |
+| GD-09 | Ambang nilai pengadaan langsung Pekerjaan Konstruksi menurut Perpres 16/2018 beserta perubahan terakhirnya (Perpres 12/2021, Perpres 46/2025) | Sinyal S-03 dimatikan bila ambang tidak bisa dipastikan. **Lolos**: Rp200 juta sampai 29 April 2025, Rp400 juta sejak 30 April 2025 |
 | GD-10 | Batas kelurahan dan kecamatan DKI dengan kode Kemendagri | Cadangan: GADM tingkat 4 dengan tabel padanan kode. **Lolos**, lihat `docs/data-sources.md` |
 | GD-11 | Opentender OCDS: unduhan per tahun, field buyer, supplier, nilai, tanggal | ANG-07 hanya memakai data LPSE |
 | GD-12 | Siswa kelas 6 per sekolah atau per kecamatan untuk tahun ajaran berjalan: Sekolah Kita atau Dapodik | Cadangan berurutan: Satu Data Jakarta, permintaan data resmi, estimasi `total siswa SD ÷ 6` berlabel `estimasi` |
@@ -540,7 +540,9 @@ API: `GET /aspirasi-reses/{id}/paket-terkait`.
 
 **Kosakata terlarang** untuk teks buatan Rantai (berkas i18n, pesan backend, ringkasan umpan, jawaban Tanya Rantai): korupsi, curang, mark up, penggelembungan, kongkalikong, fiktif, penyelewengan, menyimpang, memperjuangkan. Judul berita media ditampilkan apa adanya sebagai kutipan berlencana dan tidak termasuk teks buatan Rantai. Tes otomatis memindai berkas i18n dan pesan backend.
 
-API: `GET /paket/{kode}/pembanding`.
+Kategori, tema, lokasi, dan sinyal dihitung ulang setiap job `turunan`; sinyal yang polanya tidak lagi terpenuhi menjadi tidak aktif, tidak dihapus. S-03 memakai ambang sesuai tanggal pembuatan paket.
+
+API: `GET /paket/{kode}/pembanding`. Respons memuat `tersedia: false` tanpa statistik bila pembanding kurang dari `min_pembanding`.
 
 ### ANG-07 Profil penyedia
 

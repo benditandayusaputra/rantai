@@ -1,0 +1,12 @@
+- kategori: ruang_kelas
+  sektor: pendidikan
+  pola: ["(rehab|pembangunan|penambahan).*(ruang kelas|rkb|gedung sekolah)", "\\b(sdn|smpn|sman|smkn)\\b.*(rehab|pembangunan)"]
+- kategori: pintu_air
+  sektor: air
+  pola: ["pintu air"]
+- kategori: saluran
+  sektor: air
+  pola: ["saluran", "drainase", "box culvert", "u-ditch"]
+- kategori: jalan
+  sektor: jalan
+  pola: ["(perbaikan|peningkatan|pemeliharaan|pembangunan) jalan", "trotoar", "jalur pedestrian"]

@@ -30,21 +30,23 @@ import (
 )
 
 const (
-	pathKonfigurasiWilayah = "config/wilayah.yaml"
-	dirKonfigurasiTema     = "config/tema"
-	pathKonfigurasiDPRD    = "config/dprd.yaml"
-	pathKonfigurasiMedia   = "config/media.yaml"
-	pathKonfigurasiRingkas = "config/ringkasan.yaml"
-	pathKosakataTerlarang  = "config/kosakata_terlarang.yaml"
-	pathKonfigurasiLPSE    = "config/lpse.yaml"
-	pathKonfigurasiSIRUP   = "config/sirup.yaml"
-	pathKonfigurasiGeocode = "config/geocode.yaml"
-	jobLaporanGeocode      = "laporan_geocode"
-	jenisPengadaanLaporan  = "Pekerjaan Konstruksi"
-	persenPenuh            = 100
-	urlRujukanTema         = "https://github.com/benditandayusaputra/rantai/tree/main/backend/config/tema"
-	dirRawBawaan           = "../data/raw"
-	batasWaktuUnduh        = time.Minute
+	pathKonfigurasiWilayah  = "config/wilayah.yaml"
+	dirKonfigurasiTema      = "config/tema"
+	pathKonfigurasiDPRD     = "config/dprd.yaml"
+	pathKonfigurasiMedia    = "config/media.yaml"
+	pathKonfigurasiRingkas  = "config/ringkasan.yaml"
+	pathKosakataTerlarang   = "config/kosakata_terlarang.yaml"
+	pathKonfigurasiLPSE     = "config/lpse.yaml"
+	pathKonfigurasiSIRUP    = "config/sirup.yaml"
+	pathKonfigurasiGeocode  = "config/geocode.yaml"
+	pathKonfigurasiKategori = "config/kategori.yaml"
+	pathKonfigurasiSinyal   = "config/sinyal.yaml"
+	jobLaporanGeocode       = "laporan_geocode"
+	jenisPengadaanLaporan   = "Pekerjaan Konstruksi"
+	persenPenuh             = 100
+	urlRujukanTema          = "https://github.com/benditandayusaputra/rantai/tree/main/backend/config/tema"
+	dirRawBawaan            = "../data/raw"
+	batasWaktuUnduh         = time.Minute
 )
 
 type job func(ctx context.Context) error
@@ -263,16 +265,31 @@ func buatTurunan(pool *pgxpool.Pool) (job, error) {
 	if err := config.BacaYAML(pathKonfigurasiGeocode, &aturan); err != nil {
 		return nil, err
 	}
+	anggaran, err := bacaAturanTurunanAnggaran()
+	if err != nil {
+		return nil, err
+	}
 	lokasi := repository.LokasiPaketRepository{DB: pool}
 	turunan := usecase.TurunanPaket{
-		Gazetir:      lokasi,
-		Lokasi:       lokasi,
-		Tema:         repository.TemaRepository{DB: pool},
-		TemaPaket:    lokasi,
-		Pencatat:     repository.IngestRunRepository{DB: pool},
-		AturanLokasi: aturan,
+		Gazetir:        lokasi,
+		Lokasi:         lokasi,
+		Tema:           repository.TemaRepository{DB: pool},
+		TemaPaket:      lokasi,
+		KategoriSinyal: lokasi,
+		Pencatat:       repository.IngestRunRepository{DB: pool},
+		AturanLokasi:   aturan,
+		Anggaran:       anggaran,
+		Sekarang:       time.Now,
 	}
 	return turunan.Jalankan, nil
+}
+
+func bacaAturanTurunanAnggaran() (usecase.AturanTurunanAnggaran, error) {
+	var aturan usecase.AturanTurunanAnggaran
+	if err := config.BacaYAML(pathKonfigurasiKategori, &aturan.Kategori); err != nil {
+		return aturan, err
+	}
+	return aturan, config.BacaYAML(pathKonfigurasiSinyal, &aturan.Sinyal)
 }
 
 func buatLaporanGeocode(pool *pgxpool.Pool) job {

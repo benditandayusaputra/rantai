@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/benditandayusaputra/rantai/backend/internal/config"
 	"github.com/benditandayusaputra/rantai/backend/internal/domain"
 	"github.com/benditandayusaputra/rantai/backend/internal/repository"
 	"github.com/benditandayusaputra/rantai/backend/internal/ujidb"
@@ -28,12 +29,22 @@ func turunanUji(t *testing.T) (pgx.Tx, usecase.TurunanPaket) {
 		t.Fatal(err)
 	}
 	lokasi := repository.LokasiPaketRepository{DB: tx}
+	var anggaran usecase.AturanTurunanAnggaran
+	if err := config.BacaYAML("../../config/kategori.yaml", &anggaran.Kategori); err != nil {
+		t.Fatal(err)
+	}
+	if err := config.BacaYAML("../../config/sinyal.yaml", &anggaran.Sinyal); err != nil {
+		t.Fatal(err)
+	}
 	return tx, usecase.TurunanPaket{
-		Gazetir:   lokasi,
-		Lokasi:    lokasi,
-		Tema:      repository.TemaRepository{DB: tx},
-		TemaPaket: lokasi,
-		Pencatat:  repository.IngestRunRepository{DB: tx},
+		Gazetir:        lokasi,
+		Lokasi:         lokasi,
+		Tema:           repository.TemaRepository{DB: tx},
+		TemaPaket:      lokasi,
+		KategoriSinyal: lokasi,
+		Anggaran:       anggaran,
+		Sekarang:       time.Now,
+		Pencatat:       repository.IngestRunRepository{DB: tx},
 		AturanLokasi: domain.AturanLokasi{
 			Singkatan:           map[string]string{"kel.": "kelurahan", "kec.": "kecamatan"},
 			PergeseranMaksMeter: 150,
@@ -104,5 +115,41 @@ func TestTurunanPaket_FilterAnggaranTema_TemaKodeTerisi(t *testing.T) {
 	}
 	if !slices.Equal(temaPintuAir, []string{"pendidikan"}) || len(temaATK) != 0 {
 		t.Errorf("tema pintu air %v, tema ATK %v", temaPintuAir, temaATK)
+	}
+}
+
+const sqlPaketSinyalUji = `INSERT INTO paket (kode, kode_spse, nama, instansi_id, is_tender, jenis_pengadaan, metode, tahun_anggaran, tahap,
+    hps, tanggal_dibuat, provenance_id)
+SELECT 'nontender-pl' || n, 'pl' || n, 'Pembangunan Saluran RW ' || n, (SELECT id FROM instansi LIMIT 1), false,
+    'Pekerjaan Konstruksi', 'Pengadaan Langsung', 2026, 'Paket Sudah Selesai', 390000000 + n, DATE '2026-03-01' + n, 'prv_uji_lokasi'
+FROM generate_series(1, 3) AS n`
+
+func TestTurunanPaket_TigaPaketMepetBatas_KategoriDanSinyalS03(t *testing.T) {
+	tx, turunan := turunanUji(t)
+	if _, err := tx.Exec(t.Context(), sqlPaketSinyalUji); err != nil {
+		t.Fatal(err)
+	}
+
+	for range 2 {
+		if err := turunan.Jalankan(t.Context()); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	var jumlah int
+	var kategori string
+	err := tx.QueryRow(t.Context(), `SELECT count(*), min(p.kategori) FROM sinyal s JOIN paket p ON p.kode = s.paket_kode
+WHERE s.jenis = 'S-03' AND s.aktif`).Scan(&jumlah, &kategori)
+	if err != nil || jumlah != 3 || kategori != "saluran" {
+		t.Errorf("sinyal S-03 = %d, kategori %q, err %v", jumlah, kategori, err)
+	}
+	if _, err := tx.Exec(t.Context(), `UPDATE paket SET hps = 100000000 WHERE kode = 'nontender-pl1'`); err != nil {
+		t.Fatal(err)
+	}
+	if err := turunan.Jalankan(t.Context()); err != nil {
+		t.Fatal(err)
+	}
+	if err := tx.QueryRow(t.Context(), `SELECT count(*) FROM sinyal WHERE aktif`).Scan(&jumlah); err != nil || jumlah != 0 {
+		t.Errorf("sinyal aktif setelah pola hilang = %d, err %v", jumlah, err)
 	}
 }

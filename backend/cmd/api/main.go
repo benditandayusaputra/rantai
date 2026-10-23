@@ -11,6 +11,7 @@ import (
 
 	"github.com/benditandayusaputra/rantai/backend/internal/config"
 	deliveryhttp "github.com/benditandayusaputra/rantai/backend/internal/delivery/http"
+	"github.com/benditandayusaputra/rantai/backend/internal/domain"
 	"github.com/benditandayusaputra/rantai/backend/internal/repository"
 	"github.com/benditandayusaputra/rantai/backend/internal/usecase"
 	"github.com/gofiber/fiber/v3"
@@ -21,6 +22,7 @@ const (
 	pathKonfigurasiBawaan       = "config/api.yaml"
 	pathKonfigurasiArusAnggaran = "config/arus_anggaran.yaml"
 	pathKonfigurasiPemeliharaan = "config/pemeliharaan.yaml"
+	pathKonfigurasiSinyal       = "config/sinyal.yaml"
 )
 
 func main() {
@@ -62,6 +64,10 @@ func susunLayanan(pool *pgxpool.Pool) (deliveryhttp.Layanan, error) {
 	if err != nil {
 		return deliveryhttp.Layanan{}, err
 	}
+	var sinyal domain.AturanSinyal
+	if err := config.BacaYAML(pathKonfigurasiSinyal, &sinyal); err != nil {
+		return deliveryhttp.Layanan{}, err
+	}
 	return deliveryhttp.Layanan{
 		Wilayah:    usecase.CariWilayah{Pembaca: wilayah},
 		Provenance: usecase.AmbilProvenance{Pembaca: repository.ProvenanceRepository{DB: pool}},
@@ -71,8 +77,9 @@ func susunLayanan(pool *pgxpool.Pool) (deliveryhttp.Layanan, error) {
 		Ringkasan: usecase.RingkasKecamatan{
 			Wilayah: wilayah, Tema: tema, Indikator: ringkasan, Anggaran: ringkasan, Wakil: wakil, Sekarang: time.Now,
 		},
-		Paket:   paket,
-		Belanja: usecase.BandingBelanja{Tema: tema, Pembaca: repository.BelanjaTemaRepository{DB: pool}, Sekarang: time.Now},
+		Paket:      paket,
+		Pembanding: usecase.BandingPaket{Pembaca: repository.PaketRepository{DB: pool}, MinPembanding: sinyal.MinPembanding},
+		Belanja:    usecase.BandingBelanja{Tema: tema, Pembaca: repository.BelanjaTemaRepository{DB: pool}, Sekarang: time.Now},
 	}, nil
 }
 

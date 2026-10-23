@@ -135,3 +135,12 @@ Catatan hasil Gerbang Data (SPEC bagian 1). Setiap entri memuat URL, tanggal cek
   - 41 sisanya memang tidak menyebut kelurahan atau kecamatan (gedung kantor, Kompleks Balaikota, rumah pompa bernama jalan) atau menyebut dua kelurahan di kecamatan berbeda.
 - **Cakupan seluruh 686 paket konstruksi** (`make laporan-geocode`): kelurahan 349, kecamatan 35, provinsi 302; 56,0% tingkat kecamatan atau lebih rinci. Target 70% belum tercapai karena sekitar 40% nama paket konstruksi tidak memuat nama wilayah. Setelah detail non-tender diambil, paket sudin mendapat kota instansi sehingga sebagian bergeser dari provinsi ke kota, bukan ke kecamatan.
 - **Perbaikan dari uji**: pencocokan mengabaikan spasi ("Bale Kambang" cocok dengan Balekambang) dan pola RT/RW `RT.007/002`.
+
+## GD-09 Ambang pengadaan langsung Pekerjaan Konstruksi
+
+- **Status**: lolos.
+- **Tanggal cek**: 23 Oktober 2026.
+- **Sumber**: bahan sosialisasi Perpres 46/2025 di PPID Kemendagri (`https://ppid.kemendagri.go.id/storage/dokumen/BJDoHb38B01qZ7J5Wdcc475w9mhIQEdxugMkCcHB.pdf`), bagian Pasal 38: Pengadaan Langsung untuk Barang/Jasa Lainnya paling banyak Rp200.000.000,00 dan Pekerjaan Konstruksi paling banyak Rp400.000.000,00. Konsisten dengan teks pasal yang dikutip pasal.id dan pemberitaan Hukumonline.
+- **Sebelumnya**: Perpres 12/2021 menetapkan Rp200.000.000,00 untuk Pekerjaan Konstruksi.
+- **Berlaku**: Perpres 46/2025 berlaku 30 April 2025. `config/sinyal.yaml` menyimpan kedua ambang dengan tanggal berlaku; S-03 memilih ambang berdasarkan tanggal pembuatan paket.
+- **Catatan sinyal lain**: S-01 membutuhkan jumlah peserta paket tender atau seleksi, yang tertutup di SPSE DKI (GD-01), sehingga S-01 praktis belum menyala untuk data nyata. S-05 menunggu laporan warga terverifikasi (Fase 9).

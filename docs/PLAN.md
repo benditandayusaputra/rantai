@@ -123,7 +123,7 @@ Versi 2.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` v2.0 dan `docs/SPEC.
   - `GET /tema/{kode}/belanja` dari `indikator_kecamatan` dan paket bertema.
   - Commit: `✨ Bandingkan kesenjangan kursi dengan belanja sekolah per kecamatan`
   - Selesai bila: paket berlokasi tingkat kota dikeluarkan dari angka kecamatan dan dilaporkan terpisah (dites).
-- [ ] **T-310** Kategori, pembanding, dan sinyal (ANG-06) **[GERBANG DATA GD-09]**
+- [x] **T-310** Kategori, pembanding, dan sinyal (ANG-06) **[GERBANG DATA GD-09]**
   - `config/kategori.yaml`, `config/sinyal.yaml`, `GET /paket/{kode}/pembanding`, aturan S-01 sampai S-05, tes kosakata terlarang atas berkas i18n dan pesan backend.
   - Commit: `✨ Bandingkan HPS paket sejenis dan hitung sinyal perlu ditanyakan`
   - Selesai bila: pembanding tidak tampil di bawah `min_pembanding`; setiap sinyal punya tes positif dan negatif; tes kosakata terlarang lulus.
