@@ -154,3 +154,57 @@ export interface Sekolah {
 	jalur: 'negeri' | 'spmb_bersama' | null;
 	daya_tampung: Angka | null;
 }
+
+export interface FiturPeta<G, P> {
+	type: 'Feature';
+	geometry: G;
+	properties: P;
+}
+
+export interface KoleksiFitur<F> {
+	type: 'FeatureCollection';
+	features: F[];
+}
+
+export interface PropertiTema {
+	kode: string;
+	nama: string;
+	periode: string;
+	kelas: KelasRasio;
+	label: Label;
+	provenance_id: string;
+	kebutuhan: Angka;
+	kapasitas: Angka;
+	kesenjangan: Angka;
+	rasio: Angka | null;
+}
+
+export type GeometriPeta = { type: string; coordinates: unknown };
+
+export type PetaTema = KoleksiFitur<FiturPeta<GeometriPeta, PropertiTema>>;
+
+export type Sektor = 'pendidikan' | 'air' | 'jalan' | '';
+
+export type PropertiPaket =
+	| { jenis_lokasi: 'titik'; kode: string; nama: string; sektor: Sektor; is_simulation: boolean }
+	| { jenis_lokasi: 'area'; kode_kecamatan: string; nama_kecamatan: string; paket: string[] };
+
+export type PetaPaket = KoleksiFitur<FiturPeta<GeometriPeta, PropertiPaket>>;
+
+export interface SekolahTerdekat extends Sekolah {
+	jarak_m: number;
+}
+
+export interface SekitarTitik {
+	titik: Titik;
+	radius_m: number;
+	smp_negeri: SekolahTerdekat[];
+	spmb_bersama: SekolahTerdekat[];
+	madrasah: SekolahTerdekat[];
+	tekanan_radius: {
+		siswa_kelas_6: Angka | null;
+		kursi_negeri: Angka | null;
+		rasio: Angka | null;
+	};
+	keterbatasan: Keterbatasan[];
+}

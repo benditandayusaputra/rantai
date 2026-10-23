@@ -16,14 +16,18 @@ export default ts.config(
 		files: ['**/*.svelte', '**/*.svelte.ts'],
 		languageOptions: {
 			parserOptions: { parser: ts.parser, extraFileExtensions: ['.svelte'] }
-		}
+		},
+		rules: { 'no-useless-assignment': 'off' }
 	},
 	{
 		plugins: { rantai: aturanRantai },
 		rules: {
 			'rantai/tanpa-komentar': 'error',
 			'@typescript-eslint/no-explicit-any': 'error',
-			'svelte/no-navigation-without-resolve': ['error', { ignoreLinks: true, ignoreGoto: true }]
+			'svelte/no-navigation-without-resolve': [
+				'error',
+				{ ignoreLinks: true, ignoreGoto: true, ignoreReplaceState: true }
+			]
 		}
 	},
 	{

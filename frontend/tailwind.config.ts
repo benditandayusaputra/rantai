@@ -100,7 +100,12 @@ export default {
 				13: '52px',
 				14: '56px',
 				15: '60px',
-				18: '72px'
+				18: '72px',
+				66: '264px'
+			},
+			height: {
+				peta: 'calc(100dvh - 72px)',
+				'peta-ponsel': 'calc(100dvh - 128px)'
 			},
 			maxWidth: {
 				content: '1296px',

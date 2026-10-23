@@ -2,9 +2,13 @@ import { env } from '$env/dynamic/public';
 import type {
 	Amplop,
 	DetailPendidikan,
+	PetaPaket,
+	PetaTema,
 	Provenance,
 	RingkasanKecamatan,
 	Sekolah,
+	SekitarTitik,
+	Titik,
 	WilayahDitemukan
 } from './tipe';
 
@@ -102,4 +106,24 @@ export function tangkap<T>(permintaan: Promise<T>): Promise<Hasil<T>> {
 		(data) => ({ ok: true, data }),
 		(galat: unknown) => ({ ok: false, galat: keGalatAPI(galat) })
 	);
+}
+
+export function ambilPetaTema(fetchFn: Fetch, kodeTema: string): Promise<PetaTema> {
+	return ambilData<PetaTema>(fetchFn, `/peta/tema/${encodeURIComponent(kodeTema)}`);
+}
+
+export function ambilPetaPaket(fetchFn: Fetch, bbox: string): Promise<PetaPaket> {
+	return ambilData<PetaPaket>(fetchFn, '/peta/paket', { bbox });
+}
+
+export function ambilSekolahTerdekat(
+	fetchFn: Fetch,
+	titik: Titik,
+	radiusM: number
+): Promise<SekitarTitik> {
+	return ambilData<SekitarTitik>(fetchFn, '/sekolah/terdekat', {
+		lat: titik.lat,
+		lng: titik.lng,
+		radius_m: radiusM
+	});
 }
