@@ -1,5 +1,5 @@
 import { env } from '$env/dynamic/public';
-import type { Amplop, Provenance, WilayahDitemukan } from './tipe';
+import type { Amplop, Provenance, RingkasanKecamatan, WilayahDitemukan } from './tipe';
 
 const alamatBawaan = 'http://localhost:8080/api/v1';
 
@@ -63,4 +63,8 @@ export function ambilWilayahDiTitik(
 	lng: number
 ): Promise<WilayahDitemukan> {
 	return ambilData<WilayahDitemukan>(fetchFn, '/wilayah/titik', { lat, lng });
+}
+
+export function ambilRingkasanKecamatan(fetchFn: Fetch, kode: string): Promise<RingkasanKecamatan> {
+	return ambilData<RingkasanKecamatan>(fetchFn, `/kecamatan/${encodeURIComponent(kode)}/ringkasan`);
 }

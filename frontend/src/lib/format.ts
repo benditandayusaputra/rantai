@@ -38,3 +38,16 @@ export function formatJarak(meter: number, bahasa: Bahasa): string {
 	if (meter < meterPerKilometer) return `${formatAngka(Math.round(meter), bahasa)} m`;
 	return `${formatAngka(meter / meterPerKilometer, bahasa, 1)} km`;
 }
+
+const skalaRupiah = [
+	{ nilai: 1e12, kata: 'triliun' },
+	{ nilai: 1e9, kata: 'miliar' },
+	{ nilai: 1e6, kata: 'juta' }
+] as const;
+
+export function formatRupiah(n: number, bahasa: Bahasa, gaya: 'kata' | 'penuh' = 'kata'): string {
+	const skala = skalaRupiah.find((s) => n >= s.nilai);
+	if (gaya === 'penuh' || !skala) return `Rp${formatAngka(n, bahasa)}`;
+	const hasilBagi = n / skala.nilai;
+	return `Rp${formatAngka(hasilBagi, bahasa, Number.isInteger(hasilBagi) ? 0 : 1)} ${skala.kata}`;
+}

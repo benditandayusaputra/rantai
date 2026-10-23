@@ -185,7 +185,7 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
 - [x] **T-603** Beranda dan pencarian (WIL-01) **[BUTUH DESAIN]**
   - Commit: `✨ Bangun beranda dengan pencarian wilayah dan lokasi`
   - Selesai bila: memilih hasil membuka halaman kecamatan, kelurahan tersorot; tombol lokasi menangani izin ditolak.
-- [ ] **T-604** Halaman kecamatan (WIL-02) **[BUTUH DESAIN]**
+- [x] **T-604** Halaman kecamatan (WIL-02) **[BUTUH DESAIN]**
   - Header, kartu ringkas, bagian Tema, Arus Anggaran, Wakilku dengan URL sendiri.
   - Commit: `✨ Bangun halaman kecamatan dengan bagian tema, anggaran, dan wakil`
   - Selesai bila: bagian bisa dibuka langsung dari URL; status kosong, memuat, dan error ada.

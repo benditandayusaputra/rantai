@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatAngka, formatJam, formatJarak, formatTanggal } from './format';
+import { formatAngka, formatJam, formatJarak, formatRupiah, formatTanggal } from './format';
 
 describe('format', () => {
 	it('memakai pemisah ribuan titik dan desimal koma', () => {
@@ -22,5 +22,20 @@ describe('formatJarak', () => {
 	it('memakai meter di bawah 1 km dan km satu desimal di atasnya', () => {
 		expect(formatJarak(480.4, 'id')).toBe('480 m');
 		expect(formatJarak(1234, 'id')).toBe('1,2 km');
+	});
+});
+
+describe('formatRupiah', () => {
+	it.each([
+		[845_000, 'Rp845.000'],
+		[845_000_000, 'Rp845 juta'],
+		[1_200_000_000, 'Rp1,2 miliar'],
+		[1_400_000_000_000, 'Rp1,4 triliun']
+	])('%d menjadi %s', (n, harapan) => {
+		expect(formatRupiah(n, 'id')).toBe(harapan);
+	});
+
+	it('menulis nilai lengkap untuk panel sumber', () => {
+		expect(formatRupiah(2_408_700_000, 'id', 'penuh')).toBe('Rp2.408.700.000');
 	});
 });
