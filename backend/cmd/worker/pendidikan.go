@@ -30,6 +30,8 @@ func pilihJobPendidikan(nama string, pool *pgxpool.Pool) (job, error) {
 		return buatImporDayaTampung(pool)
 	case usecase.JobCalonLulusan:
 		return buatHitungCalonLulusan(pool)
+	case usecase.JobIndikator:
+		return buatHitungIndikator(pool)
 	default:
 		return nil, fmt.Errorf("job tidak dikenal: %s", nama)
 	}
@@ -79,6 +81,23 @@ func buatHitungCalonLulusan(pool *pgxpool.Pool) (job, error) {
 	hitung := usecase.HitungCalonLulusan{
 		Pembaca: repo, Penyimpan: repo, Pencatat: repository.IngestRunRepository{DB: pool},
 		Pelapor: pelaporLog{}, Konstanta: konstanta, BuatProvenance: buatProvenanceTurunan,
+	}
+	return hitung.Jalankan, nil
+}
+
+func buatHitungIndikator(pool *pgxpool.Pool) (job, error) {
+	var konstanta usecase.KonstantaPendidikan
+	if err := config.BacaYAML(pathPendidikan, &konstanta); err != nil {
+		return nil, err
+	}
+	repo := repository.IndikatorRepository{DB: pool}
+	hitung := usecase.HitungIndikator{
+		Tema: repository.TemaRepository{DB: pool},
+		Penghitung: map[string]usecase.PenghitungIndikator{
+			domain.PenghitungKesenjanganKursiSMP: usecase.KesenjanganKursiSMP{Pembaca: repo, Konstanta: konstanta, BuatProvenance: buatProvenanceTurunan},
+		},
+		Penyimpan: repo,
+		Pencatat:  repository.IngestRunRepository{DB: pool},
 	}
 	return hitung.Jalankan, nil
 }

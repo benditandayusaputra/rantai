@@ -172,6 +172,7 @@ Worker Go (`cmd/worker <job>`) menjalankan job. Setiap job: ambil, simpan mentah
 | `dapodik` | per semester | Sekolah, lokasi, rombel dan siswa per tingkat dari API Sekolah Kita yang menyajikan data Dapodik (GD-06) |
 | `daya_tampung` | tahunan, manual | Impor CSV hasil ekstraksi Kepkadis 258/2026 dan SPMB Bersama (GD-04, GD-05) |
 | `calon_lulusan` | per semester | Siswa kelas 6 per kecamatan (GD-12) |
+| `indikator` | setelah `calon_lulusan` dan `daya_tampung` | Penghitung indikator setiap tema aktif ke `indikator_kecamatan` |
 | `lpse_daftar` | harian 02.00 WIB | Daftar paket tender dan non-tender tahun berjalan dan sebelumnya |
 | `lpse_detail` | harian, setelah daftar | Detail paket baru dan paket yang tahapnya berubah; pemenang (GD-02) |
 | `sirup` | mingguan | Detail RUP untuk kode RUP yang ditemukan di paket |
@@ -319,6 +320,8 @@ rasio(k, t)               = kursi_negeri ÷ calon_lulusan
 `indikator_kecamatan` menyimpan `kebutuhan = calon_lulusan`, `kapasitas = kursi_negeri`, serta rincian ketiga jenis kursi dan kesenjangan bila SPMB Bersama dan madrasah ikut dihitung. Label mengikuti aturan label terlemah (0.1).
 
 Konstanta di `config/pendidikan.yaml`: `batas_murid_per_rombel_smp: 32` (Kepmendikdasmen 14/2026) dan pembagi cadangan `estimasi_total_sd: 6`. Kelas rasio dari `ambang_rasio` di konfigurasi tema. Tidak ada angka 32 atau 6 tertulis langsung di kode.
+
+Kelas rasio: `sangat_kurang` (rasio < `sangat_kurang`), `kurang`, `hampir_cukup`, `cukup` (rasio ≥ `hampir_cukup`), dan `tidak_ada_data` bila calon lulusan 0. Indikator dihitung job `indikator`, yang menjalankan penghitung setiap tema aktif.
 
 Keterbatasan yang wajib ditampilkan: SPMB Jakarta tidak membatasi pendaftaran pada kecamatan, sehingga angka kecamatan menggambarkan tekanan lokal, bukan peluang pasti seorang anak. PEN-06 melengkapi dengan tampilan radius.
 

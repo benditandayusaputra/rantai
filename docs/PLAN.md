@@ -72,7 +72,7 @@ Versi 2.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` v2.0 dan `docs/SPEC.
   - Migrasi `calon_lulusan_kecamatan`; job `calon_lulusan` dengan metode per sekolah, agregat resmi, atau estimasi total SD ÷ 6 sesuai hasil gerbang.
   - Commit: `✨ Hitung calon lulusan SD per kecamatan dengan label metode`
   - Selesai bila: setiap kecamatan punya angka dengan label dan metode; metode estimasi berlabel `estimasi` dan rumusnya tercatat di provenance (dites).
-- [ ] **T-205** Indikator kesenjangan kursi (PEN-01)
+- [x] **T-205** Indikator kesenjangan kursi (PEN-01)
   - `config/pendidikan.yaml`, rumus domain, aturan label terlemah, penghitung `kesenjangan_kursi_smp` menulis ke `indikator_kecamatan`.
   - Commit: `✨ Hitung kesenjangan kursi SMP negeri per kecamatan`
   - Selesai bila: tes tabel mencakup semua kasus tepi PEN-01 dan aturan label terlemah; tidak ada angka 32 atau 6 tertulis langsung di kode.
