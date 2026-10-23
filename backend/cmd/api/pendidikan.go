@@ -13,5 +13,9 @@ func denganLayananPendidikan(layanan deliveryhttp.Layanan, pool *pgxpool.Pool, c
 		Pembaca: repository.IndikatorBacaRepository{DB: pool, Peta: cfg.Peta},
 		Tema:    repository.TemaRepository{DB: pool},
 	}
+	layanan.Sekolah = usecase.CariSekolahTerdekat{
+		Pembaca:     repository.SekolahTerdekatRepository{DB: pool},
+		Konfigurasi: usecase.KonfigurasiSekolahTerdekat(cfg.SekolahTerdekat),
+	}
 	return layanan
 }

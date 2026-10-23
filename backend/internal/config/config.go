@@ -10,9 +10,15 @@ import (
 )
 
 type Config struct {
-	Server      Server `yaml:"server"`
-	Peta        Peta   `yaml:"peta"`
-	DatabaseURL string `yaml:"-"`
+	Server          Server          `yaml:"server"`
+	Peta            Peta            `yaml:"peta"`
+	SekolahTerdekat SekolahTerdekat `yaml:"sekolah_terdekat"`
+	DatabaseURL     string          `yaml:"-"`
+}
+
+type SekolahTerdekat struct {
+	RadiusBawaanMeter   int `yaml:"radius_bawaan_m"`
+	RadiusMaksimalMeter int `yaml:"radius_maksimal_m"`
 }
 
 type Peta struct {

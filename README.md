@@ -53,7 +53,7 @@ make hitung-indikator
 - [x] Struktur monorepo
 - [x] Lingkungan lokal Docker Compose
 - [x] Server API dan skema wilayah
-- [ ] Kerangka tema dan Tema Pendidikan
+- [x] Kerangka tema dan Tema Pendidikan
 - [ ] Arus Anggaran
 - [ ] Wakilku
 - [ ] Frontend

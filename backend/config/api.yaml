@@ -13,3 +13,7 @@ server:
 peta:
   toleransi_penyederhanaan: 0.0003
   desimal_koordinat: 5
+
+sekolah_terdekat:
+  radius_bawaan_m: 3000
+  radius_maksimal_m: 10000

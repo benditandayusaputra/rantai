@@ -19,6 +19,7 @@ type Layanan struct {
 	Pembanding LayananPembanding
 	Penyedia   LayananPenyedia
 	Indikator  LayananIndikator
+	Sekolah    LayananSekolahTerdekat
 }
 
 func NewApp(cfg config.Server, layanan Layanan) *fiber.App {
@@ -41,6 +42,7 @@ func NewApp(cfg config.Server, layanan Layanan) *fiber.App {
 	api.Get("/paket/:kode/pembanding", handlerPembanding{layanan: layanan.Pembanding}.bandingkan)
 	api.Get("/penyedia/:id", handlerPenyedia{layanan: layanan.Penyedia}.ambil)
 	daftarkanPendidikan(api, handlerPendidikan{layanan: layanan.Indikator})
+	api.Get("/sekolah/terdekat", handlerSekolahTerdekat{layanan: layanan.Sekolah}.cari)
 	return app
 }
 

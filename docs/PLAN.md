@@ -80,7 +80,7 @@ Versi 2.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` v2.0 dan `docs/SPEC.
   - `GET /peta/tema/{kode}`, `GET /tema/pendidikan/kecamatan/{kode}`, `GET /tema/pendidikan/kecamatan/{kode}/sekolah`.
   - Commit: `✨ Tambah API peta indikator dan detail sekolah kecamatan`
   - Selesai bila: GeoJSON choropleth di bawah 300 KB untuk seluruh DKI; tes integrasi lulus.
-- [ ] **T-207** Sekolah terdekat (PEN-06)
+- [x] **T-207** Sekolah terdekat (PEN-06)
   - `GET /sekolah/terdekat` dengan tekanan radius.
   - Commit: `✨ Tambah API sekolah terdekat dan tekanan kursi radius`
   - Selesai bila: tes dengan data uji tiga sekolah di jarak berbeda lulus.
