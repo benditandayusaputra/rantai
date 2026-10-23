@@ -3,7 +3,10 @@ package dprd
 import (
 	"os"
 	"slices"
+	"strings"
 	"testing"
+	"time"
+	"unicode/utf8"
 
 	"github.com/benditandayusaputra/rantai/backend/internal/domain"
 )
@@ -67,5 +70,26 @@ func TestUraiBidangKomisi_KomisiB_NamaDinasBerkomaTetapUtuh(t *testing.T) {
 	}
 	if !slices.Equal(bidang, harap) {
 		t.Errorf("bidang = %q", bidang)
+	}
+}
+
+func TestUraiRilis_HalamanREST_JudulBersihDanCuplikanTerbatas(t *testing.T) {
+	item, err := UraiRilis(bacaFixture(t, "rilis_halaman_1.json"), KonfigurasiRilis{MediaNama: "Situs DPRD", MediaDomain: "dprd-dkijakartaprov.go.id"})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if len(item) != 20 {
+		t.Fatalf("harap 20 rilis, dapat %d", len(item))
+	}
+	dbd := item[3]
+	if dbd.Judul != "Kasus DBD Jakarta Selatan Tembus 1.314" || dbd.JenisSumber != domain.SumberUmpanResmiDPRD ||
+		dbd.TerbitPada.Format(time.RFC3339) != "2026-10-15T04:58:18Z" || !strings.Contains(dbd.Isi, "Yuke Yurike") {
+		t.Errorf("rilis = %+v", dbd)
+	}
+	for _, i := range item {
+		if utf8.RuneCountInString(i.Cuplikan) > domain.BatasCuplikanUmpan || strings.Contains(i.Judul, "&#") {
+			t.Errorf("cuplikan atau judul belum bersih: %q", i.Judul)
+		}
 	}
 }

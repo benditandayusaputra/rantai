@@ -46,10 +46,24 @@ type KonfigurasiDapilKPU struct {
 	Daftar      []domain.Dapil `yaml:"daftar"`
 }
 
+type KonfigurasiRilis struct {
+	URLAPI       string        `yaml:"url_api"`
+	URLRujukan   string        `yaml:"url_rujukan"`
+	Catatan      string        `yaml:"catatan"`
+	Kategori     []string      `yaml:"kategori"`
+	PerHalaman   int           `yaml:"per_halaman"`
+	BatasHalaman int           `yaml:"batas_halaman"`
+	Mulai        time.Time     `yaml:"mulai"`
+	Tumpang      time.Duration `yaml:"tumpang_tindih"`
+	MediaNama    string        `yaml:"media_nama"`
+	MediaDomain  string        `yaml:"media_domain"`
+}
+
 type Konfigurasi struct {
 	Sumber    KonfigurasiSumber   `yaml:"sumber"`
 	Pengunduh klien.Konfigurasi   `yaml:"pengunduh"`
 	URLLHKPN  string              `yaml:"url_lhkpn"`
+	Rilis     KonfigurasiRilis    `yaml:"rilis"`
 	DapilKPU  KonfigurasiDapilKPU `yaml:"dapil_kpu"`
 }
 
@@ -167,15 +181,14 @@ func (u *pengunduh) ambil(ctx context.Context, halaman string) ([]byte, error) {
 		return nil, err
 	}
 	u.semuaIsi = append(u.semuaIsi, isi...)
-	return isi, u.simpanMentah(halaman, isi)
+	nama := strings.ReplaceAll(strings.Trim(halaman, "/"), "/", "_") + ".html"
+	return isi, simpanMentah(filepath.Join(u.DirRaw, usecase.JobKPUDPRD, u.diambilPada.Format(formatTanggalRaw)), nama, isi)
 }
 
-func (u *pengunduh) simpanMentah(halaman string, isi []byte) error {
-	dir := filepath.Join(u.DirRaw, usecase.JobKPUDPRD, u.diambilPada.Format(formatTanggalRaw))
+func simpanMentah(dir, nama string, isi []byte) error {
 	if err := os.MkdirAll(dir, 0o755); err != nil {
 		return fmt.Errorf("buat folder data mentah: %w", err)
 	}
-	nama := strings.ReplaceAll(strings.Trim(halaman, "/"), "/", "_") + ".html"
 	return os.WriteFile(filepath.Join(dir, nama), isi, 0o644)
 }
 

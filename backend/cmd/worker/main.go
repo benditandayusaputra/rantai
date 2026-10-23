@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/benditandayusaputra/rantai/backend/internal/config"
+	"github.com/benditandayusaputra/rantai/backend/internal/domain"
 	"github.com/benditandayusaputra/rantai/backend/internal/ingest/dprd"
 	"github.com/benditandayusaputra/rantai/backend/internal/ingest/klien"
 	"github.com/benditandayusaputra/rantai/backend/internal/ingest/lpse"
@@ -36,7 +37,7 @@ const (
 
 type job func(ctx context.Context) error
 
-var jobTersedia = []string{usecase.JobWilayah, usecase.JobTema, usecase.JobKPUDPRD, usecase.JobLPSEDaftar, usecase.JobLPSEDetail}
+var jobTersedia = []string{usecase.JobWilayah, usecase.JobTema, usecase.JobKPUDPRD, usecase.JobLPSEDaftar, usecase.JobLPSEDetail, usecase.JobUmpanDPRD}
 
 func main() {
 	if err := jalankan(os.Args[1:]); err != nil {
@@ -72,6 +73,8 @@ func pilihJob(nama string, pool *pgxpool.Pool) (job, error) {
 		return buatImporDPRD(pool)
 	case usecase.JobLPSEDaftar, usecase.JobLPSEDetail:
 		return buatImporLPSE(nama, pool)
+	case usecase.JobUmpanDPRD:
+		return buatImporUmpanDPRD(pool)
 	default:
 		return nil, fmt.Errorf("job tidak dikenal: %s", nama)
 	}
@@ -156,6 +159,32 @@ func buatImporLPSE(nama string, pool *pgxpool.Pool) (job, error) {
 		Pengambil: sumber, Penyimpan: paket, Pencatat: pencatat,
 		AturanInstansi: cfg.Instansi, JenisPengadaan: cfg.JenisPengadaanDetail,
 	}.Jalankan, nil
+}
+
+func buatImporUmpanDPRD(pool *pgxpool.Pool) (job, error) {
+	var cfg dprd.Konfigurasi
+	if err := config.BacaYAML(pathKonfigurasiDPRD, &cfg); err != nil {
+		return nil, err
+	}
+	umpan := repository.UmpanRepository{DB: pool}
+	impor := usecase.ImporUmpan{
+		Job:           usecase.JobUmpanDPRD,
+		JenisSumber:   domain.SumberUmpanResmiDPRD,
+		MulaiBawaan:   cfg.Rilis.Mulai,
+		TumpangTindih: cfg.Rilis.Tumpang,
+		Pengambil: dprd.SumberRilis{
+			Konfigurasi: cfg.Rilis,
+			Pengunduh:   klien.Baru(&http.Client{Timeout: batasWaktuUnduh}, cfg.Pengunduh),
+			DirRaw:      dirRaw(),
+			Sekarang:    time.Now,
+		},
+		Anggota:   umpan,
+		Tema:      usecase.BacaTema{Pembaca: repository.TemaRepository{DB: pool}},
+		Penyimpan: umpan,
+		Pencatat:  repository.IngestRunRepository{DB: pool},
+		Pautkan:   domain.PencariNama.PautkanRilisResmi,
+	}
+	return impor.Jalankan, nil
 }
 
 func dirRaw() string {

@@ -7,7 +7,7 @@ export DATABASE_URL TEST_DATABASE_URL
 COMPOSE := docker compose
 MIGRATE := $(COMPOSE) run --rm --build migrate
 
-.PHONY: up down migrate migrate-down lint test impor-wilayah impor-tema impor-kpu-dprd impor-lpse snapshot-paket muat-snapshot-paket
+.PHONY: up down migrate migrate-down lint test impor-wilayah impor-tema impor-kpu-dprd impor-lpse snapshot-paket muat-snapshot-paket impor-umpan-dprd
 
 up:
 	$(COMPOSE) up -d --wait db minio
@@ -47,3 +47,6 @@ snapshot-paket:
 
 muat-snapshot-paket:
 	gunzip -c $(SNAPSHOT_PAKET) | $(COMPOSE) exec -T db psql -q -v ON_ERROR_STOP=1 -U rantai -d rantai
+
+impor-umpan-dprd:
+	cd backend && go run ./cmd/worker umpan_dprd

@@ -146,7 +146,7 @@ Versi 2.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` v2.0 dan `docs/SPEC.
   - `GET /kecamatan/{kode}/wakil?tema=`, `GET /anggota/{id}`, `GET /dapil/{id}`.
   - Commit: `✨ Tambah API wakil dapil dan profil anggota`
   - Selesai bila: urutan anggota komisi pengawas tema lebih dahulu dites; tidak ada angka kinerja di respons.
-- [ ] **T-404** Umpan rilis resmi DPRD (WAK-03) **[GERBANG DATA GD-13]**
+- [x] **T-404** Umpan rilis resmi DPRD (WAK-03) **[GERBANG DATA GD-13]**
   - Migrasi `umpan_kegiatan`, `umpan_anggota`; job `umpan_dprd`; penandaan `tag_isu` dari tema.
   - Commit: `✨ Impor rilis kegiatan resmi DPRD per anggota`
   - Selesai bila: parser lulus tes fixture; item tidak disimpan dengan teks berita penuh.

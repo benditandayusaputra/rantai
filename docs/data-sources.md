@@ -70,3 +70,16 @@ Catatan hasil Gerbang Data (SPEC bagian 1). Setiap entri memuat URL, tanggal cek
   - Jabatan Basri Baco di Komisi B tertulis "Koordintor". Karena itu pimpinan dikenali dari halaman Pimpinan DPRD, bukan dari teks jabatan.
   - Kartu Pandapotan Sinaga di halaman fraksi tidak bertaut profil. ID diambil dari slug di halaman dapil karena slug itu unik di sana.
 - **Pencocokan kartu ke anggota**: nama tanpa gelar (termasuk `nama_lain`) bila menunjuk tepat satu anggota, lalu slug profil. Slug kosong tidak pernah dipakai.
+
+## GD-13 Berita resmi situs DPRD DKI Jakarta
+
+- **Status**: lolos. Cadangan impor manual tidak diperlukan.
+- **Tanggal cek**: 23 Oktober 2026
+- **Sumber**: WordPress REST API `https://dprd-dkijakartaprov.go.id/wp-json/wp/v2/posts` (terbuka tanpa autentikasi). Kategori `6` Berita (9.520 post) dan `9` Wakil Kita (590 post); kategori galeri dan Senyum Sejenak tidak diambil.
+  - Kueri: `categories=6,9&after=<waktu UTC>&per_page=100&page=N&orderby=date&order=asc&_fields=id,date_gmt,link,title,excerpt,content`. Paginasi berhenti saat halaman berisi kurang dari 100 post.
+  - Field: `date_gmt`, `link`, `title.rendered`, `excerpt.rendered`, `content.rendered` (HTML).
+- **Yang disimpan**: judul, cuplikan dari `excerpt` (maksimal 300 karakter, hanya bahan ringkasan dan tidak dikirim API), tautan, tanggal terbit. Isi berita (`content`) hanya dipindai untuk mencari nama anggota lalu dibuang.
+- **Pencocokan anggota** (`dasar_cocok = situs_resmi`): nama tanpa gelar dua kata atau lebih di mana saja dalam judul, cuplikan, atau isi. Nama satu kata (contoh Mujiyono, Jupiter) hanya bila tepat didahului "DPRD DKI Jakarta" atau "DPRD DKI", pola baku rilis Sekretariat DPRD. Inisial tunggal di akhir nama dibuang. Nama yang dipakai lebih dari satu anggota tidak dipautkan: kedua anggota bernama Ismail tidak punya umpan dari sumber ini.
+- **Hasil uji 23 Oktober 2026**: 4.972 rilis sejak pelantikan 26 Agustus 2024 terpaut ke 104 dari 106 anggota.
+- **Jadwal**: impor awal dari `rilis.mulai` di `config/dprd.yaml`; berikutnya dari tanggal terbit terakhir dikurangi 24 jam (upsert per URL, tidak menggandakan). Batas pengaman 100 halaman per jalan.
+- **robots.txt**: hanya `/wp-admin/` yang dilarang. Jeda 1 detik per permintaan lewat klien bersama.

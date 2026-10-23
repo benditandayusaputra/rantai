@@ -56,6 +56,18 @@ pengunduh:
   user_agent: RantaiBot/1.0 (+https://github.com/benditandayusaputra/rantai)
   jeda_permintaan: 1s
 
+rilis:
+  url_api: https://dprd-dkijakartaprov.go.id/wp-json/wp/v2/posts
+  url_rujukan: https://dprd-dkijakartaprov.go.id/category/berita/
+  catatan: Berita resmi Sekretariat DPRD Provinsi DKI Jakarta kategori Berita dan Wakil Kita; Rantai menyimpan judul dan cuplikan, bukan isi berita
+  kategori: ["6", "9"]
+  per_halaman: 100
+  batas_halaman: 100
+  mulai: 2024-08-26T00:00:00+07:00
+  tumpang_tindih: 24h
+  media_nama: Situs Resmi DPRD Provinsi DKI Jakarta
+  media_domain: dprd-dkijakartaprov.go.id
+
 url_lhkpn: https://elhkpn.kpk.go.id/portal/user/login#announ
 
 dapil_kpu:
