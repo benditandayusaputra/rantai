@@ -2,6 +2,7 @@ package http
 
 import (
 	"encoding/json"
+	"net/http"
 	"net/http/httptest"
 	"testing"
 
@@ -21,7 +22,12 @@ func appUji() *fiber.App {
 
 func panggil(t *testing.T, app *fiber.App, path string) hasilPanggilan {
 	t.Helper()
-	resp, err := app.Test(httptest.NewRequestWithContext(t.Context(), fiber.MethodGet, path, nil))
+	return kirim(t, app, httptest.NewRequestWithContext(t.Context(), fiber.MethodGet, path, nil))
+}
+
+func kirim(t *testing.T, app *fiber.App, permintaan *http.Request) hasilPanggilan {
+	t.Helper()
+	resp, err := app.Test(permintaan)
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -18,6 +18,7 @@ func NewApp(cfg config.Server, layanan Layanan) *fiber.App {
 		ReadTimeout:  cfg.BatasWaktuBaca,
 		WriteTimeout: cfg.BatasWaktuTulis,
 	})
+	pasangPengaman(app, cfg)
 	api := app.Group(prefiksAPI)
 	api.Get("/kesehatan", periksaKesehatan)
 	daftarkanWilayah(api, handlerWilayah{layanan: layanan.Wilayah})

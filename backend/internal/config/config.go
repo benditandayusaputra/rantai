@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	"gopkg.in/yaml.v3"
@@ -18,6 +19,17 @@ type Server struct {
 	BatasWaktuBaca  time.Duration `yaml:"batas_waktu_baca"`
 	BatasWaktuTulis time.Duration `yaml:"batas_waktu_tulis"`
 	BatasWaktuHenti time.Duration `yaml:"batas_waktu_henti"`
+	BatasLaju       BatasLaju     `yaml:"batas_laju"`
+	CORS            CORS          `yaml:"cors"`
+}
+
+type BatasLaju struct {
+	MaksPermintaan int           `yaml:"maks_permintaan"`
+	Jendela        time.Duration `yaml:"jendela"`
+}
+
+type CORS struct {
+	Origin []string `yaml:"origin"`
 }
 
 func Load(path string) (Config, error) {
@@ -42,6 +54,9 @@ func BacaYAML(path string, tujuan any) error {
 func terapkanEnv(cfg Config) Config {
 	if port, ada := os.LookupEnv("API_PORT"); ada {
 		cfg.Server.Port = port
+	}
+	if origin, ada := os.LookupEnv("CORS_ORIGIN"); ada {
+		cfg.Server.CORS.Origin = strings.Split(origin, ",")
 	}
 	cfg.DatabaseURL = os.Getenv("DATABASE_URL")
 	return cfg

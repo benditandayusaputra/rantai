@@ -42,7 +42,7 @@ make impor-wilayah
 
 - [x] Struktur monorepo
 - [x] Lingkungan lokal Docker Compose
-- [ ] Server API dan skema wilayah
+- [x] Server API dan skema wilayah
 - [ ] Lensa Layanan
 - [ ] Lensa Uang
 - [ ] Lensa Tanggung Jawab

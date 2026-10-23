@@ -3,3 +3,9 @@ server:
   batas_waktu_baca: 10s
   batas_waktu_tulis: 15s
   batas_waktu_henti: 10s
+  batas_laju:
+    maks_permintaan: 120
+    jendela: 1m
+  cors:
+    origin:
+      - http://localhost:5173

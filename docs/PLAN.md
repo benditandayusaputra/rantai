@@ -48,7 +48,7 @@ Versi 1.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` dan `docs/SPEC.md`.
   - `GET /provenance/{id}` dan tipe `Angka` di lapisan delivery.
   - Commit: `✨ Tambah API provenance dan tipe Angka berlabel`
   - Selesai bila: setiap `Angka` di respons wajib membawa label dan `provenance_id` (dites).
-- [ ] **T-106** Pengaman HTTP
+- [x] **T-106** Pengaman HTTP
   - Batas laju per IP, header keamanan (SPEC 10), CORS untuk origin frontend dari konfigurasi.
   - Commit: `🔒️ Pasang batas laju dan header keamanan pada API`
   - Selesai bila: tes 429 dengan `Retry-After` dan tes keberadaan header lulus.
@@ -289,6 +289,7 @@ Versi 1.0 · 23 Oktober 2026 · Pasangan dari `docs/PRD.md` dan `docs/SPEC.md`.
   - Selesai bila: Lighthouse mobile 90 ke atas untuk Beranda dan Wilayahku; API p95 di bawah 300 ms pada data penuh.
 - [ ] **T-1004** Deploy
   - Compose produksi dengan Caddy, cadangan basis data harian.
+  - Atur proxy tepercaya di Fiber (`TrustProxy`) agar batas laju per IP dan HSTS bekerja di belakang Caddy.
   - Commit: `🔧 Siapkan deploy produksi dengan Caddy`
 - [ ] **T-1005** Snapshot luring final (DASAR-07)
   - Snapshot data, PMTiles wilayah DKI, uji jalan tanpa internet.
