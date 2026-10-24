@@ -13,6 +13,7 @@ import type {
 	DetailPaket,
 	DetailPendidikan,
 	DetailWilayah,
+	HasilPaketTerkait,
 	Dokumen,
 	InfoSumberData,
 	PaketRingkas,
@@ -309,4 +310,8 @@ export function ambilSikapFraksi(fetchFn: Fetch, fraksi: string): Promise<SikapF
 
 export function ambilAspirasiReses(fetchFn: Fetch, dapil: number): Promise<AspirasiReses[]> {
 	return ambilData<AspirasiReses[]>(fetchFn, '/aspirasi-reses', { dapil });
+}
+
+export function ambilPaketTerkait(fetchFn: Fetch, idAspirasi: number): Promise<HasilPaketTerkait> {
+	return ambilData<HasilPaketTerkait>(fetchFn, `/aspirasi-reses/${idAspirasi}/paket-terkait`);
 }

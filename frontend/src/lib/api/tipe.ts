@@ -640,3 +640,14 @@ export interface AspirasiReses {
 	url: string;
 	provenance_id: string;
 }
+
+export interface PaketTerkait extends PaketRingkas {
+	dasar_cocok: 'kategori' | 'kata_kunci';
+}
+
+export interface HasilPaketTerkait {
+	aspirasi: AspirasiReses;
+	tahun_anggaran: number;
+	status: 'kemungkinan_terkait' | 'belum_ditemukan' | 'tanpa_wilayah';
+	paket: PaketTerkait[];
+}

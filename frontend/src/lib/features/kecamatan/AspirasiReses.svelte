@@ -3,6 +3,7 @@
 	import { ambilAspirasiReses, tangkap } from '$lib/api/klien';
 	import type { AspirasiReses } from '$lib/api/tipe';
 	import EmptyState from '$lib/components/EmptyState.svelte';
+	import PaketTerkait from './PaketTerkait.svelte';
 	import { t } from '$lib/i18n';
 
 	let { idDapil }: { idDapil: number } = $props();
@@ -59,6 +60,7 @@
 								</span>
 							</p>
 							<p>{a.uraian}</p>
+							{#if a.wilayah}<PaketTerkait idAspirasi={a.id} />{/if}
 							<a
 								href={a.url}
 								target="_blank"

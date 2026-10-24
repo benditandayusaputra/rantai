@@ -735,5 +735,11 @@
 	"reses.note": "Kompilasi per bidang, bukan per anggota. Dibacakan dalam rapat paripurna laporan reses; entri tanpa wilayah berlaku untuk seluruh Jakarta.",
 	"reses.allJakarta": "Seluruh Jakarta",
 	"reses.empty": "Belum ada aspirasi reses yang dikurasi",
-	"reses.failed": "Aspirasi reses gagal dimuat."
+	"reses.failed": "Aspirasi reses gagal dimuat.",
+	"related.toggle": "Paket yang kemungkinan terkait",
+	"related.lead": "Dicari di wilayah yang sama pada tahun anggaran {tahun}. Kecocokan berdasar kategori atau kata kunci, bukan bukti bahwa paket berasal dari aspirasi ini.",
+	"related.none": "Belum ditemukan paket yang terkait di data LPSE.",
+	"related.match.kategori": "Kemungkinan terkait: kategori sama",
+	"related.match.kata_kunci": "Kemungkinan terkait: kata kunci bidang",
+	"related.failed": "Pencarian paket gagal dimuat."
 }

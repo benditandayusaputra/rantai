@@ -280,7 +280,8 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - Migrasi `sikap_fraksi`, `aspirasi_reses`; job `paripurna` impor CSV kurasi; API dan tampilan.
   - Commit: `✨ Tambah sikap fraksi dan aspirasi reses dari dokumen paripurna`
   - Selesai bila: setiap entri punya tautan sumber; aspirasi tampil dengan catatan "per bidang, bukan per anggota".
-- [ ] **T-903** Aspirasi ke Anggaran (ANG-05)
+- [x] **T-903** Aspirasi ke Anggaran (ANG-05)
+  - Tampil di Wakilku per aspirasi berwilayah. Tampilan sebaliknya di halaman paket butuh endpoint pencarian terbalik (paket ke aspirasi) dan belum dibuat.
   - `GET /aspirasi-reses/{id}/paket-terkait` dan tampilan di halaman paket dan Wakilku.
   - Commit: `✨ Cocokkan aspirasi reses dengan paket yang kemungkinan terkait`
   - Selesai bila: hasil selalu berlabel "kemungkinan terkait"; kasus tanpa kecocokan dites.
@@ -365,4 +366,3 @@ Dikerjakan tim, bukan tugas commit. Dicatat di sini agar urutannya terlihat.
 Format: `- T-xxx · tanggal · alasan · tugas yang dikerjakan sebagai gantinya`
 
 - T-301 · 23 Oktober 2026 · halaman detail dan evaluasi tender SPSE DKI tertutup untuk publik (403, "Akses Ditolak"); detail tender butuh token API Gateway Inaproc (peran Data Integrator, surat ke LKPP) · paket tender disimpan dari kolom daftar, non-tender memakai halaman pengumuman lengkap
-- T-903 · 24 Oktober 2026 · `docs/DESIGN.md` belum memuat blok paket yang kemungkinan terkait di halaman paket (6.4) maupun di Wakilku; sisi backend (`config/aspirasi_anggaran.yaml`, `GET /aspirasi-reses/{id}/paket-terkait`, kasus tanpa kecocokan dites) sudah selesai, kotak dicentang setelah tampilannya dibangun · T-904
