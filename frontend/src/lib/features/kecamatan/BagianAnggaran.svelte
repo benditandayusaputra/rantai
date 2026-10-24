@@ -4,6 +4,7 @@
 	import KeyNumberCard from '$lib/components/KeyNumberCard.svelte';
 	import { t } from '$lib/i18n';
 	import DaftarPaket from './DaftarPaket.svelte';
+	import GrafikBelanja from './GrafikBelanja.svelte';
 
 	interface Props {
 		anggaran: Anggaran | null;
@@ -29,6 +30,12 @@
 	</section>
 {:else}
 	<EmptyState title={t('money.empty')} />
+{/if}
+
+{#if tema.some((item) => item.kode === 'pendidikan')}
+	<div class="mt-10">
+		<GrafikBelanja {kodeKecamatan} kodeTema="pendidikan" />
+	</div>
 {/if}
 
 <div class="mt-10">

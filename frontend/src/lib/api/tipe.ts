@@ -568,3 +568,17 @@ export interface HalamanNotifikasi {
 	item: Notifikasi[];
 	belum_dibaca: number;
 }
+
+export interface BelanjaKecamatan {
+	kecamatan: RingkasanWilayah;
+	kode_kota: string;
+	indikator: IndikatorRingkas | null;
+	belanja: Anggaran | null;
+}
+
+export interface BelanjaTema {
+	tema: string;
+	tahun: number;
+	kecamatan: BelanjaKecamatan[];
+	luar_kecamatan: { wilayah: RingkasanWilayah; belanja: Anggaran | null }[];
+}

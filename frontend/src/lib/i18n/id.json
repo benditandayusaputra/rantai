@@ -683,5 +683,18 @@
 	"watch.push.help": "Notifikasi dikirim saat ada kabar baru di kecamatan yang kamu pantau.",
 	"watch.push.denied": "Izin notifikasi ditolak. Ubah izin situs ini di pengaturan browser.",
 	"watch.push.unsupported": "Browser ini belum mendukung notifikasi web.",
-	"watch.push.failed": "Notifikasi gagal diaktifkan. Coba lagi."
+	"watch.push.failed": "Notifikasi gagal diaktifkan. Coba lagi.",
+	"spend.title": "Kesenjangan kursi dibanding belanja sekolah",
+	"spend.lead": "Setiap titik adalah satu kecamatan di DKI Jakarta. Makin ke kanan makin banyak kursi SMP negeri per calon lulusan; makin ke atas makin besar belanja pendidikan tahun {tahun}.",
+	"spend.sentence": "Belanja yang lokasinya hanya diketahui sampai tingkat kota tidak ikut dihitung; grafik ini menunjukkan sebaran, bukan penilaian.",
+	"spend.xAxis": "Kursi SMP negeri per calon lulusan",
+	"spend.yAxis": "Total HPS paket pendidikan",
+	"spend.active": "Kecamatan ini",
+	"spend.cityLevel": "Paket pendidikan tingkat {nama}: {jumlah} paket senilai {nilai}, tidak dibagi ke kecamatan.",
+	"spend.noRatio": "{n} kecamatan belum punya data rasio sehingga tidak digambar.",
+	"spend.col.area": "Kecamatan",
+	"spend.col.ratio": "Rasio kursi",
+	"spend.col.count": "Paket",
+	"spend.col.value": "Total HPS",
+	"spend.failed": "Data perbandingan belanja gagal dimuat."
 }
