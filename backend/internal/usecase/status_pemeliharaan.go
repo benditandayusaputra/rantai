@@ -21,6 +21,7 @@ type PembacaJadwalPaket interface {
 type KonfigurasiPemeliharaan struct {
 	domain.AturanPemeliharaan `yaml:",inline"`
 	JenisPengadaan            []string `yaml:"jenis_pengadaan"`
+	AmbangPanelHari           int      `yaml:"ambang_panel_hari"`
 }
 
 type StatusPemeliharaan struct {
@@ -30,8 +31,9 @@ type StatusPemeliharaan struct {
 }
 
 type HasilPemeliharaan struct {
-	IsBerlaku bool
-	Estimasi  domain.EstimasiPemeliharaan
+	IsBerlaku    bool
+	Estimasi     domain.EstimasiPemeliharaan
+	ProvenanceID string
 }
 
 func (u StatusPemeliharaan) Hitung(ctx context.Context, kode string) (HasilPemeliharaan, error) {

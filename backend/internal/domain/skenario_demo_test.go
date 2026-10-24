@@ -31,9 +31,12 @@ func TestValidasiSkenarioDemo(t *testing.T) {
 		{"penyedia bernama nyata", func(s *SkenarioDemo) { s.PaketSimulasi.Penyedia = "CV Karya Mandiri" }, ErrNamaSimulasiTanpaPenanda},
 		{"instansi bernama nyata", func(s *SkenarioDemo) { s.PaketSimulasi.Instansi = "Dinas Pendidikan" }, ErrNamaSimulasiTanpaPenanda},
 		{"akun anggota tertaut anggota", func(s *SkenarioDemo) { s.AkunDemo[1].AnggotaID = "anggota-uji" }, ErrAkunDemoTertautAnggota},
-		{"akun instansi dengan instansi", func(s *SkenarioDemo) { s.AkunDemo[0].Peran, s.AkunDemo[0].Instansi = PeranInstansi, "Dinas Uji" }, nil},
+		{"akun instansi dengan instansi", func(s *SkenarioDemo) {
+			s.AkunDemo[0].Peran, s.AkunDemo[0].Instansi = PeranInstansi, "Instansi Uji Simulasi"
+		}, nil},
+		{"akun instansi tertaut instansi nyata", func(s *SkenarioDemo) { s.AkunDemo[0].Peran, s.AkunDemo[0].Instansi = PeranInstansi, "Dinas Pendidikan" }, ErrAkunDemoBukanSimulasi},
 		{"akun instansi tanpa instansi", func(s *SkenarioDemo) { s.AkunDemo[0].Peran = PeranInstansi }, ErrAkunInstansiTanpaInstansi},
-		{"akun warga dengan instansi", func(s *SkenarioDemo) { s.AkunDemo[0].Instansi = "Dinas Uji" }, ErrAkunInstansiTanpaInstansi},
+		{"akun warga dengan instansi", func(s *SkenarioDemo) { s.AkunDemo[0].Instansi = "Instansi Uji Simulasi" }, ErrAkunInstansiTanpaInstansi},
 		{"peran tak dikenal", func(s *SkenarioDemo) { s.AkunDemo[0].Peran = "pejabat" }, ErrPeranTidakDikenal},
 		{"email bukan domain uji", func(s *SkenarioDemo) { s.AkunDemo[0].Email = "warga@gmail.com" }, ErrAkunDemoBukanSimulasi},
 		{"nama tampilan tanpa penanda", func(s *SkenarioDemo) { s.AkunDemo[0].NamaTampilan = "Budi" }, ErrAkunDemoBukanSimulasi},

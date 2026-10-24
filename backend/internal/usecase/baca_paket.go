@@ -113,7 +113,7 @@ func (u BacaPaket) estimasiPemeliharaan(p domain.PaketLengkap) HasilPemeliharaan
 	if p.RUP != nil {
 		jadwal.JadwalSelesai = p.RUP.PelaksanaanSelesai
 	}
-	return HasilPemeliharaan{IsBerlaku: true, Estimasi: u.Pemeliharaan.Estimasi(jadwal, u.Sekarang())}
+	return HasilPemeliharaan{IsBerlaku: true, Estimasi: u.Pemeliharaan.Estimasi(jadwal, u.Sekarang()), ProvenanceID: p.SerahTerimaProvID}
 }
 
 func (u BacaPaket) DaftarKecamatan(ctx context.Context, f FilterPaketKecamatan) (HalamanPaket, error) {

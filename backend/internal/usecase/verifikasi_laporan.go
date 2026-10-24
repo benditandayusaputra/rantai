@@ -60,8 +60,26 @@ func (u KonfirmasiLaporan) verifikasiBilaCukup(ctx context.Context, laporan doma
 	if err != nil {
 		return hasil, fmt.Errorf("verifikasi laporan %d: %w", laporan.ID, err)
 	}
-	hasil.Status = domain.StatusTerverifikasi
-	return hasil, nil
+	laporan.Status = domain.StatusTerverifikasi
+	hasil.Status, err = teruskanBilaBisa(ctx, u.Repo, laporan)
+	return hasil, err
+}
+
+type pengubahStatus interface {
+	UbahStatus(ctx context.Context, perubahan domain.PerubahanStatus) error
+}
+
+func teruskanBilaBisa(ctx context.Context, repo pengubahStatus, laporan domain.LaporanUntukVerifikasi) (domain.StatusLaporan, error) {
+	if !laporan.IsBisaDiteruskan() {
+		return laporan.Status, nil
+	}
+	err := repo.UbahStatus(ctx, domain.PerubahanStatus{
+		LaporanID: laporan.ID, Dari: domain.StatusTerverifikasi, Ke: domain.StatusDiteruskan, Alasan: domain.AlasanDiteruskan,
+	})
+	if err != nil {
+		return laporan.Status, fmt.Errorf("teruskan laporan %d: %w", laporan.ID, err)
+	}
+	return domain.StatusDiteruskan, nil
 }
 
 type pengambilVerifikasi interface {

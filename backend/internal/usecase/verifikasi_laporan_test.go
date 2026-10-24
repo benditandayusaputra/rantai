@@ -56,6 +56,19 @@ func TestKonfirmasiLaporan_SaksiKetiga_Terverifikasi(t *testing.T) {
 	}
 }
 
+func TestKonfirmasiLaporan_LaporanBerpaket_DiteruskanKeInstansi(t *testing.T) {
+	u, repo := konfirmasiLaporanUji()
+	repo.laporan.PaketKode = "simulasi-ruang-kelas-1"
+
+	_, _ = u.Konfirmasi(context.Background(), konfirmasiMasukUji(2))
+	ketiga, err := u.Konfirmasi(context.Background(), konfirmasiMasukUji(3))
+
+	if err != nil || ketiga.Status != domain.StatusDiteruskan || len(repo.perubahan) != 2 ||
+		repo.perubahan[1].Dari != domain.StatusTerverifikasi || repo.perubahan[1].Ke != domain.StatusDiteruskan {
+		t.Errorf("ketiga %+v, err %v, perubahan %+v", ketiga, err, repo.perubahan)
+	}
+}
+
 func TestKonfirmasiLaporan_Penolakan(t *testing.T) {
 	kasus := []struct {
 		nama  string

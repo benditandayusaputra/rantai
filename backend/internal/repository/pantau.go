@@ -41,6 +41,18 @@ FROM indikator_kecamatan i JOIN tema t ON t.kode = i.tema_kode
 WHERE i.dibuat_pada >= $1
 ON CONFLICT (kunci) DO NOTHING`
 
+	sqlKejadianHakJawab = `INSERT INTO kejadian (jenis, kode_kecamatan, judul, tautan, kunci, terjadi_pada, is_simulation)
+SELECT 'hak_jawab', h.kode_kecamatan, coalesce(p.nama, i.nama, ''),
+    CASE WHEN h.target_jenis = 'laporan' THEN '/laporan/' || h.target_id ELSE '/paket/' || p.kode END,
+    'hak_jawab:' || h.id, h.dibuat_pada, h.is_simulation
+FROM hak_jawab h
+LEFT JOIN instansi i ON i.id = h.instansi_id
+LEFT JOIN sinyal s ON h.target_jenis = 'sinyal' AND s.id::text = h.target_id
+LEFT JOIN laporan l ON h.target_jenis = 'laporan' AND l.id::text = h.target_id
+LEFT JOIN paket p ON p.kode = coalesce(s.paket_kode, l.paket_kode, CASE WHEN h.target_jenis = 'paket' THEN h.target_id END)
+WHERE h.kode_kecamatan IS NOT NULL AND h.dibuat_pada >= $1 AND (p.kode IS NOT NULL OR h.target_jenis = 'laporan')
+ON CONFLICT (kunci) DO NOTHING`
+
 	sqlSebarNotifikasi = `INSERT INTO notifikasi (pengguna_id, kejadian_id)
 SELECT l.pengguna_id, k.id
 FROM kejadian k JOIN langganan l ON l.kode_wilayah = k.kode_kecamatan AND l.kanal = 'feed'
@@ -102,7 +114,7 @@ LIMIT $2`
 	sqlTandaiDibaca = `UPDATE notifikasi SET dibaca_pada = coalesce(dibaca_pada, now()) WHERE id = $1 AND pengguna_id = $2`
 )
 
-var pembuatKejadian = []string{sqlKejadianPaketBaru, sqlKejadianMelewatiJadwal, sqlKejadianLaporanTerverifikasi, sqlKejadianIndikator}
+var pembuatKejadian = []string{sqlKejadianPaketBaru, sqlKejadianMelewatiJadwal, sqlKejadianLaporanTerverifikasi, sqlKejadianIndikator, sqlKejadianHakJawab}
 
 type PantauRepository struct {
 	DB Basisdata

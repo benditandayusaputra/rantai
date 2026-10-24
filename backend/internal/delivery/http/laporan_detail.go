@@ -58,6 +58,7 @@ type detailLaporanJSON struct {
 	Saksi        saksiJSON            `json:"saksi"`
 	Foto         []fotoLaporanJSON    `json:"foto"`
 	Riwayat      []riwayatLaporanJSON `json:"riwayat"`
+	HakJawab     []hakJawabJSON       `json:"hak_jawab"`
 }
 
 type konfirmasiMasukJSON struct {
@@ -127,6 +128,7 @@ func keDetailLaporanJSON(d usecase.DetailLaporan) detailLaporanJSON {
 		NamaWilayah: d.NamaWilayah, LokasiPublik: titikJSON{Lat: d.TitikPublik.Lat, Lng: d.TitikPublik.Lng},
 		IsSimulation: d.IsSimulation, DibuatPada: d.DibuatPada, Saksi: saksiDari(d.JumlahSaksi),
 		Foto: make([]fotoLaporanJSON, len(d.FotoBertanda)), Riwayat: make([]riwayatLaporanJSON, len(d.Riwayat)),
+		HakJawab: keDaftarHakJawabJSON(d.HakJawab),
 	}
 	if d.PaketKode != "" {
 		hasil.Paket = &paketLaporanJSON{Kode: d.PaketKode, Nama: d.PaketNama}

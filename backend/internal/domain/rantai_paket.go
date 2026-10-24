@@ -55,6 +55,8 @@ type LokasiTersimpan struct {
 }
 
 type SinyalTersimpan struct {
+	ID         int64
+	HakJawab   []HakJawab
 	Jenis      JenisSinyal
 	Alasan     string
 	Pembanding map[string]any
@@ -87,6 +89,9 @@ type PaketLengkap struct {
 	Penyedia           *PenyediaPaket
 	Lokasi             LokasiTersimpan
 	Sinyal             []SinyalTersimpan
+	HakJawab           []HakJawab
+	SerahTerimaProvID  string
+	NomorBeritaAcara   string
 	JumlahLaporan      int
 	ProvenanceID       string
 }

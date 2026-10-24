@@ -25,17 +25,18 @@ type isuJSON struct {
 }
 
 type umpanJSON struct {
-	ID           int64     `json:"id"`
-	JenisSumber  string    `json:"jenis_sumber"`
-	MediaNama    string    `json:"media_nama"`
-	MediaDomain  string    `json:"media_domain"`
-	Judul        string    `json:"judul"`
-	Ringkasan    *string   `json:"ringkasan"`
-	URL          string    `json:"url"`
-	TerbitPada   time.Time `json:"terbit_pada"`
-	TagIsu       []string  `json:"tag_isu"`
-	DasarCocok   string    `json:"dasar_cocok"`
-	ProvenanceID string    `json:"provenance_id"`
+	ID           int64          `json:"id"`
+	JenisSumber  string         `json:"jenis_sumber"`
+	MediaNama    string         `json:"media_nama"`
+	MediaDomain  string         `json:"media_domain"`
+	Judul        string         `json:"judul"`
+	Ringkasan    *string        `json:"ringkasan"`
+	URL          string         `json:"url"`
+	TerbitPada   time.Time      `json:"terbit_pada"`
+	TagIsu       []string       `json:"tag_isu"`
+	DasarCocok   string         `json:"dasar_cocok"`
+	ProvenanceID string         `json:"provenance_id"`
+	HakJawab     []hakJawabJSON `json:"hak_jawab"`
 }
 
 type handlerUmpan struct {
@@ -103,6 +104,6 @@ func keUmpanJSON(u domain.UmpanTampil) umpanJSON {
 	return umpanJSON{
 		ID: u.ID, JenisSumber: string(u.JenisSumber), MediaNama: u.MediaNama, MediaDomain: u.MediaDomain,
 		Judul: u.Judul, Ringkasan: ringkasan, URL: u.URL, TerbitPada: u.TerbitPada, TagIsu: u.TagIsu,
-		DasarCocok: string(u.DasarCocok), ProvenanceID: u.ProvenanceID,
+		DasarCocok: string(u.DasarCocok), ProvenanceID: u.ProvenanceID, HakJawab: keDaftarHakJawabJSON(u.HakJawab),
 	}
 }

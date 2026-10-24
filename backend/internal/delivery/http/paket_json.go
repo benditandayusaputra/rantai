@@ -1,6 +1,7 @@
 package http
 
 import (
+	"cmp"
 	"encoding/json"
 
 	"github.com/benditandayusaputra/rantai/backend/internal/domain"
@@ -50,9 +51,11 @@ type mataRantaiJSON struct {
 }
 
 type sinyalJSON struct {
+	ID         int64          `json:"id"`
 	Jenis      string         `json:"jenis"`
 	Alasan     string         `json:"alasan"`
 	Pembanding map[string]any `json:"pembanding"`
+	HakJawab   []hakJawabJSON `json:"hak_jawab"`
 }
 
 type detailPaketJSON struct {
@@ -85,6 +88,8 @@ type detailPaketJSON struct {
 	Pemeliharaan   pemeliharaanJSON `json:"pemeliharaan"`
 	Rantai         []mataRantaiJSON `json:"rantai"`
 	Sinyal         []sinyalJSON     `json:"sinyal"`
+	HakJawab       []hakJawabJSON   `json:"hak_jawab"`
+	BeritaAcara    string           `json:"nomor_berita_acara,omitempty"`
 	ProvenanceID   string           `json:"provenance_id"`
 }
 
@@ -141,6 +146,7 @@ func keDetailPaketJSON(d usecase.DetailPaket) detailPaketJSON {
 		RUP: keRUPJSON(p.RUP, d.URLRUP, label), Penyedia: kePenyediaJSON(p.Penyedia),
 		Lokasi: keLokasiPaketJSON(p.Lokasi), Pemeliharaan: kePemeliharaanJSON(d.Pemeliharaan),
 		Rantai: keRantaiJSON(d.Rantai), Sinyal: keSinyalJSON(p.Sinyal), ProvenanceID: p.ProvenanceID,
+		HakJawab: keDaftarHakJawabJSON(p.HakJawab), BeritaAcara: p.NomorBeritaAcara,
 	}
 	return j
 }
@@ -181,12 +187,13 @@ func keLokasiPaketJSON(l domain.LokasiTersimpan) lokasiPaketJSON {
 
 func kePemeliharaanJSON(h usecase.HasilPemeliharaan) pemeliharaanJSON {
 	e := h.Estimasi
+	provenanceID := cmp.Or(h.ProvenanceID, domain.ProvenanceRumusPemeliharaan)
 	j := pemeliharaanJSON{
 		IsBerlaku: h.IsBerlaku, Status: string(e.Status), AkhirPelaksanaan: tanggalJSON(e.AkhirPelaksanaan),
-		AkhirPemeliharaan: tanggalJSON(e.AkhirPemeliharaan), Label: string(e.Label), ProvenanceID: domain.ProvenanceRumusPemeliharaan,
+		AkhirPemeliharaan: tanggalJSON(e.AkhirPemeliharaan), Label: string(e.Label), ProvenanceID: provenanceID,
 	}
 	if e.Status == domain.StatusPemeliharaanBerjalan {
-		j.SisaHari = &Angka{Nilai: float64(e.SisaHari), Satuan: satuanHari, Label: e.Label, ProvenanceID: domain.ProvenanceRumusPemeliharaan}
+		j.SisaHari = &Angka{Nilai: float64(e.SisaHari), Satuan: satuanHari, Label: e.Label, ProvenanceID: provenanceID}
 	}
 	return j
 }
@@ -202,7 +209,7 @@ func keRantaiJSON(rantai []domain.MataRantai) []mataRantaiJSON {
 func keSinyalJSON(daftar []domain.SinyalTersimpan) []sinyalJSON {
 	hasil := make([]sinyalJSON, len(daftar))
 	for i, s := range daftar {
-		hasil[i] = sinyalJSON{Jenis: string(s.Jenis), Alasan: s.Alasan, Pembanding: s.Pembanding}
+		hasil[i] = sinyalJSON{ID: s.ID, Jenis: string(s.Jenis), Alasan: s.Alasan, Pembanding: s.Pembanding, HakJawab: keDaftarHakJawabJSON(s.HakJawab)}
 	}
 	return hasil
 }

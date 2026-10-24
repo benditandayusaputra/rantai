@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/benditandayusaputra/rantai/backend/internal/domain"
@@ -18,7 +19,8 @@ const (
     p.tema_kode, coalesce(p.lokasi_tingkat::text, ''), coalesce(p.kode_wilayah, ''), coalesce(w.nama, ''),
     ST_Y(p.lokasi), ST_X(p.lokasi), p.rt, p.rw, p.provenance_id,
     r.kode, r.nama, coalesce(r.sumber_dana, ''), r.pagu, rp.sumber = 'sirup', r.jadwal_pelaksanaan_mulai,
-    r.jadwal_pelaksanaan_selesai, r.provenance_id, s.id, s.nama
+    r.jadwal_pelaksanaan_selesai, r.provenance_id, s.id, s.nama, coalesce(p.serah_terima_provenance_id, ''),
+    coalesce(p.nomor_berita_acara, '')
 FROM paket p
 JOIN instansi i ON i.id = p.instansi_id
 LEFT JOIN wilayah w ON w.kode = p.kode_wilayah
@@ -27,7 +29,7 @@ LEFT JOIN provenance rp ON rp.id = r.provenance_id
 LEFT JOIN penyedia s ON s.id = p.penyedia_id
 WHERE p.kode = $1`
 
-	sqlSinyalPaket = `SELECT jenis, alasan, pembanding FROM sinyal WHERE paket_kode = $1 AND aktif ORDER BY jenis`
+	sqlSinyalPaket = `SELECT id, jenis, alasan, pembanding FROM sinyal WHERE paket_kode = $1 AND aktif ORDER BY jenis`
 
 	sqlFilterKecamatan = `(p.kode_wilayah = $1 OR p.kode_wilayah LIKE $1 || '.%')
     AND ($2 = '' OR $2 = ANY (p.tema_kode)) AND ($3 = 0 OR p.tahun_anggaran = $3)`
@@ -57,8 +59,27 @@ func (r PaketRepository) AmbilPaket(ctx context.Context, kode string) (domain.Pa
 	if err != nil || !ada {
 		return p, ada, err
 	}
-	p.Sinyal, err = r.sinyalPaket(ctx, kode)
-	return p, true, err
+	if p.Sinyal, err = r.sinyalPaket(ctx, kode); err != nil {
+		return p, true, err
+	}
+	return p, true, r.lampirkanHakJawab(ctx, &p)
+}
+
+func (r PaketRepository) lampirkanHakJawab(ctx context.Context, p *domain.PaketLengkap) error {
+	paket, err := hakJawabUntuk(ctx, r.DB, domain.TargetHakJawabPaket, []string{p.Kode})
+	if err != nil {
+		return err
+	}
+	p.HakJawab = hakJawabAtau(paket, p.Kode)
+	idSinyal := make([]string, len(p.Sinyal))
+	for i, s := range p.Sinyal {
+		idSinyal[i] = strconv.FormatInt(s.ID, 10)
+	}
+	sinyal, err := hakJawabUntuk(ctx, r.DB, domain.TargetHakJawabSinyal, idSinyal)
+	for i := range p.Sinyal {
+		p.Sinyal[i].HakJawab = hakJawabAtau(sinyal, idSinyal[i])
+	}
+	return err
 }
 
 func pindaiPaketLengkap(baris pgx.Row) (domain.PaketLengkap, error) {
@@ -73,7 +94,7 @@ func pindaiPaketLengkap(baris pgx.Row) (domain.PaketLengkap, error) {
 		&p.TemaKode, &p.Lokasi.Tingkat, &p.Lokasi.KodeWilayah, &p.Lokasi.NamaWilayah,
 		&lat, &lng, &p.Lokasi.RT, &p.Lokasi.RW, &p.ProvenanceID,
 		&rup.kode, &rup.nama, &rup.sumberDana, &rup.pagu, &rup.isDetail, &rup.mulai,
-		&rup.selesai, &rup.provenanceID, &idPenyedia, &namaPenyedia)
+		&rup.selesai, &rup.provenanceID, &idPenyedia, &namaPenyedia, &p.SerahTerimaProvID, &p.NomorBeritaAcara)
 	if lat != nil && lng != nil {
 		p.Lokasi.Titik = &domain.Titik{Lat: *lat, Lng: *lng}
 	}
@@ -103,7 +124,7 @@ func (r PaketRepository) sinyalPaket(ctx context.Context, kode string) ([]domain
 	return pgx.CollectRows(baris, func(b pgx.CollectableRow) (domain.SinyalTersimpan, error) {
 		var s domain.SinyalTersimpan
 		var pembanding []byte
-		if err := b.Scan(&s.Jenis, &s.Alasan, &pembanding); err != nil {
+		if err := b.Scan(&s.ID, &s.Jenis, &s.Alasan, &pembanding); err != nil {
 			return s, err
 		}
 		return s, json.Unmarshal(pembanding, &s.Pembanding)

@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strconv"
 
 	"github.com/benditandayusaputra/rantai/backend/internal/domain"
 	"github.com/jackc/pgx/v5"
@@ -13,7 +14,7 @@ import (
 const (
 	kodePelanggaranUnik = "23505"
 
-	sqlLaporanUntukVerifikasi = `SELECT id, pengguna_id, status, kondisi, ST_Y(lokasi_asli), ST_X(lokasi_asli), dibuat_pada
+	sqlLaporanUntukVerifikasi = `SELECT id, pengguna_id, coalesce(paket_kode, ''), status, kondisi, ST_Y(lokasi_asli), ST_X(lokasi_asli), dibuat_pada
 FROM laporan WHERE id = $1`
 
 	sqlKonfirmasiLaporan = `SELECT pengguna_id, kondisi, ST_Y(lokasi_asli), ST_X(lokasi_asli), dibuat_pada
@@ -48,7 +49,7 @@ FROM laporan_riwayat WHERE laporan_id = $1 ORDER BY dibuat_pada, id`
 
 func (r LaporanRepository) AmbilUntukVerifikasi(ctx context.Context, id int64) (domain.LaporanUntukVerifikasi, bool, error) {
 	var l domain.LaporanUntukVerifikasi
-	err := r.DB.QueryRow(ctx, sqlLaporanUntukVerifikasi, id).Scan(&l.ID, &l.PelaporID, &l.Status, &l.Kondisi, &l.Titik.Lat, &l.Titik.Lng, &l.DibuatPada)
+	err := r.DB.QueryRow(ctx, sqlLaporanUntukVerifikasi, id).Scan(&l.ID, &l.PelaporID, &l.PaketKode, &l.Status, &l.Kondisi, &l.Titik.Lat, &l.Titik.Lng, &l.DibuatPada)
 	l, ada, err := hasilSatuBaris(l, err)
 	if !ada || err != nil {
 		return l, ada, err
@@ -101,7 +102,10 @@ func (r LaporanRepository) AmbilLaporanPublik(ctx context.Context, id int64) (do
 	if l.Riwayat, err = kumpulkan(ctx, r.DB, sqlRiwayatLaporan, pgx.RowToStructByPos[domain.RiwayatLaporan], id); err != nil {
 		return l, false, fmt.Errorf("baca riwayat laporan %d: %w", id, err)
 	}
-	return l, true, nil
+	idTeks := strconv.FormatInt(id, 10)
+	hakJawab, err := hakJawabUntuk(ctx, r.DB, domain.TargetHakJawabLaporan, []string{idTeks})
+	l.HakJawab = hakJawabAtau(hakJawab, idTeks)
+	return l, err == nil, err
 }
 
 func (r LaporanRepository) PetaLaporan(ctx context.Context, k domain.Kotak) ([]domain.TitikLaporan, error) {

@@ -19,6 +19,7 @@ const (
 	SumberDapodik    SumberData = "dapodik"
 	SumberDisdik     SumberData = "disdik"
 	SumberSimulasi   SumberData = "simulasi"
+	SumberInstansi   SumberData = "instansi"
 )
 
 type Provenance struct {

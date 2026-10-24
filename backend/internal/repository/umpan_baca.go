@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/benditandayusaputra/rantai/backend/internal/domain"
 	"github.com/jackc/pgx/v5"
@@ -76,7 +77,22 @@ func (r UmpanRepository) UmpanAnggota(ctx context.Context, filter domain.FilterU
 		halaman.Item = append(halaman.Item, u)
 		return nil
 	})
-	return halaman, err
+	if err != nil {
+		return halaman, err
+	}
+	return halaman, r.lampirkanHakJawab(ctx, halaman.Item)
+}
+
+func (r UmpanRepository) lampirkanHakJawab(ctx context.Context, daftar []domain.UmpanTampil) error {
+	id := make([]string, len(daftar))
+	for i, u := range daftar {
+		id[i] = strconv.FormatInt(u.ID, 10)
+	}
+	hakJawab, err := hakJawabUntuk(ctx, r.DB, domain.TargetHakJawabUmpan, id)
+	for i := range daftar {
+		daftar[i].HakJawab = hakJawabAtau(hakJawab, id[i])
+	}
+	return err
 }
 
 func (r UmpanRepository) UmpanBertagAnggota(ctx context.Context, anggotaID string) ([]domain.UmpanTampil, error) {

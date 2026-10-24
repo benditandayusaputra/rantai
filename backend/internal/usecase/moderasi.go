@@ -96,9 +96,14 @@ func (u Moderasi) ModerasiLaporan(ctx context.Context, p domain.PermintaanModera
 	if err != nil {
 		return fmt.Errorf("moderasi laporan %d: %w", p.LaporanID, err)
 	}
-	return u.catat(ctx, domain.CatatanModerasi{
+	if err := u.catat(ctx, domain.CatatanModerasi{
 		ModeratorID: p.ModeratorID, TargetJenis: domain.TargetLaporan, TargetID: p.LaporanID, Aksi: p.Aksi, Alasan: p.AlasanRiwayat(),
-	})
+	}); err != nil {
+		return err
+	}
+	laporan.Status = p.StatusTujuan()
+	_, err = teruskanBilaBisa(ctx, u.Repo, laporan)
+	return err
 }
 
 func (u Moderasi) sembunyikanFoto(ctx context.Context, p domain.PermintaanModerasiLaporan) error {

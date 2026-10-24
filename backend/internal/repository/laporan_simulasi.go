@@ -21,12 +21,12 @@ const (
 
 	sqlSimpanLaporanSimulasi = `INSERT INTO laporan (pengguna_id, paket_kode, kode_wilayah, lokasi_publik, lokasi_asli, akurasi_meter,
     kondisi, catatan, status, is_simulation)
-SELECT $1, p.kode, p.kode_wilayah, ST_SetSRID(ST_MakePoint($3, $2), 4326), p.lokasi, 0, $4, $5, 'TERVERIFIKASI', true
+SELECT $1, p.kode, p.kode_wilayah, ST_SetSRID(ST_MakePoint($3, $2), 4326), p.lokasi, 0, $4, $5, 'DITERUSKAN', true
 FROM paket p WHERE p.kode = $6 AND p.is_simulation
 RETURNING id`
 
 	sqlRiwayatLaporanSimulasi = `INSERT INTO laporan_riwayat (laporan_id, status_lama, status_baru, oleh_pengguna_id, alasan)
-VALUES ($1, NULL, 'DIKIRIM', $2, ''), ($1, 'DIKIRIM', 'MENUNGGU_SAKSI', NULL, ''), ($1, 'MENUNGGU_SAKSI', 'TERVERIFIKASI', NULL, $3)`
+VALUES ($1, NULL, 'DIKIRIM', $2, ''), ($1, 'DIKIRIM', 'MENUNGGU_SAKSI', NULL, ''), ($1, 'MENUNGGU_SAKSI', 'TERVERIFIKASI', NULL, $3), ($1, 'TERVERIFIKASI', 'DITERUSKAN', NULL, $4)`
 
 	sqlKonfirmasiSimulasi = `INSERT INTO laporan_konfirmasi (laporan_id, pengguna_id, kondisi, lokasi_asli)
 SELECT l.id, x.pengguna_id, l.kondisi, l.lokasi_asli FROM laporan l, unnest($2::bigint[]) AS x (pengguna_id) WHERE l.id = $1`
@@ -69,7 +69,7 @@ func simpanSatuLaporanSimulasi(ctx context.Context, tx pgx.Tx, data usecase.Data
 	if err := simpanFotoLaporan(ctx, tx, id, l.Foto); err != nil {
 		return err
 	}
-	if _, err := tx.Exec(ctx, sqlRiwayatLaporanSimulasi, id, pengguna[0], alasanTerverifikasiSimulasi); err != nil {
+	if _, err := tx.Exec(ctx, sqlRiwayatLaporanSimulasi, id, pengguna[0], alasanTerverifikasiSimulasi, domain.AlasanDiteruskan); err != nil {
 		return fmt.Errorf("simpan riwayat laporan simulasi: %w", err)
 	}
 	_, err = tx.Exec(ctx, sqlKonfirmasiSimulasi, id, pengguna)

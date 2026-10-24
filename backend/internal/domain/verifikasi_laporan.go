@@ -36,6 +36,7 @@ type Konfirmasi struct {
 type LaporanUntukVerifikasi struct {
 	ID         int64
 	PelaporID  int64
+	PaketKode  string
 	Status     StatusLaporan
 	Kondisi    KondisiLaporan
 	Titik      Titik
@@ -64,6 +65,10 @@ func (l LaporanUntukVerifikasi) isKonfirmasiSah(k Konfirmasi) bool {
 	return k.Kondisi == l.Kondisi &&
 		JarakMeter(l.Titik, k.Titik) <= RadiusKonfirmasiMeter &&
 		!k.DibuatPada.Before(l.DibuatPada) && k.DibuatPada.Sub(l.DibuatPada) <= JendelaKonfirmasi
+}
+
+func (l LaporanUntukVerifikasi) IsBisaDiteruskan() bool {
+	return l.Status == StatusTerverifikasi && l.PaketKode != ""
 }
 
 func (l LaporanUntukVerifikasi) IsCukupSaksi() bool {
@@ -128,6 +133,7 @@ type LaporanPublik struct {
 	Foto         []FotoTersimpan
 	Riwayat      []RiwayatLaporan
 	JumlahSaksi  int
+	HakJawab     []HakJawab
 }
 
 func (k KonfirmasiMasuk) Validasi() error {

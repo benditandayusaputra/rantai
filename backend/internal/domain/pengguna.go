@@ -45,6 +45,7 @@ type Pengguna struct {
 	Peran        Peran
 	InstansiID   *int64
 	AnggotaID    *string
+	IsSimulation bool
 }
 
 type KlaimAkses struct {

@@ -124,6 +124,8 @@ func (a AkunDemo) Validasi() error {
 		return ErrAkunDemoBukanSimulasi
 	case (a.Peran == PeranInstansi) != (a.Instansi != ""):
 		return ErrAkunInstansiTanpaInstansi
+	case a.Instansi != "" && !strings.Contains(a.Instansi, PenandaNamaSimulasi):
+		return ErrAkunDemoBukanSimulasi
 	}
 	return nil
 }

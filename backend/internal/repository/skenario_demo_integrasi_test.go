@@ -151,7 +151,7 @@ func TestMuatSkenarioDemo_AkunDemoTerpasangSebagaiSimulasi(t *testing.T) {
 
 	var akun, simulasi, petugasDinas, tertautAnggota int
 	err := tx.QueryRow(t.Context(), `SELECT count(*), count(*) FILTER (WHERE p.is_simulation),
-    count(*) FILTER (WHERE p.peran = 'instansi' AND i.nama = 'Dinas Pendidikan Provinsi DKI Jakarta'),
+    count(*) FILTER (WHERE p.peran = 'instansi' AND i.nama = 'Instansi Contoh Simulasi'),
     count(*) FILTER (WHERE p.anggota_id IS NOT NULL)
 FROM pengguna p LEFT JOIN instansi i ON i.id = p.instansi_id WHERE p.email LIKE '%@demo.rantai.test'`).Scan(&akun, &simulasi, &petugasDinas, &tertautAnggota)
 	if err != nil || akun != 6 || simulasi != 6 || petugasDinas != 1 || tertautAnggota != 0 {
@@ -172,7 +172,7 @@ func TestMuatSkenarioDemo_LaporanSimulasiTerverifikasiHanyaTertautDataSimulasi(t
 	}
 
 	var laporan, terverifikasi, tertautNyata, konfirmasi, foto int
-	err := tx.QueryRow(t.Context(), `SELECT count(*), count(*) FILTER (WHERE l.status = 'TERVERIFIKASI' AND l.is_simulation),
+	err := tx.QueryRow(t.Context(), `SELECT count(*), count(*) FILTER (WHERE l.status = 'DITERUSKAN' AND l.is_simulation),
     count(*) FILTER (WHERE NOT p.is_simulation OR NOT g.is_simulation),
     (SELECT count(*) FROM laporan_konfirmasi k JOIN pengguna kg ON kg.id = k.pengguna_id WHERE kg.is_simulation),
     (SELECT count(*) FROM laporan_foto f JOIN laporan fl ON fl.id = f.laporan_id WHERE fl.is_simulation)

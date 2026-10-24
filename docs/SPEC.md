@@ -302,7 +302,7 @@ Warga berlangganan kecamatan. Kanal: feed di aplikasi (wajib), Web Push dengan V
 | Hak jawab baru | Hak jawab untuk paket, laporan, atau umpan anggota dapil |
 | Indikator diperbarui | Data indikator tema periode baru |
 
-Langganan memakai kode kecamatan (kode kelurahan dinormalisasi ke kecamatannya). Job `turunan` membuat kejadian dari data tujuh hari terakhir dengan kunci unik per kejadian sehingga tidak berganda, lalu menyebarkannya ke `notifikasi` pelanggan kanal feed; langganan baru langsung menerima kejadian sepekan terakhir. Kejadian "Masa pemeliharaan segera berakhir" menunggu estimasi pemeliharaan dipindah ke tabel turunan, dan "Hak jawab baru" menunggu tabel `hak_jawab` (T-803).
+Langganan memakai kode kecamatan (kode kelurahan dinormalisasi ke kecamatannya). Job `turunan` membuat kejadian dari data tujuh hari terakhir dengan kunci unik per kejadian sehingga tidak berganda, lalu menyebarkannya ke `notifikasi` pelanggan kanal feed; langganan baru langsung menerima kejadian sepekan terakhir. Kejadian "Masa pemeliharaan segera berakhir" menunggu estimasi pemeliharaan dipindah ke tabel turunan. Kejadian "Hak jawab baru" dibuat dari hak jawab pada paket, sinyal, dan laporan yang lokasinya diketahui di tingkat kecamatan; hak jawab pada item umpan tidak berwilayah sehingga tidak menjadi kejadian.
 
 API: `GET /langganan`, `POST /langganan` (`{kode_wilayah}`), `DELETE /langganan/{id}`, `GET /notifikasi` (30 terbaru dan `belum_dibaca`), `PATCH /notifikasi/{id}/dibaca`.
 
@@ -591,7 +591,8 @@ DIKIRIM → MENUNGGU_SAKSI → TERVERIFIKASI → DITERUSKAN → DITANGGAPI → S
 - `DITANGGAPI` saat instansi memberi hak jawab. `SELESAI` bila instansi menandai selesai dan tidak ada sanggahan terverifikasi dalam 14 hari.
 - Setiap perpindahan dicatat di `laporan_riwayat` dan tampil sebagai linimasa publik.
 - Pelapor dihitung sebagai satu akun tanpa perlu konfirmasi; pelapor tidak bisa mengonfirmasi laporannya sendiri dan satu akun hanya bisa mengonfirmasi sekali. Jarak dihitung dari `lokasi_asli` laporan ke `lokasi_asli` konfirmasi, dan 14 hari dihitung dari waktu laporan dibuat. Konfirmasi yang tidak memenuhi syarat tetap tersimpan tetapi tidak dihitung.
-- Perpindahan otomatis `TERVERIFIKASI` ke `DITERUSKAN` dibangun bersama antrean Panel Instansi (T-803), karena tujuannya adalah antrean itu.
+- Perpindahan otomatis `TERVERIFIKASI` ke `DITERUSKAN` terjadi pada laporan berpaket, baik lewat konfirmasi saksi maupun moderator, dan masuk ke antrean Panel Instansi pelaksana paket. Laporan tanpa paket tetap `TERVERIFIKASI` sampai Lapor Bukti menanyakan tema masalahnya, karena tanpa tema instansi `tanggung_jawab` tidak bisa ditentukan.
+- Sanggahan warga belum dibangun, sehingga `SELESAI` langsung tercatat saat instansi menandai selesai; jendela sanggahan 14 hari menyusul bersama fitur sanggahan.
 
 Tes wajib: foto hasil tanpa EXIF; lokasi publik terbulatkan; semua transisi sah; transisi tidak sah ditolak dengan `ErrTransisiTidakSah`; konfirmasi di luar 200 m atau lewat 14 hari tidak dihitung.
 
@@ -758,7 +759,7 @@ Skenario demo dikunci di `data/snapshot/skenario_demo.yaml`:
 - `kecamatan_demo`: kecamatan di Jakarta Utara (`kota_demo`) dengan rasio kursi SMP negeri terendah yang datanya lengkap (rasio terdefinisi, label `resmi`, periode terbaru), dipilih setelah PEN-01 terhitung. Selama `kecamatan_demo` kosong, job `skenario_demo` memilihnya dengan aturan ini dan mencetak kodenya untuk dikunci di berkas.
 - `paket_simulasi`: satu paket kategori `ruang_kelas` di titik tengah kecamatan demo, kode berawalan `simulasi-`, penyedia contoh "CV Contoh Simulasi" dan instansi contoh "Instansi Contoh Simulasi", provenance berlabel `simulasi`, `is_simulation = true`. Nama penyedia dan instansi wajib memuat kata "Simulasi"; job menolak berjalan bila keduanya sudah tertaut ke paket, RUP, atau riwayat penyedia sungguhan.
 - `laporan_simulasi`: dua laporan dan konfirmasi yang cukup untuk status TERVERIFIKASI, seluruhnya `is_simulation = true`, foto ilustrasi bebas lisensi.
-- `akun_demo`: satu warga, satu petugas instansi Dinas Pendidikan, satu akun anggota contoh yang tidak ditautkan ke anggota sungguhan (`anggota_id` kosong, divalidasi), satu moderator.
+- `akun_demo`: satu warga, satu petugas "Instansi Contoh Simulasi" (pemilik paket simulasi; akun simulasi hanya boleh menanggapi data simulasi agar tidak ada tanggapan palsu atas nama instansi sungguhan), satu akun anggota contoh yang tidak ditautkan ke anggota sungguhan (`anggota_id` kosong, divalidasi), satu moderator.
 - `tanya_demo`: tiga pertanyaan dan jawaban tercache, termasuk "Kenapa SMP negeri di kecamatanku penuh?".
 
 Data simulasi tidak pernah ditautkan ke paket, penyedia, anggota, atau warga sungguhan (dites).

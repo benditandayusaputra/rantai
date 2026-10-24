@@ -267,6 +267,7 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
 - [ ] **T-803** Panel Instansi dan hak jawab (DSR-03, WAK-07) **[BUTUH DESAIN]** **[BOLEH PECAH]**
   - Migrasi `hak_jawab`; panel untuk instansi dan anggota; hak jawab pada sinyal, paket, laporan, dan item umpan.
   - Perpindahan otomatis laporan `TERVERIFIKASI` ke `DITERUSKAN` ke antrean instansi pelaksana paket atau instansi `tanggung_jawab` tema (ANG-08), memakai `domain.Transisi` dan `LaporanRepository.UbahStatus`.
+  - Sisi backend selesai (`GET /panel/antrean`, `POST /hak-jawab`, `PATCH /panel/paket/{kode}/serah-terima`, `PATCH /panel/laporan/{id}/selesai`, hak jawab di JSON paket, sinyal, umpan, dan laporan). Laporan tanpa paket tetap `TERVERIFIKASI` karena Lapor Bukti belum menanyakan tema. Kotak dicentang setelah antarmuka panel dan tampilan publik hak jawab selesai.
   - Commit: `✨ Tambah Panel Instansi dan hak jawab publik`
   - Selesai bila: hak jawab tidak bisa dihapus; isi tanggal serah terima mengubah label pemeliharaan menjadi `resmi`; hak jawab langsung tampil di halaman publik.
 

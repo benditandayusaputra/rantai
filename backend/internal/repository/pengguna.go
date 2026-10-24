@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	kolomPengguna = `id, email, nama_tampilan, peran, instansi_id, anggota_id`
+	kolomPengguna = `id, email, nama_tampilan, peran, instansi_id, anggota_id, is_simulation`
 
 	sqlHitungOTPSejak = `SELECT count(*) FROM otp WHERE email = $1 AND dibuat_pada >= $2`
 
@@ -139,6 +139,6 @@ func (r PenggunaRepository) CabutSemuaSesi(ctx context.Context, penggunaID int64
 
 func pindaiPengguna(baris pgx.Row) (domain.Pengguna, error) {
 	var p domain.Pengguna
-	err := baris.Scan(&p.ID, &p.Email, &p.NamaTampilan, &p.Peran, &p.InstansiID, &p.AnggotaID)
+	err := baris.Scan(&p.ID, &p.Email, &p.NamaTampilan, &p.Peran, &p.InstansiID, &p.AnggotaID, &p.IsSimulation)
 	return p, err
 }

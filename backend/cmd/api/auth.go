@@ -42,7 +42,7 @@ func denganAuth(layanan deliveryhttp.Layanan, pool *pgxpool.Pool, cfg config.Ser
 		Rahasia:  []byte(rahasia),
 		Sekarang: time.Now,
 	}
-	return layanan, nil
+	return denganPanel(layanan, pool)
 }
 
 func pengirimOTP(cfg config.ServerAuth) (usecase.PengirimOTP, bool) {

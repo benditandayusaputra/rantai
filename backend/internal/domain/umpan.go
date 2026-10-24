@@ -160,6 +160,7 @@ type UmpanTampil struct {
 	TagIsu       []string
 	DasarCocok   DasarCocok
 	ProvenanceID string
+	HakJawab     []HakJawab
 }
 
 type FilterUmpan struct {

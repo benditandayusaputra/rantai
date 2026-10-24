@@ -1,4 +1,5 @@
 jenis_pengadaan: [Pekerjaan Konstruksi]
+ambang_panel_hari: 30
 jenis_masa_hari:
   permanen: 180
   semi_permanen: 90

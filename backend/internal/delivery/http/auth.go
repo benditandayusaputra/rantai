@@ -46,6 +46,7 @@ type penggunaJSON struct {
 	Peran        domain.Peran `json:"peran"`
 	InstansiID   *int64       `json:"instansi_id"`
 	AnggotaID    *string      `json:"anggota_id"`
+	IsSimulation bool         `json:"is_simulation"`
 }
 
 type sesiJSON struct {

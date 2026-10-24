@@ -39,7 +39,7 @@ akun_demo:
   - peran: instansi
     email: petugas@demo.rantai.test
     nama_tampilan: Petugas Contoh Simulasi
-    instansi: Dinas Pendidikan Provinsi DKI Jakarta
+    instansi: Instansi Contoh Simulasi
   - peran: anggota
     email: anggota@demo.rantai.test
     nama_tampilan: Anggota Contoh Simulasi
