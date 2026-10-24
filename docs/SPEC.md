@@ -510,7 +510,9 @@ Kalimat warga: "Bila ada kerusakan sebelum {tanggal}, perbaikannya masih menjadi
 
 Untuk setiap `aspirasi_reses` yang menyebut wilayah: cari paket di wilayah itu pada tahun anggaran berikutnya yang kategorinya atau kata kunci bidangnya cocok. Hasil ditampilkan sebagai "paket yang kemungkinan terkait", bukan klaim bahwa paket berasal dari aspirasi. Bila tidak ada kecocokan, tampil "belum ditemukan paket yang terkait di data LPSE". Menjadi pengganti data pokir yang tidak publik.
 
-API: `GET /aspirasi-reses/{id}/paket-terkait`.
+Aturan bidang ke kategori dan kata kunci ada di `config/aspirasi_anggaran.yaml`. Tahun anggaran berikutnya adalah tahun paripurna laporan reses ditambah satu. Paket cocok bila `kode_wilayah`-nya sama dengan atau berada di dalam wilayah aspirasi, tahun anggarannya sesuai, tidak batal, bukan simulasi, dan kategorinya ada di daftar bidang atau namanya memuat kata kunci bidang sebagai kata utuh. Paket berlokasi tingkat kota tidak ikut.
+
+API: `GET /aspirasi-reses/{id}/paket-terkait`. Respons memuat `aspirasi`, `tahun_anggaran`, `status` (`kemungkinan_terkait`, `belum_ditemukan`, atau `tanpa_wilayah` untuk aspirasi tingkat provinsi), dan `paket` (bentuk ringkas paket ditambah `dasar_cocok`: `kategori` atau `kata_kunci`), maksimal `batas_paket` dari HPS terbesar.
 
 ### ANG-06 Perbandingan paket sejenis dan sinyal
 

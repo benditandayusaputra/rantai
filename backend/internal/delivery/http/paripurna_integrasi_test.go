@@ -34,7 +34,11 @@ func appUjiParipurna(t *testing.T) (*fiber.App, pgx.Tx) {
 	if err := impor.Jalankan(t.Context()); err != nil {
 		t.Fatal(err)
 	}
-	return NewApp(config.Server{}, Layanan{Paripurna: usecase.BacaParipurna{Pembaca: repository.ParipurnaRepository{DB: tx}}}), tx
+	baca := usecase.BacaParipurna{Pembaca: repository.ParipurnaRepository{DB: tx}}
+	if err := config.BacaYAML("../../../config/aspirasi_anggaran.yaml", &baca.Anggaran); err != nil {
+		t.Fatal(err)
+	}
+	return NewApp(config.Server{}, Layanan{Paripurna: baca}), tx
 }
 
 func dapilKecamatan(t *testing.T, tx pgx.Tx, kode string) int {
@@ -96,6 +100,81 @@ func TestAspirasiReses_DapilTidakSah_KodeError(t *testing.T) {
 		"/api/v1/aspirasi-reses?dapil=satu": fiber.StatusBadRequest,
 		"/api/v1/aspirasi-reses?dapil=0":    fiber.StatusBadRequest,
 		"/api/v1/aspirasi-reses?dapil=9999": fiber.StatusNotFound,
+	}
+	for path, harap := range kasus {
+		if hasil := panggil(t, app, path); hasil.kode != harap {
+			t.Errorf("%s: kode %d, harap %d", path, hasil.kode, harap)
+		}
+	}
+}
+
+const sqlPaketTerkaitUji = `INSERT INTO provenance (id, sumber, diambil_pada, label) VALUES ('prv_uji_terkait', 'lpse', now(), 'resmi');
+INSERT INTO instansi (nama, jenis, kode_kota) VALUES ('SUKU DINAS KESEHATAN JAKARTA TIMUR', 'sudin', '31.75');
+INSERT INTO paket (kode, kode_spse, nama, instansi_id, is_tender, jenis_pengadaan, metode, tahun_anggaran, tahap, hps,
+    lokasi_tingkat, kode_wilayah, kategori, is_simulation, provenance_id)
+SELECT x.kode, x.kode, x.nama, (SELECT id FROM instansi WHERE nama = 'SUKU DINAS KESEHATAN JAKARTA TIMUR'), false,
+    'Pengadaan Barang', 'Pengadaan Langsung', x.tahun, 'Paket Sudah Selesai', 150000000, 'kelurahan', '31.75.02.1006', x.kategori,
+    x.simulasi, 'prv_uji_terkait'
+FROM (VALUES
+    ('uji-posyandu-2027', 'Pengadaan Alat Kesehatan Posyandu Kelurahan Kayu Putih', 2027, NULL, false),
+    ('uji-posyandu-2026', 'Pengadaan Alat Kesehatan Posyandu Kelurahan Kayu Putih', 2026, NULL, false),
+    ('uji-jalan-2027', 'Perbaikan Jalan Lingkungan Kayu Putih', 2027, 'jalan', false),
+    ('simulasi-posyandu-2027', 'Pengadaan Alat Posyandu Simulasi', 2027, NULL, true)
+) AS x (kode, nama, tahun, kategori, simulasi)`
+
+func idAspirasi(t *testing.T, tx pgx.Tx, kondisi string) int64 {
+	t.Helper()
+	var id int64
+	if err := tx.QueryRow(t.Context(), `SELECT id FROM aspirasi_reses WHERE `+kondisi+` ORDER BY id LIMIT 1`).Scan(&id); err != nil {
+		t.Fatal(err)
+	}
+	return id
+}
+
+func TestPaketTerkait_KataKunciBidangTahunBerikutnya_KemungkinanTerkait(t *testing.T) {
+	app, tx := appUjiParipurna(t)
+	if _, err := tx.Exec(t.Context(), sqlPaketTerkaitUji); err != nil {
+		t.Fatal(err)
+	}
+	id := idAspirasi(t, tx, "kode_wilayah = '31.75.02.1006'")
+
+	hasil := panggil(t, app, fmt.Sprintf("/api/v1/aspirasi-reses/%d/paket-terkait", id))
+
+	data, _ := hasil.respons.Data.(map[string]any)
+	paket, _ := data["paket"].([]any)
+	if hasil.kode != fiber.StatusOK || data["status"] != "kemungkinan_terkait" || data["tahun_anggaran"] != float64(2027) || len(paket) != 1 {
+		t.Fatalf("kode %d, data %v", hasil.kode, data)
+	}
+	if p, _ := paket[0].(map[string]any); p["kode"] != "uji-posyandu-2027" || p["dasar_cocok"] != "kata_kunci" {
+		t.Errorf("paket = %v", p)
+	}
+}
+
+func TestPaketTerkait_TanpaPaketCocok_BelumDitemukan(t *testing.T) {
+	app, tx := appUjiParipurna(t)
+	id := idAspirasi(t, tx, "kode_wilayah = '31.75.02.1006'")
+
+	data, _ := panggil(t, app, fmt.Sprintf("/api/v1/aspirasi-reses/%d/paket-terkait", id)).respons.Data.(map[string]any)
+
+	if paket, _ := data["paket"].([]any); data["status"] != "belum_ditemukan" || paket == nil || len(paket) != 0 {
+		t.Errorf("data = %v", data)
+	}
+}
+
+func TestPaketTerkait_AspirasiTanpaWilayah_StatusTanpaWilayah(t *testing.T) {
+	app, tx := appUjiParipurna(t)
+	id := idAspirasi(t, tx, "kode_wilayah IS NULL")
+
+	if data, _ := panggil(t, app, fmt.Sprintf("/api/v1/aspirasi-reses/%d/paket-terkait", id)).respons.Data.(map[string]any); data["status"] != "tanpa_wilayah" {
+		t.Errorf("data = %v", data)
+	}
+}
+
+func TestPaketTerkait_IDTidakSah_KodeError(t *testing.T) {
+	app, _ := appUjiParipurna(t)
+	kasus := map[string]int{
+		"/api/v1/aspirasi-reses/abc/paket-terkait":       fiber.StatusBadRequest,
+		"/api/v1/aspirasi-reses/999999999/paket-terkait": fiber.StatusNotFound,
 	}
 	for path, harap := range kasus {
 		if hasil := panggil(t, app, path); hasil.kode != harap {

@@ -43,6 +43,7 @@ func denganLayananAksi(layanan deliveryhttp.Layanan, pool *pgxpool.Pool) (delive
 		return layanan, err
 	}
 	layanan.BelumBuka = usecase.BacaDataBelumDibuka{Konfigurasi: belumDibuka}
-	layanan.Paripurna = usecase.BacaParipurna{Pembaca: repository.ParipurnaRepository{DB: pool}}
-	return layanan, nil
+	paripurna, err := buatBacaParipurna(pool)
+	layanan.Paripurna = paripurna
+	return layanan, err
 }

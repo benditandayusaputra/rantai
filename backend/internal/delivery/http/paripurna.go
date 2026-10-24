@@ -13,6 +13,7 @@ import (
 type LayananParipurna interface {
 	SikapFraksi(ctx context.Context, fraksi string) ([]domain.SikapFraksi, error)
 	AspirasiReses(ctx context.Context, filter domain.FilterAspirasiReses) ([]domain.AspirasiReses, error)
+	PaketTerkait(ctx context.Context, idAspirasi int64) (domain.HasilPaketTerkait, error)
 }
 
 type sikapFraksiJSON struct {
@@ -26,6 +27,7 @@ type sikapFraksiJSON struct {
 }
 
 type aspirasiResesJSON struct {
+	ID               int64                 `json:"id"`
 	MasaReses        string                `json:"masa_reses"`
 	TanggalParipurna string                `json:"tanggal_paripurna"`
 	Bidang           string                `json:"bidang"`
@@ -35,6 +37,18 @@ type aspirasiResesJSON struct {
 	ProvenanceID     string                `json:"provenance_id"`
 }
 
+type paketTerkaitJSON struct {
+	paketRingkasJSON
+	DasarCocok string `json:"dasar_cocok"`
+}
+
+type hasilPaketTerkaitJSON struct {
+	Aspirasi      aspirasiResesJSON  `json:"aspirasi"`
+	TahunAnggaran int                `json:"tahun_anggaran"`
+	Status        string             `json:"status"`
+	Paket         []paketTerkaitJSON `json:"paket"`
+}
+
 type handlerParipurna struct {
 	layanan LayananParipurna
 }
@@ -42,6 +56,7 @@ type handlerParipurna struct {
 func daftarkanParipurna(api fiber.Router, h handlerParipurna) {
 	api.Get("/fraksi/:nama/sikap", h.sikapFraksi)
 	api.Get("/aspirasi-reses", h.aspirasiReses)
+	api.Get("/aspirasi-reses/:id/paket-terkait", h.paketTerkait)
 }
 
 func (h handlerParipurna) sikapFraksi(c fiber.Ctx) error {
@@ -92,7 +107,7 @@ func uraiDapilOpsional(nilai string) (int, error) {
 
 func keAspirasiResesJSON(a domain.AspirasiReses) aspirasiResesJSON {
 	hasil := aspirasiResesJSON{
-		MasaReses: a.MasaReses, TanggalParipurna: a.TanggalParipurna.Format(time.DateOnly), Bidang: a.Bidang,
+		ID: a.ID, MasaReses: a.MasaReses, TanggalParipurna: a.TanggalParipurna.Format(time.DateOnly), Bidang: a.Bidang,
 		Uraian: a.Uraian, URL: a.URL, ProvenanceID: a.ProvenanceID,
 	}
 	if a.KodeWilayah != "" {
@@ -100,4 +115,29 @@ func keAspirasiResesJSON(a domain.AspirasiReses) aspirasiResesJSON {
 		hasil.Wilayah = &wilayah
 	}
 	return hasil
+}
+
+func (h handlerParipurna) paketTerkait(c fiber.Ctx) error {
+	id, err := strconv.ParseInt(c.Params("id"), 10, 64)
+	if err != nil {
+		return domain.InputTidakValid("id aspirasi reses wajib berupa angka")
+	}
+	hasil, err := h.layanan.PaketTerkait(c.Context(), id)
+	if err != nil {
+		return err
+	}
+	paket := make([]paketTerkaitJSON, len(hasil.Paket))
+	for i, p := range hasil.Paket {
+		paket[i] = paketTerkaitJSON{paketRingkasJSON: kePaketRingkasJSON(p.PaketRingkas), DasarCocok: dasarCocokPaket(p)}
+	}
+	return kirimData(c, hasilPaketTerkaitJSON{
+		Aspirasi: keAspirasiResesJSON(hasil.Aspirasi), TahunAnggaran: hasil.TahunAnggaran, Status: string(hasil.Status()), Paket: paket,
+	})
+}
+
+func dasarCocokPaket(p domain.PaketTerkait) string {
+	if p.IsCocokKategori {
+		return "kategori"
+	}
+	return "kata_kunci"
 }

@@ -33,6 +33,7 @@ type SikapFraksi struct {
 }
 
 type AspirasiReses struct {
+	ID               int64
 	MasaReses        string
 	TanggalParipurna time.Time
 	Bidang           string

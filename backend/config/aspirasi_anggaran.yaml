@@ -1,0 +1,20 @@
+batas_paket: 10
+bidang:
+  infrastruktur:
+    kategori: [jalan, saluran, pintu_air]
+    kata_kunci: [penerangan jalan, pju, trotoar, drainase, fasilitas olahraga, lapangan olahraga, gor]
+  kesehatan:
+    kata_kunci: [posyandu, puskesmas, alat kesehatan, ambulans]
+  lingkungan:
+    kata_kunci: [sampah, tps, kebersihan]
+  ekonomi:
+    kata_kunci: [pasar, umkm]
+  pendidikan:
+    kategori: [ruang_kelas]
+    kata_kunci: [sekolah]
+  perumahan:
+    kata_kunci: [rusun, rumah susun]
+  keselamatan:
+    kata_kunci: [apar, hidran, pemadam kebakaran]
+  ketertiban:
+    kata_kunci: [parkir]
