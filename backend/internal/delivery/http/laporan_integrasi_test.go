@@ -25,13 +25,20 @@ import (
 
 const tokenLaporanUji = "token-uji"
 
-type aksesLaporanTiruan struct{ penggunaID int64 }
+type aksesLaporanTiruan struct{ pengguna map[string]int64 }
 
 func (a aksesLaporanTiruan) Periksa(token string) (domain.KlaimAkses, error) {
-	if token != tokenLaporanUji {
+	id, ada := a.pengguna[token]
+	if !ada {
 		return domain.KlaimAkses{}, domain.ErrTokenAksesTidakBerlaku
 	}
-	return domain.KlaimAkses{PenggunaID: a.penggunaID, Peran: domain.PeranWarga}, nil
+	return domain.KlaimAkses{PenggunaID: id, Peran: domain.PeranWarga}, nil
+}
+
+type urlFotoTiruan struct{}
+
+func (urlFotoTiruan) URLBertanda(_ context.Context, kunci string) (string, error) {
+	return "https://objek.test/" + kunci, nil
 }
 
 type penyimpanObjekTiruan struct{ isi map[string][]byte }
@@ -45,16 +52,25 @@ func appUjiLaporan(t *testing.T) (*fiber.App, pgx.Tx, penyimpanObjekTiruan) {
 	t.Helper()
 	tx := ujidb.BukaTransaksi(t)
 	ujiwilayah.MuatDKI(t, tx)
-	var penggunaID int64
-	if err := tx.QueryRow(t.Context(), `INSERT INTO pengguna (email) VALUES ('pelapor@uji.test') RETURNING id`).Scan(&penggunaID); err != nil {
-		t.Fatal(err)
+	akses := aksesLaporanTiruan{pengguna: map[string]int64{}}
+	for _, token := range []string{tokenLaporanUji, "token-saksi-1", "token-saksi-2"} {
+		var id int64
+		if err := tx.QueryRow(t.Context(), `INSERT INTO pengguna (email) VALUES ($1 || '@uji.test') RETURNING id`, token).Scan(&id); err != nil {
+			t.Fatal(err)
+		}
+		akses.pengguna[token] = id
 	}
 	penyimpan := penyimpanObjekTiruan{isi: map[string][]byte{}}
-	terima := usecase.TerimaLaporan{
-		Pemroses: foto.Pemroses{}, Penyimpan: penyimpan, Repo: repository.LaporanRepository{DB: tx},
-		Sekarang: time.Now, BuatKunci: func() string { return fmt.Sprint(len(penyimpan.isi)) },
-	}
-	return NewApp(config.Server{}, Layanan{Laporan: terima, Akses: aksesLaporanTiruan{penggunaID: penggunaID}}), tx, penyimpan
+	repo := repository.LaporanRepository{DB: tx}
+	return NewApp(config.Server{}, Layanan{
+		Laporan: usecase.TerimaLaporan{
+			Pemroses: foto.Pemroses{}, Penyimpan: penyimpan, Repo: repo,
+			Sekarang: time.Now, BuatKunci: func() string { return fmt.Sprint(len(penyimpan.isi)) },
+		},
+		BacaLaporan:       usecase.BacaLaporan{Pembaca: repo, URLFoto: urlFotoTiruan{}},
+		KonfirmasiLaporan: usecase.KonfirmasiLaporan{Repo: repo, Sekarang: time.Now},
+		Akses:             akses,
+	}), tx, penyimpan
 }
 
 func titikKelurahan(t *testing.T, tx pgx.Tx, nama string) domain.Titik {
@@ -140,5 +156,62 @@ func TestTerimaLaporan_TitikDiLuarDKI_400(t *testing.T) {
 
 	if hasil.kode != fiber.StatusBadRequest || len(penyimpan.isi) != 0 {
 		t.Errorf("kode %d, objek %d", hasil.kode, len(penyimpan.isi))
+	}
+}
+
+func konfirmasikan(t *testing.T, app *fiber.App, id any, titik domain.Titik, token string) hasilPanggilan {
+	t.Helper()
+	body := fmt.Sprintf(`{"lat": %v, "lng": %v, "akurasi": 12, "kondisi": "terhenti"}`, titik.Lat, titik.Lng)
+	permintaan := httptest.NewRequestWithContext(t.Context(), fiber.MethodPost, fmt.Sprintf("/api/v1/laporan/%v/konfirmasi", id), bytes.NewBufferString(body))
+	permintaan.Header.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
+	permintaan.Header.Set(fiber.HeaderAuthorization, "Bearer "+token)
+	return kirim(t, app, permintaan)
+}
+
+func TestKonfirmasiLaporan_DuaSaksi_TerverifikasiDanTampilDiLinimasa(t *testing.T) {
+	app, tx, _ := appUjiLaporan(t)
+	titik := titikKelurahan(t, tx, "Kelapa Gading Barat")
+	data, _ := kirimLaporan(t, app, titik, tokenLaporanUji).respons.Data.(map[string]any)
+
+	pertama, _ := konfirmasikan(t, app, data["id"], titik, "token-saksi-1").respons.Data.(map[string]any)
+	kedua, _ := konfirmasikan(t, app, data["id"], titik, "token-saksi-2").respons.Data.(map[string]any)
+	detail := panggil(t, app, fmt.Sprintf("/api/v1/laporan/%v", data["id"]))
+
+	if pertama["status"] != "MENUNGGU_SAKSI" || kedua["status"] != "TERVERIFIKASI" {
+		t.Fatalf("pertama %v, kedua %v", pertama, kedua)
+	}
+	isi, _ := detail.respons.Data.(map[string]any)
+	riwayat, _ := isi["riwayat"].([]any)
+	foto, _ := isi["foto"].([]any)
+	saksi, _ := isi["saksi"].(map[string]any)
+	if detail.kode != fiber.StatusOK || isi["status"] != "TERVERIFIKASI" || len(riwayat) != 3 || len(foto) != 1 || saksi["jumlah"] != float64(3) {
+		t.Errorf("detail = %v", isi)
+	}
+	for _, kunciPrivat := range []string{"lokasi_asli", "pengguna_id", "email"} {
+		if _, ada := isi[kunciPrivat]; ada {
+			t.Errorf("detail publik membocorkan %s", kunciPrivat)
+		}
+	}
+}
+
+func TestKonfirmasiLaporan_OlehPelaporAtauGanda_Ditolak(t *testing.T) {
+	app, tx, _ := appUjiLaporan(t)
+	titik := titikKelurahan(t, tx, "Kelapa Gading Barat")
+	data, _ := kirimLaporan(t, app, titik, tokenLaporanUji).respons.Data.(map[string]any)
+	konfirmasikan(t, app, data["id"], titik, "token-saksi-1")
+
+	pelapor := konfirmasikan(t, app, data["id"], titik, tokenLaporanUji)
+	ganda := konfirmasikan(t, app, data["id"], titik, "token-saksi-1")
+
+	if pelapor.kode != fiber.StatusBadRequest || ganda.kode != fiber.StatusBadRequest {
+		t.Errorf("pelapor %d, ganda %d", pelapor.kode, ganda.kode)
+	}
+}
+
+func TestAmbilLaporan_TidakAda_404(t *testing.T) {
+	app, _, _ := appUjiLaporan(t)
+
+	if hasil := panggil(t, app, "/api/v1/laporan/999999999"); hasil.kode != fiber.StatusNotFound {
+		t.Errorf("kode = %d, harap 404", hasil.kode)
 	}
 }

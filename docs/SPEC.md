@@ -584,10 +584,12 @@ DIKIRIM → MENUNGGU_SAKSI → TERVERIFIKASI → DITERUSKAN → DITANGGAPI → S
 - `DITERUSKAN` otomatis saat terverifikasi ke antrean Panel Instansi milik instansi pelaksana paket, atau instansi dari `tanggung_jawab` tema yang cocok untuk laporan tanpa paket.
 - `DITANGGAPI` saat instansi memberi hak jawab. `SELESAI` bila instansi menandai selesai dan tidak ada sanggahan terverifikasi dalam 14 hari.
 - Setiap perpindahan dicatat di `laporan_riwayat` dan tampil sebagai linimasa publik.
+- Pelapor dihitung sebagai satu akun tanpa perlu konfirmasi; pelapor tidak bisa mengonfirmasi laporannya sendiri dan satu akun hanya bisa mengonfirmasi sekali. Jarak dihitung dari `lokasi_asli` laporan ke `lokasi_asli` konfirmasi, dan 14 hari dihitung dari waktu laporan dibuat. Konfirmasi yang tidak memenuhi syarat tetap tersimpan tetapi tidak dihitung.
+- Perpindahan otomatis `TERVERIFIKASI` ke `DITERUSKAN` dibangun bersama antrean Panel Instansi (T-803), karena tujuannya adalah antrean itu.
 
 Tes wajib: foto hasil tanpa EXIF; lokasi publik terbulatkan; semua transisi sah; transisi tidak sah ditolak dengan `ErrTransisiTidakSah`; konfirmasi di luar 200 m atau lewat 14 hari tidak dihitung.
 
-API: `POST /laporan` (multipart: `lat`, `lng`, `akurasi`, `kondisi`, `catatan`, `paket_kode` opsional, 1 sampai 4 berkas `foto`; respons 201 berisi `id` dan `status`), `GET /laporan/{id}`, `POST /laporan/{id}/konfirmasi`.
+API: `POST /laporan` (multipart: `lat`, `lng`, `akurasi`, `kondisi`, `catatan`, `paket_kode` opsional, 1 sampai 4 berkas `foto`; respons 201 berisi `id` dan `status`), `GET /laporan/{id}` (publik: status, kondisi, catatan, wilayah, `lokasi_publik`, paket, `saksi` {`jumlah`, `dibutuhkan`}, foto dengan URL bertanda tangan 15 menit, dan `riwayat`; tanpa identitas pelapor dan `lokasi_asli`), `POST /laporan/{id}/konfirmasi` (JSON `lat`, `lng`, `akurasi`, `kondisi`; respons `status` dan `saksi`).
 
 ### ANG-09 Unduh data
 

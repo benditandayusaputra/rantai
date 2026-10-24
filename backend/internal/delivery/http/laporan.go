@@ -31,10 +31,19 @@ type handlerLaporan struct {
 }
 
 func daftarkanLaporan(api fiber.Router, layanan Layanan) {
-	if layanan.Laporan == nil || layanan.Akses == nil {
+	detail := handlerDetailLaporan{baca: layanan.BacaLaporan, konfirmasi: layanan.KonfirmasiLaporan}
+	if layanan.BacaLaporan != nil {
+		api.Get("/laporan/:id", detail.ambil)
+	}
+	if layanan.Akses == nil {
 		return
 	}
-	api.Post("/laporan", wajibMasuk(layanan.Akses), handlerLaporan{layanan: layanan.Laporan}.terima)
+	if layanan.Laporan != nil {
+		api.Post("/laporan", wajibMasuk(layanan.Akses), handlerLaporan{layanan: layanan.Laporan}.terima)
+	}
+	if layanan.KonfirmasiLaporan != nil {
+		api.Post("/laporan/:id/konfirmasi", wajibMasuk(layanan.Akses), detail.konfirmasikan)
+	}
 }
 
 func (h handlerLaporan) terima(c fiber.Ctx) error {

@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
@@ -21,6 +22,7 @@ const (
 	envSandi            = "MINIO_ROOT_PASSWORD"
 	envBucket           = "MINIO_BUCKET"
 	envTLS              = "MINIO_TLS"
+	umurURLBertanda     = 15 * time.Minute
 	penggunaBawaanLokal = "rantai"
 	sandiBawaanLokal    = "rantai-rahasia"
 )
@@ -75,4 +77,12 @@ func nilaiEnv(nama, bawaan string) string {
 		return nilai
 	}
 	return bawaan
+}
+
+func (p Penyimpan) URLBertanda(ctx context.Context, kunci string) (string, error) {
+	alamat, err := p.klien.PresignedGetObject(ctx, p.bucket, kunci, umurURLBertanda, nil)
+	if err != nil {
+		return "", fmt.Errorf("tanda tangani URL %s: %w", kunci, err)
+	}
+	return alamat.String(), nil
 }

@@ -24,9 +24,11 @@ func denganLaporan(ctx context.Context, layanan deliveryhttp.Layanan, pool *pgxp
 	if err != nil {
 		return layanan, err
 	}
+	repo := repository.LaporanRepository{DB: pool}
 	layanan.Laporan = usecase.TerimaLaporan{
-		Pemroses: foto.Pemroses{}, Penyimpan: penyimpan, Repo: repository.LaporanRepository{DB: pool},
-		Sekarang: time.Now, BuatKunci: rand.Text,
+		Pemroses: foto.Pemroses{}, Penyimpan: penyimpan, Repo: repo, Sekarang: time.Now, BuatKunci: rand.Text,
 	}
+	layanan.BacaLaporan = usecase.BacaLaporan{Pembaca: repo, URLFoto: penyimpan}
+	layanan.KonfirmasiLaporan = usecase.KonfirmasiLaporan{Repo: repo, Sekarang: time.Now}
 	return layanan, nil
 }

@@ -264,6 +264,7 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - Selesai bila: token akses hanya di memori; muat ulang memakai refresh.
 - [ ] **T-803** Panel Instansi dan hak jawab (DSR-03, WAK-07) **[BUTUH DESAIN]** **[BOLEH PECAH]**
   - Migrasi `hak_jawab`; panel untuk instansi dan anggota; hak jawab pada sinyal, paket, laporan, dan item umpan.
+  - Perpindahan otomatis laporan `TERVERIFIKASI` ke `DITERUSKAN` ke antrean instansi pelaksana paket atau instansi `tanggung_jawab` tema (ANG-08), memakai `domain.Transisi` dan `LaporanRepository.UbahStatus`.
   - Commit: `✨ Tambah Panel Instansi dan hak jawab publik`
   - Selesai bila: hak jawab tidak bisa dihapus; isi tanggal serah terima mengubah label pemeliharaan menjadi `resmi`; hak jawab langsung tampil di halaman publik.
 
@@ -286,7 +287,7 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - Job `skenario_demo` ikut memasang `laporan_simulasi` dari `skenario_demo.yaml` ke paket simulasi, dengan foto ilustrasi bebas lisensi.
   - Commit: `✨ Terima laporan warga dengan foto tanpa metadata`
   - Selesai bila: tes memastikan foto hasil tidak memuat EXIF dan lokasi publik terbulatkan.
-- [ ] **T-905** Verifikasi laporan (ANG-08)
+- [x] **T-905** Verifikasi laporan (ANG-08)
   - Mesin status di domain, konfirmasi, riwayat.
   - Commit: `✨ Tambah mesin status verifikasi dan konfirmasi saksi`
   - Selesai bila: semua tes wajib verifikasi ANG-08 lulus.

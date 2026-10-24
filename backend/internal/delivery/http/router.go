@@ -29,6 +29,9 @@ type Layanan struct {
 	Akses      PemeriksaAkses
 	Paripurna  LayananParipurna
 	Laporan    LayananLaporan
+
+	BacaLaporan       LayananBacaLaporan
+	KonfirmasiLaporan LayananKonfirmasiLaporan
 }
 
 func NewApp(cfg config.Server, layanan Layanan) *fiber.App {
