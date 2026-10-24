@@ -24,7 +24,11 @@
 		{ label: t('pkg.method'), isi: paket.metode },
 		{ label: t('pkg.type'), isi: paket.jenis_pengadaan },
 		{ label: t('pkg.stage'), isi: paket.tahap },
-		{ label: t('pkg.vendor'), isi: paket.penyedia?.nama ?? t('pkg.noVendor') },
+		{
+			label: t('pkg.vendor'),
+			isi: paket.penyedia?.nama ?? t('pkg.noVendor'),
+			href: paket.penyedia ? `/${bahasaBawaan}/penyedia/${paket.penyedia.id}` : undefined
+		},
 		{ label: t('pkg.location'), isi: paket.lokasi.nama_wilayah }
 	]);
 	const kelasTautan =
@@ -97,7 +101,13 @@
 					{#each rincian as item (item.label)}
 						<div>
 							<dt class="text-caption text-muted">{item.label}</dt>
-							<dd>{item.isi || '-'}</dd>
+							<dd>
+								{#if 'href' in item && item.href}
+									<a href={item.href} class="font-semibold underline">{item.isi}</a>
+								{:else}
+									{item.isi || '-'}
+								{/if}
+							</dd>
 						</div>
 					{/each}
 				</dl>

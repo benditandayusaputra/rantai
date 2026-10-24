@@ -300,7 +300,7 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - Moderasi laporan dan item umpan yang salah atribusi.
   - Commit: `✨ Tambah panel moderasi laporan dan umpan`
   - Selesai bila: setiap aksi tercatat di riwayat.
-- [ ] **T-908** Profil penyedia (ANG-07) **[BUTUH DESAIN]**
+- [x] **T-908** Profil penyedia (ANG-07) **[BUTUH DESAIN]**
   - Commit: `✨ Bangun halaman profil penyedia`
 - [ ] **T-909** Cek Sekolahku (PEN-06) **[BUTUH DESAIN]**
   - Commit: `✨ Bangun fitur Cek Sekolahku berbasis radius`

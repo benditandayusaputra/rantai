@@ -503,3 +503,31 @@ export type AksiModerasi =
 	| { aksi: 'verifikasi' }
 	| { aksi: 'tolak'; alasan: string; pesan: string }
 	| { aksi: 'sembunyikan_foto'; foto_id: number; alasan: string };
+
+export interface TahunPenyedia {
+	tahun: number;
+	sumber: string;
+	jumlah_paket: Angka;
+	total_nilai: Angka;
+}
+
+export interface RiwayatPenyedia {
+	tahun: number;
+	pembeli: string;
+	nama_paket: string;
+	nilai: Angka | null;
+	sumber: string;
+	provenance_id: string;
+}
+
+export interface ProfilPenyedia {
+	id: number;
+	nama: string;
+	alias: string[];
+	per_tahun: TahunPenyedia[];
+	kategori_utama: string[];
+	instansi_pemberi: string[];
+	paket: PaketRingkas[];
+	riwayat_opentender: RiwayatPenyedia[];
+	atribusi: string;
+}

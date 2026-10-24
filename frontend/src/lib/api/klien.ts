@@ -10,6 +10,7 @@ import type {
 	PermintaanAspirasi,
 	PetaPaket,
 	PetaTema,
+	ProfilPenyedia,
 	Provenance,
 	RingkasanKecamatan,
 	Sekolah,
@@ -242,4 +243,8 @@ export function susunPermohonan(fetchFn: Fetch, kode: string, bahasa: string): P
 	return kirimData<Dokumen>(fetchFn, `/data-belum-dibuka/${encodeURIComponent(kode)}/permohonan`, {
 		bahasa
 	});
+}
+
+export function ambilPenyedia(fetchFn: Fetch, id: number): Promise<ProfilPenyedia> {
+	return ambilData<ProfilPenyedia>(fetchFn, `/penyedia/${id}`);
 }

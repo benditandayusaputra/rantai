@@ -633,5 +633,22 @@
 	"mod.reason.di_luar_lingkup": "Di luar lingkup",
 	"mod.hideFeed": "Sembunyikan item",
 	"mod.members": "Dipautkan ke {nama}",
-	"mod.done": "Aksi tercatat di riwayat moderasi."
+	"mod.done": "Aksi tercatat di riwayat moderasi.",
+	"vendor.overline": "Penyedia",
+	"vendor.noScore": "Rantai tidak memberi skor atau peringkat penyedia. Angka di bawah adalah catatan pengadaan apa adanya.",
+	"vendor.alias": "Juga tercatat sebagai {nama}",
+	"vendor.latestCount": "Paket tahun {tahun}",
+	"vendor.latestValue": "Nilai paket tahun {tahun}",
+	"vendor.perYear": "Paket per tahun",
+	"vendor.perYearNote": "Tinggi batang menunjukkan nilai; angka di dalam batang adalah jumlah paket.",
+	"vendor.col.year": "Tahun",
+	"vendor.col.count": "Jumlah paket",
+	"vendor.col.value": "Nilai",
+	"vendor.packages": "Paket di LPSE DKI",
+	"vendor.noPackages": "Belum ada paket di DKI yang tercatat untuk penyedia ini",
+	"vendor.categories": "Kategori utama",
+	"vendor.agencies": "Instansi pemberi",
+	"vendor.history": "Riwayat Opentender 2014 sampai 2023",
+	"vendor.attribution": "Atribusi data",
+	"vendor.notFound": "Penyedia tidak ditemukan"
 }
