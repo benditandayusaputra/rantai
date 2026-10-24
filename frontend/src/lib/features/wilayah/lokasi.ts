@@ -13,7 +13,7 @@ export type HasilLokasi =
 	| { status: 'denied' }
 	| { status: 'failed' };
 
-function mintaPosisi(geolokasi: Geolocation): Promise<GeolocationPosition> {
+export function mintaPosisi(geolokasi: Geolocation): Promise<GeolocationPosition> {
 	return new Promise((selesai, gagal) =>
 		geolokasi.getCurrentPosition(selesai, gagal, {
 			enableHighAccuracy: true,
@@ -23,7 +23,7 @@ function mintaPosisi(geolokasi: Geolocation): Promise<GeolocationPosition> {
 	);
 }
 
-function isIzinDitolak(galat: unknown): boolean {
+export function isIzinDitolak(galat: unknown): boolean {
 	return (
 		typeof galat === 'object' && galat !== null && 'code' in galat && galat.code === kodeIzinDitolak
 	);

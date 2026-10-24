@@ -82,6 +82,28 @@ export async function kirimData<T>(
 	return amplop.data;
 }
 
+export async function kirimBerwenang<T>(
+	fetchFn: Fetch,
+	path: string,
+	token: string,
+	badan: FormData | object
+): Promise<T> {
+	const isFormulir = badan instanceof FormData;
+	const respons = await fetchFn(susunURL(path, {}), {
+		method: 'POST',
+		headers: {
+			Authorization: `Bearer ${token}`,
+			...(isFormulir ? {} : { 'Content-Type': 'application/json' })
+		},
+		body: isFormulir ? badan : JSON.stringify(badan)
+	});
+	const amplop = await bacaAmplop<T>(respons);
+	if (!respons.ok || !amplop) {
+		throw new GalatAPI(respons.status, amplop?.message ?? respons.statusText);
+	}
+	return amplop.data;
+}
+
 export function urlServer(path: string): string {
 	return new URL(path, env.PUBLIC_API_URL || alamatBawaan).toString();
 }

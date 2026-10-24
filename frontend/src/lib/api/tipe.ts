@@ -394,3 +394,62 @@ export interface DaftarDataBelumDibuka {
 	ppid: PPID;
 	data: DataBelumDibuka[];
 }
+
+export interface PaketTerdekat {
+	kode: string;
+	nama: string;
+	sektor: string;
+	is_simulation: boolean;
+	titik: Titik;
+	jarak: Angka;
+}
+
+export type KondisiLaporan =
+	'belum_dimulai' | 'sedang_dikerjakan' | 'terhenti' | 'selesai_baik' | 'selesai_rusak';
+
+export type StatusLaporan =
+	| 'DIKIRIM'
+	| 'MENUNGGU_SAKSI'
+	| 'TERVERIFIKASI'
+	| 'DITERUSKAN'
+	| 'DITANGGAPI'
+	| 'SELESAI'
+	| 'DITOLAK';
+
+export interface LaporanDiterima {
+	id: number;
+	status: StatusLaporan;
+}
+
+export interface SaksiLaporan {
+	jumlah: number;
+	dibutuhkan: number;
+}
+
+export interface RiwayatLaporan {
+	status_lama: StatusLaporan | null;
+	status_baru: StatusLaporan;
+	alasan: string;
+	dibuat_pada: string;
+}
+
+export interface DetailLaporan {
+	id: number;
+	status: StatusLaporan;
+	kondisi: KondisiLaporan;
+	catatan: string;
+	kode_wilayah: string;
+	nama_wilayah: string;
+	lokasi_publik: Titik;
+	paket: { kode: string; nama: string } | null;
+	is_simulation: boolean;
+	dibuat_pada: string;
+	saksi: SaksiLaporan;
+	foto: { url: string; url_thumbnail: string; lebar: number; tinggi: number }[];
+	riwayat: RiwayatLaporan[];
+}
+
+export interface HasilKonfirmasi {
+	status: StatusLaporan;
+	saksi: SaksiLaporan;
+}
