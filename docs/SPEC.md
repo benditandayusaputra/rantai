@@ -88,7 +88,7 @@ Tugas bertanda **[GERBANG DATA]** di PLAN.md dimulai dengan verifikasi ini. Hasi
 | GD-12 | Siswa kelas 6 per sekolah atau per kecamatan untuk tahun ajaran berjalan: Sekolah Kita atau Dapodik | Cadangan berurutan: Satu Data Jakarta, permintaan data resmi, estimasi `total siswa SD ÷ 6` berlabel `estimasi` |
 | GD-13 | Berita situs DPRD DKI: daftar dan halaman berita, struktur judul, tanggal, nama anggota yang disebut, robots.txt | Cadangan: impor manual tautan rilis untuk anggota di skenario demo |
 | GD-14 | Liputan media: daftar perusahaan pers terverifikasi Dewan Pers, RSS per media atau RSS pencarian per nama anggota, ketentuan pemakaian dan robots.txt | Bila RSS pencarian tidak diizinkan, pakai RSS kanal tiap media terverifikasi lalu saring nama secara lokal |
-| GD-15 | Dokumen dan berita paripurna DPRD DKI: pandangan umum fraksi atas raperda dan APBD, kompilasi aspirasi reses per bidang | Bila tidak ada dokumen, WAK-05 dan WAK-06 memakai kurasi manual berbasis berita resmi dengan tautan sumber |
+| GD-15 | Dokumen dan berita paripurna DPRD DKI: pandangan umum fraksi atas raperda dan APBD, kompilasi aspirasi reses per bidang | Bila tidak ada dokumen, WAK-05 dan WAK-06 memakai kurasi manual berbasis berita resmi dengan tautan sumber. **Lolos sebagian**: dokumen periode 2024-2029 tidak terbit, kurasi berita resmi dipakai, lihat `docs/data-sources.md` |
 
 ## 2. Model data
 
@@ -146,8 +146,8 @@ Fungsi SQL `hierarki_wilayah(kode)` mengembalikan leluhur sebuah wilayah sebagai
 | `anggota_akd` | `anggota_id`, `alat_kelengkapan` (contoh: Pimpinan DPRD, Komisi E Bidang Kesejahteraan Rakyat, Badan Anggaran), `jabatan` apa adanya dari situs, `provenance_id`; PK (`anggota_id`, `alat_kelengkapan`) |
 | `umpan_kegiatan` | `id`, `jenis_sumber` (resmi_dprd, media), `media_nama`, `media_domain`, `judul`, `cuplikan` (maksimal 300 karakter, bahan ringkasan, tidak dikirim API), `ringkasan` nullable (maksimal 160 karakter), `url` unik, `terbit_pada`, `tag_isu` text[], `disembunyikan`, `alasan_disembunyikan`, `provenance_id` |
 | `umpan_anggota` | `umpan_id`, `anggota_id`, `dasar_cocok` (nama_dan_dprd, nama_dan_fraksi, situs_resmi) |
-| `sikap_fraksi` | `id`, `fraksi`, `agenda` (raperda, apbd), `judul_agenda`, `tanggal`, `ringkasan`, `url`, `provenance_id` |
-| `aspirasi_reses` | `id`, `masa_reses`, `dapil_id` nullable, `bidang`, `uraian`, `kode_wilayah` nullable, `provenance_id` |
+| `sikap_fraksi` | `id`, `fraksi` (sama dengan `anggota.fraksi`), `agenda` (raperda, apbd), `judul_agenda`, `tanggal`, `ringkasan`, `url`, `provenance_id`; unik (`fraksi`, `url`) |
+| `aspirasi_reses` | `id`, `masa_reses`, `tanggal_paripurna`, `bidang` (huruf kecil), `uraian`, `kode_wilayah` nullable (kecamatan atau kelurahan), `url`, `provenance_id`; unik (`url`, `uraian`). Dapil diturunkan dari `kode_wilayah` karena laporan reses tidak menyebut dapil (GD-15) |
 
 ### 2.6 Pengguna dan interaksi
 
@@ -423,13 +423,13 @@ API: `GET /anggota/{id}/isu`. Setiap isu memuat `tag`, `jumlah_sumber`, `jumlah_
 
 Pandangan umum fraksi anggota atas raperda dan APBD (GD-15), sebagai daftar agenda dengan ringkasan netral dan tautan dokumen. Menjadi pengganti suara per anggota yang tidak publik.
 
-API: `GET /fraksi/{nama}/sikap`.
+API: `GET /fraksi/{nama}/sikap` dengan `{nama}` nama fraksi lengkap seperti di profil anggota (dienkode URL), terbaru lebih dahulu. Fraksi yang tidak ada di data anggota menghasilkan 404.
 
 ### WAK-06 Aspirasi Reses
 
 Aspirasi agregat per bidang dari dokumen paripurna, difilter ke dapil kecamatan bila dokumen menyebut dapil. Tampil dengan catatan "kompilasi per bidang, bukan per anggota".
 
-API: `GET /aspirasi-reses?dapil=&bidang=`.
+API: `GET /aspirasi-reses?dapil=&bidang=`. `dapil` adalah id dapil; hasilnya entri yang wilayahnya berada di dapil itu ditambah entri tanpa wilayah (berlaku seluruh provinsi). Setiap entri memuat `wilayah` (atau `null`), `url` berita sumber, dan `provenance_id`; entri berwilayah tampil lebih dahulu dalam satu masa reses.
 
 ### WAK-07 Hak jawab anggota
 

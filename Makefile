@@ -7,7 +7,7 @@ export DATABASE_URL TEST_DATABASE_URL
 COMPOSE := docker compose
 MIGRATE := $(COMPOSE) run --rm --build migrate
 
-.PHONY: up down migrate migrate-down lint test impor-wilayah impor-tema impor-kpu-dprd impor-lpse impor-sirup impor-opentender turunan laporan-geocode snapshot-paket muat-snapshot-paket impor-umpan-dprd impor-umpan-media ringkas-umpan impor-sekolah impor-daya-tampung hitung-calon-lulusan hitung-indikator snapshot-demo seed-demo tanya-demo
+.PHONY: up down migrate migrate-down lint test impor-wilayah impor-tema impor-kpu-dprd impor-lpse impor-sirup impor-opentender turunan laporan-geocode snapshot-paket muat-snapshot-paket impor-umpan-dprd impor-umpan-media ringkas-umpan impor-sekolah impor-daya-tampung hitung-calon-lulusan hitung-indikator impor-paripurna snapshot-demo seed-demo tanya-demo
 
 up:
 	$(COMPOSE) up -d --wait db minio
@@ -82,6 +82,9 @@ hitung-calon-lulusan:
 
 hitung-indikator:
 	cd backend && go run ./cmd/worker indikator
+
+impor-paripurna:
+	cd backend && go run ./cmd/worker paripurna
 
 SNAPSHOT_DEMO := data/snapshot/rantai.sql.gz
 

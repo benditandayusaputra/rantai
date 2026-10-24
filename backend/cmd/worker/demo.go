@@ -13,10 +13,14 @@ import (
 const pathSkenarioDemo = "../data/snapshot/skenario_demo.yaml"
 
 func pilihJobDemo(nama string, pool *pgxpool.Pool) (job, error) {
-	if nama != usecase.JobSkenarioDemo {
+	switch nama {
+	case usecase.JobSkenarioDemo:
+		return buatMuatSkenarioDemo(pool)
+	case usecase.JobParipurna:
+		return buatImporParipurna(pool)
+	default:
 		return nil, fmt.Errorf("job tidak dikenal: %s", nama)
 	}
-	return buatMuatSkenarioDemo(pool)
 }
 
 func buatMuatSkenarioDemo(pool *pgxpool.Pool) (job, error) {

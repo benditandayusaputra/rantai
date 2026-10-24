@@ -198,3 +198,16 @@ Catatan hasil Gerbang Data (SPEC bagian 1). Setiap entri memuat URL, tanggal cek
 - **Sumber**: `GET /peserta-didik/{sekolah_id}` Sekolah Kita, field `pd_tkt_6_l` + `pd_tkt_6_p`, semester 20261 (tahun ajaran 2026/2027). Siswa kelas 6 tahun ajaran ini adalah lulusan SD pertengahan 2027.
 - **Keterbatasan**: MI tidak punya data peserta didik di sumber, sehingga calon lulusan per kecamatan tidak termasuk lulusan MI. Ini tercatat di provenance dan dikirim API sebagai kunci keterbatasan `calon_lulusan_tanpa_mi`. Cadangan `estimasi_total_sd` tetap tersedia di kode untuk kecamatan yang hanya punya total siswa.
 - **Pasangan periode**: daya tampung terbit terakhir adalah untuk penerimaan 2026/2027. Indikator membandingkan calon lulusan 2026/2027 dengan daya tampung terbit terakhir itu, dan menyebut tahun keduanya di provenance.
+
+## GD-15 Dokumen paripurna: pandangan umum fraksi dan aspirasi reses
+
+- **Status**: lolos sebagian. Dokumen paripurna periode 2024-2029 tidak diterbitkan; cadangan SPEC dipakai, yaitu kurasi manual berbasis berita resmi dengan tautan sumber.
+- **Tanggal cek**: 24 Oktober 2026
+- **Dokumen**: pencarian unggahan PDF lewat `GET /wp-json/wp/v2/media?search=...&mime_type=application/pdf` di situs DPRD DKI hanya menemukan "Pandangan Umum Fraksi" 2018 sampai 2019 dan satu risalah reses Maret 2024 (periode sebelumnya). Tidak ada dokumen pandangan umum fraksi atau kompilasi aspirasi reses untuk periode 2024-2029.
+- **Berita resmi** (REST API yang sama dengan GD-13):
+  - Pandangan umum fraksi diberitakan satu berita per fraksi per agenda. Contoh: sembilan berita 19 Oktober 2026 untuk Ranperda APBD 2027 dan sembilan berita 7 Oktober 2026 untuk Ranperda Pembentukan Dana Cadangan Daerah. Nama fraksi di berita memakai singkatan (Fraksi PSI, Fraksi Demokrat-Perindo) sehingga dipetakan manual ke nama fraksi di data anggota.
+  - Laporan hasil reses dibacakan di paripurna dan diberitakan per bidang (lingkungan, infrastruktur, ekonomi, kesehatan, dan lainnya), sesekali menyebut nama jalan atau kelurahan. Laporan bersifat kompilasi seluruh anggota; tidak ada pembagian per anggota atau per dapil.
+- **Kurasi**: `data/snapshot/sikap_fraksi.csv` (`fraksi,agenda,judul_agenda,tanggal,ringkasan,url`, 18 entri) dan `data/snapshot/aspirasi_reses.csv` (`masa_reses,tanggal_paripurna,bidang,uraian,kode_wilayah,url`, 21 entri dari reses ke-II dan ke-3 tahun sidang 2025-2026). Ringkasan ditulis netral dengan kata kerja deskriptif, tanpa angka yang tidak ada di berita. `kode_wilayah` diisi hanya bila berita menyebut kelurahan atau kecamatan; nama jalan tanpa wilayah yang pasti (Jalan Menteng Tenggulung) dibiarkan kosong.
+- **Dapil**: karena laporan reses tidak menyebut dapil, filter dapil WAK-06 diturunkan dari `kode_wilayah` (kecamatan atau kelurahan di dapil itu); entri tanpa wilayah berlaku untuk seluruh provinsi dan selalu ikut tampil.
+- **Pemutakhiran**: job `paripurna` dijalankan manual setelah CSV ditambah tiap masa sidang. Paripurna laporan reses berikutnya dijadwalkan 17 Desember 2026.
+- **robots.txt**: sama dengan GD-13, hanya `/wp-admin/` yang dilarang. Endpoint pencarian (`search=`) kadang mengembalikan 502; permintaan diberi jeda beberapa detik.

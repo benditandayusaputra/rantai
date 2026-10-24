@@ -27,6 +27,7 @@ type Layanan struct {
 	BelumBuka  LayananDataBelumDibuka
 	Masuk      LayananMasuk
 	Akses      PemeriksaAkses
+	Paripurna  LayananParipurna
 }
 
 func NewApp(cfg config.Server, layanan Layanan) *fiber.App {
@@ -56,6 +57,7 @@ func NewApp(cfg config.Server, layanan Layanan) *fiber.App {
 	api.Get("/jalur-aspirasi", handlerJalurAspirasi{layanan: layanan.Jalur}.untuk)
 	daftarkanDataBelumDibuka(api, layanan.BelumBuka)
 	daftarkanAuth(api, layanan, cfg.Auth)
+	daftarkanParipurna(api, handlerParipurna{layanan: layanan.Paripurna})
 	return app
 }
 

@@ -1,0 +1,4 @@
+path_sikap_fraksi: ../data/snapshot/sikap_fraksi.csv
+path_aspirasi_reses: ../data/snapshot/aspirasi_reses.csv
+url_sumber: https://dprd-dkijakartaprov.go.id/
+catatan: Kurasi manual dari berita resmi situs DPRD DKI Jakarta tentang rapat paripurna pandangan umum fraksi dan laporan hasil reses; dokumen paripurna periode 2024-2029 tidak diterbitkan di situs. Ringkasan disusun netral, setiap entri menaut ke berita sumbernya.
