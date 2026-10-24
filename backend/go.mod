@@ -4,6 +4,7 @@ go 1.26.0
 
 require (
 	github.com/anthropics/anthropic-sdk-go v1.84.0
+	github.com/go-pdf/fpdf v0.9.0
 	github.com/gofiber/fiber/v3 v3.6.1
 	github.com/jackc/pgx/v5 v5.11.0
 	github.com/oklog/ulid/v2 v2.1.2

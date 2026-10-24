@@ -240,7 +240,7 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - Jawaban tercache untuk `tanya_demo.json` saat `RANTAI_MODE=demo`; daftar pertanyaan diambil dari `tanya_demo` di `skenario_demo.yaml`.
   - Commit: `✨ Sediakan jawaban tercache Tanya Rantai untuk mode demo`
   - Selesai bila: tiga pertanyaan demo terjawab tanpa internet.
-- [ ] **T-706** Paket Aspirasi dan jalur aspirasi (AKS-02, AKS-03)
+- [x] **T-706** Paket Aspirasi dan jalur aspirasi (AKS-02, AKS-03)
   - `POST /aspirasi` dari templat tema, teks siap salin dan PDF dari server; `config/jalur_aspirasi.yaml`, `GET /jalur-aspirasi`.
   - Commit: `✨ Susun Paket Aspirasi berbasis tema dalam teks dan PDF`
   - Selesai bila: setiap angka di PDF punya sumber dan tanggal; kanal yang tepat tercantum.

@@ -81,7 +81,7 @@ func susunLayanan(pool *pgxpool.Pool) (deliveryhttp.Layanan, error) {
 	if err != nil {
 		return deliveryhttp.Layanan{}, err
 	}
-	return deliveryhttp.Layanan{
+	return denganAspirasi(deliveryhttp.Layanan{
 		Wilayah:    usecase.CariWilayah{Pembaca: wilayah},
 		Provenance: usecase.AmbilProvenance{Pembaca: repository.ProvenanceRepository{DB: pool}},
 		Tema:       tema,
@@ -94,7 +94,7 @@ func susunLayanan(pool *pgxpool.Pool) (deliveryhttp.Layanan, error) {
 		Penyedia:   penyedia,
 		Pembanding: usecase.BandingPaket{Pembaca: repository.PaketRepository{DB: pool}, MinPembanding: sinyal.MinPembanding},
 		Belanja:    usecase.BandingBelanja{Tema: tema, Pembaca: repository.BelanjaTemaRepository{DB: pool}, Sekarang: time.Now},
-	}, nil
+	}, pool)
 }
 
 func bacaAtribusiOpentender() (string, error) {

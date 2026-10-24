@@ -639,7 +639,7 @@ Warga memilih kecamatan, tema, dan masalah dari `tanggung_jawab` tema. Rantai me
 
 Keluaran: teks siap salin dan PDF (dibuat di server dengan pustaka PDF Go). Rantai tidak mengirim dokumen atas nama warga.
 
-API: `POST /aspirasi` dengan `{kode_kecamatan, tema, masalah, bahasa}`, respons `{teks, pdf_url}`.
+API: `POST /aspirasi` dengan `{kode_kecamatan, tema, masalah, bahasa}`, respons `{teks, pdf_url}`. `pdf_url` menunjuk `GET /aspirasi/pdf` dengan parameter yang sama; PDF disusun ulang dari data terkini setiap diminta, tidak disimpan di server. Kalimat dan judul bagian dokumen ada di `config/aspirasi.yaml` (ID dan EN). Setiap angka ditulis satu baris dengan sumber, tanggal ambil, dan label kepastiannya; bila data indikator atau belanja kecamatan belum ada, baris itu memakai kalimat "belum tersedia" tanpa angka. Data kecamatan diambil dari baris PEN-04 kecamatan itu, sehingga paket tingkat kota tidak ikut dihitung.
 
 Kriteria terima: setiap angka di PDF punya sumber dan tanggal.
 
@@ -647,7 +647,9 @@ Kriteria terima: setiap angka di PDF punya sumber dan tanggal.
 
 Untuk kelurahan dan kecamatan: Lembaga Musyawarah Kelurahan (peran, cara menghubungi lewat kantor kelurahan), Dewan Kota (satu wakil per kecamatan), kanal CRM dan JAKI untuk aduan layanan, serta penjelasan masa reses DPRD. Isi dari `config/jalur_aspirasi.yaml`, diverifikasi saat kurasi.
 
-API: `GET /jalur-aspirasi?kode_wilayah=`.
+`config/jalur_aspirasi.yaml` menyimpan tanggal verifikasi dan untuk tiap jalur: `kode`, `nama`, `peran`, `cara` (ID dan EN, placeholder `{kecamatan}` dan `{kota}`), `dasar_hukum`, `url`. Dasar yang dipakai: Perda DKI 5/2010 yang diubah Perda 4/2024 (LMK), UU 2/2024 Pasal 17 (Dewan Kota/Kabupaten, satu wakil per kecamatan), kanal resmi CRM Pemprov DKI, PP 12/2018 Pasal 87 dan 88 (tiga masa persidangan per tahun sidang, reses DPRD provinsi paling lama 8 hari, agenda diumumkan paling lambat 3 hari sebelumnya).
+
+API: `GET /jalur-aspirasi?kode_wilayah=` (kode kecamatan atau kelurahan; kelurahan memakai kecamatannya).
 
 ### AKS-04 Data yang Belum Dibuka
 
@@ -716,7 +718,7 @@ API: `GET /panel/antrean`, `POST /hak-jawab`, `PATCH /panel/paket/{kode}/serah-t
 | GET | `/tema/pendidikan/kecamatan/{kode}`, `/tema/pendidikan/kecamatan/{kode}/sekolah`, `/sekolah/terdekat`, `/peta/sekolah` | publik |
 | GET | `/kecamatan/{kode}/wakil`, `/dapil/{id}`, `/anggota/{id}`, `/anggota/{id}/umpan`, `/anggota/{id}/isu`, `/fraksi/{nama}/sikap`, `/aspirasi-reses` | publik |
 | GET | `/kecamatan/{kode}/paket`, `/paket/{kode}`, `/paket/{kode}/pembanding`, `/paket/terdekat`, `/penyedia/{id}`, `/aspirasi-reses/{id}/paket-terkait`, `/peta/paket`, `/peta/laporan`, `/unduh/paket.csv` | publik |
-| GET | `/jalur-aspirasi`, `/data-belum-dibuka` | publik |
+| GET | `/jalur-aspirasi`, `/aspirasi/pdf`, `/data-belum-dibuka` | publik |
 | POST | `/tanya`, `/aspirasi`, `/data-belum-dibuka/{kode}/permohonan` | publik dengan batas laju |
 | POST | `/auth/otp/kirim`, `/auth/otp/verifikasi`, `/auth/refresh`, `/auth/keluar` | publik dengan batas laju |
 | GET | `/auth/saya`, `/notifikasi` | warga |

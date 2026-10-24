@@ -1,0 +1,42 @@
+diverifikasi_pada: 2026-10-24
+jalur:
+  - kode: lmk
+    nama: { id: Lembaga Musyawarah Kelurahan (LMK), en: Kelurahan Deliberative Council (LMK) }
+    peran:
+      id: "Wadah musyawarah warga di tingkat kelurahan yang menampung aspirasi untuk lurah."
+      en: "Residents' deliberative body at the kelurahan level that gathers input for the lurah."
+    cara:
+      id: "Hubungi anggota LMK melalui kantor kelurahan tempat Anda tinggal di Kecamatan {kecamatan}."
+      en: "Reach LMK members through your kelurahan office in {kecamatan} District."
+    dasar_hukum: Perda DKI Jakarta 5/2010 tentang Lembaga Musyawarah Kelurahan, diubah Perda 4/2024
+    url: https://jdih.jakarta.go.id/dokumenPeraturanDirectory/0031/2010PERDA00315.pdf
+  - kode: dewan_kota
+    nama: { id: "Dewan Kota/Kabupaten ({kota})", en: "City/Regency Council ({kota})" }
+    peran:
+      id: "Menampung aspirasi warga kota untuk wali kota dan memberi masukan; satu wakil untuk setiap kecamatan, termasuk Kecamatan {kecamatan}."
+      en: "Gathers residents' input for the mayor and advises them; one representative per district, including {kecamatan}."
+    cara:
+      id: "Hubungi wakil Kecamatan {kecamatan} melalui kantor kecamatan atau kantor wali kota."
+      en: "Contact the {kecamatan} representative through the district or mayor's office."
+    dasar_hukum: UU 2/2024 tentang Provinsi Daerah Khusus Jakarta, Pasal 17
+    url: https://peraturan.go.id/
+  - kode: crm
+    nama: { id: Cepat Respon Masyarakat (CRM) dan JAKI, en: Citizen Rapid Response (CRM) and JAKI }
+    peran:
+      id: "Kanal aduan layanan Pemprov DKI Jakarta; aduan diteruskan ke instansi yang menangani."
+      en: "Jakarta government complaint channel; complaints are routed to the responsible agency."
+    cara:
+      id: "Laporkan lewat aplikasi JAKI atau kanal CRM lain, lalu pantau tindak lanjutnya."
+      en: "Report through the JAKI app or another CRM channel, then track the follow-up."
+    dasar_hukum: Kanal resmi Pemprov DKI Jakarta
+    url: https://smartcity.jakarta.go.id/en/blog/begini-cara-laporanmu-diselesaikan/
+  - kode: reses
+    nama: { id: Reses DPRD DKI Jakarta, en: Jakarta Regional Council recess }
+    peran:
+      id: "Setiap tahun sidang terbagi tiga masa persidangan, masing-masing dengan masa reses paling lama 8 hari ketika anggota menyerap aspirasi di dapilnya dan wajib melaporkan hasilnya."
+      en: "Each session year has three sitting periods, each with a recess of up to 8 days when members gather input in their district and must report the results."
+    cara:
+      id: "Agenda reses tiap anggota diumumkan Sekretariat DPRD paling lambat 3 hari sebelum reses dimulai; datangi pertemuan anggota dapil Anda."
+      en: "The council secretariat announces each member's recess agenda at least 3 days before it starts; attend your district member's meeting."
+    dasar_hukum: PP 12/2018 Pasal 87 dan 88
+    url: https://peraturan.bpk.go.id/

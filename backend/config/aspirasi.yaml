@@ -1,0 +1,55 @@
+bagian:
+  data: { id: Data pendukung, en: Supporting data }
+  wewenang: { id: Instansi berwenang, en: Responsible agency }
+  pengawas: { id: Pengawas di DPRD DKI Jakarta, en: Oversight in the Jakarta Regional Council }
+  pertanyaan: { id: Pertanyaan yang diajukan, en: Questions }
+  jalur: { id: Kanal penyampaian, en: Where to submit }
+  pengirim: { id: Pengirim, en: Sender }
+kalimat:
+  indikator:
+    id: "{judul} di Kecamatan {kecamatan} ({periode}): kebutuhan {kebutuhan} {satuan_kebutuhan}, kapasitas {kapasitas} {satuan_kapasitas}, kesenjangan {kesenjangan} {satuan_kebutuhan}, rasio {rasio}."
+    en: "{judul} in {kecamatan} District ({periode}): need {kebutuhan} {satuan_kebutuhan}, capacity {kapasitas} {satuan_kapasitas}, gap {kesenjangan} {satuan_kebutuhan}, ratio {rasio}."
+  indikator_kosong:
+    id: "{judul} di Kecamatan {kecamatan} belum tersedia."
+    en: "{judul} for {kecamatan} District is not available yet."
+  rasio_kosong: { id: tidak terdefinisi, en: undefined }
+  anggaran:
+    id: "Paket pengadaan bertema {tema} di Kecamatan {kecamatan} tahun anggaran {tahun}: {jumlah} paket dengan total HPS {total}."
+    en: "{tema} procurement packages in {kecamatan} District, budget year {tahun}: {jumlah} packages with a total owner's estimate of {total}."
+  anggaran_kosong:
+    id: "Belum ada paket pengadaan bertema {tema} yang tercatat di Kecamatan {kecamatan} untuk tahun anggaran {tahun}."
+    en: "No {tema} procurement package is recorded in {kecamatan} District for budget year {tahun}."
+  sumber:
+    id: "Sumber: {sumber}, diambil {tanggal}, label {label}."
+    en: "Source: {sumber}, retrieved {tanggal}, label {label}."
+  instansi:
+    id: "Pelaksana: {instansi}. Unit di wilayah: {unit}."
+    en: "Implementing agency: {instansi}. Local unit: {unit}."
+  dasar_hukum:
+    id: "Dasar hukum: {dasar} ({url})."
+    en: "Legal basis: {dasar} ({url})."
+  komisi:
+    id: "Komisi {komisi} DPRD DKI Jakarta mengawasi urusan ini."
+    en: "Commission {komisi} of the Jakarta Regional Council oversees this matter."
+  anggota_komisi:
+    id: "Anggota {dapil} yang duduk di Komisi {komisi}:"
+    en: "Members for {dapil} who sit on Commission {komisi}:"
+  anggota_kosong:
+    id: "Tidak ada anggota {dapil} yang duduk di Komisi {komisi}; aspirasi dapat disampaikan ke komisi itu atau ke anggota dapil mana pun."
+    en: "No member for {dapil} sits on Commission {komisi}; this can be sent to the commission or to any member for the district."
+  jalur:
+    id: "{nama}: {peran} {cara} ({dasar})"
+    en: "{nama}: {peran} {cara} ({dasar})"
+  catatan:
+    id: "Dokumen ini disusun warga dari data publik melalui Rantai. Rantai tidak mengirim dokumen ini atas nama warga."
+    en: "A resident prepared this document from public data using Rantai. Rantai does not send it on anyone's behalf."
+isian:
+  - { id: "Nama:", en: "Name:" }
+  - { id: "Alamat:", en: "Address:" }
+  - { id: "Tanggal:", en: "Date:" }
+  - { id: "Tanda tangan:", en: "Signature:" }
+label:
+  resmi: { id: resmi, en: official }
+  proksi: { id: proksi, en: proxy }
+  estimasi: { id: estimasi, en: estimate }
+  simulasi: { id: simulasi, en: simulation }

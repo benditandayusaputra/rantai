@@ -50,6 +50,10 @@ func kuantil(urut []float64, p float64) float64 {
 }
 
 func FormatRupiah(nilai float64) string {
+	return "Rp" + FormatRibuan(nilai)
+}
+
+func FormatRibuan(nilai float64) string {
 	digit := strconv.FormatInt(int64(math.Round(nilai)), 10)
 	kelompok := []string{}
 	for len(digit) > digitPerKelompok {
@@ -57,7 +61,7 @@ func FormatRupiah(nilai float64) string {
 		digit = digit[:len(digit)-digitPerKelompok]
 	}
 	kelompok = append([]string{digit}, kelompok...)
-	return "Rp" + strings.Join(kelompok, ".")
+	return strings.Join(kelompok, ".")
 }
 
 type NilaiPembanding struct {
