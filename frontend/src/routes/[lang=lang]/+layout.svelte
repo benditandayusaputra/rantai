@@ -1,14 +1,24 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { afterNavigate } from '$app/navigation';
 	import { page } from '$app/state';
 	import Footer from '$lib/components/Footer.svelte';
 	import Logo from '$lib/components/Logo.svelte';
+	import { inisial, keluar, pulihkanSesi, sesiAktif } from '$lib/features/akun/sesi.svelte';
 	import { tujuanAktif, tujuanUtama } from '$lib/features/navigasi/navigasi';
 	import { bahasaBawaan, t } from '$lib/i18n';
 
 	let { children } = $props();
 
 	const aktif = $derived(tujuanAktif(page.url.pathname, bahasaBawaan));
+	const sesi = $derived(sesiAktif());
+	const tautanMasuk = $derived(
+		`/${bahasaBawaan}/masuk?lanjut=${encodeURIComponent(page.url.pathname + page.url.search)}`
+	);
+
+	onMount(() => {
+		void pulihkanSesi(fetch);
+	});
 
 	afterNavigate(({ from }) => {
 		if (!from) return;
@@ -27,20 +37,42 @@
 <header class="sticky top-0 z-sticky border-b border-line bg-surface">
 	<div class="wrap flex h-16 items-center justify-between gap-4 lg:h-18">
 		<Logo />
-		<nav aria-label={t('nav.main')} class="hidden lg:block">
-			<ul class="flex items-center gap-2">
-				{#each tujuanUtama as tujuan (tujuan.kunci)}
-					<li>
-						<a
-							href="/{bahasaBawaan}{tujuan.path}"
-							aria-current={aktif === tujuan.kunci ? 'page' : undefined}
-							class="inline-flex min-h-touch items-center rounded-md px-3 font-semibold hover:bg-sunken aria-[current=page]:text-primary aria-[current=page]:underline aria-[current=page]:decoration-2 aria-[current=page]:underline-offset-8"
-							>{t(tujuan.label)}</a
-						>
-					</li>
-				{/each}
-			</ul>
-		</nav>
+		<div class="flex items-center gap-2">
+			<nav aria-label={t('nav.main')} class="hidden lg:block">
+				<ul class="flex items-center gap-2">
+					{#each tujuanUtama as tujuan (tujuan.kunci)}
+						<li>
+							<a
+								href="/{bahasaBawaan}{tujuan.path}"
+								aria-current={aktif === tujuan.kunci ? 'page' : undefined}
+								class="inline-flex min-h-touch items-center rounded-md px-3 font-semibold hover:bg-sunken aria-[current=page]:text-primary aria-[current=page]:underline aria-[current=page]:decoration-2 aria-[current=page]:underline-offset-8"
+								>{t(tujuan.label)}</a
+							>
+						</li>
+					{/each}
+				</ul>
+			</nav>
+			{#if sesi}
+				<span
+					title={t('auth.account', { email: sesi.pengguna.email })}
+					class="inline-flex h-10 w-10 items-center justify-center rounded-pill bg-secondary font-bold text-secondary-on"
+				>
+					<span aria-hidden="true">{inisial(sesi.pengguna)}</span>
+					<span class="sr-only">{t('auth.account', { email: sesi.pengguna.email })}</span>
+				</span>
+				<button
+					type="button"
+					class="inline-flex min-h-touch items-center rounded-md px-3 font-semibold hover:bg-sunken"
+					onclick={() => keluar(fetch)}>{t('action.signOut')}</button
+				>
+			{:else}
+				<a
+					href={tautanMasuk}
+					class="inline-flex min-h-touch items-center rounded-md border-ctrl border-line-strong px-4 font-semibold hover:bg-sunken"
+					>{t('action.signIn')}</a
+				>
+			{/if}
+		</div>
 	</div>
 </header>
 

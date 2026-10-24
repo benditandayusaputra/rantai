@@ -259,7 +259,7 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - Job `skenario_demo` ikut memasang `akun_demo` dari `skenario_demo.yaml`.
   - Commit: `🔒️ Tambah masuk dengan OTP email dan token berotasi`
   - Selesai bila: batas percobaan, kedaluwarsa, dan rotasi refresh dites.
-- [ ] **T-802** Masuk di frontend **[BUTUH DESAIN]**
+- [x] **T-802** Masuk di frontend **[BUTUH DESAIN]**
   - Commit: `✨ Tambah alur masuk OTP di frontend`
   - Selesai bila: token akses hanya di memori; muat ulang memakai refresh.
 - [ ] **T-803** Panel Instansi dan hak jawab (DSR-03, WAK-07) **[BUTUH DESAIN]** **[BOLEH PECAH]**

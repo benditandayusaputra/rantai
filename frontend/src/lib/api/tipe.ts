@@ -359,3 +359,19 @@ export interface DokumenAspirasi {
 	teks: string;
 	pdf_url: string;
 }
+
+export type Peran = 'warga' | 'anggota' | 'instansi' | 'moderator' | 'admin';
+
+export interface Pengguna {
+	id: number;
+	email: string;
+	nama_tampilan: string;
+	peran: Peran;
+	instansi_id: number | null;
+	anggota_id: string | null;
+}
+
+export interface Sesi {
+	token_akses: string;
+	pengguna: Pengguna;
+}

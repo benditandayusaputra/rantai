@@ -543,5 +543,10 @@
 	"packet.lang.en": "English",
 	"packet.selfDeliver": "Rantai tidak mengirim dokumen atas namamu. Salin atau unduh, lalu sampaikan sendiri lewat kanal yang tercantum.",
 	"packet.noTheme": "Belum ada tema aktif untuk menyusun Paket Aspirasi.",
-	"packet.failed": "Paket Aspirasi gagal disusun"
+	"packet.failed": "Paket Aspirasi gagal disusun",
+	"action.signOut": "Keluar",
+	"auth.verifying": "Memeriksa kode...",
+	"auth.wrongCode": "Kode tidak cocok. Periksa lagi emailmu, lalu ketik ulang.",
+	"auth.panelLead": "Akun dipakai untuk menjadi saksi laporan warga, memantau wilayah, dan bagi petugas instansi untuk menulis hak jawab.",
+	"auth.account": "Akun {email}"
 }

@@ -7,6 +7,7 @@ const (
 	KategoriInputTidakValid
 	KategoriTidakBerwenang
 	KategoriTerlaluBanyak
+	KategoriKedaluwarsa
 )
 
 type Kesalahan struct {
@@ -32,4 +33,8 @@ func TidakBerwenang(pesan string) *Kesalahan {
 
 func TerlaluBanyak(pesan string) *Kesalahan {
 	return &Kesalahan{Kategori: KategoriTerlaluBanyak, Pesan: pesan}
+}
+
+func Kedaluwarsa(pesan string) *Kesalahan {
+	return &Kesalahan{Kategori: KategoriKedaluwarsa, Pesan: pesan}
 }

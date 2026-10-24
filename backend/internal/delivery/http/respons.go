@@ -28,6 +28,7 @@ var kodeHTTPKategori = map[domain.KategoriKesalahan]int{
 	domain.KategoriInputTidakValid: fiber.StatusBadRequest,
 	domain.KategoriTidakBerwenang:  fiber.StatusUnauthorized,
 	domain.KategoriTerlaluBanyak:   fiber.StatusTooManyRequests,
+	domain.KategoriKedaluwarsa:     fiber.StatusGone,
 }
 
 var pesanStatusUmum = map[int]string{

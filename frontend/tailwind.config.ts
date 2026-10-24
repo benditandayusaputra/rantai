@@ -116,7 +116,8 @@ export default {
 			maxWidth: {
 				content: '1296px',
 				prose: '720px',
-				chat: '860px'
+				chat: '860px',
+				form: '460px'
 			},
 			borderRadius: {
 				xs: v('r-xs'),

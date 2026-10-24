@@ -62,8 +62,14 @@ export async function ambilAmplop<T>(
 	return amplop;
 }
 
-export async function kirimData<T>(fetchFn: Fetch, path: string, badan: unknown): Promise<T> {
+export async function kirimData<T>(
+	fetchFn: Fetch,
+	path: string,
+	badan: unknown,
+	opsi: RequestInit = {}
+): Promise<T> {
 	const respons = await fetchFn(susunURL(path, {}), {
+		...opsi,
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify(badan)
