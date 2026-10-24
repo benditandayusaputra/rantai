@@ -8,12 +8,17 @@
 		witnesses?: SaksiLaporan;
 	}
 
-	let { status, witnesses = { jumlah: 0, dibutuhkan: 3 } }: Props = $props();
+	let { status, witnesses }: Props = $props();
 
 	const tampilan = $derived(tampilanStatus[status]);
+	const label = $derived(
+		witnesses
+			? t(tampilan.label, { n: witnesses.jumlah, m: witnesses.dibutuhkan })
+			: t(status === 'MENUNGGU_SAKSI' ? 'report.menunggu-saksi.singkat' : tampilan.label)
+	);
 </script>
 
 <span
 	class="inline-flex min-h-8 items-center rounded-pill border-ctrl px-3 text-small font-bold {tampilan.kelas}"
-	>{t(tampilan.label, { n: witnesses.jumlah, m: witnesses.dibutuhkan })}</span
+	>{label}</span
 >

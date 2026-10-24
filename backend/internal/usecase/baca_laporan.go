@@ -10,6 +10,7 @@ import (
 type PembacaLaporan interface {
 	RepositoriVerifikasi
 	AmbilLaporanPublik(ctx context.Context, id int64) (domain.LaporanPublik, bool, error)
+	PetaLaporan(ctx context.Context, kotak domain.Kotak) ([]domain.TitikLaporan, error)
 }
 
 type PembuatURLFoto interface {
@@ -63,4 +64,15 @@ func (u BacaLaporan) tandatanganiFoto(ctx context.Context, foto []domain.FotoTer
 		hasil[i] = FotoBertanda{FotoTersimpan: f, URL: utama, URLThumbnail: thumbnail}
 	}
 	return hasil, nil
+}
+
+func (u BacaLaporan) Peta(ctx context.Context, kotak domain.Kotak) ([]domain.TitikLaporan, error) {
+	if err := kotak.Periksa(domain.LuasKotakPetaLaporanMaks); err != nil {
+		return nil, err
+	}
+	titik, err := u.Pembaca.PetaLaporan(ctx, kotak)
+	if err != nil {
+		return nil, fmt.Errorf("baca peta laporan: %w", err)
+	}
+	return titik, nil
 }

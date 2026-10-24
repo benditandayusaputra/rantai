@@ -215,3 +215,34 @@ func TestAmbilLaporan_TidakAda_404(t *testing.T) {
 		t.Errorf("kode = %d, harap 404", hasil.kode)
 	}
 }
+
+func TestPetaLaporan_Kotak_TitikPublikDenganTandaSimulasi(t *testing.T) {
+	app, tx, _ := appUjiLaporan(t)
+	titik := titikKelurahan(t, tx, "Kelapa Gading Barat")
+	kirimLaporan(t, app, titik, tokenLaporanUji)
+	kotak := fmt.Sprintf("%f,%f,%f,%f", titik.Lng-0.01, titik.Lat-0.01, titik.Lng+0.01, titik.Lat+0.01)
+
+	hasil := panggil(t, app, "/api/v1/peta/laporan?bbox="+kotak)
+
+	data, _ := hasil.respons.Data.(map[string]any)
+	fitur, _ := data["features"].([]any)
+	if hasil.kode != fiber.StatusOK || len(fitur) != 1 {
+		t.Fatalf("kode %d, data %v", hasil.kode, data)
+	}
+	satu, _ := fitur[0].(map[string]any)
+	geometri, _ := satu["geometry"].(map[string]any)
+	koordinat, _ := geometri["coordinates"].([]any)
+	publik := domain.BulatkanLokasiPublik(titik)
+	properti, _ := satu["properties"].(map[string]any)
+	if properti["is_simulation"] != false || math.Abs(koordinat[1].(float64)-publik.Lat) > 1e-9 {
+		t.Errorf("fitur = %v, harap titik publik %+v", satu, publik)
+	}
+}
+
+func TestPetaLaporan_KotakTerlaluLuas_400(t *testing.T) {
+	app, _, _ := appUjiLaporan(t)
+
+	if hasil := panggil(t, app, "/api/v1/peta/laporan?bbox=106,-7,108,-5"); hasil.kode != fiber.StatusBadRequest {
+		t.Errorf("kode = %d, harap 400", hasil.kode)
+	}
+}

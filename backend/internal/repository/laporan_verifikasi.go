@@ -36,6 +36,12 @@ WHERE l.id = $1`
 
 	sqlFotoLaporan = `SELECT object_key, thumbnail_key, lebar, tinggi FROM laporan_foto WHERE laporan_id = $1 ORDER BY urutan`
 
+	sqlPetaLaporan = `SELECT id, status, kondisi, is_simulation, ST_Y(lokasi_publik), ST_X(lokasi_publik)
+FROM laporan
+WHERE lokasi_publik && ST_MakeEnvelope($1, $2, $3, $4, 4326) AND status <> 'DITOLAK'
+ORDER BY dibuat_pada DESC
+LIMIT $5`
+
 	sqlRiwayatLaporan = `SELECT coalesce(status_lama::text, ''), status_baru, alasan, dibuat_pada
 FROM laporan_riwayat WHERE laporan_id = $1 ORDER BY dibuat_pada, id`
 )
@@ -96,4 +102,11 @@ func (r LaporanRepository) AmbilLaporanPublik(ctx context.Context, id int64) (do
 		return l, false, fmt.Errorf("baca riwayat laporan %d: %w", id, err)
 	}
 	return l, true, nil
+}
+
+func (r LaporanRepository) PetaLaporan(ctx context.Context, k domain.Kotak) ([]domain.TitikLaporan, error) {
+	return kumpulkan(ctx, r.DB, sqlPetaLaporan, func(b pgx.CollectableRow) (domain.TitikLaporan, error) {
+		var t domain.TitikLaporan
+		return t, b.Scan(&t.ID, &t.Status, &t.Kondisi, &t.IsSimulation, &t.Titik.Lat, &t.Titik.Lng)
+	}, k.Barat, k.Selatan, k.Timur, k.Utara, domain.BatasTitikPetaLaporan)
 }

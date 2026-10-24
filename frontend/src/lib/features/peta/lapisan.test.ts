@@ -3,13 +3,18 @@ import { bacaLapisan, radiusTampilanM, tulisLapisan } from './lapisan';
 
 describe('status lapisan di URL', () => {
 	it('menyalakan lapisan tema bila URL tidak menyebut lapisan', () => {
-		expect(bacaLapisan(null)).toEqual({ tema: true, proyek: false, sekolah: false });
+		expect(bacaLapisan(null)).toEqual({
+			tema: true,
+			proyek: false,
+			sekolah: false,
+			laporan: false
+		});
 	});
 
 	it('membaca dan menulis daftar lapisan secara bolak-balik', () => {
-		const status = bacaLapisan('proyek,sekolah');
-		expect(status).toEqual({ tema: false, proyek: true, sekolah: true });
-		expect(tulisLapisan(status)).toBe('proyek,sekolah');
+		const status = bacaLapisan('proyek,sekolah,laporan');
+		expect(status).toEqual({ tema: false, proyek: true, sekolah: true, laporan: true });
+		expect(tulisLapisan(status)).toBe('proyek,sekolah,laporan');
 	});
 });
 

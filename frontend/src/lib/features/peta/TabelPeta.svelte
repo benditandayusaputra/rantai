@@ -1,7 +1,8 @@
 <script lang="ts">
-	import type { PetaPaket, PetaTema, SekolahTerdekat } from '$lib/api/tipe';
+	import type { FiturLaporan, PetaPaket, PetaTema, SekolahTerdekat } from '$lib/api/tipe';
 	import EmptyState from '$lib/components/EmptyState.svelte';
 	import GapClassChip from '$lib/components/GapClassChip.svelte';
+	import ReportStatusChip from '$lib/components/ReportStatusChip.svelte';
 	import SimRibbon from '$lib/components/SimRibbon.svelte';
 	import { tampilkanAngka } from '$lib/features/kecamatan/kecamatan';
 	import { formatJarak } from '$lib/format';
@@ -13,10 +14,11 @@
 		tema: PetaTema | null;
 		paket: PetaPaket['features'];
 		sekolah: SekolahTerdekat[];
+		laporan: FiturLaporan[];
 		terpilih: string | null;
 	}
 
-	let { lapisan, tema, paket, sekolah, terpilih }: Props = $props();
+	let { lapisan, tema, paket, sekolah, laporan, terpilih }: Props = $props();
 
 	const kelasTabel = 'w-full min-w-max text-small';
 	const kelasKepala = 'bg-sunken text-caption uppercase';
@@ -130,6 +132,40 @@
 				</div>
 			{:else}
 				<div class="mt-3"><EmptyState title={t('map.empty')} /></div>
+			{/if}
+		</section>
+	{/if}
+	{#if lapisan.laporan}
+		<section aria-labelledby="tabel-laporan">
+			<h2 id="tabel-laporan" class="t-h3">{t('map.table.laporan')}</h2>
+			{#if laporan.length}
+				<div class="mt-3 overflow-x-auto rounded-lg border border-line bg-surface">
+					<table class={kelasTabel}>
+						<caption class="sr-only">{t('map.table.laporan')}</caption>
+						<thead class={kelasKepala}>
+							<tr>
+								<th scope="col" class="p-3 text-left">{t('report.s6.condition')}</th>
+								<th scope="col" class="p-3 text-left">{t('map.col.status')}</th>
+							</tr>
+						</thead>
+						<tbody>
+							{#each laporan as fitur (fitur.properties.id)}
+								{@const p = fitur.properties}
+								<tr class="border-b border-line">
+									<th scope="row" class="p-3 text-left">
+										<a href="/{bahasaBawaan}/laporan/{p.id}" class="font-semibold underline"
+											>{t(`report.cond.${p.kondisi}`)}</a
+										>
+										{#if p.is_simulation}<span class="mt-1 block"><SimRibbon /></span>{/if}
+									</th>
+									<td class="p-3"><ReportStatusChip status={p.status} /></td>
+								</tr>
+							{/each}
+						</tbody>
+					</table>
+				</div>
+			{:else}
+				<div class="mt-3"><EmptyState title={t('map.emptyReports')} /></div>
 			{/if}
 		</section>
 	{/if}

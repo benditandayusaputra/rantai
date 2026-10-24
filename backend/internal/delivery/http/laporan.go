@@ -34,6 +34,7 @@ func daftarkanLaporan(api fiber.Router, layanan Layanan) {
 	detail := handlerDetailLaporan{baca: layanan.BacaLaporan, konfirmasi: layanan.KonfirmasiLaporan}
 	if layanan.BacaLaporan != nil {
 		api.Get("/laporan/:id", detail.ambil)
+		api.Get("/peta/laporan", detail.peta)
 	}
 	if layanan.Akses == nil {
 		return

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { replaceState } from '$app/navigation';
 	import { page } from '$app/state';
-	import type { PetaPaket, SekolahTerdekat } from '$lib/api/tipe';
+	import type { FiturLaporan, PetaPaket, SekolahTerdekat } from '$lib/api/tipe';
 	import ErrorState from '$lib/components/ErrorState.svelte';
 	import GapClassChip from '$lib/components/GapClassChip.svelte';
 	import KeyNumberCard from '$lib/components/KeyNumberCard.svelte';
@@ -35,6 +35,7 @@
 	let terpilih = $state<string | null>(null);
 	let paket = $state<PetaPaket['features']>([]);
 	let sekolah = $state<SekolahTerdekat[]>([]);
+	let laporan = $state<FiturLaporan[]>([]);
 	let status = $state<'memuat' | 'siap' | 'gagal'>('memuat');
 	let komponenPeta = $state<PetaInteraktif>();
 	let tema = $state<Awaited<typeof data.tema> | null>(null);
@@ -84,6 +85,7 @@
 			onpilih={(kode) => (terpilih = kode)}
 			bind:paket
 			bind:sekolah
+			bind:laporan
 			bind:status
 		/>
 		{#if status === 'memuat'}
@@ -117,7 +119,7 @@
 
 <div id="isi-peta" class="wrap flex flex-col gap-6 py-6">
 	{#if isTabel}
-		<TabelPeta {lapisan} tema={fiturTema} {paket} {sekolah} {terpilih} />
+		<TabelPeta {lapisan} tema={fiturTema} {paket} {sekolah} {laporan} {terpilih} />
 	{/if}
 	<section aria-live="polite" class="flex flex-col gap-4">
 		{#if detailTerpilih}

@@ -291,7 +291,8 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - Mesin status di domain, konfirmasi, riwayat.
   - Commit: `✨ Tambah mesin status verifikasi dan konfirmasi saksi`
   - Selesai bila: semua tes wajib verifikasi ANG-08 lulus.
-- [ ] **T-906** Alur Lapor Bukti seluler **[BUTUH DESAIN]** **[BOLEH PECAH]**
+- [x] **T-906** Alur Lapor Bukti seluler **[BUTUH DESAIN]** **[BOLEH PECAH]**
+  - Menyimpang dari DESIGN 6.10: pilihan kondisi mengikuti lima kondisi SPEC ANG-08, catatan maksimal 500 karakter (SPEC), peta mini dan "Pilih titik di peta" belum dibangun karena laporan wajib berakurasi GPS ≤ 100 m.
   - Commit: `✨ Bangun alur Lapor Bukti untuk layar ponsel`
   - Selesai bila: alur selesai di lebar 360 px; akurasi lokasi buruk ditolak dengan saran; laporan simulasi berlabel di peta dan linimasa.
 - [ ] **T-907** Panel moderasi (DSR-03) **[BUTUH DESAIN]**

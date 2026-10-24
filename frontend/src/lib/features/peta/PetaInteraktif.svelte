@@ -4,13 +4,15 @@
 	import { untrack } from 'svelte';
 	import { env } from '$env/dynamic/public';
 	import { ambilPetaPaket, ambilSekolahTerdekat, tangkap } from '$lib/api/klien';
-	import type { PetaPaket, PetaTema, SekolahTerdekat, Titik } from '$lib/api/tipe';
+	import { ambilPetaLaporan } from '$lib/api/laporan';
+	import type { FiturLaporan, PetaPaket, PetaTema, SekolahTerdekat, Titik } from '$lib/api/tipe';
 	import { t } from '$lib/i18n';
 	import {
 		bacaTokenDokumen,
 		buatGayaDasar,
 		sumberDasarBawaan,
 		warnaKelas,
+		warnaLaporan,
 		warnaSektor
 	} from './gaya';
 	import { gabungSekolah, radiusTampilanM, type StatusLapisan } from './lapisan';
@@ -24,6 +26,7 @@
 		onpilih: (kode: string) => void;
 		paket: PetaPaket['features'];
 		sekolah: SekolahTerdekat[];
+		laporan: FiturLaporan[];
 		status: 'memuat' | 'siap' | 'gagal';
 	}
 
@@ -36,6 +39,7 @@
 		onpilih,
 		paket = $bindable(),
 		sekolah = $bindable(),
+		laporan = $bindable(),
 		status = $bindable()
 	}: Props = $props();
 
@@ -44,7 +48,8 @@
 	const idLapisan = {
 		tema: ['tema-isi', 'tema-garis', 'tema-pilih'],
 		proyek: ['proyek-area', 'proyek-titik'],
-		sekolah: ['sekolah-titik']
+		sekolah: ['sekolah-titik'],
+		laporan: ['laporan-titik']
 	} as const;
 
 	let wadah: HTMLDivElement;
@@ -55,7 +60,7 @@
 	}
 
 	function tambahLapisan(m: PetaMaplibre) {
-		for (const nama of ['tema', 'proyek', 'sekolah']) {
+		for (const nama of ['tema', 'proyek', 'sekolah', 'laporan']) {
 			m.addSource(nama, { type: 'geojson', data: koleksiKosong });
 		}
 		m.addLayer({ id: 'tema-isi', type: 'fill', source: 'tema', paint: { 'fill-opacity': 0.85 } });
@@ -81,6 +86,12 @@
 			source: 'sekolah',
 			paint: { 'circle-radius': 6, 'circle-stroke-width': 2 }
 		});
+		m.addLayer({
+			id: 'laporan-titik',
+			type: 'circle',
+			source: 'laporan',
+			paint: { 'circle-radius': 6, 'circle-stroke-width': 2 }
+		});
 	}
 
 	function warnai(m: PetaMaplibre) {
@@ -97,6 +108,8 @@
 		m.setPaintProperty('proyek-titik', 'circle-stroke-color', token('surface'));
 		m.setPaintProperty('sekolah-titik', 'circle-color', token('surface'));
 		m.setPaintProperty('sekolah-titik', 'circle-stroke-color', token('text'));
+		m.setPaintProperty('laporan-titik', 'circle-color', warnaLaporan(token));
+		m.setPaintProperty('laporan-titik', 'circle-stroke-color', token('surface'));
 	}
 
 	function bboxTampilan(m: PetaMaplibre): string | null {
@@ -139,9 +152,17 @@
 		} as never);
 	}
 
+	async function muatLaporan(m: PetaMaplibre) {
+		const bbox = bboxTampilan(m);
+		const hasil = bbox ? await tangkap(ambilPetaLaporan(fetch, bbox)) : null;
+		laporan = hasil?.ok ? hasil.data.features : [];
+		sumber(m, 'laporan')?.setData({ type: 'FeatureCollection', features: laporan } as never);
+	}
+
 	function muatDataTampilan(m: PetaMaplibre) {
 		if (lapisan.proyek) muatProyek(m);
 		if (lapisan.sekolah) muatSekolah(m);
+		if (lapisan.laporan) muatLaporan(m);
 	}
 
 	async function buatPeta(): Promise<PetaMaplibre> {
@@ -195,7 +216,7 @@
 
 	$effect(() => {
 		if (!peta) return;
-		for (const nama of ['tema', 'proyek', 'sekolah'] as const) {
+		for (const nama of ['tema', 'proyek', 'sekolah', 'laporan'] as const) {
 			for (const id of idLapisan[nama]) {
 				peta.setLayoutProperty(id, 'visibility', lapisan[nama] ? 'visible' : 'none');
 			}

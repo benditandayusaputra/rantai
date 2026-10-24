@@ -1,15 +1,15 @@
 import type { SekitarTitik, SekolahTerdekat } from '$lib/api/tipe';
 
-export const daftarLapisan = ['tema', 'proyek', 'sekolah'] as const;
+export const daftarLapisan = ['tema', 'proyek', 'sekolah', 'laporan'] as const;
 export type Lapisan = (typeof daftarLapisan)[number];
 export type StatusLapisan = Record<Lapisan, boolean>;
 
-const lapisanBawaan: StatusLapisan = { tema: true, proyek: false, sekolah: false };
+const lapisanBawaan: StatusLapisan = { tema: true, proyek: false, sekolah: false, laporan: false };
 
 export function bacaLapisan(nilai: string | null): StatusLapisan {
 	if (nilai === null) return { ...lapisanBawaan };
 	const aktif = new Set(nilai.split(','));
-	return { tema: aktif.has('tema'), proyek: aktif.has('proyek'), sekolah: aktif.has('sekolah') };
+	return Object.fromEntries(daftarLapisan.map((l) => [l, aktif.has(l)])) as StatusLapisan;
 }
 
 export function tulisLapisan(status: StatusLapisan): string {

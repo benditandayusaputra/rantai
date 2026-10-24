@@ -66,3 +66,12 @@ export function warnaSektor(token: BacaToken): unknown[] {
 	const pasangan = Object.entries(tokenSektor).flatMap(([sektor, nama]) => [sektor, token(nama)]);
 	return ['match', ['get', 'sektor'], ...pasangan, token('sector-lain')];
 }
+
+export function warnaLaporan(token: BacaToken): unknown[] {
+	return [
+		'case',
+		['get', 'is_simulation'],
+		token('cert-sim'),
+		['match', ['get', 'status'], ['TERVERIFIKASI', 'SELESAI'], token('success'), token('info')]
+	];
+}

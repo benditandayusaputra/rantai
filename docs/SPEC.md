@@ -270,7 +270,7 @@ Halaman `/{bahasa}/peta`. MapLibre dengan peta dasar vektor bebas lisensi. Lapis
 | --- | --- | --- |
 | Indikator tema | Choropleth kecamatan per tema aktif | `GET /peta/tema/{kode}` |
 | Proyek | Titik untuk lokasi kelurahan, area arsir untuk lokasi kecamatan; warna per sektor | `GET /peta/paket?bbox=&tema=&tahun=` |
-| Laporan warga | Titik dengan status | `GET /peta/laporan?bbox=` |
+| Laporan warga | Titik `lokasi_publik` dengan status, kondisi, dan `is_simulation` (laporan ditolak tidak tampil, maksimal 500 titik, luas kotak maksimal 1 derajat persegi) | `GET /peta/laporan?bbox=` |
 | Sekolah | Titik per bentuk sekolah (lapisan khusus tema Pendidikan) | `GET /peta/sekolah?bbox=` |
 
 Setiap lapisan punya alternatif tabel yang bisa diakses papan ketik. Respons GeoJSON disederhanakan (`ST_SimplifyPreserveTopology`), di bawah 300 KB untuk seluruh DKI, dan di-cache.

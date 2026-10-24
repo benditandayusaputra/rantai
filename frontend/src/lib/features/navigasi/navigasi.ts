@@ -21,5 +21,6 @@ export const tujuanUtama: TujuanNavigasi[] = [
 export function tujuanAktif(pathname: string, bahasa: string): Tujuan | null {
 	const sisa = pathname.slice(bahasa.length + 1);
 	if (sisa === '' || sisa === '/') return 'beranda';
-	return tujuanUtama.find((tujuan) => tujuan.path && sisa.startsWith(tujuan.path))?.kunci ?? null;
+	const isCocok = (path: string) => sisa === path || sisa.startsWith(`${path}/`);
+	return tujuanUtama.find((tujuan) => tujuan.path && isCocok(tujuan.path))?.kunci ?? null;
 }

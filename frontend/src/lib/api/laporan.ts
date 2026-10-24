@@ -5,6 +5,7 @@ import type {
 	KondisiLaporan,
 	LaporanDiterima,
 	PaketTerdekat,
+	PetaLaporan,
 	Titik
 } from './tipe';
 
@@ -50,4 +51,8 @@ export function konfirmasiLaporan(
 		akurasi: k.akurasiM,
 		kondisi: k.kondisi
 	});
+}
+
+export function ambilPetaLaporan(fetchFn: Fetch, bbox: string): Promise<PetaLaporan> {
+	return ambilData<PetaLaporan>(fetchFn, '/peta/laporan', { bbox });
 }

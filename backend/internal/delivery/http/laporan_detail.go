@@ -13,6 +13,7 @@ import (
 
 type LayananBacaLaporan interface {
 	Ambil(ctx context.Context, id int64) (usecase.DetailLaporan, error)
+	Peta(ctx context.Context, kotak domain.Kotak) ([]domain.TitikLaporan, error)
 }
 
 type LayananKonfirmasiLaporan interface {
@@ -146,4 +147,23 @@ func keRiwayatLaporanJSON(r domain.RiwayatLaporan) riwayatLaporanJSON {
 		hasil.StatusLama = &lama
 	}
 	return hasil
+}
+
+func (h handlerDetailLaporan) peta(c fiber.Ctx) error {
+	kotak, err := uraiKotak(c.Query("bbox"))
+	if err != nil {
+		return err
+	}
+	daftar, err := h.baca.Peta(c.Context(), kotak)
+	if err != nil {
+		return err
+	}
+	fitur := make([]fiturJSON, len(daftar))
+	for i, l := range daftar {
+		geometri, _ := json.Marshal(map[string]any{"type": "Point", "coordinates": []float64{l.Titik.Lng, l.Titik.Lat}})
+		fitur[i] = fiturJSON{Type: "Feature", Geometry: geometri, Properties: map[string]any{
+			"id": l.ID, "status": l.Status, "kondisi": l.Kondisi, "is_simulation": l.IsSimulation,
+		}}
+	}
+	return kirimData(c, koleksiFiturJSON{Type: "FeatureCollection", Features: fitur})
 }

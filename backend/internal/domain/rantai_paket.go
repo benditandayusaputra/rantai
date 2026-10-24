@@ -205,3 +205,12 @@ type AreaPaket struct {
 type Kotak struct {
 	Barat, Selatan, Timur, Utara float64
 }
+
+var ErrKotakTidakWajar = InputTidakValid("bbox wajib berupa barat,selatan,timur,utara dengan luas wajar")
+
+func (k Kotak) Periksa(luasMaks float64) error {
+	if k.Barat >= k.Timur || k.Selatan >= k.Utara || (k.Timur-k.Barat)*(k.Utara-k.Selatan) > luasMaks {
+		return ErrKotakTidakWajar
+	}
+	return nil
+}

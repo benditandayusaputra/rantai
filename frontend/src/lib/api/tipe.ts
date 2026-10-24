@@ -453,3 +453,21 @@ export interface HasilKonfirmasi {
 	status: StatusLaporan;
 	saksi: SaksiLaporan;
 }
+
+export interface PropertiLaporan {
+	id: number;
+	status: StatusLaporan;
+	kondisi: KondisiLaporan;
+	is_simulation: boolean;
+}
+
+export interface FiturLaporan {
+	type: 'Feature';
+	geometry: { type: 'Point'; coordinates: [number, number] };
+	properties: PropertiLaporan;
+}
+
+export interface PetaLaporan {
+	type: 'FeatureCollection';
+	features: FiturLaporan[];
+}

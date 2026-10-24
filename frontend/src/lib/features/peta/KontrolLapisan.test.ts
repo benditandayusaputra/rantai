@@ -7,10 +7,10 @@ describe('KontrolLapisan', () => {
 	it('menyalakan dan mematikan setiap lapisan dengan papan ketik', async () => {
 		const pengguna = userEvent.setup();
 		const onchange = vi.fn();
-		const lapisan = { tema: true, proyek: false, sekolah: false };
+		const lapisan = { tema: true, proyek: false, sekolah: false, laporan: false };
 		render(KontrolLapisan, { lapisan, onchange });
 		const kotak = screen.getAllByRole('checkbox');
-		expect(kotak).toHaveLength(3);
+		expect(kotak).toHaveLength(4);
 		for (const centang of kotak) {
 			await pengguna.tab();
 			expect(centang).toHaveFocus();
@@ -18,6 +18,6 @@ describe('KontrolLapisan', () => {
 			await pengguna.keyboard(' ');
 			expect((centang as HTMLInputElement).checked).toBe(!sebelum);
 		}
-		expect(onchange).toHaveBeenCalledTimes(3);
+		expect(onchange).toHaveBeenCalledTimes(4);
 	});
 });

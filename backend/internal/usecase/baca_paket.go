@@ -127,9 +127,8 @@ func (u BacaPaket) DaftarKecamatan(ctx context.Context, f FilterPaketKecamatan) 
 }
 
 func (u BacaPaket) Peta(ctx context.Context, f FilterPetaPaket) (PetaPaket, error) {
-	k := f.Kotak
-	if k.Barat >= k.Timur || k.Selatan >= k.Utara || (k.Timur-k.Barat)*(k.Utara-k.Selatan) > u.Aturan.LuasKotakMaks {
-		return PetaPaket{}, domain.InputTidakValid("bbox wajib berupa barat,selatan,timur,utara dengan luas wajar")
+	if err := f.Kotak.Periksa(u.Aturan.LuasKotakMaks); err != nil {
+		return PetaPaket{}, err
 	}
 	f.Toleransi = u.Aturan.ToleransiPeta
 	titik, area, err := u.Pembaca.PetaPaket(ctx, f)

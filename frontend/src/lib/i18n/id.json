@@ -604,5 +604,9 @@
 	"report.witness.count": "{n} dari {m} saksi",
 	"report.witness.done": "Terima kasih, konfirmasimu tercatat.",
 	"report.witness.needSignIn": "Masuk dulu untuk menjadi saksi.",
-	"state.loading": "Memuat..."
+	"state.loading": "Memuat...",
+	"map.layer.laporan": "Laporan warga",
+	"map.table.laporan": "Laporan warga di tampilan peta",
+	"map.col.status": "Status",
+	"report.menunggu-saksi.singkat": "Menunggu saksi"
 }

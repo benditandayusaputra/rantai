@@ -8,6 +8,9 @@ describe('tujuanAktif', () => {
 		['/id/peta', 'peta'],
 		['/id/tanya', 'tanya'],
 		['/id/tentang-data', 'tentang'],
+		['/id/lapor', 'lapor'],
+		['/id/lapor/terkirim', 'lapor'],
+		['/id/laporan/51', null],
 		['/id/kecamatan/31.72.01', null]
 	])('%s menandai %s', (path, harapan) => {
 		expect(tujuanAktif(path, 'id')).toBe(harapan);

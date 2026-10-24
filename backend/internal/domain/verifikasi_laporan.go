@@ -140,3 +140,16 @@ func (k KonfirmasiMasuk) Validasi() error {
 		return nil
 	}
 }
+
+const (
+	LuasKotakPetaLaporanMaks = 1.0
+	BatasTitikPetaLaporan    = 500
+)
+
+type TitikLaporan struct {
+	ID           int64
+	Status       StatusLaporan
+	Kondisi      KondisiLaporan
+	IsSimulation bool
+	Titik        Titik
+}
