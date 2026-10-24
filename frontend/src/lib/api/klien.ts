@@ -1,10 +1,12 @@
 import { env } from '$env/dynamic/public';
 import type {
 	Amplop,
+	AspirasiReses,
 	IsuDisuarakan,
 	ItemUmpan,
 	JenisSumberUmpan,
 	ProfilAnggota,
+	SikapFraksi,
 	WakilDenganUmpan,
 	BelanjaTema,
 	DaftarDataBelumDibuka,
@@ -299,4 +301,12 @@ export function ambilWakilDenganUmpan(
 			dengan_umpan: true
 		}
 	);
+}
+
+export function ambilSikapFraksi(fetchFn: Fetch, fraksi: string): Promise<SikapFraksi[]> {
+	return ambilData<SikapFraksi[]>(fetchFn, `/fraksi/${encodeURIComponent(fraksi)}/sikap`);
+}
+
+export function ambilAspirasiReses(fetchFn: Fetch, dapil: number): Promise<AspirasiReses[]> {
+	return ambilData<AspirasiReses[]>(fetchFn, '/aspirasi-reses', { dapil });
 }

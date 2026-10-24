@@ -724,5 +724,16 @@
 	"voice.title": "Anggota komisi pengawas yang menyuarakan isu ini",
 	"voice.lead": "Anggota dapil ini yang duduk di komisi pengawas, beserta paling banyak tiga kegiatan terbaru tentang isu tema. Bukan perbandingan antaranggota.",
 	"voice.none": "Belum ada kegiatan bertema dari anggota ini",
-	"voice.failed": "Kegiatan anggota gagal dimuat."
+	"voice.failed": "Kegiatan anggota gagal dimuat.",
+	"stance.title": "Sikap {fraksi}",
+	"stance.lead": "Pandangan umum fraksi dalam rapat paripurna. Suara per anggota tidak dipublikasikan, jadi sikap fraksi menjadi rujukan terdekat.",
+	"stance.agenda.apbd": "APBD",
+	"stance.agenda.raperda": "Raperda",
+	"stance.source": "Baca berita resmi",
+	"stance.empty": "Belum ada pandangan fraksi yang dikurasi",
+	"reses.title": "Aspirasi reses dari dapil ini",
+	"reses.note": "Kompilasi per bidang, bukan per anggota. Dibacakan dalam rapat paripurna laporan reses; entri tanpa wilayah berlaku untuk seluruh Jakarta.",
+	"reses.allJakarta": "Seluruh Jakarta",
+	"reses.empty": "Belum ada aspirasi reses yang dikurasi",
+	"reses.failed": "Aspirasi reses gagal dimuat."
 }

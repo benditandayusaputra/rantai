@@ -2,6 +2,7 @@
 	import type { WakilKecamatan } from '$lib/api/tipe';
 	import KeyNumberCard from '$lib/components/KeyNumberCard.svelte';
 	import RepresentativeCard from '$lib/components/RepresentativeCard.svelte';
+	import AspirasiReses from './AspirasiReses.svelte';
 	import { FileText } from '@lucide/svelte';
 	import { bahasaBawaan, t } from '$lib/i18n';
 
@@ -33,4 +34,5 @@
 			<li><RepresentativeCard {wakil} /></li>
 		{/each}
 	</ul>
+	<div class="mt-6"><AspirasiReses idDapil={dapil.id} /></div>
 </section>

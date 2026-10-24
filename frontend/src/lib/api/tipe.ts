@@ -619,3 +619,24 @@ export interface IsuDisuarakan {
 export interface WakilDenganUmpan extends WakilKecamatan {
 	umpan_isu_pengawas?: Record<string, ItemUmpan[]>;
 }
+
+export interface SikapFraksi {
+	fraksi: string;
+	agenda: 'raperda' | 'apbd';
+	judul_agenda: string;
+	tanggal: string;
+	ringkasan: string;
+	url: string;
+	provenance_id: string;
+}
+
+export interface AspirasiReses {
+	id: number;
+	masa_reses: string;
+	tanggal_paripurna: string;
+	bidang: string;
+	uraian: string;
+	wilayah: RingkasanWilayah | null;
+	url: string;
+	provenance_id: string;
+}

@@ -5,6 +5,7 @@
 	import { bahasaBawaan, t } from '$lib/i18n';
 	import IsuDisuarakan from './IsuDisuarakan.svelte';
 	import JejakKegiatan from './JejakKegiatan.svelte';
+	import SikapFraksi from './SikapFraksi.svelte';
 
 	let { anggota }: { anggota: ProfilAnggota } = $props();
 
@@ -59,6 +60,7 @@
 		<div class="flex flex-col gap-10 lg:col-span-8">
 			<IsuDisuarakan idAnggota={anggota.id} />
 			<JejakKegiatan idAnggota={anggota.id} />
+			<SikapFraksi fraksi={anggota.fraksi} />
 		</div>
 		<aside class="flex flex-col gap-4 lg:col-span-4">
 			<section class="flex flex-col gap-3 rounded-lg border border-line bg-surface p-4">

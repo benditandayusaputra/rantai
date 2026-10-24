@@ -276,7 +276,7 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - `GET /anggota/{id}/isu`, `GET /kecamatan/{kode}/wakil?dengan_umpan=true`, tampilan di profil dan bagian Tema.
   - Commit: `✨ Tampilkan isu yang disuarakan anggota dengan jumlah sumber`
   - Selesai bila: tidak ada perbandingan antaranggota; label jumlah sumber memisahkan rilis resmi dan media.
-- [ ] **T-902** Sikap Fraksi dan Aspirasi Reses (WAK-05, WAK-06) **[GERBANG DATA GD-15]**
+- [x] **T-902** Sikap Fraksi dan Aspirasi Reses (WAK-05, WAK-06) **[GERBANG DATA GD-15]**
   - Migrasi `sikap_fraksi`, `aspirasi_reses`; job `paripurna` impor CSV kurasi; API dan tampilan.
   - Commit: `✨ Tambah sikap fraksi dan aspirasi reses dari dokumen paripurna`
   - Selesai bila: setiap entri punya tautan sumber; aspirasi tampil dengan catatan "per bidang, bukan per anggota".
@@ -365,5 +365,4 @@ Dikerjakan tim, bukan tugas commit. Dicatat di sini agar urutannya terlihat.
 Format: `- T-xxx · tanggal · alasan · tugas yang dikerjakan sebagai gantinya`
 
 - T-301 · 23 Oktober 2026 · halaman detail dan evaluasi tender SPSE DKI tertutup untuk publik (403, "Akses Ditolak"); detail tender butuh token API Gateway Inaproc (peran Data Integrator, surat ke LKPP) · paket tender disimpan dari kolom daftar, non-tender memakai halaman pengumuman lengkap
-- T-902 · 24 Oktober 2026 · `docs/DESIGN.md` belum memuat tampilan sikap fraksi dan aspirasi reses; sisi backend (migrasi, job `paripurna` dengan CSV kurasi GD-15, `GET /fraksi/{nama}/sikap`, `GET /aspirasi-reses`) sudah selesai, kotak dicentang setelah tampilannya dibangun · T-903
 - T-903 · 24 Oktober 2026 · `docs/DESIGN.md` belum memuat blok paket yang kemungkinan terkait di halaman paket (6.4) maupun di Wakilku; sisi backend (`config/aspirasi_anggaran.yaml`, `GET /aspirasi-reses/{id}/paket-terkait`, kasus tanpa kecocokan dites) sudah selesai, kotak dicentang setelah tampilannya dibangun · T-904
