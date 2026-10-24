@@ -55,8 +55,8 @@ type Kabar struct {
 }
 
 type Rujukan struct {
-	Nomor        int
-	ProvenanceID string
+	Nomor        int    `json:"nomor"`
+	ProvenanceID string `json:"provenance_id"`
 }
 
 type Jawaban struct {

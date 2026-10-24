@@ -236,7 +236,7 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - Halaman `/tanya` dan panel geser di halaman kecamatan, rujukan `[n]` yang bisa diklik.
   - Commit: `✨ Bangun antarmuka Tanya Rantai dengan rujukan sumber`
   - Selesai bila: rujukan membuka panel sumber.
-- [ ] **T-705** Cache demo
+- [x] **T-705** Cache demo
   - Jawaban tercache untuk `tanya_demo.json` saat `RANTAI_MODE=demo`; daftar pertanyaan diambil dari `tanya_demo` di `skenario_demo.yaml`.
   - Commit: `✨ Sediakan jawaban tercache Tanya Rantai untuk mode demo`
   - Selesai bila: tiga pertanyaan demo terjawab tanpa internet.
@@ -325,7 +325,7 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - Atur proxy tepercaya di Fiber (`TrustProxy`) agar batas laju per IP dan HSTS bekerja di belakang Caddy.
   - Commit: `🔧 Siapkan deploy produksi dengan Caddy`
 - [ ] **T-1005** Snapshot luring final (DSR-01)
-  - Snapshot data (`make snapshot-demo` di mesin dengan data lengkap), kunci `kecamatan_demo` di `skenario_demo.yaml`, PMTiles wilayah DKI, uji jalan tanpa internet.
+  - Snapshot data (`make snapshot-demo` di mesin dengan data lengkap), kunci `kecamatan_demo` di `skenario_demo.yaml`, rekam ulang `data/snapshot/tanya_demo.json` dengan `make tanya-demo` terhadap API live berdata lengkap, PMTiles wilayah DKI, uji jalan tanpa internet.
   - Commit: `🗃️ Perbarui snapshot data dan tile peta untuk demo luring`
   - Selesai bila: alur demo lulus dengan jaringan dimatikan.
 - [ ] **T-1006** README final

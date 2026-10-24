@@ -25,6 +25,7 @@ type SkenarioDemo struct {
 	KecamatanDemo string        `yaml:"kecamatan_demo"`
 	PaketSimulasi PaketSimulasi `yaml:"paket_simulasi"`
 	AkunDemo      []AkunDemo    `yaml:"akun_demo"`
+	TanyaDemo     []string      `yaml:"tanya_demo"`
 }
 
 type PaketSimulasi struct {

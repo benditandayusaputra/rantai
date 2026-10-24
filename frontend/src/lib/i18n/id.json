@@ -531,8 +531,8 @@
 	"ask.messages": "Percakapan",
 	"ask.suggestions": "Saran pertanyaan",
 	"ask.tooLong": "Pertanyaan paling banyak {n} karakter.",
-	"ask.suggest.1": "Apakah kursi SMP negeri di kecamatan ini cukup untuk lulusan SD tahun ini?",
-	"ask.suggest.2": "Paket pengadaan sekolah apa saja yang ada di kecamatan ini tahun ini?",
-	"ask.suggest.3": "Siapa wakil DPRD dapil kecamatan ini yang duduk di Komisi E?",
+	"ask.suggest.1": "Kenapa SMP negeri di kecamatanku penuh?",
+	"ask.suggest.2": "Proyek sekolah apa yang dibiayai di kecamatanku tahun ini?",
+	"ask.suggest.3": "Siapa wakil dapilku yang duduk di Komisi E?",
 	"ask.suggest.4": "Instansi mana yang berwenang menambah daya tampung SMP negeri?"
 }
