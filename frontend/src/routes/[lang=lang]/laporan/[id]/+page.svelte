@@ -4,6 +4,7 @@
 	import type { DetailLaporan } from '$lib/api/tipe';
 	import ErrorState from '$lib/components/ErrorState.svelte';
 	import ReportStatusChip from '$lib/components/ReportStatusChip.svelte';
+	import RightOfReply from '$lib/components/RightOfReply.svelte';
 	import ReportTimeline from '$lib/components/ReportTimeline.svelte';
 	import SimRibbon from '$lib/components/SimRibbon.svelte';
 	import WitnessPanel from '$lib/components/WitnessPanel.svelte';
@@ -119,6 +120,14 @@
 					<h2 id="judul-linimasa" class="t-h3">{t('report.timeline')}</h2>
 					<ReportTimeline events={susunLinimasa(laporan.riwayat)} witnesses={laporan.saksi} />
 				</section>
+				{#if laporan.hak_jawab.length}
+					<section aria-labelledby="judul-hak-jawab" class="flex flex-col gap-3">
+						<h2 id="judul-hak-jawab" class="t-h3">{t('reply.title')}</h2>
+						{#each laporan.hak_jawab as hakJawab (hakJawab.id)}
+							<RightOfReply {hakJawab} />
+						{/each}
+					</section>
+				{/if}
 			</div>
 			<aside class="hidden lg:col-span-4 lg:block">{@render panelSaksi(laporan)}</aside>
 		</div>

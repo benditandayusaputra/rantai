@@ -5,6 +5,7 @@
 	import Footer from '$lib/components/Footer.svelte';
 	import Logo from '$lib/components/Logo.svelte';
 	import { inisial, keluar, pulihkanSesi, sesiAktif } from '$lib/features/akun/sesi.svelte';
+	import { isAkunPanel } from '$lib/features/panel/panel';
 	import { tujuanAktif, tujuanPonsel, tujuanUtama } from '$lib/features/navigasi/navigasi';
 	import { bahasaBawaan, t } from '$lib/i18n';
 
@@ -53,6 +54,13 @@
 				</ul>
 			</nav>
 			{#if sesi}
+				{#if isAkunPanel(sesi.pengguna.peran)}
+					<a
+						href="/{bahasaBawaan}/panel"
+						class="hidden min-h-touch items-center rounded-md px-3 font-semibold hover:bg-sunken lg:inline-flex"
+						>{t('nav.panel')}</a
+					>
+				{/if}
 				<span
 					title={t('auth.account', { email: sesi.pengguna.email })}
 					class="inline-flex h-10 w-10 items-center justify-center rounded-pill bg-secondary font-bold text-secondary-on"

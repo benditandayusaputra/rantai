@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { ExternalLink } from '@lucide/svelte';
 	import type { ItemUmpan } from '$lib/api/tipe';
+	import RightOfReply from '$lib/components/RightOfReply.svelte';
 	import { formatTanggal } from '$lib/format';
 	import { bahasaBawaan, t } from '$lib/i18n';
 	import LencanaSumber from './LencanaSumber.svelte';
@@ -29,4 +30,7 @@
 		/><span class="sr-only">{t('a11y.opensNewTab')}</span>
 	</a>
 	{#if item.ringkasan}<p class="text-small text-muted">{item.ringkasan}</p>{/if}
+	{#each item.hak_jawab ?? [] as hakJawab (hakJawab.id)}
+		<RightOfReply {hakJawab} />
+	{/each}
 </li>

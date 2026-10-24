@@ -264,10 +264,11 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
 - [x] **T-802** Masuk di frontend **[BUTUH DESAIN]**
   - Commit: `✨ Tambah alur masuk OTP di frontend`
   - Selesai bila: token akses hanya di memori; muat ulang memakai refresh.
-- [ ] **T-803** Panel Instansi dan hak jawab (DSR-03, WAK-07) **[BUTUH DESAIN]** **[BOLEH PECAH]**
+- [x] **T-803** Panel Instansi dan hak jawab (DSR-03, WAK-07) **[BUTUH DESAIN]** **[BOLEH PECAH]**
   - Migrasi `hak_jawab`; panel untuk instansi dan anggota; hak jawab pada sinyal, paket, laporan, dan item umpan.
   - Perpindahan otomatis laporan `TERVERIFIKASI` ke `DITERUSKAN` ke antrean instansi pelaksana paket atau instansi `tanggung_jawab` tema (ANG-08), memakai `domain.Transisi` dan `LaporanRepository.UbahStatus`.
-  - Sisi backend selesai (`GET /panel/antrean`, `POST /hak-jawab`, `PATCH /panel/paket/{kode}/serah-terima`, `PATCH /panel/laporan/{id}/selesai`, hak jawab di JSON paket, sinyal, umpan, dan laporan). Laporan tanpa paket tetap `TERVERIFIKASI` karena Lapor Bukti belum menanyakan tema. Kotak dicentang setelah antarmuka panel dan tampilan publik hak jawab selesai.
+  - Laporan tanpa paket tetap `TERVERIFIKASI` karena Lapor Bukti belum menanyakan tema masalahnya.
+  - Menyimpang dari DESIGN 6.15: isian hak jawab 2.000 karakter mengikuti SPEC (DESIGN 1.200); "Simpan draf", unggah lampiran dan PDF berita acara, serta pratinjau `MiniChain` belum dibangun karena backend belum menyimpan draf dan berkas; dokumen pendukung memakai tautan.
   - Commit: `✨ Tambah Panel Instansi dan hak jawab publik`
   - Selesai bila: hak jawab tidak bisa dihapus; isi tanggal serah terima mengubah label pemeliharaan menjadi `resmi`; hak jawab langsung tampil di halaman publik.
 

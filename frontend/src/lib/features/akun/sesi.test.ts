@@ -10,7 +10,8 @@ const pengguna: Pengguna = {
 	nama_tampilan: '',
 	peran: 'warga',
 	instansi_id: null,
-	anggota_id: null
+	anggota_id: null,
+	is_simulation: false
 };
 
 function amplop(status: number, data: unknown) {

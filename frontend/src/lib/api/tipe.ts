@@ -254,10 +254,26 @@ export interface MataRantai {
 
 export type JenisSinyal = 'S-01' | 'S-02' | 'S-03' | 'S-04' | 'S-05';
 
+export type TargetHakJawab = 'sinyal' | 'laporan' | 'paket' | 'umpan';
+
+export interface HakJawab {
+	id: number;
+	target_jenis: TargetHakJawab;
+	target_id: string;
+	isi: string;
+	tautan_dokumen?: string;
+	nama_penjawab: string;
+	pihak: string;
+	is_simulation: boolean;
+	dibuat_pada: string;
+}
+
 export interface Sinyal {
+	id: number;
 	jenis: JenisSinyal;
 	alasan: string;
 	pembanding: Record<string, unknown>;
+	hak_jawab: HakJawab[];
 }
 
 export type StatusPemeliharaan =
@@ -315,6 +331,8 @@ export interface DetailPaket {
 	pemeliharaan: Pemeliharaan;
 	rantai: MataRantai[];
 	sinyal: Sinyal[];
+	hak_jawab: HakJawab[];
+	nomor_berita_acara?: string;
 	provenance_id: string;
 }
 
@@ -369,6 +387,7 @@ export interface Pengguna {
 	peran: Peran;
 	instansi_id: number | null;
 	anggota_id: string | null;
+	is_simulation: boolean;
 }
 
 export interface Sesi {
@@ -447,6 +466,7 @@ export interface DetailLaporan {
 	saksi: SaksiLaporan;
 	foto: { url: string; url_thumbnail: string; lebar: number; tinggi: number }[];
 	riwayat: RiwayatLaporan[];
+	hak_jawab: HakJawab[];
 }
 
 export interface HasilKonfirmasi {
@@ -606,6 +626,7 @@ export interface ItemUmpan {
 	tag_isu: string[];
 	dasar_cocok: string;
 	provenance_id: string;
+	hak_jawab: HakJawab[];
 }
 
 export interface IsuDisuarakan {
@@ -650,4 +671,60 @@ export interface HasilPaketTerkait {
 	tahun_anggaran: number;
 	status: 'kemungkinan_terkait' | 'belum_ditemukan' | 'tanpa_wilayah';
 	paket: PaketTerkait[];
+}
+
+export interface SinyalPanel {
+	id: number;
+	jenis: JenisSinyal;
+	alasan: string;
+	kode_paket: string;
+	nama_paket: string;
+	jumlah_hak_jawab: number;
+}
+
+export interface LaporanPanel {
+	id: number;
+	status: StatusLaporan;
+	kondisi: KondisiLaporan;
+	catatan: string;
+	kode_paket: string;
+	nama_paket: string;
+	nama_wilayah: string;
+	is_simulation: boolean;
+	dibuat_pada: string;
+}
+
+export interface PaketPanel {
+	kode: string;
+	nama: string;
+	is_simulation: boolean;
+	tanggal_serah_terima: string | null;
+	nomor_berita_acara: string;
+	segera_berakhir: boolean;
+	pemeliharaan: Pemeliharaan;
+}
+
+export interface UmpanPanel {
+	id: number;
+	judul: string;
+	media_nama: string;
+	url: string;
+	terbit_pada: string;
+	jumlah_hak_jawab: number;
+}
+
+export interface AntreanPanel {
+	peran: Peran;
+	nama_instansi: string;
+	sinyal: SinyalPanel[];
+	laporan: LaporanPanel[];
+	paket: PaketPanel[];
+	umpan: UmpanPanel[];
+}
+
+export interface HakJawabMasuk {
+	target_jenis: TargetHakJawab;
+	target_id: string;
+	isi: string;
+	tautan_dokumen: string;
 }

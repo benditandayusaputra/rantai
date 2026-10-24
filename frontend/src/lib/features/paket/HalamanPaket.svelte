@@ -1,4 +1,5 @@
 <script lang="ts">
+	import RightOfReply from '$lib/components/RightOfReply.svelte';
 	import { CircleHelp, ExternalLink } from '@lucide/svelte';
 	import type { DetailPaket } from '$lib/api/tipe';
 	import ChainStepper from '$lib/components/ChainStepper.svelte';
@@ -81,6 +82,9 @@
 								{t(`signal.${sinyal.jenis}`)}
 							</span>
 							<span class="text-small">{sinyal.alasan}</span>
+							{#each sinyal.hak_jawab as hakJawab (hakJawab.id)}
+								<RightOfReply {hakJawab} />
+							{/each}
 						</li>
 					{/each}
 				</ul>
@@ -88,6 +92,12 @@
 			{:else}
 				<p class="text-small text-muted">{t('signal.none')}</p>
 			{/if}
+			<h2 id="judul-hak-jawab" class="t-h2 mt-4">{t('reply.title')}</h2>
+			{#each paket.hak_jawab as hakJawab (hakJawab.id)}
+				<RightOfReply {hakJawab} />
+			{:else}
+				<p class="text-small text-muted">{t('reply.none')}</p>
+			{/each}
 		</section>
 
 		<aside class="flex flex-col gap-4 lg:col-span-4">
