@@ -50,6 +50,7 @@ const (
 	urlRujukanTema            = "https://github.com/benditandayusaputra/rantai/tree/main/backend/config/tema"
 	dirRawBawaan              = "../data/raw"
 	batasWaktuUnduh           = time.Minute
+	perintahPeran             = "peran"
 )
 
 type job func(ctx context.Context) error
@@ -64,8 +65,8 @@ func main() {
 }
 
 func jalankan(argumen []string) error {
-	if len(argumen) != 1 {
-		return errors.New("pemakaian: worker <job>; job tersedia: " + strings.Join(jobTersedia, ", "))
+	if !isArgumenSah(argumen) {
+		return errors.New("pemakaian: worker <job> atau worker peran <email> moderator|admin; job tersedia: " + strings.Join(jobTersedia, ", "))
 	}
 	if err := usecase.IzinkanJob(os.Getenv("RANTAI_MODE"), argumen[0]); err != nil {
 		return err
@@ -77,11 +78,23 @@ func jalankan(argumen []string) error {
 		return fmt.Errorf("sambung basis data: %w", err)
 	}
 	defer pool.Close()
-	jalankanJob, err := pilihJob(argumen[0], pool)
+	jalankanJob, err := pilihPerintah(argumen, pool)
 	if err != nil {
 		return err
 	}
 	return jalankanJob(ctx)
+}
+
+func isArgumenSah(argumen []string) bool {
+	return len(argumen) == 1 || (len(argumen) == 3 && argumen[0] == perintahPeran)
+}
+
+func pilihPerintah(argumen []string, pool *pgxpool.Pool) (job, error) {
+	if argumen[0] != perintahPeran {
+		return pilihJob(argumen[0], pool)
+	}
+	beri := usecase.BeriPeran{Penyimpan: repository.PenggunaRepository{DB: pool}}
+	return func(ctx context.Context) error { return beri.Jalankan(ctx, argumen[1], domain.Peran(argumen[2])) }, nil
 }
 
 func pilihJob(nama string, pool *pgxpool.Pool) (job, error) {

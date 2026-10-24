@@ -53,7 +53,7 @@ func jalankan() error {
 	if layanan.SumberData, err = buatBacaSumberData(pool); err != nil {
 		return err
 	}
-	if layanan, err = denganTanya(layanan); err != nil {
+	if layanan, err = denganTanyaDanAuth(layanan, pool, cfg.Server.Auth); err != nil {
 		return err
 	}
 	app := deliveryhttp.NewApp(cfg.Server, layanan)
@@ -62,6 +62,14 @@ func jalankan() error {
 		return fmt.Errorf("jalankan server: %w", err)
 	}
 	return nil
+}
+
+func denganTanyaDanAuth(layanan deliveryhttp.Layanan, pool *pgxpool.Pool, cfg config.ServerAuth) (deliveryhttp.Layanan, error) {
+	layanan, err := denganTanya(layanan)
+	if err != nil {
+		return layanan, err
+	}
+	return denganAuth(layanan, pool, cfg)
 }
 
 func susunLayanan(pool *pgxpool.Pool) (deliveryhttp.Layanan, error) {

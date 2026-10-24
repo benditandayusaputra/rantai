@@ -22,7 +22,7 @@ func pasangPengaman(app *fiber.App, cfg config.Server) {
 		ReferrerPolicy:        kebijakanPerujuk,
 		HSTSMaxAge:            umurHSTSDetik,
 	}))
-	app.Use(cors.New(cors.Config{AllowOrigins: cfg.CORS.Origin}))
+	app.Use(cors.New(cors.Config{AllowOrigins: cfg.CORS.Origin, AllowCredentials: len(cfg.CORS.Origin) > 0}))
 	app.Use(limiter.New(limiter.Config{
 		Max:          cfg.BatasLaju.MaksPermintaan,
 		Expiration:   cfg.BatasLaju.Jendela,

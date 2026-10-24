@@ -21,6 +21,7 @@ type PaketSimulasiTersimpan struct {
 type PenyimpanSkenarioDemo interface {
 	PilihKecamatanDemo(ctx context.Context, kodeKota string) (string, error)
 	SimpanPaketSimulasi(ctx context.Context, paket PaketSimulasiTersimpan) error
+	SimpanAkunDemo(ctx context.Context, akun []domain.AkunDemo) error
 }
 
 type PelaporSkenarioDemo interface {
@@ -42,13 +43,17 @@ func (u MuatSkenarioDemo) Jalankan(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	return u.Penyimpan.SimpanPaketSimulasi(ctx, PaketSimulasiTersimpan{
+	err = u.Penyimpan.SimpanPaketSimulasi(ctx, PaketSimulasiTersimpan{
 		PaketSimulasi: u.Skenario.PaketSimulasi,
 		KodeKecamatan: kecamatan,
 		Provenance: u.BuatProvenance(CatatanProvenance{
 			Sumber: domain.SumberSimulasi, Label: domain.LabelSimulasi, Catatan: catatanPaketSimulasi,
 		}),
 	})
+	if err != nil {
+		return err
+	}
+	return u.Penyimpan.SimpanAkunDemo(ctx, u.Skenario.AkunDemo)
 }
 
 func (u MuatSkenarioDemo) kecamatanDemo(ctx context.Context) (string, error) {

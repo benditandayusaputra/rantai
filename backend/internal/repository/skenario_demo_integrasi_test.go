@@ -120,3 +120,25 @@ func TestMuatSkenarioDemo_IndikatorBelumDihitung_Gagal(t *testing.T) {
 		t.Errorf("err = %v, harap %v", err, domain.ErrKecamatanDemoBelumDihitung)
 	}
 }
+
+func TestMuatSkenarioDemo_AkunDemoTerpasangSebagaiSimulasi(t *testing.T) {
+	tx := ujidb.BukaTransaksi(t)
+	siapkanKursiUji(t, tx)
+	jalankanHitungIndikator(t, tx)
+	var terpilih string
+
+	for range 2 {
+		if err := muatSkenarioDemo(t, tx, &terpilih); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	var akun, simulasi, petugasDinas, tertautAnggota int
+	err := tx.QueryRow(t.Context(), `SELECT count(*), count(*) FILTER (WHERE p.is_simulation),
+    count(*) FILTER (WHERE p.peran = 'instansi' AND i.nama = 'Dinas Pendidikan Provinsi DKI Jakarta'),
+    count(*) FILTER (WHERE p.anggota_id IS NOT NULL)
+FROM pengguna p LEFT JOIN instansi i ON i.id = p.instansi_id WHERE p.email LIKE '%@demo.rantai.test'`).Scan(&akun, &simulasi, &petugasDinas, &tertautAnggota)
+	if err != nil || akun != 4 || simulasi != 4 || petugasDinas != 1 || tertautAnggota != 0 {
+		t.Errorf("akun %d, simulasi %d, petugas dinas %d, tertaut anggota %d, err %v", akun, simulasi, petugasDinas, tertautAnggota, err)
+	}
+}

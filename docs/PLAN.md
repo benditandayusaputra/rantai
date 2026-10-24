@@ -254,7 +254,7 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
 
 ## Fase 8. Akun dan hak jawab
 
-- [ ] **T-801** Autentikasi OTP (DSR-02)
+- [x] **T-801** Autentikasi OTP (DSR-02)
   - Migrasi `pengguna`, `otp`, `sesi_refresh`; endpoint `/auth/*`; peran warga, anggota, instansi, moderator, admin; pengirim email lewat SMTP dari env.
   - Job `skenario_demo` ikut memasang `akun_demo` dari `skenario_demo.yaml`.
   - Commit: `🔒️ Tambah masuk dengan OTP email dan token berotasi`

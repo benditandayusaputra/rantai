@@ -40,6 +40,14 @@ ON CONFLICT (kode) DO UPDATE SET
     provenance_id = EXCLUDED.provenance_id, diubah_pada = now()
 WHERE paket.is_simulation
 RETURNING kode`
+
+	sqlPastikanInstansiAkunDemo = `INSERT INTO instansi (nama, jenis) VALUES ($1, $2)
+ON CONFLICT (nama) DO UPDATE SET nama = EXCLUDED.nama
+RETURNING id`
+
+	sqlSimpanAkunDemo = `INSERT INTO pengguna (email, nama_tampilan, peran, instansi_id, is_simulation) VALUES ($1, $2, $3, $4, true)
+ON CONFLICT (email) DO UPDATE SET nama_tampilan = EXCLUDED.nama_tampilan, peran = EXCLUDED.peran,
+    instansi_id = EXCLUDED.instansi_id, anggota_id = NULL, is_simulation = true, diubah_pada = now()`
 )
 
 type SkenarioDemoRepository struct {
@@ -106,6 +114,31 @@ func simpanPaketSimulasi(ctx context.Context, tx pgx.Tx, paket usecase.PaketSimu
 	}
 	if err != nil {
 		return fmt.Errorf("simpan paket simulasi %s: %w", p.Kode, err)
+	}
+	return nil
+}
+
+func (r SkenarioDemoRepository) SimpanAkunDemo(ctx context.Context, akun []domain.AkunDemo) error {
+	return dalamTransaksi(ctx, r.DB, func(tx pgx.Tx) error {
+		for _, a := range akun {
+			if err := simpanAkunDemo(ctx, tx, a); err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+}
+
+func simpanAkunDemo(ctx context.Context, tx pgx.Tx, a domain.AkunDemo) error {
+	var idInstansi *int64
+	if a.Instansi != "" {
+		idInstansi = new(int64)
+		if err := tx.QueryRow(ctx, sqlPastikanInstansiAkunDemo, a.Instansi, domain.JenisInstansiDinas).Scan(idInstansi); err != nil {
+			return fmt.Errorf("pastikan instansi akun demo %s: %w", a.Instansi, err)
+		}
+	}
+	if _, err := tx.Exec(ctx, sqlSimpanAkunDemo, a.Email, a.NamaTampilan, a.Peran, idInstansi); err != nil {
+		return fmt.Errorf("simpan akun demo %s: %w", a.Peran, err)
 	}
 	return nil
 }

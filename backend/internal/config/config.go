@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/benditandayusaputra/rantai/backend/internal/domain"
 	"gopkg.in/yaml.v3"
 )
 
@@ -34,6 +35,14 @@ type Server struct {
 	BatasLaju       BatasLaju     `yaml:"batas_laju"`
 	CORS            CORS          `yaml:"cors"`
 	Tanya           ServerTanya   `yaml:"tanya"`
+	Auth            ServerAuth    `yaml:"auth"`
+}
+
+type ServerAuth struct {
+	BatasLaju   BatasLaju        `yaml:"batas_laju"`
+	OTP         domain.AturanOTP `yaml:"otp"`
+	UmurAkses   time.Duration    `yaml:"umur_akses"`
+	UmurRefresh time.Duration    `yaml:"umur_refresh"`
 }
 
 type ServerTanya struct {

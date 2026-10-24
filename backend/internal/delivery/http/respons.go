@@ -26,10 +26,13 @@ type Meta struct {
 var kodeHTTPKategori = map[domain.KategoriKesalahan]int{
 	domain.KategoriTidakDitemukan:  fiber.StatusNotFound,
 	domain.KategoriInputTidakValid: fiber.StatusBadRequest,
+	domain.KategoriTidakBerwenang:  fiber.StatusUnauthorized,
+	domain.KategoriTerlaluBanyak:   fiber.StatusTooManyRequests,
 }
 
 var pesanStatusUmum = map[int]string{
 	fiber.StatusBadRequest:            "permintaan tidak valid",
+	fiber.StatusUnauthorized:          "silakan masuk lebih dulu",
 	fiber.StatusNotFound:              "halaman tidak ditemukan",
 	fiber.StatusMethodNotAllowed:      "metode tidak diizinkan",
 	fiber.StatusRequestEntityTooLarge: "permintaan terlalu besar",

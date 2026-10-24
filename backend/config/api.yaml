@@ -14,6 +14,17 @@ server:
       maks_permintaan: 20
       jendela: 1h
     batas_waktu: 90s
+  auth:
+    batas_laju:
+      maks_permintaan: 30
+      jendela: 15m
+    otp:
+      umur: 10m
+      maks_percobaan: 5
+      maks_permintaan: 3
+      jendela_permintaan: 1h
+    umur_akses: 15m
+    umur_refresh: 168h
 
 peta:
   toleransi_penyederhanaan: 0.0003

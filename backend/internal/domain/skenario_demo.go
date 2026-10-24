@@ -9,13 +9,15 @@ import (
 const (
 	PrefiksKodeSimulasi = "simulasi-"
 	PenandaNamaSimulasi = "Simulasi"
-	PeranAnggota        = "anggota"
+	AkhiranEmailUji     = ".test"
 )
 
 var (
 	ErrKodePaketBukanSimulasi     = errors.New("kode paket simulasi wajib berawalan " + PrefiksKodeSimulasi)
 	ErrNamaSimulasiTanpaPenanda   = errors.New("nama penyedia dan instansi simulasi wajib memuat kata " + PenandaNamaSimulasi)
 	ErrAkunDemoTertautAnggota     = errors.New("akun anggota demo tidak boleh ditautkan ke anggota sungguhan")
+	ErrAkunDemoBukanSimulasi      = errors.New("akun demo wajib beremail domain " + AkhiranEmailUji + " dan bernama tampilan memuat kata " + PenandaNamaSimulasi)
+	ErrAkunInstansiTanpaInstansi  = errors.New("akun demo berperan instansi wajib menyebut instansi")
 	ErrSimulasiTertautDataNyata   = errors.New("data simulasi tertaut ke paket, penyedia, atau instansi sungguhan")
 	ErrKecamatanDemoBelumDihitung = errors.New("belum ada indikator kesenjangan kursi lengkap untuk kota demo")
 )
@@ -49,8 +51,11 @@ type PaketSimulasi struct {
 }
 
 type AkunDemo struct {
-	Peran     string `yaml:"peran"`
-	AnggotaID string `yaml:"anggota_id"`
+	Peran        Peran  `yaml:"peran"`
+	Email        string `yaml:"email"`
+	NamaTampilan string `yaml:"nama_tampilan"`
+	Instansi     string `yaml:"instansi"`
+	AnggotaID    string `yaml:"anggota_id"`
 }
 
 func (s SkenarioDemo) Validasi() error {
@@ -62,9 +67,23 @@ func (s SkenarioDemo) Validasi() error {
 		return ErrNamaSimulasiTanpaPenanda
 	}
 	for _, akun := range s.AkunDemo {
-		if akun.Peran == PeranAnggota && akun.AnggotaID != "" {
-			return ErrAkunDemoTertautAnggota
+		if err := akun.Validasi(); err != nil {
+			return err
 		}
+	}
+	return nil
+}
+
+func (a AkunDemo) Validasi() error {
+	switch {
+	case !a.Peran.IsDikenal():
+		return ErrPeranTidakDikenal
+	case a.AnggotaID != "":
+		return ErrAkunDemoTertautAnggota
+	case !strings.HasSuffix(a.Email, AkhiranEmailUji) || !strings.Contains(a.NamaTampilan, PenandaNamaSimulasi):
+		return ErrAkunDemoBukanSimulasi
+	case (a.Peran == PeranInstansi) != (a.Instansi != ""):
+		return ErrAkunInstansiTanpaInstansi
 	}
 	return nil
 }

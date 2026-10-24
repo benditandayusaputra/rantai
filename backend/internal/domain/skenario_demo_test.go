@@ -8,7 +8,10 @@ import (
 func skenarioSah() SkenarioDemo {
 	return SkenarioDemo{
 		PaketSimulasi: PaketSimulasi{Kode: "simulasi-1", Penyedia: "CV Contoh Simulasi", Instansi: "Instansi Contoh Simulasi"},
-		AkunDemo:      []AkunDemo{{Peran: "warga"}, {Peran: PeranAnggota}},
+		AkunDemo: []AkunDemo{
+			{Peran: PeranWarga, Email: "warga@demo.rantai.test", NamaTampilan: "Warga Contoh Simulasi"},
+			{Peran: PeranAnggota, Email: "anggota@demo.rantai.test", NamaTampilan: "Anggota Contoh Simulasi"},
+		},
 	}
 }
 
@@ -23,7 +26,12 @@ func TestValidasiSkenarioDemo(t *testing.T) {
 		{"penyedia bernama nyata", func(s *SkenarioDemo) { s.PaketSimulasi.Penyedia = "CV Karya Mandiri" }, ErrNamaSimulasiTanpaPenanda},
 		{"instansi bernama nyata", func(s *SkenarioDemo) { s.PaketSimulasi.Instansi = "Dinas Pendidikan" }, ErrNamaSimulasiTanpaPenanda},
 		{"akun anggota tertaut anggota", func(s *SkenarioDemo) { s.AkunDemo[1].AnggotaID = "anggota-uji" }, ErrAkunDemoTertautAnggota},
-		{"akun instansi boleh tanpa anggota", func(s *SkenarioDemo) { s.AkunDemo[0].Peran = "instansi" }, nil},
+		{"akun instansi dengan instansi", func(s *SkenarioDemo) { s.AkunDemo[0].Peran, s.AkunDemo[0].Instansi = PeranInstansi, "Dinas Uji" }, nil},
+		{"akun instansi tanpa instansi", func(s *SkenarioDemo) { s.AkunDemo[0].Peran = PeranInstansi }, ErrAkunInstansiTanpaInstansi},
+		{"akun warga dengan instansi", func(s *SkenarioDemo) { s.AkunDemo[0].Instansi = "Dinas Uji" }, ErrAkunInstansiTanpaInstansi},
+		{"peran tak dikenal", func(s *SkenarioDemo) { s.AkunDemo[0].Peran = "pejabat" }, ErrPeranTidakDikenal},
+		{"email bukan domain uji", func(s *SkenarioDemo) { s.AkunDemo[0].Email = "warga@gmail.com" }, ErrAkunDemoBukanSimulasi},
+		{"nama tampilan tanpa penanda", func(s *SkenarioDemo) { s.AkunDemo[0].NamaTampilan = "Budi" }, ErrAkunDemoBukanSimulasi},
 	}
 	for _, k := range kasus {
 		t.Run(k.nama, func(t *testing.T) {
