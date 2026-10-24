@@ -30,5 +30,6 @@ func denganLaporan(ctx context.Context, layanan deliveryhttp.Layanan, pool *pgxp
 	}
 	layanan.BacaLaporan = usecase.BacaLaporan{Pembaca: repo, URLFoto: penyimpan}
 	layanan.KonfirmasiLaporan = usecase.KonfirmasiLaporan{Repo: repo, Sekarang: time.Now}
+	layanan.Moderasi = usecase.Moderasi{Repo: repository.ModerasiRepository{LaporanRepository: repo}, URLFoto: penyimpan}
 	return layanan, nil
 }

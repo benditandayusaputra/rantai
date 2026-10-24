@@ -80,7 +80,7 @@ type handlerDetailLaporan struct {
 func uraiIDLaporan(c fiber.Ctx) (int64, error) {
 	id, err := strconv.ParseInt(c.Params("id"), 10, 64)
 	if err != nil {
-		return 0, domain.InputTidakValid("id laporan wajib berupa angka")
+		return 0, domain.InputTidakValid("id wajib berupa angka")
 	}
 	return id, nil
 }

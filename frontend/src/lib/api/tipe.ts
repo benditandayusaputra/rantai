@@ -471,3 +471,35 @@ export interface PetaLaporan {
 	type: 'FeatureCollection';
 	features: FiturLaporan[];
 }
+
+export interface LaporanModerasi {
+	id: number;
+	kondisi: KondisiLaporan;
+	catatan: string;
+	nama_wilayah: string;
+	paket_nama: string;
+	is_simulation: boolean;
+	dibuat_pada: string;
+	foto: { id: number; url: string; url_thumbnail: string; disembunyikan: boolean }[];
+}
+
+export interface UmpanModerasi {
+	id: number;
+	jenis_sumber: string;
+	media_nama: string;
+	judul: string;
+	url: string;
+	terbit_pada: string;
+	anggota: string[];
+}
+
+export interface AntreanModerasi {
+	laporan: LaporanModerasi[];
+	umpan: UmpanModerasi[];
+	alasan_tolak: string[];
+}
+
+export type AksiModerasi =
+	| { aksi: 'verifikasi' }
+	| { aksi: 'tolak'; alasan: string; pesan: string }
+	| { aksi: 'sembunyikan_foto'; foto_id: number; alasan: string };

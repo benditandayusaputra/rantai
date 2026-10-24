@@ -64,7 +64,11 @@ func (u KonfirmasiLaporan) verifikasiBilaCukup(ctx context.Context, laporan doma
 	return hasil, nil
 }
 
-func ambilUntukVerifikasi(ctx context.Context, repo RepositoriVerifikasi, id int64) (domain.LaporanUntukVerifikasi, error) {
+type pengambilVerifikasi interface {
+	AmbilUntukVerifikasi(ctx context.Context, id int64) (domain.LaporanUntukVerifikasi, bool, error)
+}
+
+func ambilUntukVerifikasi(ctx context.Context, repo pengambilVerifikasi, id int64) (domain.LaporanUntukVerifikasi, error) {
 	laporan, ada, err := repo.AmbilUntukVerifikasi(ctx, id)
 	if err != nil {
 		return laporan, fmt.Errorf("ambil laporan %d: %w", id, err)

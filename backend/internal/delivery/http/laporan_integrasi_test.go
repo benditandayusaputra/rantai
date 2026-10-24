@@ -23,7 +23,10 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-const tokenLaporanUji = "token-uji"
+const (
+	tokenLaporanUji   = "token-uji"
+	tokenModeratorUji = "token-moderator"
+)
 
 type aksesLaporanTiruan struct{ pengguna map[string]int64 }
 
@@ -32,7 +35,11 @@ func (a aksesLaporanTiruan) Periksa(token string) (domain.KlaimAkses, error) {
 	if !ada {
 		return domain.KlaimAkses{}, domain.ErrTokenAksesTidakBerlaku
 	}
-	return domain.KlaimAkses{PenggunaID: id, Peran: domain.PeranWarga}, nil
+	peran := domain.PeranWarga
+	if token == tokenModeratorUji {
+		peran = domain.PeranModerator
+	}
+	return domain.KlaimAkses{PenggunaID: id, Peran: peran}, nil
 }
 
 type urlFotoTiruan struct{}
@@ -53,7 +60,7 @@ func appUjiLaporan(t *testing.T) (*fiber.App, pgx.Tx, penyimpanObjekTiruan) {
 	tx := ujidb.BukaTransaksi(t)
 	ujiwilayah.MuatDKI(t, tx)
 	akses := aksesLaporanTiruan{pengguna: map[string]int64{}}
-	for _, token := range []string{tokenLaporanUji, "token-saksi-1", "token-saksi-2"} {
+	for _, token := range []string{tokenLaporanUji, "token-saksi-1", "token-saksi-2", tokenModeratorUji} {
 		var id int64
 		if err := tx.QueryRow(t.Context(), `INSERT INTO pengguna (email) VALUES ($1 || '@uji.test') RETURNING id`, token).Scan(&id); err != nil {
 			t.Fatal(err)
@@ -69,6 +76,7 @@ func appUjiLaporan(t *testing.T) (*fiber.App, pgx.Tx, penyimpanObjekTiruan) {
 		},
 		BacaLaporan:       usecase.BacaLaporan{Pembaca: repo, URLFoto: urlFotoTiruan{}},
 		KonfirmasiLaporan: usecase.KonfirmasiLaporan{Repo: repo, Sekarang: time.Now},
+		Moderasi:          usecase.Moderasi{Repo: repository.ModerasiRepository{LaporanRepository: repo}, URLFoto: urlFotoTiruan{}},
 		Akses:             akses,
 	}), tx, penyimpan
 }

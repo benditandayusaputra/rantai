@@ -34,7 +34,7 @@ JOIN wilayah w ON w.kode = l.kode_wilayah
 LEFT JOIN paket p ON p.kode = l.paket_kode
 WHERE l.id = $1`
 
-	sqlFotoLaporan = `SELECT object_key, thumbnail_key, lebar, tinggi FROM laporan_foto WHERE laporan_id = $1 ORDER BY urutan`
+	sqlFotoLaporan = `SELECT object_key, thumbnail_key, lebar, tinggi FROM laporan_foto WHERE laporan_id = $1 AND NOT disembunyikan ORDER BY urutan`
 
 	sqlPetaLaporan = `SELECT id, status, kondisi, is_simulation, ST_Y(lokasi_publik), ST_X(lokasi_publik)
 FROM laporan

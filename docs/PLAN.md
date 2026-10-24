@@ -295,7 +295,8 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - Menyimpang dari DESIGN 6.10: pilihan kondisi mengikuti lima kondisi SPEC ANG-08, catatan maksimal 500 karakter (SPEC), peta mini dan "Pilih titik di peta" belum dibangun karena laporan wajib berakurasi GPS ≤ 100 m.
   - Commit: `✨ Bangun alur Lapor Bukti untuk layar ponsel`
   - Selesai bila: alur selesai di lebar 360 px; akurasi lokasi buruk ditolak dengan saran; laporan simulasi berlabel di peta dan linimasa.
-- [ ] **T-907** Panel moderasi (DSR-03) **[BUTUH DESAIN]**
+- [x] **T-907** Panel moderasi (DSR-03) **[BUTUH DESAIN]**
+  - Antrean umpan berisi liputan media terbaru karena fitur "Laporkan konten" (aduan warga) belum ada; aksi "Verifikasi dan teruskan" baru menandai terverifikasi sampai antrean Panel Instansi (T-803) dibangun.
   - Moderasi laporan dan item umpan yang salah atribusi.
   - Commit: `✨ Tambah panel moderasi laporan dan umpan`
   - Selesai bila: setiap aksi tercatat di riwayat.

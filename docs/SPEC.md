@@ -706,7 +706,7 @@ Panel di `/{bahasa}/panel` untuk peran instansi dan anggota:
 - Aksi: tulis hak jawab (maksimal 2.000 karakter, boleh melampirkan tautan dokumen), tandai laporan selesai, isi tanggal serah terima paket.
 - Hak jawab tampil publik berdampingan dengan sorotannya, dengan nama penjawab dan tanggal; tidak bisa dihapus.
 
-Panel moderasi: antrean laporan MENUNGGU_SAKSI serta laporan atau item umpan yang diadukan; aksi tandai terverifikasi, tolak dengan alasan, sembunyikan foto atau item umpan. Semua aksi tercatat.
+Panel moderasi: antrean laporan MENUNGGU_SAKSI serta laporan atau item umpan yang diadukan; aksi tandai terverifikasi, tolak dengan alasan, sembunyikan foto atau item umpan. Semua aksi tercatat. Hanya peran moderator dan admin. Setiap aksi ditulis ke `moderasi_log` (`moderator_id`, `target_jenis` laporan, laporan_foto, atau umpan, `target_id`, `aksi`, `alasan`); perubahan status laporan juga masuk `laporan_riwayat` dengan `oleh_pengguna_id`. Alasan tolak: `spam`, `duplikat`, `di_luar_lingkup` ditambah pesan opsional. Foto tersembunyi (`laporan_foto.disembunyikan`) tidak tampil di halaman publik. `PATCH /moderasi/laporan/{id}` menerima `{aksi: verifikasi | tolak | sembunyikan_foto, alasan, pesan, foto_id}`; `PATCH /moderasi/umpan/{id}` menerima `{alasan}`.
 
 API: `GET /panel/antrean`, `POST /hak-jawab`, `PATCH /panel/paket/{kode}/serah-terima`, `PATCH /panel/laporan/{id}/selesai`, `GET /moderasi/antrean`, `PATCH /moderasi/laporan/{id}`, `PATCH /moderasi/umpan/{id}`.
 

@@ -86,11 +86,12 @@ export async function kirimBerwenang<T>(
 	fetchFn: Fetch,
 	path: string,
 	token: string,
-	badan: FormData | object
+	badan: FormData | object,
+	metode: 'POST' | 'PATCH' = 'POST'
 ): Promise<T> {
 	const isFormulir = badan instanceof FormData;
 	const respons = await fetchFn(susunURL(path, {}), {
-		method: 'POST',
+		method: metode,
 		headers: {
 			Authorization: `Bearer ${token}`,
 			...(isFormulir ? {} : { 'Content-Type': 'application/json' })
@@ -106,6 +107,17 @@ export async function kirimBerwenang<T>(
 
 export function urlServer(path: string): string {
 	return new URL(path, env.PUBLIC_API_URL || alamatBawaan).toString();
+}
+
+export async function ambilBerwenang<T>(fetchFn: Fetch, path: string, token: string): Promise<T> {
+	const respons = await fetchFn(susunURL(path, {}), {
+		headers: { Authorization: `Bearer ${token}` }
+	});
+	const amplop = await bacaAmplop<T>(respons);
+	if (!respons.ok || !amplop) {
+		throw new GalatAPI(respons.status, amplop?.message ?? respons.statusText);
+	}
+	return amplop.data;
 }
 
 export async function ambilData<T>(fetchFn: Fetch, path: string, kueri: Kueri = {}): Promise<T> {
