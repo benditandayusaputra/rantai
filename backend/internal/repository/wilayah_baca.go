@@ -13,7 +13,7 @@ const ambangKemiripan = 0.45
 
 const (
 	sqlCariWilayah = `WITH skor AS (
-    SELECT w.kode, w.nama, w.tingkat, w.induk_kode,
+    SELECT w.kode, w.nama, w.tingkat, w.induk_kode, w.provenance_id,
         $1 = lower(w.nama) OR $1 = ANY (SELECT lower(a) FROM unnest(w.alias) AS a) AS persis,
         (SELECT max(greatest(similarity(lower(n), $1), word_similarity(lower(n), $1), word_similarity($1, lower(n))))
          FROM unnest(array_append(w.alias, w.nama)) AS n) AS nilai
@@ -25,12 +25,12 @@ anak AS (
     WHERE c.persis AND c.tingkat = 'kecamatan'
 ),
 gabungan AS (SELECT * FROM cocok UNION SELECT * FROM anak)
-SELECT kode, nama, tingkat, hierarki_wilayah(kode)
+SELECT kode, nama, tingkat, hierarki_wilayah(kode), provenance_id
 FROM gabungan
 ORDER BY persis DESC, nilai DESC, tingkat DESC, nama
 LIMIT $3`
 
-	sqlKelurahanDiTitik = `SELECT kode, nama, tingkat, hierarki_wilayah(kode)
+	sqlKelurahanDiTitik = `SELECT kode, nama, tingkat, hierarki_wilayah(kode), provenance_id
 FROM wilayah
 WHERE tingkat = 'kelurahan' AND ST_Covers(geom, ST_SetSRID(ST_MakePoint($1, $2), 4326))
 ORDER BY kode
@@ -68,7 +68,7 @@ func (r WilayahRepository) AmbilWilayah(ctx context.Context, kode string) (domai
 
 func pindaiWilayahDitemukan(baris pgx.Row) (domain.WilayahDitemukan, error) {
 	var w domain.WilayahDitemukan
-	err := baris.Scan(&w.Kode, &w.Nama, &w.Tingkat, &w.Hierarki)
+	err := baris.Scan(&w.Kode, &w.Nama, &w.Tingkat, &w.Hierarki, &w.ProvenanceID)
 	return w, err
 }
 

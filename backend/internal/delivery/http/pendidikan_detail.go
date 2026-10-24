@@ -40,9 +40,13 @@ func (h handlerPendidikan) detailKecamatan(c fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
+	return kirimData(c, keDetailPendidikanJSON(d))
+}
+
+func keDetailPendidikanJSON(d domain.DetailPendidikanKecamatan) detailPendidikanJSON {
 	indikator := pembuatAngka{label: d.Label, provenanceID: d.ProvenanceID}
 	r := d.Rincian
-	return kirimData(c, detailPendidikanJSON{
+	return detailPendidikanJSON{
 		Kode: d.KodeKecamatan, Nama: d.NamaKecamatan, Periode: d.Periode, Kelas: string(d.Kelas),
 		Label: d.Label, ProvenanceID: d.ProvenanceID, MetodeCalonLulusan: r.MetodeCalonLulusan,
 		CalonLulusan:                 rujukan(d.ProvenanceCalonLulusan, d.ProvenanceID).berlabel(r.CalonLulusan, satuanSiswa),
@@ -53,7 +57,7 @@ func (h handlerPendidikan) detailKecamatan(c fiber.Ctx) error {
 		KesenjanganDenganSPMBBersama: indikator.berlabel(r.KesenjanganDenganSwasta, satuanSiswa),
 		Rasio:                        indikator.opsional(d.Rasio, satuanRasio),
 		Keterbatasan:                 d.Keterbatasan(),
-	})
+	}
 }
 
 func rujukan(provenanceID, cadangan string) pembuatAngka {
@@ -65,11 +69,15 @@ func (h handlerPendidikan) sekolahKecamatan(c fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
+	return kirimData(c, keDaftarSekolahJSON(daftar))
+}
+
+func keDaftarSekolahJSON(daftar []domain.SekolahDenganKursi) []sekolahJSON {
 	hasil := make([]sekolahJSON, len(daftar))
 	for i, s := range daftar {
 		hasil[i] = keSekolahJSON(s)
 	}
-	return kirimData(c, hasil)
+	return hasil
 }
 
 func keSekolahJSON(s domain.SekolahDenganKursi) sekolahJSON {

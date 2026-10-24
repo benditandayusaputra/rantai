@@ -56,13 +56,15 @@ func (h handlerRingkasanKecamatan) ringkas(c fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
+	return kirimData(c, keRingkasanKecamatanJSON(r))
+}
+
+func keRingkasanKecamatanJSON(r domain.RingkasanKecamatan) ringkasanKecamatanJSON {
 	hasil := ringkasanKecamatanJSON{
 		Kecamatan: keWilayahDitemukanJSON(r.Kecamatan.WilayahDitemukan),
 		Tema:      make([]temaKecamatanJSON, len(r.Tema)),
 		Anggaran:  keAnggaranJSON(r.Anggaran),
-		Wakilku: wakilKecamatanJSON{
-			Kecamatan: keRingkasanWilayahJSON(r.Wakil.Kecamatan), KomisiPengawas: r.Wakil.KomisiPengawas, Dapil: keDapilJSON(r.Wakil.DetailDapil),
-		},
+		Wakilku:   keWakilKecamatanJSON(r.Wakil),
 	}
 	if r.KelurahanDisorot != nil {
 		disorot := keRingkasanWilayahJSON(*r.KelurahanDisorot)
@@ -71,7 +73,7 @@ func (h handlerRingkasanKecamatan) ringkas(c fiber.Ctx) error {
 	for i, t := range r.Tema {
 		hasil.Tema[i] = keTemaKecamatanJSON(t)
 	}
-	return kirimData(c, hasil)
+	return hasil
 }
 
 func keTemaKecamatanJSON(t domain.TemaKecamatan) temaKecamatanJSON {

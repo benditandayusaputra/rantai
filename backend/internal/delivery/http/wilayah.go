@@ -24,7 +24,8 @@ type ringkasanWilayahJSON struct {
 
 type wilayahDitemukanJSON struct {
 	ringkasanWilayahJSON
-	Hierarki []ringkasanWilayahJSON `json:"hierarki"`
+	Hierarki     []ringkasanWilayahJSON `json:"hierarki"`
+	ProvenanceID string                 `json:"provenance_id"`
 }
 
 type titikJSON struct {
@@ -34,9 +35,8 @@ type titikJSON struct {
 
 type detailWilayahJSON struct {
 	wilayahDitemukanJSON
-	Alias        []string  `json:"alias"`
-	TitikTengah  titikJSON `json:"titik_tengah"`
-	ProvenanceID string    `json:"provenance_id"`
+	Alias       []string  `json:"alias"`
+	TitikTengah titikJSON `json:"titik_tengah"`
 }
 
 type handlerWilayah struct {
@@ -48,11 +48,15 @@ func (h handlerWilayah) cari(c fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	daftar := make([]wilayahDitemukanJSON, len(hasil))
-	for i, w := range hasil {
-		daftar[i] = keWilayahDitemukanJSON(w)
+	return kirimData(c, keDaftarWilayahJSON(hasil))
+}
+
+func keDaftarWilayahJSON(daftar []domain.WilayahDitemukan) []wilayahDitemukanJSON {
+	hasil := make([]wilayahDitemukanJSON, len(daftar))
+	for i, w := range daftar {
+		hasil[i] = keWilayahDitemukanJSON(w)
 	}
-	return kirimData(c, daftar)
+	return hasil
 }
 
 func (h handlerWilayah) diTitik(c fiber.Ctx) error {
@@ -76,7 +80,6 @@ func (h handlerWilayah) ambil(c fiber.Ctx) error {
 		wilayahDitemukanJSON: keWilayahDitemukanJSON(wilayah.WilayahDitemukan),
 		Alias:                wilayah.Alias,
 		TitikTengah:          titikJSON(wilayah.TitikTengah),
-		ProvenanceID:         wilayah.ProvenanceID,
 	})
 }
 
@@ -94,7 +97,7 @@ func keWilayahDitemukanJSON(w domain.WilayahDitemukan) wilayahDitemukanJSON {
 	for i, leluhur := range w.Hierarki {
 		hierarki[i] = keRingkasanWilayahJSON(leluhur)
 	}
-	return wilayahDitemukanJSON{ringkasanWilayahJSON: keRingkasanWilayahJSON(w.RingkasanWilayah), Hierarki: hierarki}
+	return wilayahDitemukanJSON{ringkasanWilayahJSON: keRingkasanWilayahJSON(w.RingkasanWilayah), Hierarki: hierarki, ProvenanceID: w.ProvenanceID}
 }
 
 func keRingkasanWilayahJSON(w domain.RingkasanWilayah) ringkasanWilayahJSON {

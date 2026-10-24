@@ -45,11 +45,15 @@ func (h handlerUmpan) umpanAnggota(c fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	daftar := make([]umpanJSON, len(hasil.Item))
-	for i, u := range hasil.Item {
-		daftar[i] = keUmpanJSON(u)
+	return kirimHalaman(c, keDaftarUmpanJSON(hasil.Item), buatMeta(halaman, hasil))
+}
+
+func keDaftarUmpanJSON(daftar []domain.UmpanTampil) []umpanJSON {
+	hasil := make([]umpanJSON, len(daftar))
+	for i, u := range daftar {
+		hasil[i] = keUmpanJSON(u)
 	}
-	return kirimHalaman(c, daftar, buatMeta(halaman, hasil))
+	return hasil
 }
 
 func uraiHalaman(nilai string) (int, error) {

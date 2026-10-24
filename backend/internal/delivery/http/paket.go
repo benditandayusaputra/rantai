@@ -56,11 +56,7 @@ func (h handlerPaket) daftarKecamatan(c fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	daftar := make([]paketRingkasJSON, len(hasil.Paket))
-	for i, p := range hasil.Paket {
-		daftar[i] = kePaketRingkasJSON(p)
-	}
-	return c.JSON(Respons{Code: fiber.StatusOK, Message: pesanOK, Data: daftar, Meta: metaHalaman(hasil)})
+	return c.JSON(Respons{Code: fiber.StatusOK, Message: pesanOK, Data: keDaftarPaketJSON(hasil.Paket), Meta: metaHalaman(hasil)})
 }
 
 func (h handlerPaket) peta(c fiber.Ctx) error {
@@ -157,4 +153,12 @@ func tanggalJSON(t *time.Time) *string {
 	}
 	teks := t.Format(time.DateOnly)
 	return &teks
+}
+
+func keDaftarPaketJSON(daftar []domain.PaketRingkas) []paketRingkasJSON {
+	hasil := make([]paketRingkasJSON, len(daftar))
+	for i, p := range daftar {
+		hasil[i] = kePaketRingkasJSON(p)
+	}
+	return hasil
 }

@@ -43,6 +43,10 @@ func (h handlerBelanja) hitung(c fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
+	return kirimData(c, keBelanjaTemaJSON(b))
+}
+
+func keBelanjaTemaJSON(b domain.BelanjaTema) belanjaTemaJSON {
 	hasil := belanjaTemaJSON{
 		Tema: b.Tema.Kode, Tahun: b.Tahun,
 		Kecamatan:     make([]belanjaKecamatanJSON, len(b.Kecamatan)),
@@ -57,5 +61,5 @@ func (h handlerBelanja) hitung(c fiber.Ctx) error {
 	for i, l := range b.LuarKecamatan {
 		hasil.LuarKecamatan[i] = belanjaLuarKecamatanJSON{Wilayah: keRingkasanWilayahJSON(l.Wilayah), Belanja: keAnggaranJSON(&l.Anggaran)}
 	}
-	return kirimData(c, hasil)
+	return hasil
 }

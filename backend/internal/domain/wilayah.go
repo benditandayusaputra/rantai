@@ -107,12 +107,12 @@ type RingkasanWilayah struct {
 
 type WilayahDitemukan struct {
 	RingkasanWilayah
-	Hierarki []RingkasanWilayah
+	Hierarki     []RingkasanWilayah
+	ProvenanceID string
 }
 
 type DetailWilayah struct {
 	WilayahDitemukan
-	Alias        []string
-	TitikTengah  Titik
-	ProvenanceID string
+	Alias       []string
+	TitikTengah Titik
 }

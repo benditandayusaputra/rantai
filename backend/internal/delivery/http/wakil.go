@@ -76,11 +76,15 @@ func (h handlerWakil) wakilKecamatan(c fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	return kirimData(c, wakilKecamatanJSON{
-		Kecamatan:      keRingkasanWilayahJSON(hasil.Kecamatan),
-		KomisiPengawas: hasil.KomisiPengawas,
-		Dapil:          keDapilJSON(hasil.DetailDapil),
-	})
+	return kirimData(c, keWakilKecamatanJSON(hasil))
+}
+
+func keWakilKecamatanJSON(w domain.WakilKecamatan) wakilKecamatanJSON {
+	return wakilKecamatanJSON{
+		Kecamatan:      keRingkasanWilayahJSON(w.Kecamatan),
+		KomisiPengawas: w.KomisiPengawas,
+		Dapil:          keDapilJSON(w.DetailDapil),
+	}
 }
 
 func (h handlerWakil) dapil(c fiber.Ctx) error {

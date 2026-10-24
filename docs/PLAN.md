@@ -220,7 +220,7 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
 
 ## Fase 7. Aksi
 
-- [ ] **T-701** Fungsi alat Tanya Rantai
+- [x] **T-701** Fungsi alat Tanya Rantai
   - Sepuluh fungsi AKS-01 sebagai usecase yang sudah ada, dibungkus registry alat.
   - Commit: `✨ Daftarkan fungsi data untuk Tanya Rantai`
   - Selesai bila: setiap fungsi dites dan mengembalikan `provenance_id`.
