@@ -42,6 +42,11 @@
 					class="inline-flex min-h-touch items-center self-start font-bold text-secondary-on underline"
 					>{t('tema.detail')}</a
 				>
+				<a
+					href="/{bahasaBawaan}/cek-sekolah"
+					class="inline-flex min-h-touch items-center self-start font-bold text-secondary-on underline"
+					>{t('services.checkMySchool')}</a
+				>
 			{/if}
 		</section>
 	{/each}

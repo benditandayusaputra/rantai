@@ -302,7 +302,8 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - Selesai bila: setiap aksi tercatat di riwayat.
 - [x] **T-908** Profil penyedia (ANG-07) **[BUTUH DESAIN]**
   - Commit: `✨ Bangun halaman profil penyedia`
-- [ ] **T-909** Cek Sekolahku (PEN-06) **[BUTUH DESAIN]**
+- [x] **T-909** Cek Sekolahku (PEN-06) **[BUTUH DESAIN]**
+  - Peta radius 3 km dari DESIGN 6.6 belum dipasang; daftar sekolah dan kalimat tekanan sudah memuat jarak dan sumber.
   - Commit: `✨ Bangun fitur Cek Sekolahku berbasis radius`
 - [ ] **T-910** Pantau Wilayahku, feed (WIL-06) **[BUTUH DESAIN]**
   - Migrasi `langganan`, `notifikasi`; pembuat kejadian di job `turunan`; feed di aplikasi.

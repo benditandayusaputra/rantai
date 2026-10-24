@@ -531,3 +531,8 @@ export interface ProfilPenyedia {
 	riwayat_opentender: RiwayatPenyedia[];
 	atribusi: string;
 }
+
+export interface DetailWilayah extends WilayahDitemukan {
+	alias: string[];
+	titik_tengah: Titik;
+}

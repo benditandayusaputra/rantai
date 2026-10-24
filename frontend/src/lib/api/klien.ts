@@ -4,6 +4,7 @@ import type {
 	DaftarDataBelumDibuka,
 	DetailPaket,
 	DetailPendidikan,
+	DetailWilayah,
 	Dokumen,
 	InfoSumberData,
 	PaketRingkas,
@@ -247,4 +248,8 @@ export function susunPermohonan(fetchFn: Fetch, kode: string, bahasa: string): P
 
 export function ambilPenyedia(fetchFn: Fetch, id: number): Promise<ProfilPenyedia> {
 	return ambilData<ProfilPenyedia>(fetchFn, `/penyedia/${id}`);
+}
+
+export function ambilDetailWilayah(fetchFn: Fetch, kode: string): Promise<DetailWilayah> {
+	return ambilData<DetailWilayah>(fetchFn, `/wilayah/${encodeURIComponent(kode)}`);
 }

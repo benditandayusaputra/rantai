@@ -650,5 +650,19 @@
 	"vendor.agencies": "Instansi pemberi",
 	"vendor.history": "Riwayat Opentender 2014 sampai 2023",
 	"vendor.attribution": "Atribusi data",
-	"vendor.notFound": "Penyedia tidak ditemukan"
+	"vendor.notFound": "Penyedia tidak ditemukan",
+	"check.title": "Cek Sekolahku",
+	"check.lead": "Lihat SMP negeri di sekitar rumahmu dan seberapa ketat kursinya dibanding calon lulusan SD di radius yang sama.",
+	"check.privacy": "Lokasimu hanya dipakai untuk menghitung jarak dan tidak disimpan.",
+	"check.start": "Pilih kelurahan atau pakai lokasimu untuk mulai.",
+	"check.near": "Sekitar {nama}",
+	"check.nearMe": "Sekitar lokasimu",
+	"check.pressure": "Tekanan kursi dalam radius {km} km",
+	"check.noRatio": "Tekanan kursi belum bisa dihitung untuk radius ini.",
+	"check.nearest": "SMP negeri terdekat",
+	"check.empty": "Tidak ada SMP negeri dalam radius {km} km",
+	"check.alternatives": "Alternatif dalam radius yang sama",
+	"check.distance": "{jarak} garis lurus",
+	"check.loading": "Menghitung sekolah dalam radius {km} km...",
+	"check.failed": "Data sekolah sekitar gagal dimuat."
 }
