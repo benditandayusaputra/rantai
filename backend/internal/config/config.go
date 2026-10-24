@@ -33,6 +33,12 @@ type Server struct {
 	BatasWaktuHenti time.Duration `yaml:"batas_waktu_henti"`
 	BatasLaju       BatasLaju     `yaml:"batas_laju"`
 	CORS            CORS          `yaml:"cors"`
+	Tanya           ServerTanya   `yaml:"tanya"`
+}
+
+type ServerTanya struct {
+	BatasLaju  BatasLaju     `yaml:"batas_laju"`
+	BatasWaktu time.Duration `yaml:"batas_waktu"`
 }
 
 type BatasLaju struct {

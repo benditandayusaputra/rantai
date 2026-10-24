@@ -624,6 +624,8 @@ Streaming ke klien via SSE. Batas: 20 pertanyaan per IP per jam, panjang pertany
 
 API: `POST /tanya` (SSE) dengan `{pertanyaan, kode_kecamatan_konteks, bahasa}`.
 
+Peristiwa SSE: `alat` (`{alat}`, setiap kali fungsi dipanggil), lalu `jawaban` (`{teks, rujukan: [{nomor, provenance_id}]}`) atau `galat` (`{pesan}`). Teks jawaban dikirim utuh setelah lolos validator, bukan per potongan token, agar jawaban yang gagal validasi tidak pernah sampai ke warga. Model menandai angka dengan `[provenance_id]`; server menggantinya dengan `[n]` berurutan dan mengisi `rujukan`. Pemeriksaan masukan gagal dijawab 400 dengan amplop biasa sebelum aliran dibuka.
+
 ### AKS-02 Paket Aspirasi
 
 Warga memilih kecamatan, tema, dan masalah dari `tanggung_jawab` tema. Rantai menyusun dokumen dari `templat_aspirasi`:

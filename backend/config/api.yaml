@@ -1,7 +1,7 @@
 server:
   port: "8080"
   batas_waktu_baca: 10s
-  batas_waktu_tulis: 15s
+  batas_waktu_tulis: 120s
   batas_waktu_henti: 10s
   batas_laju:
     maks_permintaan: 120
@@ -9,6 +9,11 @@ server:
   cors:
     origin:
       - http://localhost:5173
+  tanya:
+    batas_laju:
+      maks_permintaan: 20
+      jendela: 1h
+    batas_waktu: 90s
 
 peta:
   toleransi_penyederhanaan: 0.0003

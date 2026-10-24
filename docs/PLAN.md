@@ -224,7 +224,7 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - Sepuluh fungsi AKS-01 sebagai usecase yang sudah ada, dibungkus registry alat.
   - Commit: `✨ Daftarkan fungsi data untuk Tanya Rantai`
   - Selesai bila: setiap fungsi dites dan mengembalikan `provenance_id`.
-- [ ] **T-702** Orkestrasi dan streaming
+- [x] **T-702** Orkestrasi dan streaming
   - Tool use dengan klien LLM bersama, model dari `TANYA_MODEL`, SSE ke klien, batas laju.
   - Commit: `✨ Jalankan Tanya Rantai dengan pemanggilan alat dan SSE`
   - Selesai bila: tes memakai klien LLM tiruan; kunci API hanya dari env.

@@ -44,13 +44,21 @@ func (k Klien) Tulis(ctx context.Context, sistem, isi string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("panggil model %s: %w", k.cfg.Model, err)
 	}
-	switch respons.StopReason {
-	case anthropic.StopReasonRefusal:
-		return "", ErrDitolakModel
-	case anthropic.StopReasonMaxTokens:
-		return "", ErrJawabanTerpotong
+	if err := periksaAlasanBerhenti(respons); err != nil {
+		return "", err
 	}
 	return teksJawaban(respons), nil
+}
+
+func periksaAlasanBerhenti(respons *anthropic.Message) error {
+	switch respons.StopReason {
+	case anthropic.StopReasonRefusal:
+		return ErrDitolakModel
+	case anthropic.StopReasonMaxTokens:
+		return ErrJawabanTerpotong
+	default:
+		return nil
+	}
 }
 
 func teksJawaban(respons *anthropic.Message) string {

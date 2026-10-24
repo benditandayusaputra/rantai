@@ -21,6 +21,7 @@ type Layanan struct {
 	Indikator  LayananIndikator
 	Sekolah    LayananSekolahTerdekat
 	SumberData LayananSumberData
+	Tanya      LayananTanya
 }
 
 func NewApp(cfg config.Server, layanan Layanan) *fiber.App {
@@ -45,6 +46,7 @@ func NewApp(cfg config.Server, layanan Layanan) *fiber.App {
 	daftarkanPendidikan(api, handlerPendidikan{layanan: layanan.Indikator})
 	api.Get("/sumber-data", handlerSumberData{layanan: layanan.SumberData}.baca)
 	api.Get("/sekolah/terdekat", handlerSekolahTerdekat{layanan: layanan.Sekolah}.cari)
+	daftarkanTanya(api, layanan.Tanya, cfg.Tanya)
 	return app
 }
 

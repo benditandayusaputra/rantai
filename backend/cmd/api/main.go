@@ -53,6 +53,9 @@ func jalankan() error {
 	if layanan.SumberData, err = buatBacaSumberData(pool); err != nil {
 		return err
 	}
+	if layanan, err = denganTanya(layanan); err != nil {
+		return err
+	}
 	app := deliveryhttp.NewApp(cfg.Server, layanan)
 	go hentikanSaatSinyal(ctx, app, cfg.Server)
 	if err := app.Listen(":" + cfg.Server.Port); err != nil {
