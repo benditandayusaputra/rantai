@@ -2,7 +2,9 @@
 
 DATABASE_URL ?= postgres://rantai:rantai@localhost:5433/rantai?sslmode=disable
 TEST_DATABASE_URL ?= $(DATABASE_URL)
-export DATABASE_URL TEST_DATABASE_URL
+MINIO_ROOT_USER ?= rantai
+MINIO_ROOT_PASSWORD ?= rantai-rahasia
+export DATABASE_URL TEST_DATABASE_URL MINIO_ROOT_USER MINIO_ROOT_PASSWORD
 
 COMPOSE := docker compose
 MIGRATE := $(COMPOSE) run --rm --build migrate

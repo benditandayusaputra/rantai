@@ -281,7 +281,7 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - `GET /aspirasi-reses/{id}/paket-terkait` dan tampilan di halaman paket dan Wakilku.
   - Commit: `✨ Cocokkan aspirasi reses dengan paket yang kemungkinan terkait`
   - Selesai bila: hasil selalu berlabel "kemungkinan terkait"; kasus tanpa kecocokan dites.
-- [ ] **T-904** Terima laporan (ANG-08 sisi backend)
+- [x] **T-904** Terima laporan (ANG-08 sisi backend)
   - Migrasi laporan, pemrosesan foto (magic bytes, enkode ulang, buang EXIF, thumbnail), MinIO, pembulatan lokasi publik.
   - Job `skenario_demo` ikut memasang `laporan_simulasi` dari `skenario_demo.yaml` ke paket simulasi, dengan foto ilustrasi bebas lisensi.
   - Commit: `✨ Terima laporan warga dengan foto tanpa metadata`

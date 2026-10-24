@@ -1,11 +1,15 @@
 package repository_test
 
 import (
+	"context"
 	"errors"
+	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/benditandayusaputra/rantai/backend/internal/config"
 	"github.com/benditandayusaputra/rantai/backend/internal/domain"
+	"github.com/benditandayusaputra/rantai/backend/internal/foto"
 	"github.com/benditandayusaputra/rantai/backend/internal/repository"
 	"github.com/benditandayusaputra/rantai/backend/internal/ujidb"
 	"github.com/benditandayusaputra/rantai/backend/internal/ujidb/ujiwilayah"
@@ -14,6 +18,13 @@ import (
 )
 
 const pathSkenarioDemoUji = "../../../data/snapshot/skenario_demo.yaml"
+
+type penyimpanFotoUji struct{ kunci map[string]bool }
+
+func (p penyimpanFotoUji) SimpanJPEG(_ context.Context, kunci string, _ []byte) error {
+	p.kunci[kunci] = true
+	return nil
+}
 
 type pelaporKecamatanDemo struct {
 	terpilih *string
@@ -34,6 +45,11 @@ func muatSkenarioDemo(t *testing.T, tx pgx.Tx, terpilih *string) error {
 		Penyimpan:      repository.SkenarioDemoRepository{DB: tx},
 		Pelapor:        pelaporKecamatanDemo{terpilih: terpilih},
 		BuatProvenance: buatProvenanceUji,
+		Pemroses:       foto.Pemroses{},
+		PenyimpanFoto:  penyimpanFotoUji{kunci: map[string]bool{}},
+		BacaFoto: func(nama string) ([]byte, error) {
+			return os.ReadFile(filepath.Join(filepath.Dir(pathSkenarioDemoUji), nama))
+		},
 	}
 	return muat.Jalankan(t.Context())
 }
@@ -138,7 +154,32 @@ func TestMuatSkenarioDemo_AkunDemoTerpasangSebagaiSimulasi(t *testing.T) {
     count(*) FILTER (WHERE p.peran = 'instansi' AND i.nama = 'Dinas Pendidikan Provinsi DKI Jakarta'),
     count(*) FILTER (WHERE p.anggota_id IS NOT NULL)
 FROM pengguna p LEFT JOIN instansi i ON i.id = p.instansi_id WHERE p.email LIKE '%@demo.rantai.test'`).Scan(&akun, &simulasi, &petugasDinas, &tertautAnggota)
-	if err != nil || akun != 4 || simulasi != 4 || petugasDinas != 1 || tertautAnggota != 0 {
+	if err != nil || akun != 6 || simulasi != 6 || petugasDinas != 1 || tertautAnggota != 0 {
 		t.Errorf("akun %d, simulasi %d, petugas dinas %d, tertaut anggota %d, err %v", akun, simulasi, petugasDinas, tertautAnggota, err)
+	}
+}
+
+func TestMuatSkenarioDemo_LaporanSimulasiTerverifikasiHanyaTertautDataSimulasi(t *testing.T) {
+	tx := ujidb.BukaTransaksi(t)
+	siapkanKursiUji(t, tx)
+	jalankanHitungIndikator(t, tx)
+	var terpilih string
+
+	for range 2 {
+		if err := muatSkenarioDemo(t, tx, &terpilih); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	var laporan, terverifikasi, tertautNyata, konfirmasi, foto int
+	err := tx.QueryRow(t.Context(), `SELECT count(*), count(*) FILTER (WHERE l.status = 'TERVERIFIKASI' AND l.is_simulation),
+    count(*) FILTER (WHERE NOT p.is_simulation OR NOT g.is_simulation),
+    (SELECT count(*) FROM laporan_konfirmasi k JOIN pengguna kg ON kg.id = k.pengguna_id WHERE kg.is_simulation),
+    (SELECT count(*) FROM laporan_foto f JOIN laporan fl ON fl.id = f.laporan_id WHERE fl.is_simulation)
+FROM laporan l JOIN paket p ON p.kode = l.paket_kode JOIN pengguna g ON g.id = l.pengguna_id`).
+		Scan(&laporan, &terverifikasi, &tertautNyata, &konfirmasi, &foto)
+	if err != nil || laporan != 2 || terverifikasi != 2 || tertautNyata != 0 || konfirmasi != 2*domain.JumlahKonfirmasiTerverifikasi || foto != 2 {
+		t.Errorf("laporan %d, terverifikasi %d, tertaut nyata %d, konfirmasi %d, foto %d, err %v",
+			laporan, terverifikasi, tertautNyata, konfirmasi, foto, err)
 	}
 }

@@ -28,6 +28,7 @@ type Layanan struct {
 	Masuk      LayananMasuk
 	Akses      PemeriksaAkses
 	Paripurna  LayananParipurna
+	Laporan    LayananLaporan
 }
 
 func NewApp(cfg config.Server, layanan Layanan) *fiber.App {
@@ -35,6 +36,7 @@ func NewApp(cfg config.Server, layanan Layanan) *fiber.App {
 		ErrorHandler: tanganiError,
 		ReadTimeout:  cfg.BatasWaktuBaca,
 		WriteTimeout: cfg.BatasWaktuTulis,
+		BodyLimit:    BatasBodyPermintaan,
 	})
 	pasangPengaman(app, cfg)
 	api := app.Group(prefiksAPI)
@@ -58,6 +60,7 @@ func NewApp(cfg config.Server, layanan Layanan) *fiber.App {
 	daftarkanDataBelumDibuka(api, layanan.BelumBuka)
 	daftarkanAuth(api, layanan, cfg.Auth)
 	daftarkanParipurna(api, handlerParipurna{layanan: layanan.Paripurna})
+	daftarkanLaporan(api, layanan)
 	return app
 }
 

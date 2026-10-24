@@ -20,14 +20,27 @@ var (
 	ErrAkunInstansiTanpaInstansi  = errors.New("akun demo berperan instansi wajib menyebut instansi")
 	ErrSimulasiTertautDataNyata   = errors.New("data simulasi tertaut ke paket, penyedia, atau instansi sungguhan")
 	ErrKecamatanDemoBelumDihitung = errors.New("belum ada indikator kesenjangan kursi lengkap untuk kota demo")
+	ErrLaporanSimulasiTidakSah    = errors.New("laporan simulasi wajib berkondisi sah, berfoto 1 sampai 4, dan cukup saksi untuk terverifikasi")
+	ErrPelaporBukanAkunDemo       = errors.New("pelapor dan saksi laporan simulasi wajib akun demo yang berbeda")
 )
 
+const JumlahKonfirmasiTerverifikasi = 3
+
 type SkenarioDemo struct {
-	KotaDemo      string        `yaml:"kota_demo"`
-	KecamatanDemo string        `yaml:"kecamatan_demo"`
-	PaketSimulasi PaketSimulasi `yaml:"paket_simulasi"`
-	AkunDemo      []AkunDemo    `yaml:"akun_demo"`
-	TanyaDemo     []string      `yaml:"tanya_demo"`
+	KotaDemo        string            `yaml:"kota_demo"`
+	KecamatanDemo   string            `yaml:"kecamatan_demo"`
+	PaketSimulasi   PaketSimulasi     `yaml:"paket_simulasi"`
+	AkunDemo        []AkunDemo        `yaml:"akun_demo"`
+	LaporanSimulasi []LaporanSimulasi `yaml:"laporan_simulasi"`
+	TanyaDemo       []string          `yaml:"tanya_demo"`
+}
+
+type LaporanSimulasi struct {
+	Kondisi KondisiLaporan `yaml:"kondisi"`
+	Catatan string         `yaml:"catatan"`
+	Pelapor string         `yaml:"pelapor"`
+	Saksi   []string       `yaml:"saksi"`
+	Foto    []string       `yaml:"foto"`
 }
 
 type PaketSimulasi struct {
@@ -71,7 +84,34 @@ func (s SkenarioDemo) Validasi() error {
 			return err
 		}
 	}
+	return s.validasiLaporanSimulasi()
+}
+
+func (s SkenarioDemo) validasiLaporanSimulasi() error {
+	emailDemo := map[string]bool{}
+	for _, akun := range s.AkunDemo {
+		emailDemo[akun.Email] = true
+	}
+	for _, l := range s.LaporanSimulasi {
+		if !l.Kondisi.IsValid() || len(l.Foto) == 0 || len(l.Foto) > BatasFotoLaporan || len(l.Saksi)+1 < JumlahKonfirmasiTerverifikasi {
+			return ErrLaporanSimulasiTidakSah
+		}
+		if !isAkunDemoBerbeda(append([]string{l.Pelapor}, l.Saksi...), emailDemo) {
+			return ErrPelaporBukanAkunDemo
+		}
+	}
 	return nil
+}
+
+func isAkunDemoBerbeda(email []string, emailDemo map[string]bool) bool {
+	dilihat := map[string]bool{}
+	for _, e := range email {
+		if !emailDemo[e] || dilihat[e] {
+			return false
+		}
+		dilihat[e] = true
+	}
+	return true
 }
 
 func (a AkunDemo) Validasi() error {

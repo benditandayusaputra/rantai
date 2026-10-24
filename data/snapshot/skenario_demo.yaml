@@ -23,10 +23,14 @@ paket_simulasi:
 laporan_simulasi:
   - kondisi: selesai_baik
     catatan: Ruang kelas sudah dipakai belajar, atap dan jendela baru.
-    konfirmasi: 2
+    pelapor: warga@demo.rantai.test
+    saksi: [saksi1@demo.rantai.test, saksi2@demo.rantai.test]
+    foto: [foto_simulasi/laporan-selesai-baik.jpg]
   - kondisi: selesai_rusak
     catatan: Plafon satu ruang kelas retak di sudut dekat jendela.
-    konfirmasi: 2
+    pelapor: saksi1@demo.rantai.test
+    saksi: [warga@demo.rantai.test, saksi2@demo.rantai.test]
+    foto: [foto_simulasi/laporan-selesai-rusak.jpg]
 
 akun_demo:
   - peran: warga
@@ -42,6 +46,12 @@ akun_demo:
   - peran: moderator
     email: moderator@demo.rantai.test
     nama_tampilan: Moderator Contoh Simulasi
+  - peran: warga
+    email: saksi1@demo.rantai.test
+    nama_tampilan: Saksi Contoh Simulasi 1
+  - peran: warga
+    email: saksi2@demo.rantai.test
+    nama_tampilan: Saksi Contoh Simulasi 2
 
 tanya_demo:
   - Kenapa SMP negeri di kecamatanku penuh?

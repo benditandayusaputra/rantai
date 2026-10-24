@@ -131,7 +131,7 @@ Fungsi SQL `hierarki_wilayah(kode)` mengembalikan leluhur sebuah wilayah sebagai
 | `riwayat_penyedia` | `penyedia_id`, `tahun`, `pembeli`, `nama_paket`, `nilai`, `sumber` (opentender, lpse), `provenance_id` |
 | `sinyal` | `id`, `paket_kode`, `jenis` (S-01 sampai S-05), `alasan`, `pembanding` jsonb, `aktif`, `dihitung_pada` |
 | `laporan` | `id`, `pengguna_id`, `paket_kode`, `kode_wilayah`, `lokasi_publik` Point (dibulatkan ke grid 50 m), `lokasi_asli` Point (privat), `akurasi_meter`, `kondisi` (belum_dimulai, sedang_dikerjakan, terhenti, selesai_baik, selesai_rusak), `catatan`, `status`, `is_simulation` |
-| `laporan_foto` | `id`, `laporan_id`, `object_key`, `lebar`, `tinggi` |
+| `laporan_foto` | `id`, `laporan_id`, `urutan`, `object_key`, `thumbnail_key`, `lebar`, `tinggi` |
 | `laporan_konfirmasi` | `laporan_id`, `pengguna_id`, `kondisi`, `lokasi_asli`, `dibuat_pada`; unik (`laporan_id`, `pengguna_id`) |
 | `laporan_riwayat` | `laporan_id`, `status_lama`, `status_baru`, `oleh_pengguna_id`, `alasan`, `dibuat_pada` |
 
@@ -568,7 +568,9 @@ API: `GET /penyedia/{id}`. Kategori utama dan instansi pemberi tampil sebagai da
 5. Pilih kondisi dan isi catatan opsional (maksimal 500 karakter).
 6. Ringkasan dan kirim.
 
-Pemrosesan server: verifikasi magic bytes, dekode lalu enkode ulang ke JPEG (membuang EXIF), batasi sisi terpanjang 2048 px, thumbnail 480 px, simpan ke MinIO dengan kunci acak. `lokasi_asli` privat; `lokasi_publik` dibulatkan ke grid 50 m. Batas: 5 laporan per akun per hari.
+Pemrosesan server: verifikasi magic bytes, dekode lalu enkode ulang ke JPEG (membuang EXIF), batasi sisi terpanjang 2048 px, thumbnail 480 px, simpan ke MinIO dengan kunci acak. `lokasi_asli` privat; `lokasi_publik` dibulatkan ke grid 50 m. Batas: 5 laporan per akun dalam 24 jam terakhir.
+
+Server menerima JPEG dan PNG. Foto HEIC dan orientasi EXIF ditangani di klien: browser seluler mengubah HEIC menjadi JPEG saat unggah, dan alur Lapor Bukti menggambar ulang foto ke kanvas (orientasi sudah diterapkan) sebelum mengirim, karena server membuang EXIF tanpa memutar gambar. Paket yang dipilih wajib berjarak paling jauh 500 m dari lokasi pelapor; wilayah laporan adalah kelurahan (atau kecamatan) yang memuat titik, dan titik di luar DKI ditolak. Laporan atas paket simulasi otomatis bertanda `is_simulation`.
 
 **Mesin status** di `domain`:
 
@@ -585,7 +587,7 @@ DIKIRIM → MENUNGGU_SAKSI → TERVERIFIKASI → DITERUSKAN → DITANGGAPI → S
 
 Tes wajib: foto hasil tanpa EXIF; lokasi publik terbulatkan; semua transisi sah; transisi tidak sah ditolak dengan `ErrTransisiTidakSah`; konfirmasi di luar 200 m atau lewat 14 hari tidak dihitung.
 
-API: `POST /laporan` (multipart), `GET /laporan/{id}`, `POST /laporan/{id}/konfirmasi`.
+API: `POST /laporan` (multipart: `lat`, `lng`, `akurasi`, `kondisi`, `catatan`, `paket_kode` opsional, 1 sampai 4 berkas `foto`; respons 201 berisi `id` dan `status`), `GET /laporan/{id}`, `POST /laporan/{id}/konfirmasi`.
 
 ### ANG-09 Unduh data
 

@@ -11,7 +11,12 @@ func skenarioSah() SkenarioDemo {
 		AkunDemo: []AkunDemo{
 			{Peran: PeranWarga, Email: "warga@demo.rantai.test", NamaTampilan: "Warga Contoh Simulasi"},
 			{Peran: PeranAnggota, Email: "anggota@demo.rantai.test", NamaTampilan: "Anggota Contoh Simulasi"},
+			{Peran: PeranWarga, Email: "saksi@demo.rantai.test", NamaTampilan: "Saksi Contoh Simulasi"},
 		},
+		LaporanSimulasi: []LaporanSimulasi{{
+			Kondisi: KondisiSelesaiBaik, Pelapor: "warga@demo.rantai.test",
+			Saksi: []string{"anggota@demo.rantai.test", "saksi@demo.rantai.test"}, Foto: []string{"foto.jpg"},
+		}},
 	}
 }
 
@@ -32,6 +37,10 @@ func TestValidasiSkenarioDemo(t *testing.T) {
 		{"peran tak dikenal", func(s *SkenarioDemo) { s.AkunDemo[0].Peran = "pejabat" }, ErrPeranTidakDikenal},
 		{"email bukan domain uji", func(s *SkenarioDemo) { s.AkunDemo[0].Email = "warga@gmail.com" }, ErrAkunDemoBukanSimulasi},
 		{"nama tampilan tanpa penanda", func(s *SkenarioDemo) { s.AkunDemo[0].NamaTampilan = "Budi" }, ErrAkunDemoBukanSimulasi},
+		{"laporan simulasi kurang saksi", func(s *SkenarioDemo) { s.LaporanSimulasi[0].Saksi = s.LaporanSimulasi[0].Saksi[:1] }, ErrLaporanSimulasiTidakSah},
+		{"laporan simulasi tanpa foto", func(s *SkenarioDemo) { s.LaporanSimulasi[0].Foto = nil }, ErrLaporanSimulasiTidakSah},
+		{"pelapor bukan akun demo", func(s *SkenarioDemo) { s.LaporanSimulasi[0].Pelapor = "warga@gmail.com" }, ErrPelaporBukanAkunDemo},
+		{"saksi sama dengan pelapor", func(s *SkenarioDemo) { s.LaporanSimulasi[0].Saksi[0] = "warga@demo.rantai.test" }, ErrPelaporBukanAkunDemo},
 	}
 	for _, k := range kasus {
 		t.Run(k.nama, func(t *testing.T) {
