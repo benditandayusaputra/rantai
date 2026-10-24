@@ -247,7 +247,7 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
 - [x] **T-707** Antarmuka Paket Aspirasi **[BUTUH DESAIN]**
   - Commit: `✨ Bangun alur Paket Aspirasi`
   - Selesai bila: dari halaman kecamatan ke unduhan PDF dalam 2 menit pada uji manual.
-- [ ] **T-708** Data yang Belum Dibuka (AKS-04) **[BUTUH DESAIN]**
+- [x] **T-708** Data yang Belum Dibuka (AKS-04) **[BUTUH DESAIN]**
   - `config/data_belum_dibuka.yaml`, `GET /data-belum-dibuka`, `POST /data-belum-dibuka/{kode}/permohonan`, halaman dengan templat PPID.
   - Commit: `✨ Tambah halaman Data yang Belum Dibuka dan templat permohonan PPID`
   - Selesai bila: keempat data dan penggantinya tampil; surat permohonan berisi dasar UU 14/2008.
@@ -360,5 +360,4 @@ Format: `- T-xxx · tanggal · alasan · tugas yang dikerjakan sebagai gantinya`
 - T-301 · 23 Oktober 2026 · halaman detail dan evaluasi tender SPSE DKI tertutup untuk publik (403, "Akses Ditolak"); detail tender butuh token API Gateway Inaproc (peran Data Integrator, surat ke LKPP) · paket tender disimpan dari kolom daftar, non-tender memakai halaman pengumuman lengkap
 - T-608 · 24 Oktober 2026 · `docs/DESIGN.md` belum memuat layar Kesenjangan vs Belanja (SPEC 14 butir 5) · T-609 dan T-610
 - T-609 · 24 Oktober 2026 · `docs/DESIGN.md` belum memuat umpan dua sumber di profil anggota dan token warna jenis sumber umpan (SPEC 14 butir 1 dan 5); kartu wakil di halaman kecamatan sudah menaut ke `/id/anggota/{id}` · T-610
-- T-708 · 24 Oktober 2026 · `docs/DESIGN.md` belum memuat layar Data yang Belum Dibuka; sisi backend (`config/data_belum_dibuka.yaml`, `GET /data-belum-dibuka`, `POST /data-belum-dibuka/{kode}/permohonan`, unduhan PDF) sudah selesai, kotak dicentang setelah halamannya dibangun · T-801
 - T-901 · 24 Oktober 2026 · `docs/DESIGN.md` belum memuat isu yang disuarakan di profil anggota (6.8) maupun umpan anggota Komisi E di tab Layanan (6.2a); sisi backend (`GET /anggota/{id}/isu`, `GET /kecamatan/{kode}/wakil?dengan_umpan=true`) sudah selesai, kotak dicentang setelah tampilannya dibangun · T-902

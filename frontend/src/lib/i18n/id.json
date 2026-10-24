@@ -548,5 +548,18 @@
 	"auth.verifying": "Memeriksa kode...",
 	"auth.wrongCode": "Kode tidak cocok. Periksa lagi emailmu, lalu ketik ulang.",
 	"auth.panelLead": "Akun dipakai untuk menjadi saksi laporan warga, memantau wilayah, dan bagi petugas instansi untuk menulis hak jawab.",
-	"auth.account": "Akun {email}"
+	"auth.account": "Akun {email}",
+	"unopened.over": "Keterbukaan informasi",
+	"unopened.title": "Data yang belum dibuka",
+	"unopened.lead": "Sebagian data yang dibutuhkan warga untuk mengawasi DPRD belum dipublikasikan. Di sini kami jelaskan alasannya, apa yang bisa kamu pakai di Rantai sebagai gantinya, dan cara memintanya ke PPID.",
+	"unopened.why": "Kenapa belum tersedia",
+	"unopened.substitute": "Pengganti di Rantai",
+	"unopened.request": "Minta data ini",
+	"unopened.to": "Ditujukan kepada",
+	"unopened.ppidSite": "Situs PPID DPRD DKI",
+	"unopened.letterTitle": "Surat permohonan: {name}",
+	"unopened.selfDeliver": "Rantai tidak mengirim permohonan atas namamu. Salin atau unduh suratnya, isi identitasmu, lalu kirim sendiri ke PPID lewat surat, email, atau formulir di situsnya.",
+	"unopened.loading": "Memuat daftar data yang belum dibuka...",
+	"unopened.failed": "Daftar data yang belum dibuka gagal dimuat",
+	"unopened.link": "Data yang belum dibuka"
 }

@@ -1,9 +1,10 @@
 import { env } from '$env/dynamic/public';
 import type {
 	Amplop,
+	DaftarDataBelumDibuka,
 	DetailPaket,
 	DetailPendidikan,
-	DokumenAspirasi,
+	Dokumen,
 	InfoSumberData,
 	PaketRingkas,
 	PermintaanAspirasi,
@@ -195,6 +196,16 @@ export function ambilTema(fetchFn: Fetch, kode: string): Promise<TemaDetail> {
 	return ambilData<TemaDetail>(fetchFn, `/tema/${encodeURIComponent(kode)}`);
 }
 
-export function susunAspirasi(fetchFn: Fetch, p: PermintaanAspirasi): Promise<DokumenAspirasi> {
-	return kirimData<DokumenAspirasi>(fetchFn, '/aspirasi', p);
+export function susunAspirasi(fetchFn: Fetch, p: PermintaanAspirasi): Promise<Dokumen> {
+	return kirimData<Dokumen>(fetchFn, '/aspirasi', p);
+}
+
+export function ambilDataBelumDibuka(fetchFn: Fetch): Promise<DaftarDataBelumDibuka> {
+	return ambilData<DaftarDataBelumDibuka>(fetchFn, '/data-belum-dibuka');
+}
+
+export function susunPermohonan(fetchFn: Fetch, kode: string, bahasa: string): Promise<Dokumen> {
+	return kirimData<Dokumen>(fetchFn, `/data-belum-dibuka/${encodeURIComponent(kode)}/permohonan`, {
+		bahasa
+	});
 }

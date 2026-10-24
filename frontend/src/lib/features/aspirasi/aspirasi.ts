@@ -6,7 +6,7 @@ import {
 	susunAspirasi,
 	type Fetch
 } from '$lib/api/klien';
-import type { DokumenAspirasi, TemaDetail, WilayahDitemukan } from '$lib/api/tipe';
+import type { Dokumen, TemaDetail, WilayahDitemukan } from '$lib/api/tipe';
 import { t } from '$lib/i18n';
 
 export const bahasaDokumen = ['id', 'en'] as const;
@@ -22,7 +22,7 @@ export interface PilihanAspirasi {
 export interface HalamanAspirasi {
 	wilayah: WilayahDitemukan;
 	tema: TemaDetail;
-	dokumen: DokumenAspirasi | null;
+	dokumen: Dokumen | null;
 }
 
 export function bacaPilihan(kueri: URLSearchParams): PilihanAspirasi {

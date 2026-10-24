@@ -16,7 +16,12 @@
 		<KeyNumberCard label={t('reps.seats')} angka={dapil.jumlah_kursi} />
 		<KeyNumberCard label={t('reps.count')} angka={dapil.jumlah_anggota} />
 	</div>
-	<p class="text-small text-muted">{t('reps.noScore')}</p>
+	<p class="text-small text-muted">
+		{t('reps.noScore')}
+		<a href="/{bahasaBawaan}/data-belum-dibuka" class="font-semibold underline"
+			>{t('unopened.link')}</a
+		>
+	</p>
 	<a
 		href="/{bahasaBawaan}/aspirasi?w={encodeURIComponent(wakilku.kecamatan.kode)}"
 		class="inline-flex min-h-touch items-center justify-center gap-2 self-start rounded-md bg-primary px-4 font-semibold text-primary-on max-md:w-full"

@@ -181,6 +181,9 @@
 			<ul class="list-disc space-y-2 pl-5 text-small">
 				{#each keterbatasan as kunci (kunci)}<li>{t(kunci)}</li>{/each}
 			</ul>
+			<a href="/{bahasaBawaan}/data-belum-dibuka" class="font-bold text-secondary-on underline"
+				>{t('unopened.link')}</a
+			>
 		</section>
 		<section id="lisensi" aria-labelledby="judul-lisensi" class={kelasBagian}>
 			<h2 id="judul-lisensi" class="t-h2">{t('about.license')}</h2>

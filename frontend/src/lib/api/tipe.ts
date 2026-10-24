@@ -355,7 +355,7 @@ export interface PermintaanAspirasi {
 	bahasa: string;
 }
 
-export interface DokumenAspirasi {
+export interface Dokumen {
 	teks: string;
 	pdf_url: string;
 }
@@ -374,4 +374,23 @@ export interface Pengguna {
 export interface Sesi {
 	token_akses: string;
 	pengguna: Pengguna;
+}
+
+export interface PPID {
+	nama: string;
+	alamat: string;
+	url: string;
+}
+
+export interface DataBelumDibuka {
+	kode: string;
+	nama: Teks;
+	alasan: Teks;
+	pengganti: Teks;
+	fitur_pengganti: string;
+}
+
+export interface DaftarDataBelumDibuka {
+	ppid: PPID;
+	data: DataBelumDibuka[];
 }
