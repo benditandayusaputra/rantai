@@ -42,7 +42,7 @@ func NewApp(cfg config.Server, layanan Layanan) *fiber.App {
 	api.Get("/provenance/:id", handlerProvenance{layanan: layanan.Provenance}.ambil)
 	daftarkanTema(api, handlerTema{layanan: layanan.Tema})
 	daftarkanWakil(api, handlerWakil{layanan: layanan.Wakil})
-	api.Get("/anggota/:id/umpan", handlerUmpan{layanan: layanan.Umpan}.umpanAnggota)
+	daftarkanUmpan(api, handlerUmpan{layanan: layanan.Umpan})
 	api.Get("/kecamatan/:kode/ringkasan", handlerRingkasanKecamatan{layanan: layanan.Ringkasan}.ringkas)
 	daftarkanPaket(api, handlerPaket{layanan: layanan.Paket})
 	api.Get("/tema/:kode/belanja", handlerBelanja{layanan: layanan.Belanja}.hitung)
@@ -74,6 +74,11 @@ func daftarkanWakil(api fiber.Router, h handlerWakil) {
 	api.Get("/kecamatan/:kode/wakil", h.wakilKecamatan)
 	api.Get("/dapil/:id", h.dapil)
 	api.Get("/anggota/:id", h.anggota)
+}
+
+func daftarkanUmpan(api fiber.Router, h handlerUmpan) {
+	api.Get("/anggota/:id/umpan", h.umpanAnggota)
+	api.Get("/anggota/:id/isu", h.isuAnggota)
 }
 
 func daftarkanPendidikan(api fiber.Router, h handlerPendidikan) {

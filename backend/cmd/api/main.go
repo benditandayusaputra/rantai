@@ -75,7 +75,7 @@ func denganTanyaDanAuth(layanan deliveryhttp.Layanan, pool *pgxpool.Pool, cfg co
 func susunLayanan(pool *pgxpool.Pool) (deliveryhttp.Layanan, error) {
 	tema := usecase.BacaTema{Pembaca: repository.TemaRepository{DB: pool}}
 	wilayah := repository.WilayahRepository{DB: pool}
-	wakil := usecase.BacaWakil{Pembaca: repository.WakilRepository{DB: pool}, Tema: tema}
+	wakil := usecase.BacaWakil{Pembaca: repository.WakilRepository{DB: pool}, Tema: tema, Umpan: repository.UmpanRepository{DB: pool}}
 	ringkasan := repository.RingkasanKecamatanRepository{DB: pool}
 	paket, err := buatBacaPaket(pool)
 	if err != nil {

@@ -35,6 +35,7 @@ type WakilKecamatan struct {
 	Kecamatan      RingkasanWilayah
 	KomisiPengawas []string
 	DetailDapil
+	UmpanIsuPengawas map[string][]UmpanTampil
 }
 
 type ProfilAnggota struct {

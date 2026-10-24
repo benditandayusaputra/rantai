@@ -84,7 +84,7 @@ func (wakilAlatTiruan) WakilKecamatan(context.Context, string, string) (domain.W
 	return domain.WakilKecamatan{Kecamatan: kecamatanAlatUji, KomisiPengawas: []string{"E"}, DetailDapil: dapilAlatUji}, nil
 }
 
-type umpanAlatTiruan struct{}
+type umpanAlatTiruan struct{ LayananUmpan }
 
 func (umpanAlatTiruan) UmpanAnggota(context.Context, domain.FilterUmpan) (domain.HalamanUmpan, error) {
 	item := domain.UmpanTampil{ID: 1, JenisSumber: domain.SumberUmpanResmiDPRD, Judul: "Rapat Komisi E", ProvenanceID: provenanceAlatUji}

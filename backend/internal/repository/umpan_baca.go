@@ -17,8 +17,10 @@ LIMIT $1`
 
 	sqlAnggotaAda = `SELECT EXISTS (SELECT 1 FROM anggota WHERE id = $1)`
 
-	sqlUmpanAnggota = `SELECT u.id, u.jenis_sumber, u.media_nama, u.media_domain, u.judul, coalesce(u.ringkasan, ''), u.url,
-    u.terbit_pada, u.tag_isu, ua.dasar_cocok, u.provenance_id, count(*) OVER ()
+	sqlKolomUmpanTampil = `u.id, u.jenis_sumber, u.media_nama, u.media_domain, u.judul, coalesce(u.ringkasan, ''), u.url,
+    u.terbit_pada, u.tag_isu, ua.dasar_cocok, u.provenance_id`
+
+	sqlUmpanAnggota = `SELECT ` + sqlKolomUmpanTampil + `, count(*) OVER ()
 FROM umpan_anggota ua
 JOIN umpan_kegiatan u ON u.id = ua.umpan_id
 WHERE ua.anggota_id = $1 AND NOT u.disembunyikan
@@ -26,6 +28,22 @@ WHERE ua.anggota_id = $1 AND NOT u.disembunyikan
     AND ($3 = '' OR $3 = ANY (u.tag_isu))
 ORDER BY u.terbit_pada DESC, u.id DESC
 LIMIT $4 OFFSET $5`
+
+	sqlUmpanBertagAnggota = `SELECT ` + sqlKolomUmpanTampil + `
+FROM umpan_anggota ua
+JOIN umpan_kegiatan u ON u.id = ua.umpan_id
+WHERE ua.anggota_id = $1 AND NOT u.disembunyikan AND cardinality(u.tag_isu) > 0
+ORDER BY u.terbit_pada DESC, u.id DESC`
+
+	sqlUmpanIsuTerbaru = `SELECT * FROM (
+    SELECT ua.anggota_id, ` + sqlKolomUmpanTampil + `,
+        row_number() OVER (PARTITION BY ua.anggota_id ORDER BY u.terbit_pada DESC, u.id DESC) AS urutan
+    FROM umpan_anggota ua
+    JOIN umpan_kegiatan u ON u.id = ua.umpan_id
+    WHERE ua.anggota_id = ANY ($1) AND NOT u.disembunyikan AND u.tag_isu && $2
+) terbaru
+WHERE urutan <= $3
+ORDER BY anggota_id, urutan`
 )
 
 func (r UmpanRepository) UmpanBelumDiringkas(ctx context.Context, batas int) ([]domain.UmpanUntukRingkas, error) {
@@ -54,10 +72,41 @@ func (r UmpanRepository) UmpanAnggota(ctx context.Context, filter domain.FilterU
 	}
 	halaman := domain.HalamanUmpan{Item: []domain.UmpanTampil{}}
 	var u domain.UmpanTampil
-	_, err = pgx.ForEachRow(baris, []any{&u.ID, &u.JenisSumber, &u.MediaNama, &u.MediaDomain, &u.Judul, &u.Ringkasan,
-		&u.URL, &u.TerbitPada, &u.TagIsu, &u.DasarCocok, &u.ProvenanceID, &halaman.Total}, func() error {
+	_, err = pgx.ForEachRow(baris, append(kolomUmpanTampil(&u), &halaman.Total), func() error {
 		halaman.Item = append(halaman.Item, u)
 		return nil
 	})
 	return halaman, err
+}
+
+func (r UmpanRepository) UmpanBertagAnggota(ctx context.Context, anggotaID string) ([]domain.UmpanTampil, error) {
+	baris, err := r.DB.Query(ctx, sqlUmpanBertagAnggota, anggotaID)
+	if err != nil {
+		return nil, err
+	}
+	return pgx.CollectRows(baris, func(b pgx.CollectableRow) (domain.UmpanTampil, error) {
+		var u domain.UmpanTampil
+		return u, b.Scan(kolomUmpanTampil(&u)...)
+	})
+}
+
+func (r UmpanRepository) UmpanIsuTerbaru(ctx context.Context, anggotaID, tagIsu []string) (map[string][]domain.UmpanTampil, error) {
+	baris, err := r.DB.Query(ctx, sqlUmpanIsuTerbaru, anggotaID, tagIsu, domain.BatasUmpanIsuPerWakil)
+	if err != nil {
+		return nil, err
+	}
+	hasil := map[string][]domain.UmpanTampil{}
+	var pemilik string
+	var urutan int
+	var u domain.UmpanTampil
+	_, err = pgx.ForEachRow(baris, append(append([]any{&pemilik}, kolomUmpanTampil(&u)...), &urutan), func() error {
+		hasil[pemilik] = append(hasil[pemilik], u)
+		return nil
+	})
+	return hasil, err
+}
+
+func kolomUmpanTampil(u *domain.UmpanTampil) []any {
+	return []any{&u.ID, &u.JenisSumber, &u.MediaNama, &u.MediaDomain, &u.Judul, &u.Ringkasan,
+		&u.URL, &u.TerbitPada, &u.TagIsu, &u.DasarCocok, &u.ProvenanceID}
 }

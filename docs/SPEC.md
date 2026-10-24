@@ -359,7 +359,7 @@ API: `GET /tema/{kode}/belanja?tahun=`.
 
 Di bagian Tema: anggota dapil kecamatan yang duduk di komisi pengawas tema, beserta item umpan WAK-03 yang memuat `tag_isu` tema, maksimal tiga item terbaru per anggota dengan lencana jenis sumber. Tanpa perbandingan antaranggota.
 
-API: `GET /kecamatan/{kode}/wakil?tema=pendidikan&dengan_umpan=true`.
+API: `GET /kecamatan/{kode}/wakil?tema=pendidikan&dengan_umpan=true`. Respons menambah `umpan_isu_pengawas`: peta id anggota komisi pengawas ke daftar item umpan (bentuk sama dengan WAK-03), kosong bila tidak ada item. `dengan_umpan` tanpa `tema` ditolak 400.
 
 ### PEN-06 Cek Sekolahku
 
@@ -417,7 +417,7 @@ Kriteria terima: tes disambiguasi dengan fixture artikel yang menyebut nama sama
 
 Untuk satu anggota: daftar `tag_isu` yang muncul di umpannya, masing-masing dengan label jumlah sumber ("disebut di 5 sumber: 2 rilis resmi, 3 media") dan tautan ke item. Tidak ada perbandingan atau urutan antaranggota. Kata kerja yang dipakai: "menyuarakan", bukan "memperjuangkan".
 
-API: `GET /anggota/{id}/isu`.
+API: `GET /anggota/{id}/isu`. Setiap isu memuat `tag`, `jumlah_sumber`, `jumlah_rilis_resmi`, `jumlah_media`, dan maksimal lima `item` terbaru; daftar lengkap lewat `GET /anggota/{id}/umpan?tag=`. Isu diurutkan dari jumlah sumber terbanyak untuk anggota itu saja.
 
 ### WAK-05 Sikap Fraksi
 

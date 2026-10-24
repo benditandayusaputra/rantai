@@ -3,6 +3,8 @@ package usecase
 import (
 	"context"
 	"fmt"
+	"maps"
+	"slices"
 
 	"github.com/benditandayusaputra/rantai/backend/internal/domain"
 )
@@ -18,9 +20,14 @@ type PencariTema interface {
 	Ambil(ctx context.Context, kode string) (domain.TemaTersimpan, error)
 }
 
+type PembacaUmpanIsu interface {
+	UmpanIsuTerbaru(ctx context.Context, anggotaID, tagIsu []string) (map[string][]domain.UmpanTampil, error)
+}
+
 type BacaWakil struct {
 	Pembaca PembacaWakil
 	Tema    PencariTema
+	Umpan   PembacaUmpanIsu
 }
 
 func (u BacaWakil) WakilKecamatan(ctx context.Context, kode, kodeTema string) (domain.WakilKecamatan, error) {
@@ -33,6 +40,41 @@ func (u BacaWakil) WakilKecamatan(ctx context.Context, kode, kodeTema string) (d
 		return domain.WakilKecamatan{}, err
 	}
 	return u.WakilKecamatanKomisi(ctx, kodeKecamatan, komisiPengawas)
+}
+
+func (u BacaWakil) WakilKecamatanDenganUmpan(ctx context.Context, kode, kodeTema string) (domain.WakilKecamatan, error) {
+	if kodeTema == "" {
+		return domain.WakilKecamatan{}, domain.InputTidakValid("dengan_umpan memerlukan parameter tema")
+	}
+	kodeKecamatan, err := kecamatanDariKode(kode)
+	if err != nil {
+		return domain.WakilKecamatan{}, err
+	}
+	tema, err := u.Tema.Ambil(ctx, kodeTema)
+	if err != nil {
+		return domain.WakilKecamatan{}, err
+	}
+	hasil, err := u.WakilKecamatanKomisi(ctx, kodeKecamatan, domain.KomisiPengawas(tema.Tema))
+	if err != nil {
+		return domain.WakilKecamatan{}, err
+	}
+	hasil.UmpanIsuPengawas, err = u.umpanIsuPengawas(ctx, hasil.Anggota, tema.TagIsu)
+	return hasil, err
+}
+
+func (u BacaWakil) umpanIsuPengawas(ctx context.Context, anggota []domain.Wakil, tagIsu []string) (map[string][]domain.UmpanTampil, error) {
+	hasil := map[string][]domain.UmpanTampil{}
+	for _, w := range anggota {
+		if w.IsDiKomisiPengawasTema {
+			hasil[w.ID] = []domain.UmpanTampil{}
+		}
+	}
+	umpan, err := u.Umpan.UmpanIsuTerbaru(ctx, slices.Collect(maps.Keys(hasil)), tagIsu)
+	if err != nil {
+		return nil, fmt.Errorf("baca umpan isu wakil pengawas: %w", err)
+	}
+	maps.Copy(hasil, umpan)
+	return hasil, nil
 }
 
 func (u BacaWakil) WakilKecamatanKomisi(ctx context.Context, kodeKecamatan string, komisiPengawas []string) (domain.WakilKecamatan, error) {

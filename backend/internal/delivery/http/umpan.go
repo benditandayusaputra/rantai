@@ -13,6 +13,15 @@ const halamanBawaan = 1
 
 type LayananUmpan interface {
 	UmpanAnggota(ctx context.Context, filter domain.FilterUmpan) (domain.HalamanUmpan, error)
+	IsuAnggota(ctx context.Context, anggotaID string) ([]domain.IsuDisuarakan, error)
+}
+
+type isuJSON struct {
+	Tag              string      `json:"tag"`
+	JumlahSumber     int         `json:"jumlah_sumber"`
+	JumlahRilisResmi int         `json:"jumlah_rilis_resmi"`
+	JumlahMedia      int         `json:"jumlah_media"`
+	Item             []umpanJSON `json:"item"`
 }
 
 type umpanJSON struct {
@@ -46,6 +55,21 @@ func (h handlerUmpan) umpanAnggota(c fiber.Ctx) error {
 		return err
 	}
 	return kirimHalaman(c, keDaftarUmpanJSON(hasil.Item), buatMeta(halaman, hasil))
+}
+
+func (h handlerUmpan) isuAnggota(c fiber.Ctx) error {
+	daftar, err := h.layanan.IsuAnggota(c.Context(), c.Params("id"))
+	if err != nil {
+		return err
+	}
+	hasil := make([]isuJSON, len(daftar))
+	for i, isu := range daftar {
+		hasil[i] = isuJSON{
+			Tag: isu.Tag, JumlahSumber: isu.JumlahSumber(), JumlahRilisResmi: isu.JumlahResmi,
+			JumlahMedia: isu.JumlahMedia, Item: keDaftarUmpanJSON(isu.Item),
+		}
+	}
+	return kirimData(c, hasil)
 }
 
 func keDaftarUmpanJSON(daftar []domain.UmpanTampil) []umpanJSON {

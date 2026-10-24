@@ -7,22 +7,31 @@ import (
 	"testing"
 
 	"github.com/benditandayusaputra/rantai/backend/internal/config"
+	"github.com/benditandayusaputra/rantai/backend/internal/domain"
 	"github.com/benditandayusaputra/rantai/backend/internal/repository"
 	"github.com/benditandayusaputra/rantai/backend/internal/ujidb"
 	"github.com/benditandayusaputra/rantai/backend/internal/ujidb/ujiwakil"
 	"github.com/benditandayusaputra/rantai/backend/internal/usecase"
 	"github.com/gofiber/fiber/v3"
+	"github.com/jackc/pgx/v5"
 )
 
 var polaKunciKinerja = regexp.MustCompile(`(?i)"[a-z_]*(skor|peringkat|rating|kinerja|ranking|kehadiran)[a-z_]*"\s*:`)
 
 func appUjiWakil(t *testing.T) *fiber.App {
 	t.Helper()
+	app, _ := appUjiWakilDanTransaksi(t)
+	return app
+}
+
+func appUjiWakilDanTransaksi(t *testing.T) (*fiber.App, pgx.Tx) {
+	t.Helper()
 	tx := ujidb.BukaTransaksi(t)
 	ujiwakil.MuatDPRD(t, tx)
 	muatTema(t, tx)
 	tema := usecase.BacaTema{Pembaca: repository.TemaRepository{DB: tx}}
-	return NewApp(config.Server{}, Layanan{Wakil: usecase.BacaWakil{Pembaca: repository.WakilRepository{DB: tx}, Tema: tema}})
+	wakil := usecase.BacaWakil{Pembaca: repository.WakilRepository{DB: tx}, Tema: tema, Umpan: repository.UmpanRepository{DB: tx}}
+	return NewApp(config.Server{}, Layanan{Wakil: wakil}), tx
 }
 
 func daftarAnggota(t *testing.T, dapil any) []map[string]any {
@@ -124,6 +133,57 @@ func TestAPIWakil_SemuaEndpoint_TanpaAngkaKinerjaAtauPeringkat(t *testing.T) {
 		mentah, _ := json.Marshal(panggil(t, app, path).respons.Data)
 		if polaKunciKinerja.Match(mentah) {
 			t.Errorf("%s memuat angka kinerja: %s", path, polaKunciKinerja.Find(mentah))
+		}
+	}
+}
+
+func TestWakilKecamatan_DenganUmpan_TigaUmpanBertagTemaTerbaruUntukPengawas(t *testing.T) {
+	app, tx := appUjiWakilDanTransaksi(t)
+	awal, _ := panggil(t, app, "/api/v1/kecamatan/31.74.01/wakil?tema=pendidikan").respons.Data.(map[string]any)
+	anggota := daftarAnggota(t, awal["dapil"])
+	pengawas, _ := anggota[0]["id"].(string)
+	bukanPengawas, _ := anggota[len(anggota)-1]["id"].(string)
+	simpanUmpanUji(t, tx,
+		umpanBertagUji(1, domain.SumberUmpanMedia, pengawas, "sekolah"),
+		umpanBertagUji(2, domain.SumberUmpanResmiDPRD, pengawas, "zonasi"),
+		umpanBertagUji(3, domain.SumberUmpanMedia, pengawas, "guru"),
+		umpanBertagUji(4, domain.SumberUmpanResmiDPRD, pengawas, "spmb"),
+		umpanBertagUji(5, domain.SumberUmpanMedia, pengawas, "banjir"),
+		umpanBertagUji(6, domain.SumberUmpanMedia, bukanPengawas, "sekolah"),
+	)
+
+	hasil := panggil(t, app, "/api/v1/kecamatan/31.74.01/wakil?tema=pendidikan&dengan_umpan=true")
+
+	data, _ := hasil.respons.Data.(map[string]any)
+	umpanIsu, _ := data["umpan_isu_pengawas"].(map[string]any)
+	item, _ := umpanIsu[pengawas].([]any)
+	if hasil.kode != fiber.StatusOK || len(item) != domain.BatasUmpanIsuPerWakil {
+		t.Fatalf("kode %d, umpan pengawas %v", hasil.kode, umpanIsu[pengawas])
+	}
+	if terbaru, _ := item[0].(map[string]any); terbaru["judul"] != "Umpan uji 4" || terbaru["jenis_sumber"] != "resmi_dprd" {
+		t.Errorf("item terbaru = %v", terbaru)
+	}
+	if _, ada := umpanIsu[bukanPengawas]; ada {
+		t.Error("anggota di luar komisi pengawas tidak boleh membawa umpan isu")
+	}
+}
+
+func TestWakilKecamatan_TanpaDenganUmpan_TanpaKunciUmpan(t *testing.T) {
+	data, _ := panggil(t, appUjiWakil(t), "/api/v1/kecamatan/31.74.01/wakil?tema=pendidikan").respons.Data.(map[string]any)
+
+	if _, ada := data["umpan_isu_pengawas"]; ada {
+		t.Error("umpan_isu_pengawas hanya dikirim bila dengan_umpan=true")
+	}
+}
+
+func TestWakilKecamatan_DenganUmpanTidakSah_400(t *testing.T) {
+	app := appUjiWakil(t)
+	for _, path := range []string{
+		"/api/v1/kecamatan/31.74.01/wakil?dengan_umpan=true",
+		"/api/v1/kecamatan/31.74.01/wakil?tema=pendidikan&dengan_umpan=ya",
+	} {
+		if hasil := panggil(t, app, path); hasil.kode != fiber.StatusBadRequest {
+			t.Errorf("%s: kode %d, harap 400", path, hasil.kode)
 		}
 	}
 }

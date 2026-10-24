@@ -15,6 +15,7 @@ const (
 
 type LayananWakil interface {
 	WakilKecamatan(ctx context.Context, kode, kodeTema string) (domain.WakilKecamatan, error)
+	WakilKecamatanDenganUmpan(ctx context.Context, kode, kodeTema string) (domain.WakilKecamatan, error)
 	Dapil(ctx context.Context, id int) (domain.DetailDapil, error)
 	Anggota(ctx context.Context, id string) (domain.ProfilAnggota, error)
 }
@@ -47,9 +48,10 @@ type dapilJSON struct {
 }
 
 type wakilKecamatanJSON struct {
-	Kecamatan      ringkasanWilayahJSON `json:"kecamatan"`
-	KomisiPengawas []string             `json:"komisi_pengawas"`
-	Dapil          dapilJSON            `json:"dapil"`
+	Kecamatan        ringkasanWilayahJSON   `json:"kecamatan"`
+	KomisiPengawas   []string               `json:"komisi_pengawas"`
+	Dapil            dapilJSON              `json:"dapil"`
+	UmpanIsuPengawas map[string][]umpanJSON `json:"umpan_isu_pengawas,omitempty"`
 }
 
 type jabatanJSON struct {
@@ -72,18 +74,45 @@ type handlerWakil struct {
 }
 
 func (h handlerWakil) wakilKecamatan(c fiber.Ctx) error {
-	hasil, err := h.layanan.WakilKecamatan(c.Context(), c.Params("kode"), c.Query("tema"))
+	hasil, err := h.ambilWakilKecamatan(c)
 	if err != nil {
 		return err
 	}
 	return kirimData(c, keWakilKecamatanJSON(hasil))
 }
 
+func (h handlerWakil) ambilWakilKecamatan(c fiber.Ctx) (domain.WakilKecamatan, error) {
+	denganUmpan, err := uraiBoolOpsional(c.Query("dengan_umpan"))
+	switch {
+	case err != nil:
+		return domain.WakilKecamatan{}, domain.InputTidakValid("dengan_umpan harus true atau false")
+	case denganUmpan:
+		return h.layanan.WakilKecamatanDenganUmpan(c.Context(), c.Params("kode"), c.Query("tema"))
+	default:
+		return h.layanan.WakilKecamatan(c.Context(), c.Params("kode"), c.Query("tema"))
+	}
+}
+
+func uraiBoolOpsional(nilai string) (bool, error) {
+	if nilai == "" {
+		return false, nil
+	}
+	return strconv.ParseBool(nilai)
+}
+
 func keWakilKecamatanJSON(w domain.WakilKecamatan) wakilKecamatanJSON {
+	var umpanIsu map[string][]umpanJSON
+	if w.UmpanIsuPengawas != nil {
+		umpanIsu = map[string][]umpanJSON{}
+		for id, umpan := range w.UmpanIsuPengawas {
+			umpanIsu[id] = keDaftarUmpanJSON(umpan)
+		}
+	}
 	return wakilKecamatanJSON{
-		Kecamatan:      keRingkasanWilayahJSON(w.Kecamatan),
-		KomisiPengawas: w.KomisiPengawas,
-		Dapil:          keDapilJSON(w.DetailDapil),
+		Kecamatan:        keRingkasanWilayahJSON(w.Kecamatan),
+		KomisiPengawas:   w.KomisiPengawas,
+		Dapil:            keDapilJSON(w.DetailDapil),
+		UmpanIsuPengawas: umpanIsu,
 	}
 }
 

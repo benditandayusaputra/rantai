@@ -13,22 +13,41 @@ const UmpanPerHalaman = 20
 type PembacaUmpan interface {
 	IsAnggotaAda(ctx context.Context, id string) (bool, error)
 	UmpanAnggota(ctx context.Context, filter domain.FilterUmpan) (domain.HalamanUmpan, error)
+	UmpanBertagAnggota(ctx context.Context, anggotaID string) ([]domain.UmpanTampil, error)
 }
 
 type BacaUmpan struct {
 	Pembaca PembacaUmpan
 }
 
+func (u BacaUmpan) IsuAnggota(ctx context.Context, anggotaID string) ([]domain.IsuDisuarakan, error) {
+	if err := u.pastikanAnggotaAda(ctx, anggotaID); err != nil {
+		return nil, err
+	}
+	umpan, err := u.Pembaca.UmpanBertagAnggota(ctx, anggotaID)
+	if err != nil {
+		return nil, fmt.Errorf("baca umpan bertag anggota %s: %w", anggotaID, err)
+	}
+	return domain.KelompokkanIsu(umpan), nil
+}
+
+func (u BacaUmpan) pastikanAnggotaAda(ctx context.Context, anggotaID string) error {
+	ada, err := u.Pembaca.IsAnggotaAda(ctx, anggotaID)
+	if err != nil {
+		return fmt.Errorf("periksa anggota %s: %w", anggotaID, err)
+	}
+	if !ada {
+		return domain.TidakDitemukan("anggota tidak ditemukan")
+	}
+	return nil
+}
+
 func (u BacaUmpan) UmpanAnggota(ctx context.Context, filter domain.FilterUmpan) (domain.HalamanUmpan, error) {
 	if err := validasiFilterUmpan(filter); err != nil {
 		return domain.HalamanUmpan{}, err
 	}
-	ada, err := u.Pembaca.IsAnggotaAda(ctx, filter.AnggotaID)
-	if err != nil {
-		return domain.HalamanUmpan{}, fmt.Errorf("periksa anggota %s: %w", filter.AnggotaID, err)
-	}
-	if !ada {
-		return domain.HalamanUmpan{}, domain.TidakDitemukan("anggota tidak ditemukan")
+	if err := u.pastikanAnggotaAda(ctx, filter.AnggotaID); err != nil {
+		return domain.HalamanUmpan{}, err
 	}
 	filter.PerHalaman = UmpanPerHalaman
 	filter.Tag = strings.ToLower(strings.TrimSpace(filter.Tag))
