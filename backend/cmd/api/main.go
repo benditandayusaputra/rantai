@@ -81,7 +81,7 @@ func susunLayanan(pool *pgxpool.Pool) (deliveryhttp.Layanan, error) {
 	if err != nil {
 		return deliveryhttp.Layanan{}, err
 	}
-	return denganAspirasi(deliveryhttp.Layanan{
+	return denganLayananAksi(deliveryhttp.Layanan{
 		Wilayah:    usecase.CariWilayah{Pembaca: wilayah},
 		Provenance: usecase.AmbilProvenance{Pembaca: repository.ProvenanceRepository{DB: pool}},
 		Tema:       tema,

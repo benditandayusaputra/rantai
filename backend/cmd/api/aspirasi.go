@@ -14,9 +14,10 @@ import (
 const (
 	pathKonfigurasiAspirasi      = "config/aspirasi.yaml"
 	pathKonfigurasiJalurAspirasi = "config/jalur_aspirasi.yaml"
+	pathDataBelumDibuka          = "config/data_belum_dibuka.yaml"
 )
 
-func denganAspirasi(layanan deliveryhttp.Layanan, pool *pgxpool.Pool) (deliveryhttp.Layanan, error) {
+func denganLayananAksi(layanan deliveryhttp.Layanan, pool *pgxpool.Pool) (deliveryhttp.Layanan, error) {
 	var kosakata domain.KosakataAspirasi
 	if err := config.BacaYAML(pathKonfigurasiAspirasi, &kosakata); err != nil {
 		return layanan, err
@@ -37,5 +38,10 @@ func denganAspirasi(layanan deliveryhttp.Layanan, pool *pgxpool.Pool) (deliveryh
 		Kosakata:   kosakata,
 	}
 	layanan.Jalur = usecase.BacaJalurAspirasi{Wilayah: wilayah, Jalur: jalur}
+	var belumDibuka domain.KonfigurasiDataBelumDibuka
+	if err := config.BacaYAML(pathDataBelumDibuka, &belumDibuka); err != nil {
+		return layanan, err
+	}
+	layanan.BelumBuka = usecase.BacaDataBelumDibuka{Konfigurasi: belumDibuka}
 	return layanan, nil
 }

@@ -81,9 +81,7 @@ func (h handlerAspirasi) pdf(c fiber.Ctx) error {
 }
 
 func kePermintaanAspirasi(m permintaanAspirasiJSON) usecase.PermintaanAspirasi {
-	if m.Bahasa == "" {
-		m.Bahasa = domain.BahasaIndonesia
-	}
+	m.Bahasa = bahasaAtauBawaan(m.Bahasa)
 	return usecase.PermintaanAspirasi(m)
 }
 

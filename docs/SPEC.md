@@ -664,7 +664,9 @@ Halaman `/{bahasa}/data-belum-dibuka` dari `config/data_belum_dibuka.yaml`:
 
 Setiap baris punya tombol "Minta data ini" yang menyusun surat permohonan informasi ke PPID DPRD DKI berdasarkan UU 14/2008 tentang Keterbukaan Informasi Publik, sebagai teks siap salin dan PDF. Rantai tidak mengirim permohonan atas nama warga.
 
-API: `GET /data-belum-dibuka`, `POST /data-belum-dibuka/{kode}/permohonan` dengan `{bahasa}`.
+`config/data_belum_dibuka.yaml` memuat identitas PPID DPRD DKI (Jl. Kebon Sirih No. 18, Jakarta Pusat 10110), keempat data (`kode`, `nama`, `alasan`, `pengganti`, `fitur_pengganti`, `rincian` informasi yang dimohon), dan templat surat. Surat memuat dasar UU 14/2008 Pasal 4 ayat (1) dan Pasal 22 ayat (1), isian identitas pemohon dan tujuan penggunaan, rincian informasi, cara memperoleh, serta jangka waktu Pasal 22 ayat (7) dan (8) (10 hari kerja, perpanjangan 7 hari kerja) dan keberatan Pasal 35 ayat (1) dan Pasal 36 ayat (1) (30 hari kerja).
+
+API: `GET /data-belum-dibuka`, `POST /data-belum-dibuka/{kode}/permohonan` dengan `{bahasa}` (opsional, bawaan `id`), respons `{teks, pdf_url}`; `pdf_url` menunjuk `GET /data-belum-dibuka/{kode}/permohonan/pdf?bahasa=`.
 
 ### AKS-05 Bagikan sebagai gambar
 
@@ -718,7 +720,7 @@ API: `GET /panel/antrean`, `POST /hak-jawab`, `PATCH /panel/paket/{kode}/serah-t
 | GET | `/tema/pendidikan/kecamatan/{kode}`, `/tema/pendidikan/kecamatan/{kode}/sekolah`, `/sekolah/terdekat`, `/peta/sekolah` | publik |
 | GET | `/kecamatan/{kode}/wakil`, `/dapil/{id}`, `/anggota/{id}`, `/anggota/{id}/umpan`, `/anggota/{id}/isu`, `/fraksi/{nama}/sikap`, `/aspirasi-reses` | publik |
 | GET | `/kecamatan/{kode}/paket`, `/paket/{kode}`, `/paket/{kode}/pembanding`, `/paket/terdekat`, `/penyedia/{id}`, `/aspirasi-reses/{id}/paket-terkait`, `/peta/paket`, `/peta/laporan`, `/unduh/paket.csv` | publik |
-| GET | `/jalur-aspirasi`, `/aspirasi/pdf`, `/data-belum-dibuka` | publik |
+| GET | `/jalur-aspirasi`, `/aspirasi/pdf`, `/data-belum-dibuka`, `/data-belum-dibuka/{kode}/permohonan/pdf` | publik |
 | POST | `/tanya`, `/aspirasi`, `/data-belum-dibuka/{kode}/permohonan` | publik dengan batas laju |
 | POST | `/auth/otp/kirim`, `/auth/otp/verifikasi`, `/auth/refresh`, `/auth/keluar` | publik dengan batas laju |
 | GET | `/auth/saya`, `/notifikasi` | warga |

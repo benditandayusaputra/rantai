@@ -1,0 +1,88 @@
+ppid:
+  nama: Pejabat Pengelola Informasi dan Dokumentasi (PPID) DPRD Provinsi DKI Jakarta
+  alamat: Jl. Kebon Sirih No. 18, Jakarta Pusat 10110
+  url: https://dprd-dkijakartaprov.go.id/ppid/
+
+data:
+  - kode: suara_per_anggota
+    nama: { id: Suara per anggota, en: Votes by member }
+    alasan:
+      id: Keputusan DPRD diambil per fraksi atau melalui musyawarah, sehingga pilihan tiap anggota tidak tercatat terbuka.
+      en: Council decisions are taken by faction or by consensus, so individual members' choices are not published.
+    pengganti: { id: Sikap Fraksi, en: Faction positions }
+    fitur_pengganti: WAK-05
+    rincian:
+      id: Catatan hasil pengambilan keputusan rapat paripurna DPRD Provinsi DKI Jakarta periode 2024-2029, termasuk pendapat akhir setiap fraksi dan, bila dilakukan pemungutan suara, pilihan setiap anggota.
+      en: Records of plenary decisions of the Jakarta Provincial Council for 2024-2029, including each faction's final opinion and, where a vote was held, each member's choice.
+  - kode: pokir_per_anggota
+    nama: { id: Pokok pikiran per anggota, en: Members' budget proposals (pokir) }
+    alasan:
+      id: Pokok pikiran DPRD diinput ke SIPD, sistem internal pemerintah yang tidak terbuka untuk publik.
+      en: Council budget proposals are entered into SIPD, an internal government system that is not public.
+    pengganti: { id: Aspirasi ke Anggaran, en: From aspirations to budget }
+    fitur_pengganti: ANG-05
+    rincian:
+      id: Daftar pokok-pokok pikiran DPRD yang diusulkan setiap anggota DPRD Provinsi DKI Jakarta untuk tahun anggaran berjalan dan berikutnya, beserta lokasi, instansi tujuan, dan perkiraan nilainya.
+      en: The list of budget proposals (pokok-pokok pikiran) submitted by each Jakarta Provincial Council member for the current and next budget year, with location, target agency, and estimated value.
+  - kode: kehadiran_per_anggota
+    nama: { id: Kehadiran per anggota, en: Attendance by member }
+    alasan:
+      id: Berita rapat hanya menyebut jumlah anggota yang hadir, bukan nama-namanya.
+      en: Meeting reports only state how many members attended, not who.
+    pengganti: { id: Permohonan informasi dari halaman ini, en: An information request from this page }
+    fitur_pengganti: AKS-04
+    rincian:
+      id: Rekapitulasi daftar hadir setiap anggota DPRD Provinsi DKI Jakarta dalam rapat paripurna, rapat komisi, dan rapat alat kelengkapan lain selama periode 2024-2029.
+      en: An attendance summary for each Jakarta Provincial Council member in plenary, commission, and other committee meetings during 2024-2029.
+  - kode: laporan_reses_per_anggota
+    nama: { id: Laporan reses per anggota, en: Recess reports by member }
+    alasan:
+      id: Yang dipublikasikan hanya kompilasi aspirasi reses per bidang, padahal setiap anggota wajib melaporkan hasil resesnya (PP 12/2018 Pasal 88 ayat (5)).
+      en: Only recess input compiled by sector is published, although each member must report their recess results (Government Regulation 12/2018 Article 88(5)).
+    pengganti: { id: Aspirasi Reses, en: Recess aspirations }
+    fitur_pengganti: WAK-06
+    rincian:
+      id: Laporan hasil pelaksanaan reses setiap anggota DPRD Provinsi DKI Jakarta periode 2024-2029, memuat waktu dan tempat kegiatan serta tanggapan, aspirasi, dan pengaduan masyarakat yang diterima.
+      en: Each Jakarta Provincial Council member's recess reports for 2024-2029, including time and place and the responses, aspirations, and complaints received from residents.
+
+permohonan:
+  judul: { id: "Permohonan Informasi Publik: {nama}", en: "Public Information Request: {nama}" }
+  bagian:
+    - judul: { id: Kepada, en: To }
+      baris:
+        - { id: "{ppid_nama}", en: "{ppid_nama}" }
+        - { id: "{ppid_alamat}", en: "{ppid_alamat}" }
+        - { id: "{ppid_url}", en: "{ppid_url}" }
+    - judul: { id: Dasar permohonan, en: Legal basis }
+      baris:
+        - id: "Undang-Undang Nomor 14 Tahun 2008 tentang Keterbukaan Informasi Publik, Pasal 4 ayat (1): setiap orang berhak memperoleh informasi publik."
+          en: "Law Number 14 of 2008 on Public Information Disclosure (Undang-Undang Nomor 14 Tahun 2008), Article 4(1): everyone has the right to obtain public information."
+        - id: "Permohonan ini diajukan secara tertulis sesuai Pasal 22 ayat (1) undang-undang tersebut."
+          en: "This request is made in writing under Article 22(1) of that law."
+    - judul: { id: Identitas pemohon, en: Requester }
+      baris:
+        - { id: "Nama: ____________________", en: "Name: ____________________" }
+        - { id: "Alamat: ____________________", en: "Address: ____________________" }
+        - { id: "Nomor telepon atau email: ____________________", en: "Phone or email: ____________________" }
+    - judul: { id: Rincian informasi yang dimohon, en: Information requested }
+      baris:
+        - { id: "{rincian}", en: "{rincian}" }
+    - judul: { id: Tujuan penggunaan informasi, en: Purpose }
+      baris:
+        - { id: "____________________", en: "____________________" }
+    - judul: { id: Cara memperoleh informasi, en: Delivery }
+      baris:
+        - id: "Salinan elektronik dikirim ke email pemohon, atau salinan cetak diambil langsung di kantor PPID."
+          en: "An electronic copy sent to the requester's email, or a printed copy collected at the PPID office."
+    - judul: { id: Jangka waktu dan keberatan, en: Deadlines and objections }
+      baris:
+        - id: "Sesuai Pasal 22 ayat (7) dan (8), PPID memberi pemberitahuan tertulis paling lambat 10 hari kerja sejak permohonan diterima dan dapat memperpanjangnya paling lambat 7 hari kerja berikutnya dengan alasan tertulis."
+          en: "Under Article 22(7) and (8), the PPID must give written notice within 10 working days of receiving the request and may extend this by up to 7 further working days with written reasons."
+        - id: "Bila permohonan ditolak atau tidak ditanggapi, pemohon dapat mengajukan keberatan tertulis kepada atasan PPID paling lambat 30 hari kerja setelah alasannya ditemukan (Pasal 35 ayat (1) dan Pasal 36 ayat (1))."
+          en: "If the request is refused or not answered, the requester may file a written objection with the PPID's superior within 30 working days of the grounds arising (Article 35(1) and Article 36(1))."
+    - judul: { id: Tanda tangan, en: Signature }
+      baris:
+        - { id: "Jakarta, ____________________", en: "Jakarta, ____________________" }
+        - { id: "Pemohon: ____________________", en: "Requester: ____________________" }
+        - id: "Surat ini disusun dengan templat Rantai. Rantai tidak mengirim permohonan atas nama warga."
+          en: "This letter uses a Rantai template. Rantai does not send requests on anyone's behalf."
