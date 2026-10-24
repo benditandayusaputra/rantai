@@ -607,3 +607,15 @@ export interface ItemUmpan {
 	dasar_cocok: string;
 	provenance_id: string;
 }
+
+export interface IsuDisuarakan {
+	tag: string;
+	jumlah_sumber: number;
+	jumlah_rilis_resmi: number;
+	jumlah_media: number;
+	item: ItemUmpan[];
+}
+
+export interface WakilDenganUmpan extends WakilKecamatan {
+	umpan_isu_pengawas?: Record<string, ItemUmpan[]>;
+}

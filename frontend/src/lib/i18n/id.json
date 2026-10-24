@@ -715,5 +715,14 @@
 	"member.feedEmpty": "Belum ada kegiatan tercatat dari sumber ini",
 	"member.notFound": "Anggota tidak ditemukan",
 	"member.feedFailed": "Jejak kegiatan gagal dimuat.",
-	"action.loadMoreShort": "Muat lagi"
+	"action.loadMoreShort": "Muat lagi",
+	"issue.title": "Isu yang disuarakan",
+	"issue.lead": "Topik yang muncul di rilis dan liputan tentang anggota ini. Jumlah sumber bukan ukuran kinerja dan tidak dibandingkan antaranggota.",
+	"issue.count": "Disebut di {n} sumber: {resmi} rilis resmi, {media} media",
+	"issue.empty": "Belum ada isu tema yang tercatat di umpan anggota ini",
+	"issue.seeAll": "Lihat semua sumber tentang {tag}",
+	"voice.title": "Anggota komisi pengawas yang menyuarakan isu ini",
+	"voice.lead": "Anggota dapil ini yang duduk di komisi pengawas, beserta paling banyak tiga kegiatan terbaru tentang isu tema. Bukan perbandingan antaranggota.",
+	"voice.none": "Belum ada kegiatan bertema dari anggota ini",
+	"voice.failed": "Kegiatan anggota gagal dimuat."
 }

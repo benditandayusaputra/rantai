@@ -5,6 +5,7 @@
 	import GapClassChip from '$lib/components/GapClassChip.svelte';
 	import KeyNumberCard from '$lib/components/KeyNumberCard.svelte';
 	import { bahasaBawaan, t } from '$lib/i18n';
+	import SuaraPengawas from './SuaraPengawas.svelte';
 
 	let { tema, kodeKecamatan }: { tema: TemaKecamatan[]; kodeKecamatan: string } = $props();
 </script>
@@ -48,6 +49,7 @@
 					>{t('services.checkMySchool')}</a
 				>
 			{/if}
+			<SuaraPengawas {kodeKecamatan} kodeTema={item.kode} />
 		</section>
 	{/each}
 </div>

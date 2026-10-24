@@ -1,9 +1,11 @@
 import { env } from '$env/dynamic/public';
 import type {
 	Amplop,
+	IsuDisuarakan,
 	ItemUmpan,
 	JenisSumberUmpan,
 	ProfilAnggota,
+	WakilDenganUmpan,
 	BelanjaTema,
 	DaftarDataBelumDibuka,
 	DetailPaket,
@@ -278,4 +280,23 @@ export function ambilUmpanAnggota(
 	filter: { jenis?: JenisSumberUmpan; tag?: string; halaman?: number }
 ): Promise<Amplop<ItemUmpan[]>> {
 	return ambilAmplop<ItemUmpan[]>(fetchFn, `/anggota/${encodeURIComponent(id)}/umpan`, filter);
+}
+
+export function ambilIsuAnggota(fetchFn: Fetch, id: string): Promise<IsuDisuarakan[]> {
+	return ambilData<IsuDisuarakan[]>(fetchFn, `/anggota/${encodeURIComponent(id)}/isu`);
+}
+
+export function ambilWakilDenganUmpan(
+	fetchFn: Fetch,
+	kodeKecamatan: string,
+	kodeTema: string
+): Promise<WakilDenganUmpan> {
+	return ambilData<WakilDenganUmpan>(
+		fetchFn,
+		`/kecamatan/${encodeURIComponent(kodeKecamatan)}/wakil`,
+		{
+			tema: kodeTema,
+			dengan_umpan: true
+		}
+	);
 }

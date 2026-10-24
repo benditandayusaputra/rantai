@@ -3,6 +3,7 @@
 	import type { ProfilAnggota } from '$lib/api/tipe';
 	import { inisial } from '$lib/features/kecamatan/kecamatan';
 	import { bahasaBawaan, t } from '$lib/i18n';
+	import IsuDisuarakan from './IsuDisuarakan.svelte';
 	import JejakKegiatan from './JejakKegiatan.svelte';
 
 	let { anggota }: { anggota: ProfilAnggota } = $props();
@@ -55,7 +56,10 @@
 	</header>
 
 	<div class="grid gap-8 lg:grid-cols-12">
-		<div class="lg:col-span-8"><JejakKegiatan idAnggota={anggota.id} /></div>
+		<div class="flex flex-col gap-10 lg:col-span-8">
+			<IsuDisuarakan idAnggota={anggota.id} />
+			<JejakKegiatan idAnggota={anggota.id} />
+		</div>
 		<aside class="flex flex-col gap-4 lg:col-span-4">
 			<section class="flex flex-col gap-3 rounded-lg border border-line bg-surface p-4">
 				<h2 class="t-h3">
