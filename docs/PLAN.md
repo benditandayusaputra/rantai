@@ -228,7 +228,7 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - Tool use dengan klien LLM bersama, model dari `TANYA_MODEL`, SSE ke klien, batas laju.
   - Commit: `✨ Jalankan Tanya Rantai dengan pemanggilan alat dan SSE`
   - Selesai bila: tes memakai klien LLM tiruan; kunci API hanya dari env.
-- [ ] **T-703** Validator jawaban
+- [x] **T-703** Validator jawaban
   - Cek angka bersumber dan kosakata terlarang; pesan aman bila gagal.
   - Commit: `🔒️ Validasi angka dan kosakata pada jawaban Tanya Rantai`
   - Selesai bila: jawaban dengan angka karangan ditolak dalam tes.

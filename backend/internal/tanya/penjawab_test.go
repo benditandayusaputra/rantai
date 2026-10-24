@@ -57,11 +57,15 @@ func penjawabUji(t *testing.T, giliran ...Giliran) (Penjawab, *percakapanTiruan)
 		t.Fatal(err)
 	}
 	percakapan := &percakapanTiruan{giliran: giliran}
-	return Penjawab{Model: modelTiruan{percakapan: percakapan}, Alat: registry, Aturan: Aturan{BatasLangkah: 3, PanjangMaksPertanyaan: 500}}, percakapan
+	aturan := Aturan{BatasLangkah: 3, PanjangMaksPertanyaan: 500, PesanAman: domain.Teks{ID: "pesan aman", EN: "safe message"}}
+	return Penjawab{
+		Model: modelTiruan{percakapan: percakapan}, Alat: registry, Aturan: aturan,
+		Validator: ValidatorJawaban{Terlarang: domain.KosakataTerlarang{"korupsi"}}, Laporkan: func(string) {},
+	}, percakapan
 }
 
 func panggil(nama string) Giliran {
-	return Giliran{Panggilan: []PanggilanAlat{{ID: "toolu_" + nama, Nama: nama, Masukan: json.RawMessage(`{"teks":"halo"}`)}}}
+	return Giliran{Panggilan: []PanggilanAlat{{ID: "toolu_" + nama, Nama: nama, Masukan: json.RawMessage(`{"teks":"kursi 7360"}`)}}}
 }
 
 func TestJawab_AlatLaluTeks_JawabanBerujukanDanKabarAlat(t *testing.T) {
@@ -142,5 +146,20 @@ func TestSusunRujukan_ProvenanceBerulang_NomorSamaSesuaiUrutanMuncul(t *testing.
 	harap := []Rujukan{{Nomor: 1, ProvenanceID: "prv_b"}, {Nomor: 2, ProvenanceID: "prv_rantai_x"}}
 	if teks != "Kursi 288 [1], lulusan 400 [2], kursi lain [1]." || !reflect.DeepEqual(rujukan, harap) {
 		t.Errorf("teks = %q, rujukan = %+v", teks, rujukan)
+	}
+}
+
+func TestJawab_AngkaKarangan_DigantiPesanAmanDanDicatat(t *testing.T) {
+	p, _ := penjawabUji(t, panggil("gema"), Giliran{Teks: "Ada 9999 kursi [prv_1]."})
+	catatan := []string{}
+	p.Laporkan = func(pesan string) { catatan = append(catatan, pesan) }
+
+	jawaban, err := p.Jawab(t.Context(), Permintaan{Pertanyaan: "Berapa kursi?", Bahasa: BahasaInggris}, func(Kabar) {})
+
+	if err != nil || jawaban.Teks != "safe message" || len(jawaban.Rujukan) != 0 {
+		t.Errorf("err = %v, jawaban = %+v", err, jawaban)
+	}
+	if len(catatan) != 1 || !strings.Contains(catatan[0], ErrJawabanAngkaKarangan.Error()) {
+		t.Errorf("catatan = %v", catatan)
 	}
 }

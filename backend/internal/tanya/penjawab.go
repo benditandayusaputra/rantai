@@ -66,15 +66,18 @@ type Jawaban struct {
 }
 
 type Aturan struct {
-	PromptSistem          string `yaml:"prompt_sistem"`
-	BatasLangkah          int    `yaml:"batas_langkah"`
-	PanjangMaksPertanyaan int    `yaml:"panjang_maks_pertanyaan"`
+	PromptSistem          string      `yaml:"prompt_sistem"`
+	BatasLangkah          int         `yaml:"batas_langkah"`
+	PanjangMaksPertanyaan int         `yaml:"panjang_maks_pertanyaan"`
+	PesanAman             domain.Teks `yaml:"pesan_aman"`
 }
 
 type Penjawab struct {
-	Model  Model
-	Alat   Registry
-	Aturan Aturan
+	Model     Model
+	Alat      Registry
+	Aturan    Aturan
+	Validator ValidatorJawaban
+	Laporkan  func(pesan string)
 }
 
 func (p Penjawab) Periksa(m Permintaan) error {
@@ -125,8 +128,23 @@ func (p Penjawab) Jawab(ctx context.Context, m Permintaan, kabar func(Kabar)) (J
 			return Jawaban{}, fmt.Errorf("kirim hasil alat: %w", err)
 		}
 	}
-	teks, rujukan := SusunRujukan(giliran.Teks)
-	return Jawaban{Teks: teks, Rujukan: rujukan, HasilAlat: semuaHasil}, nil
+	return p.saring(m, giliran.Teks, semuaHasil), nil
+}
+
+func (p Penjawab) saring(m Permintaan, teks string, hasilAlat []json.RawMessage) Jawaban {
+	if err := p.Validator.Periksa(teks, hasilAlat); err != nil {
+		p.Laporkan(fmt.Sprintf("jawaban tanya diganti pesan aman: %v; pertanyaan %q; jawaban %q", err, m.Pertanyaan, teks))
+		return Jawaban{Teks: p.pesanAman(m.Bahasa), Rujukan: []Rujukan{}, HasilAlat: hasilAlat}
+	}
+	teksBernomor, rujukan := SusunRujukan(teks)
+	return Jawaban{Teks: teksBernomor, Rujukan: rujukan, HasilAlat: hasilAlat}
+}
+
+func (p Penjawab) pesanAman(bahasa string) string {
+	if bahasa == BahasaInggris {
+		return p.Aturan.PesanAman.EN
+	}
+	return p.Aturan.PesanAman.ID
 }
 
 func isiPertanyaan(m Permintaan) string {

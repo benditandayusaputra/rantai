@@ -45,14 +45,14 @@ func (a AturanRingkasan) Validasi(ringkasan string, sumber UmpanUntukRingkas) er
 		return ErrRingkasanTerlarang
 	case memuatSalahSatu(ringkasan, a.KataPenilaian):
 		return ErrRingkasanMenilai
-	case !isAngkaBersumber(ringkasan, sumber.Judul+" "+sumber.Cuplikan):
+	case !IsAngkaBersumber(ringkasan, sumber.Judul+" "+sumber.Cuplikan):
 		return ErrRingkasanAngkaKarangan
 	default:
 		return nil
 	}
 }
 
-func isAngkaBersumber(ringkasan, sumber string) bool {
+func IsAngkaBersumber(ringkasan, sumber string) bool {
 	angkaSumber := angkaDalam(sumber)
 	for _, angka := range angkaDalam(ringkasan) {
 		if !slices.Contains(angkaSumber, angka) {

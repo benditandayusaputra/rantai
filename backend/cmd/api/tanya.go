@@ -9,11 +9,15 @@ import (
 	"github.com/anthropics/anthropic-sdk-go"
 	"github.com/benditandayusaputra/rantai/backend/internal/config"
 	deliveryhttp "github.com/benditandayusaputra/rantai/backend/internal/delivery/http"
+	"github.com/benditandayusaputra/rantai/backend/internal/domain"
 	"github.com/benditandayusaputra/rantai/backend/internal/llm"
 	"github.com/benditandayusaputra/rantai/backend/internal/tanya"
 )
 
-const pathKonfigurasiTanya = "config/tanya.yaml"
+const (
+	pathKonfigurasiTanya  = "config/tanya.yaml"
+	pathKosakataTerlarang = "config/kosakata_terlarang.yaml"
+)
 
 type konfigurasiTanya struct {
 	tanya.Aturan `yaml:",inline"`
@@ -40,6 +44,13 @@ func denganTanya(layanan deliveryhttp.Layanan) (deliveryhttp.Layanan, error) {
 	if err != nil {
 		return layanan, err
 	}
-	layanan.Tanya = tanya.Penjawab{Model: klien, Alat: registry, Aturan: cfg.Aturan}
+	var terlarang domain.KosakataTerlarang
+	if err := config.BacaYAML(pathKosakataTerlarang, &terlarang); err != nil {
+		return layanan, err
+	}
+	layanan.Tanya = tanya.Penjawab{
+		Model: klien, Alat: registry, Aturan: cfg.Aturan,
+		Validator: tanya.ValidatorJawaban{Terlarang: terlarang}, Laporkan: func(pesan string) { log.Println(pesan) },
+	}
 	return layanan, nil
 }
