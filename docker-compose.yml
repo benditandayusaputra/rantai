@@ -42,10 +42,16 @@ services:
     entrypoint:
       - migrate
       - -path=/migrations
-      - -database=postgres://${POSTGRES_USER:-rantai}:${POSTGRES_PASSWORD:-rantai}@db:5432/${POSTGRES_DB:-rantai}?sslmode=disable
+      - -database=${DATABASE_URL_MIGRASI:-postgres://rantai:rantai@db:5432/rantai?sslmode=disable}
     depends_on:
       db:
         condition: service_healthy
+
+  klien-pg:
+    image: postgres:18-alpine
+    profiles: ["alat"]
+    environment:
+      DATABASE_URL_MIGRASI: ${DATABASE_URL_MIGRASI:-postgres://rantai:rantai@db:5432/rantai?sslmode=disable}
 
 volumes:
   db-data:

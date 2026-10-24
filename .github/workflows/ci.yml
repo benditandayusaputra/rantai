@@ -46,4 +46,5 @@ jobs:
       - run: make up
       - name: Migrasi naik, turun, naik
         run: make migrate && make migrate-down && make migrate
+      - run: make siapkan-uji
       - run: make test
