@@ -523,5 +523,16 @@
 	"about.license": "Lisensi dan atribusi",
 	"about.license.code": "Kode Rantai terbuka di GitHub. Data turunan Opentender dibuka dengan lisensi ODbL yang sama.",
 	"about.demo": "Data bertanda simulasi adalah contoh untuk demonstrasi dan tidak boleh dikutip sebagai fakta.",
-	"about.formula.code": "calon_lulusan  = siswa kelas 6 SD di kecamatan\nkursi_negeri   = jumlah daya tampung SMP negeri di kecamatan\nkursi_spmb     = jumlah daya tampung SMP swasta mitra SPMB Bersama\nkursi_madrasah = rombel kelas 7 MTs x 32\nkesenjangan    = calon_lulusan - kursi_negeri\nrasio          = kursi_negeri / calon_lulusan"
+	"about.formula.code": "calon_lulusan  = siswa kelas 6 SD di kecamatan\nkursi_negeri   = jumlah daya tampung SMP negeri di kecamatan\nkursi_spmb     = jumlah daya tampung SMP swasta mitra SPMB Bersama\nkursi_madrasah = rombel kelas 7 MTs x 32\nkesenjangan    = calon_lulusan - kursi_negeri\nrasio          = kursi_negeri / calon_lulusan",
+	"ask.removeContext": "Hapus konteks wilayah",
+	"ask.thinking": "Membaca pertanyaan...",
+	"ask.error": "Tanya Rantai belum bisa menjawab sekarang. Coba lagi sebentar lagi.",
+	"ask.you": "Kamu",
+	"ask.messages": "Percakapan",
+	"ask.suggestions": "Saran pertanyaan",
+	"ask.tooLong": "Pertanyaan paling banyak {n} karakter.",
+	"ask.suggest.1": "Apakah kursi SMP negeri di kecamatan ini cukup untuk lulusan SD tahun ini?",
+	"ask.suggest.2": "Paket pengadaan sekolah apa saja yang ada di kecamatan ini tahun ini?",
+	"ask.suggest.3": "Siapa wakil DPRD dapil kecamatan ini yang duduk di Komisi E?",
+	"ask.suggest.4": "Instansi mana yang berwenang menambah daya tampung SMP negeri?"
 }

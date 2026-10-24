@@ -7,8 +7,8 @@
 	import CertaintyBadge from './CertaintyBadge.svelte';
 
 	interface Props {
-		angka: Angka;
-		nilai: string;
+		angka?: Angka;
+		nilai?: string;
 		provenance: Provenance | null;
 		isGagal: boolean;
 		open: boolean;
@@ -17,6 +17,7 @@
 	let { angka, nilai, provenance, isGagal, open = $bindable() }: Props = $props();
 
 	const idJudul = $props.id();
+	const level = $derived(angka?.label ?? provenance?.label);
 	let dialog: HTMLDialogElement;
 	let judul: HTMLHeadingElement;
 
@@ -52,13 +53,17 @@
 			<X size={20} strokeWidth={1.75} aria-hidden="true" />
 		</button>
 	</div>
-	<div class="mt-3 flex flex-wrap items-center gap-2">
-		<CertaintyBadge level={angka.label} size="md" />
-		<span class="text-small text-muted">{t(`cert.${angka.label}.desc`)}</span>
-	</div>
-	<p class="n-md mt-4">
-		{nilai} <span class="text-small font-semibold text-muted">{angka.satuan}</span>
-	</p>
+	{#if level}
+		<div class="mt-3 flex flex-wrap items-center gap-2">
+			<CertaintyBadge {level} size="md" />
+			<span class="text-small text-muted">{t(`cert.${level}.desc`)}</span>
+		</div>
+	{/if}
+	{#if angka}
+		<p class="n-md mt-4">
+			{nilai} <span class="text-small font-semibold text-muted">{angka.satuan}</span>
+		</p>
+	{/if}
 	{#if provenance}
 		<dl class="mt-4 space-y-3 text-small">
 			<div>

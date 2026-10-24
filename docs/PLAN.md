@@ -232,7 +232,7 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - Cek angka bersumber dan kosakata terlarang; pesan aman bila gagal.
   - Commit: `🔒️ Validasi angka dan kosakata pada jawaban Tanya Rantai`
   - Selesai bila: jawaban dengan angka karangan ditolak dalam tes.
-- [ ] **T-704** Antarmuka Tanya **[BUTUH DESAIN]**
+- [x] **T-704** Antarmuka Tanya **[BUTUH DESAIN]**
   - Halaman `/tanya` dan panel geser di halaman kecamatan, rujukan `[n]` yang bisa diklik.
   - Commit: `✨ Bangun antarmuka Tanya Rantai dengan rujukan sumber`
   - Selesai bila: rujukan membuka panel sumber.

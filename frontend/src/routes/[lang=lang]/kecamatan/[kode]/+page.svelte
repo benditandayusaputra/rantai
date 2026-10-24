@@ -1,11 +1,19 @@
 <script lang="ts">
-	import { ChevronRight, GraduationCap, Landmark, Share2, Wallet } from '@lucide/svelte';
+	import {
+		ChevronRight,
+		GraduationCap,
+		Landmark,
+		MessageCircle,
+		Share2,
+		Wallet
+	} from '@lucide/svelte';
 	import { invalidateAll } from '$app/navigation';
 	import { page } from '$app/state';
 	import ErrorState from '$lib/components/ErrorState.svelte';
 	import BagianAnggaran from '$lib/features/kecamatan/BagianAnggaran.svelte';
 	import BagianTema from '$lib/features/kecamatan/BagianTema.svelte';
 	import BagianWakilku from '$lib/features/kecamatan/BagianWakilku.svelte';
+	import PanelTanya from '$lib/features/tanya/PanelTanya.svelte';
 	import {
 		bacaBagian,
 		bagikanTautan,
@@ -20,6 +28,7 @@
 
 	const bagianAktif = $derived(bacaBagian(page.url.searchParams.get('bagian')));
 	let pesanBagikan = $state('');
+	let isTanyaTerbuka = $state(page.url.searchParams.get('tanya') === '1');
 
 	const infoBagian: Record<Bagian, { ikon: typeof Wallet; tanya: string }> = {
 		tema: { ikon: GraduationCap, tanya: t('lens.services.q') },
@@ -95,8 +104,28 @@
 					<Share2 size={20} strokeWidth={1.75} aria-hidden="true" />
 					{t('action.share')}
 				</button>
+				<a
+					href="/{bahasaBawaan}/tanya?w={encodeURIComponent(ringkasan.kecamatan.kode)}"
+					class="inline-flex min-h-touch items-center gap-2 rounded-md border-ctrl border-line-strong px-4 font-semibold hover:border-fg hover:bg-sunken lg:hidden"
+				>
+					<MessageCircle size={20} strokeWidth={1.75} aria-hidden="true" />
+					{t('ask.title')}
+				</a>
+				<button
+					type="button"
+					class="hidden min-h-touch items-center gap-2 rounded-md border-ctrl border-line-strong px-4 font-semibold hover:border-fg hover:bg-sunken lg:inline-flex"
+					aria-haspopup="dialog"
+					onclick={() => (isTanyaTerbuka = true)}
+				>
+					<MessageCircle size={20} strokeWidth={1.75} aria-hidden="true" />
+					{t('ask.title')}
+				</button>
 				<p class="text-small text-success" aria-live="polite">{pesanBagikan}</p>
 			</div>
+			<PanelTanya
+				bind:open={isTanyaTerbuka}
+				konteks={{ kode: ringkasan.kecamatan.kode, nama: ringkasan.kecamatan.nama }}
+			/>
 
 			<nav aria-label={t('lens.nav')} class="mt-8 border-b border-line">
 				<ul class="grid grid-cols-3 lg:flex lg:gap-6">

@@ -1,7 +1,7 @@
-import { House, Info, Map } from '@lucide/svelte';
+import { House, Info, Map, MessageCircle } from '@lucide/svelte';
 import type { KunciPesan } from '$lib/i18n';
 
-export type Tujuan = 'beranda' | 'peta' | 'tentang';
+export type Tujuan = 'beranda' | 'peta' | 'tanya' | 'tentang';
 
 interface TujuanNavigasi {
 	kunci: Tujuan;
@@ -13,6 +13,7 @@ interface TujuanNavigasi {
 export const tujuanUtama: TujuanNavigasi[] = [
 	{ kunci: 'beranda', path: '', label: 'nav.home', ikon: House },
 	{ kunci: 'peta', path: '/peta', label: 'nav.map', ikon: Map },
+	{ kunci: 'tanya', path: '/tanya', label: 'nav.ask', ikon: MessageCircle },
 	{ kunci: 'tentang', path: '/tentang-data', label: 'nav.about', ikon: Info }
 ];
 

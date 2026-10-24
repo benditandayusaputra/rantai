@@ -110,9 +110,13 @@ export default {
 				peta: 'calc(100dvh - 72px)',
 				'peta-ponsel': 'calc(100dvh - 128px)'
 			},
+			width: {
+				'panel-tanya': '440px'
+			},
 			maxWidth: {
 				content: '1296px',
-				prose: '720px'
+				prose: '720px',
+				chat: '860px'
 			},
 			borderRadius: {
 				xs: v('r-xs'),

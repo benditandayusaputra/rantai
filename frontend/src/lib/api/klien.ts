@@ -30,7 +30,7 @@ export class GalatAPI extends Error {
 	}
 }
 
-function susunURL(path: string, kueri: Kueri): string {
+export function susunURL(path: string, kueri: Kueri): string {
 	const url = new URL((env.PUBLIC_API_URL || alamatBawaan) + path);
 	for (const [nama, nilai] of Object.entries(kueri)) {
 		if (nilai !== undefined && nilai !== '') url.searchParams.set(nama, String(nilai));
@@ -65,6 +65,10 @@ export async function ambilData<T>(fetchFn: Fetch, path: string, kueri: Kueri = 
 
 export function ambilProvenance(fetchFn: Fetch, id: string): Promise<Provenance> {
 	return ambilData<Provenance>(fetchFn, `/provenance/${encodeURIComponent(id)}`);
+}
+
+export function ambilWilayah(fetchFn: Fetch, kode: string): Promise<WilayahDitemukan> {
+	return ambilData<WilayahDitemukan>(fetchFn, `/wilayah/${encodeURIComponent(kode)}`);
 }
 
 export function cariWilayah(fetchFn: Fetch, q: string): Promise<WilayahDitemukan[]> {
