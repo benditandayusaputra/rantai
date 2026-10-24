@@ -582,3 +582,28 @@ export interface BelanjaTema {
 	kecamatan: BelanjaKecamatan[];
 	luar_kecamatan: { wilayah: RingkasanWilayah; belanja: Anggaran | null }[];
 }
+
+export interface ProfilAnggota extends Wakil {
+	keterangan_komisi?: 'pimpinan_dprd' | 'tidak_tersedia';
+	alat_kelengkapan: { alat_kelengkapan: string; jabatan: string }[];
+	dapil: Dapil;
+	url_profil: string;
+	lhkpn_url: string;
+	provenance_id: string;
+}
+
+export type JenisSumberUmpan = 'resmi_dprd' | 'media';
+
+export interface ItemUmpan {
+	id: number;
+	jenis_sumber: JenisSumberUmpan;
+	media_nama: string;
+	media_domain: string;
+	judul: string;
+	ringkasan: string | null;
+	url: string;
+	terbit_pada: string;
+	tag_isu: string[];
+	dasar_cocok: string;
+	provenance_id: string;
+}

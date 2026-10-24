@@ -1,6 +1,9 @@
 import { env } from '$env/dynamic/public';
 import type {
 	Amplop,
+	ItemUmpan,
+	JenisSumberUmpan,
+	ProfilAnggota,
 	BelanjaTema,
 	DaftarDataBelumDibuka,
 	DetailPaket,
@@ -263,4 +266,16 @@ export function ambilDetailWilayah(fetchFn: Fetch, kode: string): Promise<Detail
 
 export function ambilBelanjaTema(fetchFn: Fetch, kodeTema: string): Promise<BelanjaTema> {
 	return ambilData<BelanjaTema>(fetchFn, `/tema/${encodeURIComponent(kodeTema)}/belanja`);
+}
+
+export function ambilAnggota(fetchFn: Fetch, id: string): Promise<ProfilAnggota> {
+	return ambilData<ProfilAnggota>(fetchFn, `/anggota/${encodeURIComponent(id)}`);
+}
+
+export function ambilUmpanAnggota(
+	fetchFn: Fetch,
+	id: string,
+	filter: { jenis?: JenisSumberUmpan; tag?: string; halaman?: number }
+): Promise<Amplop<ItemUmpan[]>> {
+	return ambilAmplop<ItemUmpan[]>(fetchFn, `/anggota/${encodeURIComponent(id)}/umpan`, filter);
 }

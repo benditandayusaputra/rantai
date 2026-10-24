@@ -204,7 +204,8 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - Layar dirancang sendiri karena DESIGN.md belum memuatnya: diagram sebar di tab Uang halaman kecamatan dengan token yang ada.
   - Commit: `✨ Tampilkan grafik kesenjangan kursi dibanding belanja sekolah`
   - Selesai bila: kecamatan aktif tersorot; tabel alternatif dan kalimat pendamping wajib tampil.
-- [ ] **T-609** Wakilku dan profil anggota (WAK-01 sampai WAK-03) **[BUTUH DESAIN]**
+- [x] **T-609** Wakilku dan profil anggota (WAK-01 sampai WAK-03) **[BUTUH DESAIN]**
+  - Umpan dua sumber dirancang sendiri: lencana "Rilis resmi DPRD" memakai token label resmi, lencana media bergaris netral.
   - Daftar wakil dapil, profil anggota, umpan dua sumber berlencana, pernyataan bias liputan.
   - Commit: `✨ Tampilkan wakil dapil, profil anggota, dan jejak kegiatan`
   - Selesai bila: tidak ada angka kinerja atau peringkat politisi di layar; lencana jenis sumber selalu terlihat.
@@ -364,7 +365,6 @@ Dikerjakan tim, bukan tugas commit. Dicatat di sini agar urutannya terlihat.
 Format: `- T-xxx · tanggal · alasan · tugas yang dikerjakan sebagai gantinya`
 
 - T-301 · 23 Oktober 2026 · halaman detail dan evaluasi tender SPSE DKI tertutup untuk publik (403, "Akses Ditolak"); detail tender butuh token API Gateway Inaproc (peran Data Integrator, surat ke LKPP) · paket tender disimpan dari kolom daftar, non-tender memakai halaman pengumuman lengkap
-- T-609 · 24 Oktober 2026 · `docs/DESIGN.md` belum memuat umpan dua sumber di profil anggota dan token warna jenis sumber umpan (SPEC 14 butir 1 dan 5); kartu wakil di halaman kecamatan sudah menaut ke `/id/anggota/{id}` · T-610
 - T-901 · 24 Oktober 2026 · `docs/DESIGN.md` belum memuat isu yang disuarakan di profil anggota (6.8) maupun umpan anggota Komisi E di tab Layanan (6.2a); sisi backend (`GET /anggota/{id}/isu`, `GET /kecamatan/{kode}/wakil?dengan_umpan=true`) sudah selesai, kotak dicentang setelah tampilannya dibangun · T-902
 - T-902 · 24 Oktober 2026 · `docs/DESIGN.md` belum memuat tampilan sikap fraksi dan aspirasi reses; sisi backend (migrasi, job `paripurna` dengan CSV kurasi GD-15, `GET /fraksi/{nama}/sikap`, `GET /aspirasi-reses`) sudah selesai, kotak dicentang setelah tampilannya dibangun · T-903
 - T-903 · 24 Oktober 2026 · `docs/DESIGN.md` belum memuat blok paket yang kemungkinan terkait di halaman paket (6.4) maupun di Wakilku; sisi backend (`config/aspirasi_anggaran.yaml`, `GET /aspirasi-reses/{id}/paket-terkait`, kasus tanpa kecocokan dites) sudah selesai, kotak dicentang setelah tampilannya dibangun · T-904
