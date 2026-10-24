@@ -330,3 +330,32 @@ export interface InfoSumberData {
 	media: { nama: string; domain: string }[];
 	atribusi_opentender: string;
 }
+
+export interface TanggungJawab {
+	masalah: string;
+	label: Teks;
+	instansi_pelaksana: string;
+	unit_wilayah: string;
+	komisi: string;
+	dasar_hukum: string;
+	dasar_hukum_url: string;
+}
+
+export interface TemaDetail {
+	kode: string;
+	nama: Teks;
+	tanggung_jawab: TanggungJawab[];
+	provenance_id: string;
+}
+
+export interface PermintaanAspirasi {
+	kode_kecamatan: string;
+	tema: string;
+	masalah: string;
+	bahasa: string;
+}
+
+export interface DokumenAspirasi {
+	teks: string;
+	pdf_url: string;
+}

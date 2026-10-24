@@ -534,5 +534,14 @@
 	"ask.suggest.1": "Kenapa SMP negeri di kecamatanku penuh?",
 	"ask.suggest.2": "Proyek sekolah apa yang dibiayai di kecamatanku tahun ini?",
 	"ask.suggest.3": "Siapa wakil dapilku yang duduk di Komisi E?",
-	"ask.suggest.4": "Instansi mana yang berwenang menambah daya tampung SMP negeri?"
+	"ask.suggest.4": "Instansi mana yang berwenang menambah daya tampung SMP negeri?",
+	"packet.forArea": "Untuk Kecamatan {name}",
+	"packet.chooseIssue": "Pilih masalah di atas untuk menyusun dokumen.",
+	"packet.previewTitle": "Pratinjau dokumen",
+	"packet.composingPlain": "Menyusun dokumen...",
+	"packet.lang.id": "Indonesia",
+	"packet.lang.en": "English",
+	"packet.selfDeliver": "Rantai tidak mengirim dokumen atas namamu. Salin atau unduh, lalu sampaikan sendiri lewat kanal yang tercantum.",
+	"packet.noTheme": "Belum ada tema aktif untuk menyusun Paket Aspirasi.",
+	"packet.failed": "Paket Aspirasi gagal disusun"
 }

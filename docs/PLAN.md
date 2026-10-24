@@ -244,7 +244,7 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - `POST /aspirasi` dari templat tema, teks siap salin dan PDF dari server; `config/jalur_aspirasi.yaml`, `GET /jalur-aspirasi`.
   - Commit: `✨ Susun Paket Aspirasi berbasis tema dalam teks dan PDF`
   - Selesai bila: setiap angka di PDF punya sumber dan tanggal; kanal yang tepat tercantum.
-- [ ] **T-707** Antarmuka Paket Aspirasi **[BUTUH DESAIN]**
+- [x] **T-707** Antarmuka Paket Aspirasi **[BUTUH DESAIN]**
   - Commit: `✨ Bangun alur Paket Aspirasi`
   - Selesai bila: dari halaman kecamatan ke unduhan PDF dalam 2 menit pada uji manual.
 - [ ] **T-708** Data yang Belum Dibuka (AKS-04) **[BUTUH DESAIN]**

@@ -3,14 +3,17 @@ import type {
 	Amplop,
 	DetailPaket,
 	DetailPendidikan,
+	DokumenAspirasi,
 	InfoSumberData,
 	PaketRingkas,
+	PermintaanAspirasi,
 	PetaPaket,
 	PetaTema,
 	Provenance,
 	RingkasanKecamatan,
 	Sekolah,
 	SekitarTitik,
+	TemaDetail,
 	Titik,
 	WilayahDitemukan
 } from './tipe';
@@ -57,6 +60,23 @@ export async function ambilAmplop<T>(
 		throw new GalatAPI(respons.status, amplop?.message ?? respons.statusText);
 	}
 	return amplop;
+}
+
+export async function kirimData<T>(fetchFn: Fetch, path: string, badan: unknown): Promise<T> {
+	const respons = await fetchFn(susunURL(path, {}), {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify(badan)
+	});
+	const amplop = await bacaAmplop<T>(respons);
+	if (!respons.ok || !amplop) {
+		throw new GalatAPI(respons.status, amplop?.message ?? respons.statusText);
+	}
+	return amplop.data;
+}
+
+export function urlServer(path: string): string {
+	return new URL(path, env.PUBLIC_API_URL || alamatBawaan).toString();
 }
 
 export async function ambilData<T>(fetchFn: Fetch, path: string, kueri: Kueri = {}): Promise<T> {
@@ -159,4 +179,16 @@ export function ambilPaket(fetchFn: Fetch, kode: string): Promise<DetailPaket> {
 
 export function ambilSumberData(fetchFn: Fetch): Promise<InfoSumberData> {
 	return ambilData<InfoSumberData>(fetchFn, '/sumber-data');
+}
+
+export function ambilDaftarTema(fetchFn: Fetch): Promise<TemaDetail[]> {
+	return ambilData<TemaDetail[]>(fetchFn, '/tema');
+}
+
+export function ambilTema(fetchFn: Fetch, kode: string): Promise<TemaDetail> {
+	return ambilData<TemaDetail>(fetchFn, `/tema/${encodeURIComponent(kode)}`);
+}
+
+export function susunAspirasi(fetchFn: Fetch, p: PermintaanAspirasi): Promise<DokumenAspirasi> {
+	return kirimData<DokumenAspirasi>(fetchFn, '/aspirasi', p);
 }
