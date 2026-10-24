@@ -33,6 +33,7 @@ type Layanan struct {
 	BacaLaporan       LayananBacaLaporan
 	KonfirmasiLaporan LayananKonfirmasiLaporan
 	Moderasi          LayananModerasi
+	Pantau            LayananPantau
 }
 
 func NewApp(cfg config.Server, layanan Layanan) *fiber.App {
@@ -64,13 +65,14 @@ func NewApp(cfg config.Server, layanan Layanan) *fiber.App {
 	daftarkanDataBelumDibuka(api, layanan.BelumBuka)
 	daftarkanAuth(api, layanan, cfg.Auth)
 	daftarkanParipurna(api, handlerParipurna{layanan: layanan.Paripurna})
-	daftarkanLaporanDanModerasi(api, layanan)
+	daftarkanAksiWarga(api, layanan)
 	return app
 }
 
-func daftarkanLaporanDanModerasi(api fiber.Router, layanan Layanan) {
+func daftarkanAksiWarga(api fiber.Router, layanan Layanan) {
 	daftarkanLaporan(api, layanan)
 	daftarkanModerasi(api, layanan)
+	daftarkanPantau(api, layanan)
 }
 
 func daftarkanWilayah(api fiber.Router, h handlerWilayah) {

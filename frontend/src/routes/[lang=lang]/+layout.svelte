@@ -5,7 +5,7 @@
 	import Footer from '$lib/components/Footer.svelte';
 	import Logo from '$lib/components/Logo.svelte';
 	import { inisial, keluar, pulihkanSesi, sesiAktif } from '$lib/features/akun/sesi.svelte';
-	import { tujuanAktif, tujuanUtama } from '$lib/features/navigasi/navigasi';
+	import { tujuanAktif, tujuanPonsel, tujuanUtama } from '$lib/features/navigasi/navigasi';
 	import { bahasaBawaan, t } from '$lib/i18n';
 
 	let { children } = $props();
@@ -87,7 +87,7 @@
 	class="fixed inset-x-0 bottom-0 z-sticky border-t border-line bg-surface pb-[env(safe-area-inset-bottom)] lg:hidden"
 >
 	<ul class="flex h-16">
-		{#each tujuanUtama as tujuan (tujuan.kunci)}
+		{#each tujuanPonsel as tujuan (tujuan.kunci)}
 			{@const Ikon = tujuan.ikon}
 			<li class="flex-1">
 				<a

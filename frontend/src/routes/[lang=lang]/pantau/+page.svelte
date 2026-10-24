@@ -1,0 +1,181 @@
+<script lang="ts">
+	import { Info, X } from '@lucide/svelte';
+	import { onMount } from 'svelte';
+	import { cariWilayah, tangkap } from '$lib/api/klien';
+	import {
+		ambilNotifikasi,
+		berhentiLangganan,
+		daftarLangganan,
+		langgani,
+		tandaiDibaca
+	} from '$lib/api/pantau';
+	import type { HalamanNotifikasi, Langganan, Notifikasi, WilayahDitemukan } from '$lib/api/tipe';
+	import EmptyState from '$lib/components/EmptyState.svelte';
+	import ErrorState from '$lib/components/ErrorState.svelte';
+	import RegionSearch from '$lib/components/RegionSearch.svelte';
+	import { pulihkanSesi, sesiAktif } from '$lib/features/akun/sesi.svelte';
+	import { kelompokkanPerHari, tampilanKejadian } from '$lib/features/pantau/pantau';
+	import { formatJam } from '$lib/format';
+	import { bahasaBawaan, t } from '$lib/i18n';
+
+	let isSesiDiperiksa = $state(false);
+	let langganan = $state<Langganan[]>([]);
+	let kabar = $state<HalamanNotifikasi | null>(null);
+	let isGagal = $state(false);
+	let kata = $state('');
+
+	const sesi = $derived(sesiAktif());
+	const kelompok = $derived(kabar ? kelompokkanPerHari(kabar.item, new Date()) : []);
+
+	onMount(async () => {
+		await pulihkanSesi(fetch);
+		isSesiDiperiksa = true;
+		await muat();
+	});
+
+	async function muat() {
+		const s = sesiAktif();
+		if (!s) return;
+		const [daftar, feed] = await Promise.all([
+			tangkap(daftarLangganan(fetch, s.token_akses)),
+			tangkap(ambilNotifikasi(fetch, s.token_akses))
+		]);
+		if (daftar.ok) langganan = daftar.data;
+		if (feed.ok) kabar = feed.data;
+		isGagal = !daftar.ok || !feed.ok;
+	}
+
+	async function tambah(wilayah: WilayahDitemukan) {
+		if (!sesi) return;
+		const hasil = await tangkap(langgani(fetch, sesi.token_akses, wilayah.kode));
+		if (!hasil.ok) return;
+		kata = '';
+		await muat();
+	}
+
+	async function hapus(l: Langganan) {
+		if (!sesi) return;
+		const hasil = await tangkap(berhentiLangganan(fetch, sesi.token_akses, l.id));
+		if (hasil.ok) langganan = langganan.filter((item) => item.id !== l.id);
+	}
+
+	function buka(n: Notifikasi) {
+		if (!sesi || n.dibaca || !kabar) return;
+		n.dibaca = true;
+		kabar.belum_dibaca = Math.max(0, kabar.belum_dibaca - 1);
+		void tangkap(tandaiDibaca(fetch, sesi.token_akses, n.id));
+	}
+</script>
+
+<svelte:head>
+	<title>{t('watch.title')} · {t('brand.name')}</title>
+</svelte:head>
+
+<div class="wrap flex flex-col gap-6 py-6 lg:py-10">
+	<header class="flex max-w-prose flex-col gap-3">
+		<h1 class="t-h1">{t('watch.title')}</h1>
+		<p class="t-lead">{t('watch.lead')}</p>
+	</header>
+
+	{#if !isSesiDiperiksa}
+		<p class="text-muted" aria-live="polite">{t('state.loading')}</p>
+	{:else if !sesi}
+		<EmptyState title={t('watch.signIn')} description={t('watch.signInBody')}>
+			{#snippet actions()}
+				<a
+					href="/{bahasaBawaan}/masuk?lanjut={encodeURIComponent(`/${bahasaBawaan}/pantau`)}"
+					class="inline-flex min-h-touch items-center rounded-md bg-primary px-4 font-semibold text-primary-on hover:bg-primary-hover"
+					>{t('action.signIn')}</a
+				>
+			{/snippet}
+		</EmptyState>
+	{:else}
+		<div class="grid gap-8 lg:grid-cols-12">
+			<div class="flex flex-col gap-6 lg:col-span-8">
+				<section aria-labelledby="judul-dipantau" class="flex flex-col gap-3">
+					<h2 id="judul-dipantau" class="t-h3">{t('watch.areas')}</h2>
+					{#if langganan.length}
+						<ul class="flex flex-wrap gap-2">
+							{#each langganan as l (l.id)}
+								<li
+									class="inline-flex min-h-touch items-center gap-1 rounded-pill bg-secondary pl-4 pr-1 font-semibold text-secondary-on"
+								>
+									<a href="/{bahasaBawaan}/kecamatan/{l.kode_wilayah}">{l.nama_wilayah}</a>
+									<button
+										type="button"
+										class="inline-flex h-11 w-11 items-center justify-center rounded-pill hover:bg-surface"
+										aria-label={t('watch.remove', { nama: l.nama_wilayah })}
+										onclick={() => hapus(l)}
+									>
+										<X size={18} strokeWidth={1.75} aria-hidden="true" />
+									</button>
+								</li>
+							{/each}
+						</ul>
+					{/if}
+					<div class="max-w-form">
+						<span class="sr-only">{t('watch.addLabel')}</span>
+						<RegionSearch bind:value={kata} cari={(q) => cariWilayah(fetch, q)} onselect={tambah} />
+					</div>
+				</section>
+
+				{#if isGagal}
+					<ErrorState title={t('watch.failed')} />
+				{:else if kabar}
+					{#if kabar.belum_dibaca}
+						<p class="text-small font-semibold" aria-live="polite">
+							{t('watch.unread', { n: kabar.belum_dibaca })}
+						</p>
+					{/if}
+					{#if kabar.item.length === 0}
+						<EmptyState
+							title={langganan.length ? t('watch.emptyFeed') : t('watch.emptyTitle')}
+							description={t('watch.emptyBody')}
+						/>
+					{/if}
+					{#each kelompok as grup (grup.hari)}
+						<section class="flex flex-col gap-3" aria-label={grup.hari}>
+							<h2 class="t-over">{grup.hari}</h2>
+							<ul class="flex flex-col gap-2">
+								{#each grup.item as n (n.id)}
+									{@const tampil = tampilanKejadian[n.jenis]}
+									{@const Ikon = tampil.ikon}
+									<li>
+										<a
+											href="/{bahasaBawaan}{n.tautan}"
+											onclick={() => buka(n)}
+											class="flex gap-3 rounded-lg border border-line bg-surface p-4 hover:border-line-strong"
+										>
+											<span
+												class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-pill {tampil.kelas}"
+											>
+												<Ikon size={18} strokeWidth={1.75} aria-hidden="true" />
+											</span>
+											<span class="flex flex-1 flex-col gap-0.5">
+												<span class="text-caption text-muted">
+													{t(tampil.label)} · {formatJam(new Date(n.terjadi_pada))}
+													{#if n.is_simulation}· {t('sim.ribbon')}{/if}
+												</span>
+												<span class={n.dibaca ? '' : 'font-bold'}>{n.judul}</span>
+												<span class="text-small text-muted">{n.nama_kecamatan}</span>
+											</span>
+										</a>
+									</li>
+								{/each}
+							</ul>
+						</section>
+					{/each}
+				{/if}
+			</div>
+			<aside class="lg:col-span-4">
+				<section class="flex flex-col gap-2 rounded-lg bg-info-bg p-4">
+					<h2 class="flex items-center gap-2 font-bold">
+						<Info size={18} strokeWidth={1.75} class="text-info" aria-hidden="true" />
+						{t('watch.meaning')}
+					</h2>
+					<p class="text-small">{t('watch.meaningBody')}</p>
+				</section>
+			</aside>
+		</div>
+	{/if}
+</div>

@@ -536,3 +536,35 @@ export interface DetailWilayah extends WilayahDitemukan {
 	alias: string[];
 	titik_tengah: Titik;
 }
+
+export interface Langganan {
+	id: number;
+	kode_wilayah: string;
+	nama_wilayah: string;
+	dibuat_pada: string;
+}
+
+export type JenisKejadian =
+	| 'paket_baru'
+	| 'melewati_jadwal'
+	| 'pemeliharaan_berakhir'
+	| 'laporan_terverifikasi'
+	| 'hak_jawab'
+	| 'indikator_diperbarui';
+
+export interface Notifikasi {
+	id: number;
+	jenis: JenisKejadian;
+	kode_kecamatan: string;
+	nama_kecamatan: string;
+	judul: string;
+	tautan: string;
+	terjadi_pada: string;
+	dibaca: boolean;
+	is_simulation: boolean;
+}
+
+export interface HalamanNotifikasi {
+	item: Notifikasi[];
+	belum_dibaca: number;
+}

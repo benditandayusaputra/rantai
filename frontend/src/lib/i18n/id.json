@@ -664,5 +664,18 @@
 	"check.alternatives": "Alternatif dalam radius yang sama",
 	"check.distance": "{jarak} garis lurus",
 	"check.loading": "Menghitung sekolah dalam radius {km} km...",
-	"check.failed": "Data sekolah sekitar gagal dimuat."
+	"check.failed": "Data sekolah sekitar gagal dimuat.",
+	"watch.lead": "Kabar terbaru dari kecamatan yang kamu pantau: paket baru, laporan warga terverifikasi, dan data yang diperbarui.",
+	"watch.unread": "{n} kabar belum dibaca",
+	"watch.ev.indicator": "Data indikator diperbarui",
+	"watch.areas": "Kecamatan yang dipantau",
+	"watch.remove": "Berhenti memantau {nama}",
+	"watch.addLabel": "Tambah kecamatan",
+	"watch.emptyFeed": "Belum ada kabar dalam sepekan terakhir",
+	"watch.emptyBody": "Pilih kecamatan agar paket baru, laporan terverifikasi, dan data terbaru muncul di sini.",
+	"watch.signIn": "Masuk untuk memantau kecamatan",
+	"watch.signInBody": "Kabar dikumpulkan per akun agar bisa ditandai sudah dibaca.",
+	"watch.meaning": "Arti kabar",
+	"watch.meaningBody": "Kabar adalah perubahan pada data publik, bukan penilaian. Paket yang melewati jadwal berarti perlu ditanyakan, bukan pasti bermasalah.",
+	"watch.failed": "Kabar gagal dimuat."
 }

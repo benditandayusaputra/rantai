@@ -13,6 +13,7 @@
 	import BagianAnggaran from '$lib/features/kecamatan/BagianAnggaran.svelte';
 	import BagianTema from '$lib/features/kecamatan/BagianTema.svelte';
 	import BagianWakilku from '$lib/features/kecamatan/BagianWakilku.svelte';
+	import TombolPantau from '$lib/features/pantau/TombolPantau.svelte';
 	import PanelTanya from '$lib/features/tanya/PanelTanya.svelte';
 	import {
 		bacaBagian,
@@ -96,6 +97,7 @@
 				</p>
 			{/if}
 			<div class="mt-4 flex flex-wrap items-center gap-3">
+				<TombolPantau kodeKecamatan={ringkasan.kecamatan.kode} />
 				<button
 					type="button"
 					class="inline-flex min-h-touch items-center gap-2 rounded-md border-ctrl border-line-strong px-4 font-semibold hover:border-fg hover:bg-sunken"

@@ -31,6 +31,7 @@ func denganAuth(layanan deliveryhttp.Layanan, pool *pgxpool.Pool, cfg config.Ser
 	}
 	akun := repository.PenggunaRepository{DB: pool}
 	layanan.Akses = akses
+	layanan.Pantau = usecase.Pantau{Repo: repository.PantauRepository{DB: pool}}
 	layanan.Masuk = usecase.Masuk{
 		OTP: akun, Pengguna: akun, Sesi: akun, Pengirim: pengirim, Akses: akses,
 		Aturan:   usecase.AturanMasuk{OTP: cfg.OTP, UmurRefresh: cfg.UmurRefresh},

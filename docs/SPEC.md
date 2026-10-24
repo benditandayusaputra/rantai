@@ -158,6 +158,8 @@ Fungsi SQL `hierarki_wilayah(kode)` mengembalikan leluhur sebuah wilayah sebagai
 | `sesi_refresh` | `id`, `pengguna_id`, `token_hash`, `kedaluwarsa`, `dicabut` |
 | `hak_jawab` | `id`, `target_jenis` (sinyal, laporan, paket, umpan), `target_id`, `instansi_id` nullable, `anggota_id` nullable, `isi`, `penjawab_id`, `dibuat_pada` |
 | `langganan` | `id`, `pengguna_id`, `kode_wilayah`, `kanal` (feed, webpush, email), `webpush_endpoint` jsonb |
+| `kejadian` | `id`, `jenis`, `kode_kecamatan`, `judul`, `tautan`, `kunci` (unik), `terjadi_pada`, `is_simulation` |
+| `notifikasi` | `id`, `pengguna_id`, `kejadian_id`, `dibaca_pada`; unik (`pengguna_id`, `kejadian_id`) |
 | `notifikasi` | `id`, `pengguna_id`, `jenis`, `payload` jsonb, `dibaca` |
 | `tanya_log` | `id`, `pertanyaan`, `jawaban`, `rujukan` jsonb, `bahasa`, `durasi_ms` (tanpa data pribadi) |
 
@@ -300,7 +302,9 @@ Warga berlangganan kecamatan. Kanal: feed di aplikasi (wajib), Web Push dengan V
 | Hak jawab baru | Hak jawab untuk paket, laporan, atau umpan anggota dapil |
 | Indikator diperbarui | Data indikator tema periode baru |
 
-API: `POST /langganan`, `DELETE /langganan/{id}`, `GET /notifikasi`, `PATCH /notifikasi/{id}/dibaca`.
+Langganan memakai kode kecamatan (kode kelurahan dinormalisasi ke kecamatannya). Job `turunan` membuat kejadian dari data tujuh hari terakhir dengan kunci unik per kejadian sehingga tidak berganda, lalu menyebarkannya ke `notifikasi` pelanggan kanal feed; langganan baru langsung menerima kejadian sepekan terakhir. Kejadian "Masa pemeliharaan segera berakhir" menunggu estimasi pemeliharaan dipindah ke tabel turunan, dan "Hak jawab baru" menunggu tabel `hak_jawab` (T-803).
+
+API: `GET /langganan`, `POST /langganan` (`{kode_wilayah}`), `DELETE /langganan/{id}`, `GET /notifikasi` (30 terbaru dan `belum_dibaca`), `PATCH /notifikasi/{id}/dibaca`.
 
 ## 6. Tema Pendidikan
 

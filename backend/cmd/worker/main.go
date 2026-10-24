@@ -298,6 +298,7 @@ func buatTurunan(pool *pgxpool.Pool) (job, error) {
 		Tema:           repository.TemaRepository{DB: pool},
 		TemaPaket:      lokasi,
 		KategoriSinyal: lokasi,
+		Kejadian:       repository.PantauRepository{DB: pool},
 		Pencatat:       repository.IngestRunRepository{DB: pool},
 		AturanLokasi:   aturan,
 		Anggaran:       anggaran,

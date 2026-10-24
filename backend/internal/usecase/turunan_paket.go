@@ -35,6 +35,7 @@ type TurunanPaket struct {
 	Tema           PembacaTema
 	TemaPaket      PenyimpanTemaPaket
 	KategoriSinyal PenyimpanKategoriSinyal
+	Kejadian       PembuatKejadian
 	Pencatat       PencatatIngest
 	AturanLokasi   domain.AturanLokasi
 	Anggaran       AturanTurunanAnggaran
@@ -47,7 +48,7 @@ func (u TurunanPaket) Jalankan(ctx context.Context) error {
 
 func (u TurunanPaket) hitung(ctx context.Context) (HasilImpor, error) {
 	total := 0
-	for _, langkah := range []func(context.Context) (int, error){u.tentukanLokasi, u.tandaiTema, u.golongkanKategori, u.hitungSinyal} {
+	for _, langkah := range []func(context.Context) (int, error){u.tentukanLokasi, u.tandaiTema, u.golongkanKategori, u.hitungSinyal, u.buatKejadian} {
 		berubah, err := langkah(ctx)
 		if err != nil {
 			return HasilImpor{}, err
@@ -100,4 +101,15 @@ func (u TurunanPaket) tentukanLokasi(ctx context.Context) (int, error) {
 		hasil[i] = LokasiTerhitung{KodePaket: m.KodePaket, Lokasi: penentu.Tentukan(m)}
 	}
 	return u.Lokasi.SimpanLokasiPaket(ctx, hasil)
+}
+
+func (u TurunanPaket) buatKejadian(ctx context.Context) (int, error) {
+	if u.Kejadian == nil {
+		return 0, nil
+	}
+	baru, err := u.Kejadian.BuatKejadian(ctx, u.Sekarang().Add(-domain.JendelaKejadian))
+	if err != nil {
+		return 0, fmt.Errorf("buat kejadian pantau: %w", err)
+	}
+	return baru, nil
 }

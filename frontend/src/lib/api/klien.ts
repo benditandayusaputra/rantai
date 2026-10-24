@@ -111,8 +111,14 @@ export function urlServer(path: string): string {
 	return new URL(path, env.PUBLIC_API_URL || alamatBawaan).toString();
 }
 
-export async function ambilBerwenang<T>(fetchFn: Fetch, path: string, token: string): Promise<T> {
+export async function ambilBerwenang<T>(
+	fetchFn: Fetch,
+	path: string,
+	token: string,
+	metode: 'GET' | 'DELETE' = 'GET'
+): Promise<T> {
 	const respons = await fetchFn(susunURL(path, {}), {
+		method: metode,
 		headers: { Authorization: `Bearer ${token}` }
 	});
 	const amplop = await bacaAmplop<T>(respons);
