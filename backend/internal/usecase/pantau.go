@@ -21,6 +21,10 @@ type PembuatKejadian interface {
 	BuatKejadian(ctx context.Context, sejak time.Time) (int, error)
 }
 
+type PendorongKejadian interface {
+	Dorong(ctx context.Context) (int, error)
+}
+
 type Pantau struct {
 	Repo RepositoriPantau
 }

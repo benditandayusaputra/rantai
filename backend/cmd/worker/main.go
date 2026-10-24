@@ -27,6 +27,7 @@ import (
 	"github.com/benditandayusaputra/rantai/backend/internal/llm"
 	"github.com/benditandayusaputra/rantai/backend/internal/repository"
 	"github.com/benditandayusaputra/rantai/backend/internal/usecase"
+	"github.com/benditandayusaputra/rantai/backend/internal/webpush"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -292,13 +293,19 @@ func buatTurunan(pool *pgxpool.Pool) (job, error) {
 		return nil, err
 	}
 	lokasi := repository.LokasiPaketRepository{DB: pool}
+	pantau := repository.PantauRepository{DB: pool}
+	var pendorong usecase.PendorongKejadian
+	if pengirim, ada := webpush.DariEnv(&http.Client{Timeout: batasWaktuUnduh}); ada {
+		pendorong = usecase.DorongPush{Repo: pantau, Pengirim: pengirim}
+	}
 	turunan := usecase.TurunanPaket{
 		Gazetir:        lokasi,
 		Lokasi:         lokasi,
 		Tema:           repository.TemaRepository{DB: pool},
 		TemaPaket:      lokasi,
 		KategoriSinyal: lokasi,
-		Kejadian:       repository.PantauRepository{DB: pool},
+		Kejadian:       pantau,
+		Pendorong:      pendorong,
 		Pencatat:       repository.IngestRunRepository{DB: pool},
 		AturanLokasi:   aturan,
 		Anggaran:       anggaran,

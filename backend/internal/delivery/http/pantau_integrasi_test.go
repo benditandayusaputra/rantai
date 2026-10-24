@@ -2,6 +2,7 @@ package http
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"net/http/httptest"
 	"testing"
@@ -109,4 +110,49 @@ func TestPantau_KodeBukanWilayahDKI_404(t *testing.T) {
 	if hasil := mintaPantau(t, app, fiber.MethodPost, "/api/v1/langganan", `{"kode_wilayah": "32.73.01"}`, "token-pemantau"); hasil.kode != fiber.StatusNotFound {
 		t.Errorf("kode = %d, harap 404", hasil.kode)
 	}
+}
+
+type pengirimPushUji struct{ jumlah *int }
+
+func (p pengirimPushUji) Kirim(context.Context, domain.LanggananPush, domain.PesanPush) error {
+	*p.jumlah++
+	return nil
+}
+
+func TestWebPush_AktifkanLaluKejadianBaru_TerkirimSekali(t *testing.T) {
+	_, tx := appUjiPantau(t)
+	repo := repository.PantauRepository{DB: tx}
+	app := NewApp(config.Server{}, Layanan{
+		Pantau: usecase.Pantau{Repo: repo}, WebPush: usecase.LayananPush{Repo: repo, KunciPublik: "kunci-uji"},
+		Akses: aksesLaporanTiruan{pengguna: map[string]int64{"token-pemantau": idPengguna(t, tx, "token-pemantau")}},
+	})
+	mintaPantau(t, app, fiber.MethodPost, "/api/v1/langganan", `{"kode_wilayah": "31.72.06"}`, "token-pemantau")
+	aktif := mintaPantau(t, app, fiber.MethodPost, "/api/v1/webpush/langganan",
+		`{"endpoint": "https://push.contoh.test/abc", "keys": {"p256dh": "kunci", "auth": "rahasia"}}`, "token-pemantau")
+	if _, err := tx.Exec(t.Context(), sqlPaketPantauUji); err != nil {
+		t.Fatal(err)
+	}
+	buatKejadianUji(t, tx)
+	jumlah := 0
+	dorong := usecase.DorongPush{Repo: repo, Pengirim: pengirimPushUji{jumlah: &jumlah}}
+
+	pertama, errPertama := dorong.Dorong(t.Context())
+	kedua, errKedua := dorong.Dorong(t.Context())
+
+	data, _ := aktif.respons.Data.(map[string]any)
+	if aktif.kode != fiber.StatusOK || data["jumlah_kecamatan"] != float64(1) {
+		t.Fatalf("aktifkan push: %d %v", aktif.kode, aktif.respons)
+	}
+	if errPertama != nil || errKedua != nil || pertama < 1 || kedua != 0 || jumlah != pertama {
+		t.Errorf("pertama %d (%v), kedua %d (%v), terkirim %d", pertama, errPertama, kedua, errKedua, jumlah)
+	}
+}
+
+func idPengguna(t *testing.T, tx pgx.Tx, token string) int64 {
+	t.Helper()
+	var id int64
+	if err := tx.QueryRow(t.Context(), `SELECT id FROM pengguna WHERE email = $1 || '@uji.test'`, token).Scan(&id); err != nil {
+		t.Fatal(err)
+	}
+	return id
 }

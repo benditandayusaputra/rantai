@@ -15,6 +15,7 @@
 	import RegionSearch from '$lib/components/RegionSearch.svelte';
 	import { pulihkanSesi, sesiAktif } from '$lib/features/akun/sesi.svelte';
 	import { kelompokkanPerHari, tampilanKejadian } from '$lib/features/pantau/pantau';
+	import SakelarPush from '$lib/features/pantau/SakelarPush.svelte';
 	import { formatJam } from '$lib/format';
 	import { bahasaBawaan, t } from '$lib/i18n';
 
@@ -167,7 +168,8 @@
 					{/each}
 				{/if}
 			</div>
-			<aside class="lg:col-span-4">
+			<aside class="flex flex-col gap-4 lg:col-span-4">
+				<SakelarPush token={sesi.token_akses} />
 				<section class="flex flex-col gap-2 rounded-lg bg-info-bg p-4">
 					<h2 class="flex items-center gap-2 font-bold">
 						<Info size={18} strokeWidth={1.75} class="text-info" aria-hidden="true" />

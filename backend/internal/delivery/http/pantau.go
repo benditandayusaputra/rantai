@@ -17,6 +17,56 @@ type LayananPantau interface {
 	TandaiDibaca(ctx context.Context, penggunaID, id int64) error
 }
 
+type LayananWebPush interface {
+	KunciPublikPush() string
+	Aktifkan(ctx context.Context, penggunaID int64, l domain.LanggananPush) (int, error)
+	Matikan(ctx context.Context, penggunaID int64, endpoint string) error
+}
+
+type handlerWebPush struct {
+	layanan LayananWebPush
+}
+
+func daftarkanWebPush(api fiber.Router, layanan Layanan) {
+	if layanan.WebPush == nil || layanan.Akses == nil {
+		return
+	}
+	h := handlerWebPush{layanan: layanan.WebPush}
+	masuk := wajibMasuk(layanan.Akses)
+	api.Get("/webpush/kunci-publik", h.kunciPublik)
+	api.Post("/webpush/langganan", masuk, h.aktifkan)
+	api.Post("/webpush/berhenti", masuk, h.matikan)
+}
+
+func (h handlerWebPush) kunciPublik(c fiber.Ctx) error {
+	return kirimData(c, map[string]string{"kunci_publik": h.layanan.KunciPublikPush()})
+}
+
+func (h handlerWebPush) aktifkan(c fiber.Ctx) error {
+	var l domain.LanggananPush
+	if err := json.Unmarshal(c.Body(), &l); err != nil {
+		return domain.ErrLanggananPushTidakSah
+	}
+	jumlah, err := h.layanan.Aktifkan(c.Context(), klaimAkses(c).PenggunaID, l)
+	if err != nil {
+		return err
+	}
+	return kirimData(c, map[string]int{"jumlah_kecamatan": jumlah})
+}
+
+func (h handlerWebPush) matikan(c fiber.Ctx) error {
+	var masukan struct {
+		Endpoint string `json:"endpoint"`
+	}
+	if err := json.Unmarshal(c.Body(), &masukan); err != nil || masukan.Endpoint == "" {
+		return domain.InputTidakValid("badan permintaan wajib JSON berisi endpoint")
+	}
+	if err := h.layanan.Matikan(c.Context(), klaimAkses(c).PenggunaID, masukan.Endpoint); err != nil {
+		return err
+	}
+	return kirimData(c, nil)
+}
+
 type langgananJSON struct {
 	ID          int64     `json:"id"`
 	KodeWilayah string    `json:"kode_wilayah"`

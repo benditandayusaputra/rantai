@@ -306,6 +306,8 @@ Langganan memakai kode kecamatan (kode kelurahan dinormalisasi ke kecamatannya).
 
 API: `GET /langganan`, `POST /langganan` (`{kode_wilayah}`), `DELETE /langganan/{id}`, `GET /notifikasi` (30 terbaru dan `belum_dibaca`), `PATCH /notifikasi/{id}/dibaca`.
 
+Web Push: kunci VAPID dari env `VAPID_KUNCI_PUBLIK`, `VAPID_KUNCI_PRIVAT`, `VAPID_SUBJEK` (`make kunci-vapid` membuat pasangan kunci); bila kosong, fitur tidak dipasang. Mengaktifkan push menyalin langganan perangkat ke setiap kecamatan feed pengguna (`langganan.kanal = webpush`, `webpush_endpoint` berisi objek PushSubscription), dan kecamatan yang ditambahkan kemudian ikut tersalin. Job `turunan` mendorong setiap kejadian sekali (`kejadian.didorong_pada`) untuk kejadian 24 jam terakhir; endpoint yang dijawab 404 atau 410 dihapus. Satu perangkat per pengguna per kecamatan: perangkat terakhir yang diaktifkan menggantikan yang lama. API: `GET /webpush/kunci-publik`, `POST /webpush/langganan`, `POST /webpush/berhenti` (`{endpoint}`).
+
 ## 6. Tema Pendidikan
 
 ### PEN-01 Kesenjangan kursi SMP per kecamatan

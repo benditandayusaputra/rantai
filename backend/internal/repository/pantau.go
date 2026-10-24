@@ -64,7 +64,29 @@ FROM langganan l JOIN wilayah w ON w.kode = l.kode_wilayah
 WHERE l.pengguna_id = $1 AND l.kanal = 'feed'
 ORDER BY w.nama`
 
-	sqlHapusLangganan = `DELETE FROM langganan WHERE id = $1 AND pengguna_id = $2`
+	sqlHapusLangganan = `DELETE FROM langganan
+WHERE pengguna_id = $2 AND kode_wilayah = (SELECT kode_wilayah FROM langganan WHERE id = $1 AND pengguna_id = $2)`
+
+	sqlSalinPushKeLanggananBaru = `INSERT INTO langganan (pengguna_id, kode_wilayah, kanal, webpush_endpoint)
+SELECT $1, $2, 'webpush', webpush_endpoint FROM langganan WHERE pengguna_id = $1 AND kanal = 'webpush' LIMIT 1
+ON CONFLICT (pengguna_id, kode_wilayah, kanal) DO NOTHING`
+
+	sqlSimpanLanggananPush = `INSERT INTO langganan (pengguna_id, kode_wilayah, kanal, webpush_endpoint)
+SELECT pengguna_id, kode_wilayah, 'webpush', $2 FROM langganan WHERE pengguna_id = $1 AND kanal = 'feed'
+ON CONFLICT (pengguna_id, kode_wilayah, kanal) DO UPDATE SET webpush_endpoint = EXCLUDED.webpush_endpoint`
+
+	sqlHapusLanggananPush = `DELETE FROM langganan WHERE pengguna_id = $1 AND kanal = 'webpush' AND webpush_endpoint ->> 'endpoint' = $2`
+
+	sqlKejadianBelumDidorong = `SELECT id, jenis, kode_kecamatan, judul, tautan FROM kejadian
+WHERE didorong_pada IS NULL AND dibuat_pada >= now() - $1::interval
+ORDER BY id
+LIMIT $2`
+
+	sqlTujuanPush = `SELECT id, webpush_endpoint FROM langganan WHERE kanal = 'webpush' AND kode_wilayah = $1`
+
+	sqlHapusLanggananPushByID = `DELETE FROM langganan WHERE id = $1 AND kanal = 'webpush'`
+
+	sqlTandaiDidorong = `UPDATE kejadian SET didorong_pada = now() WHERE id = $1`
 
 	sqlDaftarNotifikasi = `SELECT n.id, k.jenis, k.kode_kecamatan, w.nama, k.judul, k.tautan, k.terjadi_pada, n.dibaca_pada IS NOT NULL,
     k.is_simulation
@@ -114,7 +136,10 @@ func (r PantauRepository) SimpanLangganan(ctx context.Context, penggunaID int64,
 		if err != nil {
 			return fmt.Errorf("simpan langganan: %w", err)
 		}
-		_, err = tx.Exec(ctx, sqlNotifikasiAwalLangganan, penggunaID, kodeKecamatan, domain.JendelaKejadian)
+		if _, err = tx.Exec(ctx, sqlNotifikasiAwalLangganan, penggunaID, kodeKecamatan, domain.JendelaKejadian); err != nil {
+			return err
+		}
+		_, err = tx.Exec(ctx, sqlSalinPushKeLanggananBaru, penggunaID, kodeKecamatan)
 		return err
 	})
 	return l, err
@@ -141,4 +166,37 @@ func (r PantauRepository) DaftarNotifikasi(ctx context.Context, penggunaID int64
 func (r PantauRepository) TandaiDibaca(ctx context.Context, penggunaID, id int64) (bool, error) {
 	tag, err := r.DB.Exec(ctx, sqlTandaiDibaca, id, penggunaID)
 	return tag.RowsAffected() > 0, err
+}
+
+const (
+	jendelaDorong       = 24 * time.Hour
+	batasDorongPerJalan = 200
+)
+
+func (r PantauRepository) SimpanLanggananPush(ctx context.Context, penggunaID int64, l domain.LanggananPush) (int, error) {
+	tag, err := r.DB.Exec(ctx, sqlSimpanLanggananPush, penggunaID, l)
+	return int(tag.RowsAffected()), err
+}
+
+func (r PantauRepository) HapusLanggananPush(ctx context.Context, penggunaID int64, endpoint string) error {
+	_, err := r.DB.Exec(ctx, sqlHapusLanggananPush, penggunaID, endpoint)
+	return err
+}
+
+func (r PantauRepository) KejadianBelumDidorong(ctx context.Context) ([]domain.KejadianUntukPush, error) {
+	return kumpulkan(ctx, r.DB, sqlKejadianBelumDidorong, pgx.RowToStructByPos[domain.KejadianUntukPush], jendelaDorong, batasDorongPerJalan)
+}
+
+func (r PantauRepository) TujuanPush(ctx context.Context, kodeKecamatan string) ([]domain.TujuanPush, error) {
+	return kumpulkan(ctx, r.DB, sqlTujuanPush, pgx.RowToStructByPos[domain.TujuanPush], kodeKecamatan)
+}
+
+func (r PantauRepository) HapusLanggananPushByID(ctx context.Context, id int64) error {
+	_, err := r.DB.Exec(ctx, sqlHapusLanggananPushByID, id)
+	return err
+}
+
+func (r PantauRepository) TandaiDidorong(ctx context.Context, kejadianID int64) error {
+	_, err := r.DB.Exec(ctx, sqlTandaiDidorong, kejadianID)
+	return err
 }

@@ -36,6 +36,7 @@ type TurunanPaket struct {
 	TemaPaket      PenyimpanTemaPaket
 	KategoriSinyal PenyimpanKategoriSinyal
 	Kejadian       PembuatKejadian
+	Pendorong      PendorongKejadian
 	Pencatat       PencatatIngest
 	AturanLokasi   domain.AturanLokasi
 	Anggaran       AturanTurunanAnggaran
@@ -110,6 +111,11 @@ func (u TurunanPaket) buatKejadian(ctx context.Context) (int, error) {
 	baru, err := u.Kejadian.BuatKejadian(ctx, u.Sekarang().Add(-domain.JendelaKejadian))
 	if err != nil {
 		return 0, fmt.Errorf("buat kejadian pantau: %w", err)
+	}
+	if u.Pendorong != nil {
+		if _, err := u.Pendorong.Dorong(ctx); err != nil {
+			return baru, fmt.Errorf("dorong kejadian pantau: %w", err)
+		}
 	}
 	return baru, nil
 }

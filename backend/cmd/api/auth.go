@@ -11,6 +11,7 @@ import (
 	"github.com/benditandayusaputra/rantai/backend/internal/surel"
 	"github.com/benditandayusaputra/rantai/backend/internal/token"
 	"github.com/benditandayusaputra/rantai/backend/internal/usecase"
+	"github.com/benditandayusaputra/rantai/backend/internal/webpush"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -32,6 +33,9 @@ func denganAuth(layanan deliveryhttp.Layanan, pool *pgxpool.Pool, cfg config.Ser
 	akun := repository.PenggunaRepository{DB: pool}
 	layanan.Akses = akses
 	layanan.Pantau = usecase.Pantau{Repo: repository.PantauRepository{DB: pool}}
+	if pengirim, ada := webpush.DariEnv(nil); ada {
+		layanan.WebPush = usecase.LayananPush{Repo: repository.PantauRepository{DB: pool}, KunciPublik: pengirim.KunciPublik}
+	}
 	layanan.Masuk = usecase.Masuk{
 		OTP: akun, Pengguna: akun, Sesi: akun, Pengirim: pengirim, Akses: akses,
 		Aturan:   usecase.AturanMasuk{OTP: cfg.OTP, UmurRefresh: cfg.UmurRefresh},

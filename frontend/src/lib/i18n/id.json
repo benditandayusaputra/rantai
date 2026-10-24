@@ -677,5 +677,11 @@
 	"watch.signInBody": "Kabar dikumpulkan per akun agar bisa ditandai sudah dibaca.",
 	"watch.meaning": "Arti kabar",
 	"watch.meaningBody": "Kabar adalah perubahan pada data publik, bukan penilaian. Paket yang melewati jadwal berarti perlu ditanyakan, bukan pasti bermasalah.",
-	"watch.failed": "Kabar gagal dimuat."
+	"watch.failed": "Kabar gagal dimuat.",
+	"watch.push.title": "Kabar di perangkat ini",
+	"watch.push.label": "Kirim notifikasi ke perangkat ini",
+	"watch.push.help": "Notifikasi dikirim saat ada kabar baru di kecamatan yang kamu pantau.",
+	"watch.push.denied": "Izin notifikasi ditolak. Ubah izin situs ini di pengaturan browser.",
+	"watch.push.unsupported": "Browser ini belum mendukung notifikasi web.",
+	"watch.push.failed": "Notifikasi gagal diaktifkan. Coba lagi."
 }

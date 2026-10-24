@@ -306,10 +306,10 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - Peta radius 3 km dari DESIGN 6.6 belum dipasang; daftar sekolah dan kalimat tekanan sudah memuat jarak dan sumber.
   - Commit: `✨ Bangun fitur Cek Sekolahku berbasis radius`
 - [x] **T-910** Pantau Wilayahku, feed (WIL-06) **[BUTUH DESAIN]**
-  - Empat dari enam jenis kejadian aktif; pemeliharaan segera berakhir dan hak jawab baru tercatat di SPEC WIL-06. Pengaturan kabar (switch) di aside menunggu T-911.
+  - Empat dari enam jenis kejadian aktif; pemeliharaan segera berakhir dan hak jawab baru tercatat di SPEC WIL-06. Sakelar kabar perangkat dibangun di T-911.
   - Migrasi `langganan`, `notifikasi`; pembuat kejadian di job `turunan`; feed di aplikasi.
   - Commit: `✨ Tambah langganan kecamatan dan feed notifikasi`
-- [ ] **T-911** Web Push (WIL-06)
+- [x] **T-911** Web Push (WIL-06)
   - VAPID dari env, service worker.
   - Commit: `✨ Kirim notifikasi Pantau lewat Web Push`
 

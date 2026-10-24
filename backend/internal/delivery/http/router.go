@@ -34,6 +34,7 @@ type Layanan struct {
 	KonfirmasiLaporan LayananKonfirmasiLaporan
 	Moderasi          LayananModerasi
 	Pantau            LayananPantau
+	WebPush           LayananWebPush
 }
 
 func NewApp(cfg config.Server, layanan Layanan) *fiber.App {
@@ -73,6 +74,7 @@ func daftarkanAksiWarga(api fiber.Router, layanan Layanan) {
 	daftarkanLaporan(api, layanan)
 	daftarkanModerasi(api, layanan)
 	daftarkanPantau(api, layanan)
+	daftarkanWebPush(api, layanan)
 }
 
 func daftarkanWilayah(api fiber.Router, h handlerWilayah) {
