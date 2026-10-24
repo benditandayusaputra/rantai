@@ -1,0 +1,78 @@
+name: rantai
+
+services:
+  minio:
+    image: pgsty/minio:RELEASE.2026-08-04T00-00-00Z
+    restart: unless-stopped
+    command: server /data
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    volumes:
+      - minio-data:/data
+
+  api:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      MINIO_ENDPOINT: minio:9000
+      PROXY_TEPERCAYA: 172.16.0.0/12
+      RANTAI_DATA_RAW: /app/data/raw
+    volumes:
+      - ./data/raw:/app/data/raw
+    depends_on:
+      - minio
+
+  migrate:
+    build:
+      context: ./backend/migrations
+      dockerfile_inline: |
+        FROM migrate/migrate:v4.18.3
+        COPY *.sql /migrations/
+    profiles: ["alat"]
+    entrypoint:
+      - migrate
+      - -path=/migrations
+      - -database=${DATABASE_URL_MIGRASI}
+
+  caddy:
+    image: caddy:2.10-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      API_DOMAIN: ${API_DOMAIN}
+      PROXY_RAHASIA: ${PROXY_RAHASIA}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - api
+
+  cadangan:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      DATABASE_URL_MIGRASI: ${DATABASE_URL_MIGRASI}
+      SIMPAN_HARI: "7"
+    entrypoint:
+      - sh
+      - -c
+      - |
+        while true; do
+          pg_dump "$$DATABASE_URL_MIGRASI" --no-owner --no-privileges -n public | gzip > /cadangan/rantai-$$(date +%F).sql.gz
+          find /cadangan -name 'rantai-*.sql.gz' -mtime +$$SIMPAN_HARI -delete
+          sleep 86400
+        done
+    volumes:
+      - ./cadangan:/cadangan
+
+volumes:
+  minio-data:
+  caddy-data:
+  caddy-config:

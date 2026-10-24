@@ -51,3 +51,14 @@ func TestLoad_BerkasTidakAda_MengembalikanError(t *testing.T) {
 		t.Error("diharapkan error untuk berkas yang tidak ada")
 	}
 }
+
+func TestLoad_ProxyTepercayaDariEnv_DipisahKoma(t *testing.T) {
+	path := tulisKonfigurasi(t, "server:\n  port: \"9000\"\n")
+	t.Setenv("PROXY_TEPERCAYA", "172.16.0.0/12,10.0.0.5")
+
+	cfg, err := Load(path)
+
+	if err != nil || len(cfg.Server.ProxyTepercaya) != 2 || cfg.Server.ProxyTepercaya[0] != "172.16.0.0/12" {
+		t.Errorf("proxy %v, err %v", cfg.Server.ProxyTepercaya, err)
+	}
+}

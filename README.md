@@ -52,6 +52,27 @@ make hitung-indikator
 
 `make snapshot-demo` menyimpan seluruh data ke `data/snapshot/rantai.sql.gz` di mesin yang datanya sudah lengkap. Di mesin lain, `make up`, `make migrate`, lalu `make seed-demo` memuat snapshot itu dan skenario `data/snapshot/skenario_demo.yaml`. Dengan `RANTAI_MODE=demo` di `.env`, worker menolak job yang mengambil data dari internet.
 
+### Basis data
+
+Basis data utama (lokal dan produksi) adalah PostgreSQL di Neon dengan ekstensi PostGIS. Isi `DATABASE_URL` dengan URL pooler Neon dan `DATABASE_URL_MIGRASI` dengan URL endpoint langsung (tanpa `-pooler`), karena migrasi memakai advisory lock tingkat sesi. Tanpa kedua variabel itu, semua perintah memakai PostgreSQL dari `make up`.
+
+Tes integrasi selalu memakai basis data lokal terpisah `rantai_uji` agar tidak menyentuh data utama. Siapkan sekali dengan `make up && make siapkan-uji`, lalu `make test`.
+
+## Deploy
+
+API, worker, MinIO, dan Caddy berjalan di satu server dengan `docker-compose.prod.yml`; frontend di Vercel.
+
+```bash
+cp .env.example .env
+docker compose -f docker-compose.prod.yml --profile alat run --rm migrate up
+docker compose -f docker-compose.prod.yml up -d --build
+docker compose -f docker-compose.prod.yml run --rm --entrypoint worker api <job>
+```
+
+Isi `.env` server dengan `API_DOMAIN` (misalnya `130-162-198-219.sslip.io`, Caddy mengambil sertifikat TLS otomatis), `PROXY_RAHASIA` acak, `AUTH_RAHASIA`, kredensial MinIO, `CORS_ORIGIN` domain Vercel, serta URL Neon. Port 80 dan 443 harus terbuka. Layanan `cadangan` menyimpan `pg_dump` harian ke `cadangan/` dan menyimpan tujuh hari terakhir.
+
+Di Vercel, set root directory ke `frontend` dan isi `PUBLIC_API_URL=https://<domain-vercel>/api/v1`, `API_HULU=https://<API_DOMAIN>`, `PROXY_RAHASIA` yang sama dengan server, dan `PUBLIC_PETA_DASAR_URL`. Frontend meneruskan `/api/v1/*` ke API sehingga cookie sesi tetap satu situs, dan meneruskan IP pengunjung lewat header yang hanya dipercaya Caddy bila `PROXY_RAHASIA` cocok.
+
 ## Progres pengerjaan
 
 - [x] Struktur monorepo

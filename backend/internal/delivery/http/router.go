@@ -39,12 +39,7 @@ type Layanan struct {
 }
 
 func NewApp(cfg config.Server, layanan Layanan) *fiber.App {
-	app := fiber.New(fiber.Config{
-		ErrorHandler: tanganiError,
-		ReadTimeout:  cfg.BatasWaktuBaca,
-		WriteTimeout: cfg.BatasWaktuTulis,
-		BodyLimit:    BatasBodyPermintaan,
-	})
+	app := fiber.New(konfigurasiFiber(cfg))
 	pasangPengaman(app, cfg)
 	api := app.Group(prefiksAPI)
 	api.Get("/kesehatan", periksaKesehatan)
@@ -69,6 +64,18 @@ func NewApp(cfg config.Server, layanan Layanan) *fiber.App {
 	daftarkanParipurna(api, handlerParipurna{layanan: layanan.Paripurna})
 	daftarkanAksiWarga(api, layanan)
 	return app
+}
+
+func konfigurasiFiber(cfg config.Server) fiber.Config {
+	return fiber.Config{
+		ErrorHandler:     tanganiError,
+		ReadTimeout:      cfg.BatasWaktuBaca,
+		WriteTimeout:     cfg.BatasWaktuTulis,
+		BodyLimit:        BatasBodyPermintaan,
+		TrustProxy:       len(cfg.ProxyTepercaya) > 0,
+		TrustProxyConfig: fiber.TrustProxyConfig{Proxies: cfg.ProxyTepercaya},
+		ProxyHeader:      fiber.HeaderXForwardedFor,
+	}
 }
 
 func daftarkanAksiWarga(api fiber.Router, layanan Layanan) {

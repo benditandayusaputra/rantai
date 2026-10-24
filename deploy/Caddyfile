@@ -1,0 +1,18 @@
+{$API_DOMAIN} {
+	encode zstd gzip
+
+	@lewatFrontend header X-Rantai-Proxy {$PROXY_RAHASIA}
+	handle @lewatFrontend {
+		reverse_proxy api:8080 {
+			header_up X-Forwarded-For {http.request.header.X-Klien-Asli}
+			header_up -X-Rantai-Proxy
+			header_up -X-Klien-Asli
+		}
+	}
+
+	handle {
+		reverse_proxy api:8080 {
+			header_up -X-Klien-Asli
+		}
+	}
+}

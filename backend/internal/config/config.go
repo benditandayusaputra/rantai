@@ -36,6 +36,7 @@ type Server struct {
 	CORS            CORS          `yaml:"cors"`
 	Tanya           ServerTanya   `yaml:"tanya"`
 	Auth            ServerAuth    `yaml:"auth"`
+	ProxyTepercaya  []string      `yaml:"proxy_tepercaya"`
 }
 
 type ServerAuth struct {
@@ -84,6 +85,9 @@ func terapkanEnv(cfg Config) Config {
 	}
 	if origin, ada := os.LookupEnv("CORS_ORIGIN"); ada {
 		cfg.Server.CORS.Origin = strings.Split(origin, ",")
+	}
+	if proxy, ada := os.LookupEnv("PROXY_TEPERCAYA"); ada {
+		cfg.Server.ProxyTepercaya = strings.Split(proxy, ",")
 	}
 	cfg.DatabaseURL = os.Getenv("DATABASE_URL")
 	return cfg
