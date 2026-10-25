@@ -334,7 +334,10 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - `make e2e` menjalankan `e2e/aksesibilitas.spec.ts` (15 halaman, 390 px dan 1440 px, WCAG 2.1 A dan AA). Audit pertama memakai data parsial (Dapodik belum masuk); spec tetap di suite sehingga keadaan berdata ikut terperiksa.
   - Commit: `♿️ Perbaiki temuan audit aksesibilitas halaman utama`
   - Selesai bila: tidak ada pelanggaran serius atau kritis.
-- [ ] **T-1003** Performa
+- [x] **T-1003** Performa
+  - Halaman kecamatan menunggu ringkasan saat `load` sehingga konten ada di HTML SSR dan hidrasi tidak merender ulang (CLS 0,23 ke 0); panel Tanya dimuat saat pertama dibuka; ikon Lucide disatukan dalam satu potongan JS (78 ke 12 permintaan JS kecil). MapLibre sudah dimuat dinamis sejak T-606.
+  - Lighthouse 12.6 mobile (simulasi bawaan) atas build produksi di balik kompresi gzip seperti Vercel: beranda 97, kecamatan 96, LCP 2,5 dan 2,7 s, CLS 0.
+  - p95 API lokal dengan data parsial (tanpa Dapodik, paket belum berlokasi): ringkasan kecamatan 27 ms, wakil 7 ms, peta tema 3 ms, paket kecamatan 10 ms, cari wilayah 77 ms. Diukur ulang pada data penuh di T-1005.
   - Commit: `⚡️ Percepat muat halaman kecamatan dan peta`
   - Selesai bila: Lighthouse mobile 90 ke atas untuk beranda dan halaman kecamatan; API p95 di bawah 300 ms pada data penuh.
 - [ ] **T-1004** Deploy
@@ -344,6 +347,7 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
 - [ ] **T-1005** Snapshot luring final (DSR-01)
   - Snapshot data (`make snapshot-demo` di mesin dengan data lengkap), kunci `kecamatan_demo` di `skenario_demo.yaml`, rekam ulang `data/snapshot/tanya_demo.json` dengan `make tanya-demo` terhadap API live berdata lengkap, PMTiles wilayah DKI, uji jalan tanpa internet.
   - Commit: `🗃️ Perbarui snapshot data dan tile peta untuk demo luring`
+  - Ukur ulang p95 API halaman wilayah pada data penuh (sasaran di bawah 300 ms, T-1003).
   - Selesai bila: alur demo lulus dengan jaringan dimatikan.
 - [ ] **T-1006** README final
   - Commit: `📝 Perbarui README dengan fitur, arsitektur, dan progres akhir`
