@@ -6,6 +6,7 @@
 	import ProvenanceBadge from '$lib/components/ProvenanceBadge.svelte';
 	import TableToggle from '$lib/components/TableToggle.svelte';
 	import { formatAngka, formatRupiah } from '$lib/format';
+	import { bacaTemaPendidikan, teksJenjang } from '$lib/features/pendidikan/jenjang';
 	import { bahasaAktif, t } from '$lib/i18n';
 	import {
 		batasSumbu,
@@ -18,6 +19,8 @@
 	import { tampilkanAngka } from './kecamatan';
 
 	let { kodeKecamatan, kodeTema }: { kodeKecamatan: string; kodeTema: string } = $props();
+
+	const teks = $derived(teksJenjang[bacaTemaPendidikan(kodeTema)]);
 
 	const id = $props.id();
 	const jumlahGaris = 4;
@@ -56,7 +59,7 @@
 		<div class="flex items-center gap-3">
 			<span class="icon-tile"><ChartScatter size={20} strokeWidth={1.75} aria-hidden="true" /></span
 			>
-			<h3 id="{id}-judul" class="t-h3">{t('spend.title')}</h3>
+			<h3 id="{id}-judul" class="t-h3">{t('spend.title')} · {t(teks.jenjang)}</h3>
 		</div>
 		{#if data}<TableToggle bind:pressed={isTabel} controls={id} />{/if}
 	</div>
@@ -68,7 +71,7 @@
 			<div class="skel h-64 rounded-md"></div>
 		</div>
 	{:else}
-		<p class="text-small text-muted">{t('spend.lead', { tahun: data.tahun })}</p>
+		<p class="text-small text-muted">{t(teks.belanjaLead, { tahun: data.tahun })}</p>
 		<div {id}>
 			{#if isTabel}
 				<div class="max-h-96 overflow-auto rounded-md border border-line">
@@ -158,7 +161,7 @@
 							x={kiri + lebarPlot / 2}
 							y={tinggi - 6}
 							text-anchor="middle"
-							class="fill-muted text-caption">{t('spend.xAxis')}</text
+							class="fill-muted text-caption">{t(teks.belanjaSumbuX)}</text
 						>
 						{#each titik as p (p.kode)}
 							<circle

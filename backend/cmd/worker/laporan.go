@@ -5,6 +5,8 @@ import (
 	"log"
 	"strings"
 
+	"github.com/benditandayusaputra/rantai/backend/internal/domain"
+
 	"github.com/benditandayusaputra/rantai/backend/internal/usecase"
 )
 
@@ -36,8 +38,8 @@ func (pelaporLog) LaporkanDayaTampung(daftar []usecase.LaporanDayaTampung) {
 	}
 }
 
-func (pelaporLog) LaporkanKecamatanTanpaCalonLulusan(kode []string) {
-	cetakDaftar("kecamatan tanpa data calon lulusan", kode)
+func (pelaporLog) LaporkanKecamatanTanpaCalonLulusan(jenjang domain.Jenjang, kode []string) {
+	cetakDaftar("kecamatan tanpa data calon lulusan jenjang "+string(jenjang), kode)
 }
 
 func (pelaporLog) LaporkanKecamatanDemoTerpilih(kode string) {

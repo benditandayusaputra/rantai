@@ -12,7 +12,7 @@ const halamanPertama = 1
 
 var (
 	parameterKodeKecamatan = tanya.Parameter{Tipe: tanya.TipeTeks, Deskripsi: "Kode kecamatan Kemendagri, contoh 31.72.01"}
-	parameterTema          = tanya.Parameter{Tipe: tanya.TipeTeks, Deskripsi: "Kode tema, contoh pendidikan"}
+	parameterTema          = tanya.Parameter{Tipe: tanya.TipeTeks, Deskripsi: "Kode tema: pendidikan (SD ke SMP) atau pendidikan_sma_smk (SMP ke SMA/SMK)"}
 	parameterTahun         = tanya.Parameter{Tipe: tanya.TipeBilangan, Deskripsi: "Tahun anggaran; kosongkan untuk tahun berjalan"}
 )
 
@@ -105,18 +105,21 @@ func alatIndikatorTema(l LayananIndikator) tanya.Alat {
 		Wajib:     []string{"kode_kecamatan", "tema"},
 	}
 	return tanya.BuatAlat(spek, func(ctx context.Context, m masukanKecamatanTema) (any, error) {
-		if m.Tema != domain.TemaPendidikan {
-			return nil, domain.TidakDitemukan("rincian indikator tema " + m.Tema + " belum tersedia")
-		}
-		hasil, err := l.DetailPendidikan(ctx, m.KodeKecamatan)
+		hasil, err := l.DetailPendidikan(ctx, m.Tema, m.KodeKecamatan)
 		return keDetailPendidikanJSON(hasil), err
 	})
 }
 
 func alatSekolahDiKecamatan(l LayananIndikator) tanya.Alat {
-	spek := spekKode("sekolah_di_kecamatan", "Daftar SMP dan MTs di kecamatan beserta daya tampungnya.", parameterKodeKecamatan.Deskripsi)
-	return tanya.BuatAlat(spek, func(ctx context.Context, m masukanKode) (any, error) {
-		hasil, err := l.SekolahKecamatan(ctx, m.Kode)
+	spek := tanya.Spek{
+		Nama: "sekolah_di_kecamatan",
+		Deskripsi: "Daftar sekolah jenjang tujuan di kecamatan beserta daya tampungnya: tema pendidikan untuk SMP dan MTs, " +
+			"tema pendidikan_sma_smk untuk SMA, SMK, dan MA.",
+		Parameter: map[string]tanya.Parameter{"kode_kecamatan": parameterKodeKecamatan, "tema": parameterTema},
+		Wajib:     []string{"kode_kecamatan", "tema"},
+	}
+	return tanya.BuatAlat(spek, func(ctx context.Context, m masukanKecamatanTema) (any, error) {
+		hasil, err := l.SekolahKecamatan(ctx, m.Tema, m.KodeKecamatan)
 		return keDaftarSekolahJSON(hasil), err
 	})
 }

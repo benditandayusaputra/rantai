@@ -1,5 +1,5 @@
 kode: pendidikan
-nama: { id: Pendidikan, en: Education }
+nama: { id: Pendidikan SMP, en: Junior high education }
 aktif: true
 urutan: 1
 indikator:

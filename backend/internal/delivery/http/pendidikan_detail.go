@@ -8,6 +8,7 @@ import (
 )
 
 type detailPendidikanJSON struct {
+	Tema                         string                    `json:"tema"`
 	Kode                         string                    `json:"kode"`
 	Nama                         string                    `json:"nama"`
 	Periode                      string                    `json:"periode"`
@@ -22,8 +23,26 @@ type detailPendidikanJSON struct {
 	Kesenjangan                  Angka                     `json:"kesenjangan"`
 	KesenjanganDenganSPMBBersama *Angka                    `json:"kesenjangan_dengan_spmb_bersama"`
 	Rasio                        *Angka                    `json:"rasio"`
+	KursiNegeriPerBentuk         []kursiBentukJSON         `json:"kursi_negeri_per_bentuk"`
+	KursiSPMBBersamaPerBentuk    []kursiBentukJSON         `json:"kursi_spmb_bersama_per_bentuk"`
+	Rumus                        rumusJSON                 `json:"rumus"`
 	Keterbatasan                 []string                  `json:"keterbatasan"`
 	Tren                         []titikTrenJSON           `json:"tren"`
+}
+
+type kursiBentukJSON struct {
+	Bentuk string `json:"bentuk"`
+	Kursi  Angka  `json:"kursi"`
+}
+
+type rumusJSON struct {
+	BentukAsal           string             `json:"bentuk_asal"`
+	TingkatAsal          int                `json:"tingkat_asal"`
+	BentukTujuan         []string           `json:"bentuk_tujuan"`
+	BentukMadrasahTujuan string             `json:"bentuk_madrasah_tujuan"`
+	TingkatTujuan        int                `json:"tingkat_tujuan"`
+	BatasMuridPerRombel  *int               `json:"batas_murid_per_rombel"`
+	AmbangRasio          domain.AmbangRasio `json:"ambang_rasio"`
 }
 
 type titikTrenJSON struct {
@@ -50,7 +69,7 @@ type sekolahJSON struct {
 }
 
 func (h handlerPendidikan) detailKecamatan(c fiber.Ctx) error {
-	d, err := h.layanan.DetailPendidikan(c.Context(), c.Params("kode"))
+	d, err := h.layanan.DetailPendidikan(c.Context(), c.Params("kode"), c.Params("kecamatan"))
 	if err != nil {
 		return err
 	}
@@ -61,18 +80,47 @@ func keDetailPendidikanJSON(d domain.DetailPendidikanKecamatan) detailPendidikan
 	indikator := pembuatAngka{label: d.Label, provenanceID: d.ProvenanceID}
 	r := d.Rincian
 	return detailPendidikanJSON{
-		Kode: d.KodeKecamatan, Nama: d.NamaKecamatan, Periode: d.Periode, Kelas: string(d.Kelas),
+		Tema: d.TemaKode, Kode: d.KodeKecamatan, Nama: d.NamaKecamatan, Periode: d.Periode, Kelas: string(d.Kelas),
 		Label: d.Label, ProvenanceID: d.ProvenanceID, MetodeCalonLulusan: r.MetodeCalonLulusan,
 		CalonLulusan:                 rujukan(d.ProvenanceCalonLulusan, d.ProvenanceID).berlabel(r.CalonLulusan, satuanSiswa),
-		KursiNegeri:                  rujukan(d.ProvenanceKursiNegeri, d.ProvenanceID).berlabel(r.KursiNegeri, satuanKursi),
-		KursiSPMBBersama:             rujukan(d.ProvenanceKursiSPMBBersama, d.ProvenanceID).berlabel(r.KursiSPMBBersama, satuanKursi),
+		KursiNegeri:                  rujukan(d.ProvenanceKursiJalur(domain.JalurNegeri), d.ProvenanceID).berlabel(r.KursiNegeri, satuanKursi),
+		KursiSPMBBersama:             rujukan(d.ProvenanceKursiJalur(domain.JalurSPMBBersama), d.ProvenanceID).berlabel(r.KursiSPMBBersama, satuanKursi),
 		KursiMadrasah:                indikator.berlabel(r.KursiMadrasah, satuanKursi),
 		Kesenjangan:                  indikator.bulat(d.Kesenjangan, satuanSiswa),
 		KesenjanganDenganSPMBBersama: indikator.berlabel(r.KesenjanganDenganSwasta, satuanSiswa),
 		Rasio:                        indikator.opsional(d.Rasio, satuanRasio),
+		KursiNegeriPerBentuk:         keKursiBentukJSON(d, domain.JalurNegeri, r.KursiNegeriPerBentuk),
+		KursiSPMBBersamaPerBentuk:    keKursiBentukJSON(d, domain.JalurSPMBBersama, r.KursiSPMBBersamaPerBentuk),
+		Rumus:                        keRumusJSON(d),
 		Keterbatasan:                 d.Keterbatasan(),
 		Tren:                         keTrenJSON(d.Tren),
 	}
+}
+
+func keKursiBentukJSON(d domain.DetailPendidikanKecamatan, jalur domain.JalurDayaTampung, daftar []domain.KursiBentuk) []kursiBentukJSON {
+	hasil := make([]kursiBentukJSON, len(daftar))
+	for i, k := range daftar {
+		angka := rujukan(d.ProvenanceKursiBentuk(jalur, k.Bentuk), d.ProvenanceID).bulat(k.Kursi, satuanKursi)
+		angka.Label = domain.LabelResmi
+		hasil[i] = kursiBentukJSON{Bentuk: string(k.Bentuk), Kursi: angka}
+	}
+	return hasil
+}
+
+func keRumusJSON(d domain.DetailPendidikanKecamatan) rumusJSON {
+	p := d.Peralihan
+	tujuan := make([]string, len(p.BentukTujuan))
+	for i, bentuk := range p.BentukTujuan {
+		tujuan[i] = string(bentuk)
+	}
+	hasil := rumusJSON{
+		BentukAsal: string(p.BentukAsal), TingkatAsal: p.TingkatAsalTerakhir(), BentukTujuan: tujuan,
+		BentukMadrasahTujuan: string(p.BentukMadrasahTujuan), TingkatTujuan: p.TingkatTujuanPertama(), AmbangRasio: d.Ambang,
+	}
+	if batas := d.Rincian.BatasMuridPerRombel; batas > 0 {
+		hasil.BatasMuridPerRombel = &batas
+	}
+	return hasil
 }
 
 func keTrenJSON(tren []domain.TitikTren) []titikTrenJSON {
@@ -89,7 +137,7 @@ func rujukan(provenanceID, cadangan string) pembuatAngka {
 }
 
 func (h handlerPendidikan) sekolahKecamatan(c fiber.Ctx) error {
-	daftar, err := h.layanan.SekolahKecamatan(c.Context(), c.Params("kode"))
+	daftar, err := h.layanan.SekolahKecamatan(c.Context(), c.Params("kode"), c.Params("kecamatan"))
 	if err != nil {
 		return err
 	}

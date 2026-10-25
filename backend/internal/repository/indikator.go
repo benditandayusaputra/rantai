@@ -11,32 +11,37 @@ import (
 )
 
 const (
-	sqlMasukanKesenjanganSMP = `WITH periode AS (SELECT max(tahun_ajaran) AS t FROM calon_lulusan_kecamatan),
+	sqlMasukanKesenjangan = `WITH periode AS (SELECT max(tahun_ajaran) AS t FROM calon_lulusan_kecamatan WHERE jenjang = $1),
 tahun_kursi AS (SELECT max(tahun_ajaran) AS t FROM daya_tampung),
 kursi AS (
-    SELECT s.kode_kecamatan,
-        sum(d.kursi) FILTER (WHERE d.jalur = 'negeri') AS negeri,
-        sum(d.kursi) FILTER (WHERE d.jalur = 'spmb_bersama') AS spmb_bersama
+    SELECT s.kode_kecamatan, d.jalur, s.bentuk, sum(d.kursi) AS kursi
     FROM daya_tampung d JOIN sekolah s ON s.npsn = d.npsn, tahun_kursi
-    WHERE d.tahun_ajaran = tahun_kursi.t
-    GROUP BY s.kode_kecamatan
+    WHERE d.tahun_ajaran = tahun_kursi.t AND s.jenjang = $2
+    GROUP BY s.kode_kecamatan, d.jalur, s.bentuk
 ),
-mts AS (
+kursi_kecamatan AS (
+    SELECT kode_kecamatan,
+        jsonb_object_agg(bentuk, kursi) FILTER (WHERE jalur = 'negeri') AS negeri,
+        jsonb_object_agg(bentuk, kursi) FILTER (WHERE jalur = 'spmb_bersama') AS spmb_bersama
+    FROM kursi
+    GROUP BY kode_kecamatan
+),
+madrasah AS (
     SELECT s.kode_kecamatan, count(DISTINCT s.npsn) AS jumlah, count(DISTINCT r.npsn) AS dengan_rombel,
-        coalesce(sum(r.jumlah_rombel) FILTER (WHERE r.tingkat = $1), 0) AS rombel_kelas_7
+        coalesce(sum(r.jumlah_rombel) FILTER (WHERE r.tingkat = $4), 0) AS rombel_tingkat_pertama
     FROM sekolah s
     LEFT JOIN sekolah_rombel r ON r.npsn = s.npsn AND r.tahun_ajaran = (SELECT t FROM periode)
-    WHERE s.bentuk = 'MTs'
+    WHERE s.bentuk = $3
     GROUP BY s.kode_kecamatan
 )
 SELECT w.kode, coalesce(p.t, ''), coalesce(c.jumlah, 0), coalesce(c.label, 'resmi')::text, coalesce(c.metode, ''),
-    coalesce(k.negeri, 0)::int, coalesce(k.spmb_bersama, 0)::int,
-    coalesce(m.jumlah, 0)::int, coalesce(m.dengan_rombel, 0)::int, coalesce(m.rombel_kelas_7, 0)::int
+    coalesce(k.negeri, '{}'::jsonb), coalesce(k.spmb_bersama, '{}'::jsonb),
+    coalesce(m.jumlah, 0)::int, coalesce(m.dengan_rombel, 0)::int, coalesce(m.rombel_tingkat_pertama, 0)::int
 FROM wilayah w
 CROSS JOIN periode p
-LEFT JOIN calon_lulusan_kecamatan c ON c.kode_kecamatan = w.kode AND c.tahun_ajaran = p.t
-LEFT JOIN kursi k ON k.kode_kecamatan = w.kode
-LEFT JOIN mts m ON m.kode_kecamatan = w.kode
+LEFT JOIN calon_lulusan_kecamatan c ON c.kode_kecamatan = w.kode AND c.tahun_ajaran = p.t AND c.jenjang = $1
+LEFT JOIN kursi_kecamatan k ON k.kode_kecamatan = w.kode
+LEFT JOIN madrasah m ON m.kode_kecamatan = w.kode
 WHERE w.tingkat = 'kecamatan'
 ORDER BY w.kode`
 
@@ -57,16 +62,16 @@ type IndikatorRepository struct {
 	DB Basisdata
 }
 
-func (r IndikatorRepository) MasukanKesenjanganSMP(ctx context.Context) (string, []domain.MasukanKesenjanganSMP, error) {
-	baris, err := r.DB.Query(ctx, sqlMasukanKesenjanganSMP, domain.TingkatSMPPertama)
+func (r IndikatorRepository) MasukanKesenjangan(ctx context.Context, p domain.Peralihan) (string, []domain.MasukanKesenjangan, error) {
+	baris, err := r.DB.Query(ctx, sqlMasukanKesenjangan, p.JenjangAsal, p.JenjangTujuan, p.BentukMadrasahTujuan, p.TingkatTujuanPertama())
 	if err != nil {
-		return "", nil, fmt.Errorf("kueri masukan kesenjangan: %w", err)
+		return "", nil, fmt.Errorf("kueri masukan kesenjangan %s: %w", p.Kode, err)
 	}
 	periode := ""
-	daftar, err := pgx.CollectRows(baris, func(b pgx.CollectableRow) (domain.MasukanKesenjanganSMP, error) {
-		var m domain.MasukanKesenjanganSMP
+	daftar, err := pgx.CollectRows(baris, func(b pgx.CollectableRow) (domain.MasukanKesenjangan, error) {
+		var m domain.MasukanKesenjangan
 		err := b.Scan(&m.KodeKecamatan, &periode, &m.CalonLulusan, &m.LabelCalonLulusan, &m.MetodeCalonLulusan,
-			&m.KursiNegeri, &m.KursiSPMBBersama, &m.JumlahMTs, &m.JumlahMTsDenganRombel, &m.RombelKelas7MTs)
+			&m.KursiNegeri, &m.KursiSPMBBersama, &m.JumlahMadrasah, &m.JumlahMadrasahDenganRombel, &m.RombelTingkatPertamaMadrasah)
 		return m, err
 	})
 	return periode, daftar, err

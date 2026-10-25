@@ -95,16 +95,22 @@ test('2. tema Pendidikan menampilkan kursi SMP negeri berlabel resmi', async ({ 
 	await bukaBagian(page, 'tema');
 	await expect(page.getByText('Kursi SMP negeri dibanding lulusan SD')).toBeVisible();
 	await expect(page.getByRole('button', { name: /^Sumber: .*Resmi/ }).first()).toBeVisible();
-	await page.getByRole('link', { name: 'Lihat detail sekolah' }).click();
+	await page.getByRole('link', { name: 'Lihat detail sekolah SMP' }).click();
 	await expect(page).toHaveURL(new RegExp(`/kecamatan/${demo().kode}/pendidikan`));
 	await expect(page.getByRole('table').first()).toBeVisible();
+	await page.getByRole('link', { name: 'SMA/SMK' }).click();
+	await expect(page).toHaveURL(new RegExp(`/kecamatan/${demo().kode}/pendidikan_sma_smk`));
+	await expect(page.getByRole('heading', { name: 'Cara menghitung' })).toBeVisible();
 });
 
 test('3. arus anggaran memuat paket sekolah dan grafik kesenjangan dibanding belanja', async ({
 	page
 }) => {
 	await bukaBagian(page, 'anggaran');
-	await expect(page.getByText('Kesenjangan kursi dibanding belanja sekolah')).toBeVisible();
+	for (const jenjang of ['SMP', 'SMA/SMK']) {
+		const judul = `Kesenjangan kursi dibanding belanja sekolah · ${jenjang}`;
+		await expect(page.getByRole('heading', { name: judul })).toBeVisible();
+	}
 	const tautanPaket = page.getByRole('link', { name: new RegExp(demo().namaPaketSimulasi) });
 	await expect(tautanPaket.first()).toBeVisible();
 	await tautanPaket.first().click();

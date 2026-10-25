@@ -5,28 +5,33 @@ type SekolahTerdekat struct {
 	JarakMeter float64
 }
 
+type KueriSekitarTitik struct {
+	Titik       Titik
+	RadiusMeter int
+	Peralihan   Peralihan
+}
+
 type SekitarTitik struct {
-	Titik           Titik
-	RadiusMeter     int
-	Sekolah         []SekolahTerdekat
-	SiswaKelas6     int
-	ProvenanceSiswa string
+	KueriSekitarTitik
+	Sekolah           []SekolahTerdekat
+	SiswaTingkatAkhir int
+	ProvenanceSiswa   string
 }
 
 type SekolahTerdekatTerkelompok struct {
-	SMPNegeri   []SekolahTerdekat
+	Negeri      []SekolahTerdekat
 	SPMBBersama []SekolahTerdekat
 	Madrasah    []SekolahTerdekat
 }
 
 func (s SekitarTitik) Kelompokkan() SekolahTerdekatTerkelompok {
-	hasil := SekolahTerdekatTerkelompok{SMPNegeri: []SekolahTerdekat{}, SPMBBersama: []SekolahTerdekat{}, Madrasah: []SekolahTerdekat{}}
+	hasil := SekolahTerdekatTerkelompok{Negeri: []SekolahTerdekat{}, SPMBBersama: []SekolahTerdekat{}, Madrasah: []SekolahTerdekat{}}
 	for _, sekolah := range s.Sekolah {
 		switch {
 		case sekolah.Bentuk.IsMadrasah():
 			hasil.Madrasah = append(hasil.Madrasah, sekolah)
 		case sekolah.Status == StatusNegeri:
-			hasil.SMPNegeri = append(hasil.SMPNegeri, sekolah)
+			hasil.Negeri = append(hasil.Negeri, sekolah)
 		case sekolah.Jalur == JalurSPMBBersama:
 			hasil.SPMBBersama = append(hasil.SPMBBersama, sekolah)
 		}
@@ -34,8 +39,8 @@ func (s SekitarTitik) Kelompokkan() SekolahTerdekatTerkelompok {
 	return hasil
 }
 
-func KursiNegeriDalamRadius(smpNegeri []SekolahTerdekat) (kursi int, provenanceID string) {
-	for _, s := range smpNegeri {
+func KursiNegeriDalamRadius(negeri []SekolahTerdekat) (kursi int, provenanceID string) {
+	for _, s := range negeri {
 		if s.Kursi == nil {
 			continue
 		}
@@ -47,10 +52,10 @@ func KursiNegeriDalamRadius(smpNegeri []SekolahTerdekat) (kursi int, provenanceI
 	return kursi, provenanceID
 }
 
-func TekananRadius(siswaKelas6, kursiNegeri int) *float64 {
+func TekananRadius(calonLulusan, kursiNegeri int) *float64 {
 	if kursiNegeri <= 0 {
 		return nil
 	}
-	tekanan := float64(siswaKelas6) / float64(kursiNegeri)
+	tekanan := float64(calonLulusan) / float64(kursiNegeri)
 	return &tekanan
 }

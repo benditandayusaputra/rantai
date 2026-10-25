@@ -5,9 +5,11 @@
 	import TableToggle from '$lib/components/TableToggle.svelte';
 	import { tampilkanAngka } from '$lib/features/kecamatan/kecamatan';
 	import { t } from '$lib/i18n';
+	import { teksJenjang, temaPendidikanBawaan, type TemaPendidikan } from './jenjang';
 	import { skalaTren, ukuranGrafikTren } from './pendidikan';
 
-	let { tren }: { tren: TitikTren[] } = $props();
+	let { tren, tema = temaPendidikanBawaan }: { tren: TitikTren[]; tema?: TemaPendidikan } =
+		$props();
 
 	const id = $props.id();
 	let isTabel = $state(false);
@@ -24,7 +26,7 @@
 	<div class="flex flex-wrap items-start justify-between gap-3">
 		<div class="flex items-center gap-3">
 			<span class="icon-tile"><ChartLine size={20} strokeWidth={1.75} aria-hidden="true" /></span>
-			<h2 id="{id}-judul" class="t-h3">{t('pen.trend.title')}</h2>
+			<h2 id="{id}-judul" class="t-h3">{t(teksJenjang[tema].judulTren)}</h2>
 		</div>
 		<TableToggle
 			bind:pressed={isTabel}
@@ -33,11 +35,11 @@
 			ikonKembali={ChartLine}
 		/>
 	</div>
-	<p class="mt-2 max-w-prose text-small text-muted">{t('pen.trend.lead')}</p>
+	<p class="mt-2 max-w-prose text-small text-muted">{t(teksJenjang[tema].leadTren)}</p>
 	<div {id} class="mt-4">
 		{#if isTabel}
 			<table class="w-full text-small">
-				<caption class="sr-only">{t('pen.trend.title')}</caption>
+				<caption class="sr-only">{t(teksJenjang[tema].judulTren)}</caption>
 				<thead class="bg-sunken text-caption font-semibold">
 					<tr>
 						<th scope="col" class="p-3 text-left">{t('pen.trend.period')}</th>

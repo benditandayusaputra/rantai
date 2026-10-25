@@ -5,6 +5,7 @@
 	import { replaceState } from '$app/navigation';
 	import { page } from '$app/state';
 	import type { FiturLaporan, PetaPaket, SekolahTerdekat } from '$lib/api/tipe';
+	import ChoiceChips from '$lib/components/ChoiceChips.svelte';
 	import ErrorState from '$lib/components/ErrorState.svelte';
 	import GapClassChip from '$lib/components/GapClassChip.svelte';
 	import KeyNumberCard from '$lib/components/KeyNumberCard.svelte';
@@ -20,6 +21,7 @@
 	import LegendaKelas from '$lib/features/peta/LegendaKelas.svelte';
 	import PetaInteraktif from '$lib/features/peta/PetaInteraktif.svelte';
 	import TabelPeta from '$lib/features/peta/TabelPeta.svelte';
+	import { pilihanJenjang, teksJenjang } from '$lib/features/pendidikan/jenjang';
 	import { bahasaAktif, t } from '$lib/i18n';
 	import type { PageProps } from './$types';
 
@@ -49,6 +51,7 @@
 	});
 
 	const fiturTema = $derived(tema?.ok ? tema.data : null);
+	const pilihanTema = $derived(pilihanJenjang(page.url, data.jenjang));
 	const detailTerpilih = $derived(
 		fiturTema?.features.find((f) => f.properties.kode === terpilih)?.properties ?? null
 	);
@@ -82,6 +85,7 @@
 		<PetaInteraktif
 			bind:this={komponenPeta}
 			tema={fiturTema}
+			temaSekolah={data.jenjang}
 			{lapisan}
 			{pusat}
 			{zoom}
@@ -143,15 +147,27 @@
 				? 'card p-4 md:flex-row md:gap-10'
 				: 'glass rounded-lg border border-line p-3 shadow-2 lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none lg:backdrop-blur-none'}"
 		>
+			<div class="flex flex-col gap-2">
+				<p id="judul-jenjang-peta" class="text-caption font-bold">{t('level.label')}</p>
+				<ChoiceChips labelledby="judul-jenjang-peta" items={pilihanTema} />
+			</div>
 			<KontrolLapisan bind:lapisan onchange={simpanKeURL} />
-			{#if lapisan.tema}<LegendaKelas />{/if}
+			{#if lapisan.tema}<LegendaKelas judul={teksJenjang[data.jenjang].legenda} />{/if}
 		</div>
 	</div>
 </div>
 
 <div id="isi-peta" class="wrap flex flex-col gap-6 py-6">
 	{#if isTabel}
-		<TabelPeta {lapisan} tema={fiturTema} {paket} {sekolah} {laporan} {terpilih} />
+		<TabelPeta
+			{lapisan}
+			tema={fiturTema}
+			{paket}
+			{sekolah}
+			{laporan}
+			{terpilih}
+			jenjang={data.jenjang}
+		/>
 	{/if}
 	<section aria-live="polite" class="flex flex-col gap-4">
 		{#if detailTerpilih}

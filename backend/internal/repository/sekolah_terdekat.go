@@ -18,14 +18,14 @@ CROSS JOIN titik
 CROSS JOIN tahun_kursi
 LEFT JOIN daya_tampung d ON d.npsn = s.npsn AND d.tahun_ajaran = tahun_kursi.t
 LEFT JOIN foto_sekolah f ON f.npsn = s.npsn
-WHERE s.jenjang = 'menengah_pertama' AND s.lokasi IS NOT NULL AND ST_DWithin(s.lokasi::geography, titik.g, $3)
+WHERE s.jenjang = $4 AND s.lokasi IS NOT NULL AND ST_DWithin(s.lokasi::geography, titik.g, $3)
 ORDER BY 7, s.npsn`
 
-	sqlSiswaKelas6Sekitar = `SELECT coalesce(sum(r.jumlah_siswa), 0)::int, coalesce(max(r.provenance_id), '')
+	sqlSiswaTingkatAkhirSekitar = `SELECT coalesce(sum(r.jumlah_siswa), 0)::int, coalesce(max(r.provenance_id), '')
 FROM sekolah s
 JOIN sekolah_rombel r ON r.npsn = s.npsn AND r.tingkat = $4
     AND r.tahun_ajaran = (SELECT max(tahun_ajaran) FROM sekolah_rombel)
-WHERE s.jenjang = 'dasar' AND s.lokasi IS NOT NULL
+WHERE s.jenjang = $5 AND s.lokasi IS NOT NULL
     AND ST_DWithin(s.lokasi::geography, ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography, $3)`
 )
 
@@ -33,22 +33,23 @@ type SekolahTerdekatRepository struct {
 	DB Basisdata
 }
 
-func (r SekolahTerdekatRepository) SekitarTitik(ctx context.Context, titik domain.Titik, radiusMeter int) (domain.SekitarTitik, error) {
-	sekolah, err := r.sekolahSekitar(ctx, titik, radiusMeter)
+func (r SekolahTerdekatRepository) SekitarTitik(ctx context.Context, kueri domain.KueriSekitarTitik) (domain.SekitarTitik, error) {
+	sekolah, err := r.sekolahSekitar(ctx, kueri)
 	if err != nil {
 		return domain.SekitarTitik{}, err
 	}
-	hasil := domain.SekitarTitik{Sekolah: sekolah}
-	err = r.DB.QueryRow(ctx, sqlSiswaKelas6Sekitar, titik.Lng, titik.Lat, radiusMeter, domain.TingkatSDTerakhir).
-		Scan(&hasil.SiswaKelas6, &hasil.ProvenanceSiswa)
+	hasil := domain.SekitarTitik{KueriSekitarTitik: kueri, Sekolah: sekolah}
+	p := kueri.Peralihan
+	err = r.DB.QueryRow(ctx, sqlSiswaTingkatAkhirSekitar, kueri.Titik.Lng, kueri.Titik.Lat, kueri.RadiusMeter, p.TingkatAsalTerakhir(), p.JenjangAsal).
+		Scan(&hasil.SiswaTingkatAkhir, &hasil.ProvenanceSiswa)
 	if err != nil {
-		return domain.SekitarTitik{}, fmt.Errorf("kueri siswa kelas 6 sekitar: %w", err)
+		return domain.SekitarTitik{}, fmt.Errorf("kueri siswa kelas %d sekitar: %w", p.TingkatAsalTerakhir(), err)
 	}
 	return hasil, nil
 }
 
-func (r SekolahTerdekatRepository) sekolahSekitar(ctx context.Context, titik domain.Titik, radiusMeter int) ([]domain.SekolahTerdekat, error) {
-	baris, err := r.DB.Query(ctx, sqlSekolahSekitar, titik.Lng, titik.Lat, radiusMeter)
+func (r SekolahTerdekatRepository) sekolahSekitar(ctx context.Context, kueri domain.KueriSekitarTitik) ([]domain.SekolahTerdekat, error) {
+	baris, err := r.DB.Query(ctx, sqlSekolahSekitar, kueri.Titik.Lng, kueri.Titik.Lat, kueri.RadiusMeter, kueri.Peralihan.JenjangTujuan)
 	if err != nil {
 		return nil, fmt.Errorf("kueri sekolah sekitar: %w", err)
 	}

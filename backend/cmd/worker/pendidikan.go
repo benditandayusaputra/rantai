@@ -108,14 +108,22 @@ func buatHitungIndikator(pool *pgxpool.Pool) (job, error) {
 	}
 	repo := repository.IndikatorRepository{DB: pool}
 	hitung := usecase.HitungIndikator{
-		Tema: repository.TemaRepository{DB: pool},
-		Penghitung: map[string]usecase.PenghitungIndikator{
-			domain.PenghitungKesenjanganKursiSMP: usecase.KesenjanganKursiSMP{Pembaca: repo, Konstanta: konstanta, BuatProvenance: buatProvenanceTurunan},
-		},
-		Penyimpan: repo,
-		Pencatat:  repository.IngestRunRepository{DB: pool},
+		Tema:       repository.TemaRepository{DB: pool},
+		Penghitung: penghitungKesenjangan(repo, konstanta),
+		Penyimpan:  repo,
+		Pencatat:   repository.IngestRunRepository{DB: pool},
 	}
 	return hitung.Jalankan, nil
+}
+
+func penghitungKesenjangan(repo repository.IndikatorRepository, konstanta usecase.KonstantaPendidikan) map[string]usecase.PenghitungIndikator {
+	hasil := map[string]usecase.PenghitungIndikator{}
+	for _, peralihan := range domain.DaftarPeralihan() {
+		hasil[peralihan.Penghitung] = usecase.KesenjanganKursi{
+			Peralihan: peralihan, Pembaca: repo, Konstanta: konstanta, BuatProvenance: buatProvenanceTurunan,
+		}
+	}
+	return hasil
 }
 
 func buatProvenanceTurunan(catatan usecase.CatatanProvenance) domain.Provenance {

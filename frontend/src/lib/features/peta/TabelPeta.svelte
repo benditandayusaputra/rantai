@@ -7,6 +7,11 @@
 	import SimRibbon from '$lib/components/SimRibbon.svelte';
 	import { tampilkanAngka } from '$lib/features/kecamatan/kecamatan';
 	import { formatJarak } from '$lib/format';
+	import {
+		teksJenjang,
+		temaPendidikanBawaan,
+		type TemaPendidikan
+	} from '$lib/features/pendidikan/jenjang';
 	import { bahasaAktif, t } from '$lib/i18n';
 	import type { StatusLapisan } from './lapisan';
 
@@ -17,9 +22,20 @@
 		sekolah: SekolahTerdekat[];
 		laporan: FiturLaporan[];
 		terpilih: string | null;
+		jenjang?: TemaPendidikan;
 	}
 
-	let { lapisan, tema, paket, sekolah, laporan, terpilih }: Props = $props();
+	let {
+		lapisan,
+		tema,
+		paket,
+		sekolah,
+		laporan,
+		terpilih,
+		jenjang = temaPendidikanBawaan
+	}: Props = $props();
+
+	const teks = $derived(teksJenjang[jenjang]);
 
 	const kelasTabel = 'w-full min-w-max text-small';
 	const kelasKepala = 'bg-sunken text-caption font-semibold';
@@ -108,15 +124,15 @@
 	{/if}
 	{#if lapisan.sekolah}
 		<section aria-labelledby="tabel-sekolah">
-			<h2 id="tabel-sekolah" class="t-h3">{t('map.table.sekolah')}</h2>
+			<h2 id="tabel-sekolah" class="t-h3">{t(teks.tabelSekolah)}</h2>
 			{#if sekolah.length}
-				<TableScroll label={t('map.table.sekolah')} class="mt-3">
+				<TableScroll label={t(teks.tabelSekolah)} class="mt-3">
 					<table class={kelasTabel}>
-						<caption class="sr-only">{t('map.table.sekolah')}</caption>
+						<caption class="sr-only">{t(teks.tabelSekolah)}</caption>
 						<thead class={kelasKepala}>
 							<tr>
 								<th scope="col" class="p-3 text-left">{t('map.col.name')}</th>
-								<th scope="col" class="p-3 text-right">{t('pen.school.seats')}</th>
+								<th scope="col" class="p-3 text-right">{t(teks.kolomKursi)}</th>
 								<th scope="col" class="p-3 text-right">{t('map.col.distance')}</th>
 							</tr>
 						</thead>

@@ -118,6 +118,6 @@ func daftarkanUmpan(api fiber.Router, h handlerUmpan) {
 
 func daftarkanPendidikan(api fiber.Router, h handlerPendidikan) {
 	api.Get("/peta/tema/:kode", h.petaTema)
-	api.Get("/tema/pendidikan/kecamatan/:kode", h.detailKecamatan)
-	api.Get("/tema/pendidikan/kecamatan/:kode/sekolah", h.sekolahKecamatan)
+	api.Get("/tema/:kode/kecamatan/:kecamatan", h.detailKecamatan)
+	api.Get("/tema/:kode/kecamatan/:kecamatan/sekolah", h.sekolahKecamatan)
 }

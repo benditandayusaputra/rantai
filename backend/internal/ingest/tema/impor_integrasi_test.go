@@ -30,7 +30,7 @@ func TestImporTema_ConfigPendidikan_TersimpanDiBasisdata(t *testing.T) {
 	var namaID, komisi, sumber string
 	err := tx.QueryRow(t.Context(), `SELECT t.nama_id, t.konfigurasi->'tanggung_jawab'->0->>'komisi', p.sumber::text
 FROM tema t JOIN provenance p ON p.id = t.provenance_id WHERE t.kode = 'pendidikan' AND t.aktif`).Scan(&namaID, &komisi, &sumber)
-	if err != nil || namaID != "Pendidikan" || komisi != "E" || sumber != "rantai" {
+	if err != nil || namaID != "Pendidikan SMP" || komisi != "E" || sumber != "rantai" {
 		t.Errorf("nama %q, komisi %q, sumber %q, err %v", namaID, komisi, sumber, err)
 	}
 }

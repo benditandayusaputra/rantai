@@ -46,6 +46,9 @@ func TestBentukSekolah_JenjangMadrasahDanRentangTingkat(t *testing.T) {
 		{BentukMI, JenjangDasar, true, 1, 6},
 		{BentukSMP, JenjangMenengahPertama, false, 7, 9},
 		{BentukMTs, JenjangMenengahPertama, true, 7, 9},
+		{BentukSMA, JenjangMenengahAtas, false, 10, 12},
+		{BentukSMK, JenjangMenengahAtas, false, 10, 12},
+		{BentukMA, JenjangMenengahAtas, true, 10, 12},
 	}
 	for _, k := range kasus {
 		pertama, terakhir := k.bentuk.RentangTingkat()

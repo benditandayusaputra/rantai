@@ -5,15 +5,17 @@
 	import TableToggle from '$lib/components/TableToggle.svelte';
 	import { tampilkanAngka } from '$lib/features/kecamatan/kecamatan';
 	import { t } from '$lib/i18n';
+	import { teksJenjang, temaPendidikanBawaan, type TemaPendidikan } from './jenjang';
 	import { persenLebar, susunBarisGrafik } from './pendidikan';
 
-	let { detail }: { detail: DetailPendidikan } = $props();
+	let { detail, tema = temaPendidikanBawaan }: { detail: DetailPendidikan; tema?: TemaPendidikan } =
+		$props();
 
 	const id = $props.id();
 	let isTabel = $state(false);
 
 	const baris = $derived(
-		susunBarisGrafik(detail).map((b) => ({ ...b, tampil: tampilkanAngka(b.angka) }))
+		susunBarisGrafik(detail, tema).map((b) => ({ ...b, tampil: tampilkanAngka(b.angka) }))
 	);
 	const maksimum = $derived(Math.max(0, ...baris.map((b) => b.angka.nilai)));
 </script>
@@ -22,14 +24,14 @@
 	<div class="flex flex-wrap items-start justify-between gap-3">
 		<div class="flex items-center gap-3">
 			<span class="icon-tile"><ChartColumn size={20} strokeWidth={1.75} aria-hidden="true" /></span>
-			<h2 id="{id}-judul" class="t-h3">{t('pen.chartTitle')}</h2>
+			<h2 id="{id}-judul" class="t-h3">{t(teksJenjang[tema].judulGrafik)}</h2>
 		</div>
 		<TableToggle bind:pressed={isTabel} controls={id} />
 	</div>
 	<div {id} class="mt-6">
 		{#if isTabel}
 			<table class="w-full text-small">
-				<caption class="sr-only">{t('pen.chartTitle')}</caption>
+				<caption class="sr-only">{t(teksJenjang[tema].judulGrafik)}</caption>
 				<thead class="bg-sunken text-caption font-semibold">
 					<tr>
 						<th scope="col" class="p-3 text-left">{t('pen.school.type')}</th>
@@ -60,7 +62,7 @@
 						<div class="flex items-center gap-3">
 							<div class="h-6 flex-1 rounded-sm bg-sunken" aria-hidden="true">
 								<div
-									class="h-full rounded-sm {item.kunci === 'pen.graduates'
+									class="h-full rounded-sm {item.isKebutuhan
 										? 'bg-fg'
 										: item.angka.label === 'resmi'
 											? 'bg-chart-2'

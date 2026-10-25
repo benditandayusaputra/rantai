@@ -1,3 +1,8 @@
-batas_murid_per_rombel_smp: 32
-estimasi_total_sd: 6
 url_sumber_siswa: https://sekolah.data.kemendikdasmen.go.id
+peralihan:
+  sd_ke_smp:
+    batas_murid_per_rombel: 32
+    pembagi_estimasi: 6
+  smp_ke_sma_smk:
+    batas_murid_per_rombel: 36
+    pembagi_estimasi: 3

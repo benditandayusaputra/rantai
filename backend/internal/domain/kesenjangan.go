@@ -17,30 +17,43 @@ type NilaiBerlabel struct {
 	Label Label `json:"label"`
 }
 
-type MasukanKesenjanganSMP struct {
-	KodeKecamatan          string
-	CalonLulusan           int
-	LabelCalonLulusan      Label
-	MetodeCalonLulusan     MetodeCalonLulusan
-	KursiNegeri            int
-	KursiSPMBBersama       int
-	JumlahMTs              int
-	JumlahMTsDenganRombel  int
-	RombelKelas7MTs        int
-	BatasMuridPerRombelSMP int
+type MasukanKesenjangan struct {
+	KodeKecamatan                string
+	CalonLulusan                 int
+	LabelCalonLulusan            Label
+	MetodeCalonLulusan           MetodeCalonLulusan
+	KursiNegeri                  map[BentukSekolah]int
+	KursiSPMBBersama             map[BentukSekolah]int
+	JumlahMadrasah               int
+	JumlahMadrasahDenganRombel   int
+	RombelTingkatPertamaMadrasah int
 }
 
-type RincianKesenjanganSMP struct {
-	MetodeCalonLulusan      MetodeCalonLulusan `json:"metode_calon_lulusan"`
-	CalonLulusan            NilaiBerlabel      `json:"calon_lulusan"`
-	KursiNegeri             NilaiBerlabel      `json:"kursi_negeri"`
-	KursiSPMBBersama        NilaiBerlabel      `json:"kursi_spmb_bersama"`
-	KursiMadrasah           NilaiBerlabel      `json:"kursi_madrasah"`
-	KesenjanganDenganSwasta NilaiBerlabel      `json:"kesenjangan_dengan_spmb_bersama"`
-	KesenjanganSemuaJalur   NilaiBerlabel      `json:"kesenjangan_semua_jalur"`
+type AturanKesenjangan struct {
+	BentukTujuan        []BentukSekolah
+	BatasMuridPerRombel int
+	Ambang              AmbangRasio
 }
 
-type IndikatorKesenjanganSMP struct {
+type KursiBentuk struct {
+	Bentuk BentukSekolah `json:"bentuk"`
+	Kursi  int           `json:"kursi"`
+}
+
+type RincianKesenjangan struct {
+	MetodeCalonLulusan        MetodeCalonLulusan `json:"metode_calon_lulusan"`
+	CalonLulusan              NilaiBerlabel      `json:"calon_lulusan"`
+	KursiNegeri               NilaiBerlabel      `json:"kursi_negeri"`
+	KursiSPMBBersama          NilaiBerlabel      `json:"kursi_spmb_bersama"`
+	KursiMadrasah             NilaiBerlabel      `json:"kursi_madrasah"`
+	KesenjanganDenganSwasta   NilaiBerlabel      `json:"kesenjangan_dengan_spmb_bersama"`
+	KesenjanganSemuaJalur     NilaiBerlabel      `json:"kesenjangan_semua_jalur"`
+	KursiNegeriPerBentuk      []KursiBentuk      `json:"kursi_negeri_per_bentuk,omitempty"`
+	KursiSPMBBersamaPerBentuk []KursiBentuk      `json:"kursi_spmb_bersama_per_bentuk,omitempty"`
+	BatasMuridPerRombel       int                `json:"batas_murid_per_rombel,omitempty"`
+}
+
+type IndikatorKesenjangan struct {
 	TemaKode      string
 	KodeKecamatan string
 	Periode       string
@@ -50,7 +63,7 @@ type IndikatorKesenjanganSMP struct {
 	Rasio         *float64
 	Kelas         KelasRasio
 	Label         Label
-	Rincian       RincianKesenjanganSMP
+	Rincian       RincianKesenjangan
 }
 
 func LabelTerlemah(daftar ...Label) Label {
@@ -78,18 +91,19 @@ func (a AmbangRasio) Kelas(rasio *float64) KelasRasio {
 	}
 }
 
-func HitungKesenjanganKursiSMP(m MasukanKesenjanganSMP, ambang AmbangRasio) IndikatorKesenjanganSMP {
+func HitungKesenjanganKursi(m MasukanKesenjangan, aturan AturanKesenjangan) IndikatorKesenjangan {
 	label := LabelTerlemah(m.LabelCalonLulusan, LabelResmi)
-	rasio := hitungRasio(m.KursiNegeri, m.CalonLulusan)
-	return IndikatorKesenjanganSMP{
+	kursiNegeri := totalKursi(m.KursiNegeri)
+	rasio := hitungRasio(kursiNegeri, m.CalonLulusan)
+	return IndikatorKesenjangan{
 		KodeKecamatan: m.KodeKecamatan,
 		Kebutuhan:     m.CalonLulusan,
-		Kapasitas:     m.KursiNegeri,
-		Kesenjangan:   m.CalonLulusan - m.KursiNegeri,
+		Kapasitas:     kursiNegeri,
+		Kesenjangan:   m.CalonLulusan - kursiNegeri,
 		Rasio:         rasio,
-		Kelas:         ambang.Kelas(rasio),
+		Kelas:         aturan.Ambang.Kelas(rasio),
 		Label:         label,
-		Rincian:       susunRincian(m, label),
+		Rincian:       susunRincian(m, aturan, label),
 	}
 }
 
@@ -101,18 +115,41 @@ func hitungRasio(kapasitas, kebutuhan int) *float64 {
 	return &rasio
 }
 
-func susunRincian(m MasukanKesenjanganSMP, label Label) RincianKesenjanganSMP {
-	kesenjanganSwasta := m.CalonLulusan - m.KursiNegeri - m.KursiSPMBBersama
-	kursiMadrasah := kursiMadrasahProksi(m)
-	return RincianKesenjanganSMP{
+func susunRincian(m MasukanKesenjangan, aturan AturanKesenjangan, label Label) RincianKesenjangan {
+	kursiNegeri, kursiSPMB := totalKursi(m.KursiNegeri), totalKursi(m.KursiSPMBBersama)
+	kesenjanganSwasta := m.CalonLulusan - kursiNegeri - kursiSPMB
+	kursiMadrasah := kursiMadrasahProksi(m, aturan.BatasMuridPerRombel)
+	rincian := RincianKesenjangan{
 		MetodeCalonLulusan:      m.MetodeCalonLulusan,
 		CalonLulusan:            NilaiBerlabel{Nilai: &m.CalonLulusan, Label: m.LabelCalonLulusan},
-		KursiNegeri:             NilaiBerlabel{Nilai: &m.KursiNegeri, Label: LabelResmi},
-		KursiSPMBBersama:        NilaiBerlabel{Nilai: &m.KursiSPMBBersama, Label: LabelResmi},
+		KursiNegeri:             NilaiBerlabel{Nilai: &kursiNegeri, Label: LabelResmi},
+		KursiSPMBBersama:        NilaiBerlabel{Nilai: &kursiSPMB, Label: LabelResmi},
 		KursiMadrasah:           NilaiBerlabel{Nilai: kursiMadrasah, Label: LabelProksi},
 		KesenjanganDenganSwasta: NilaiBerlabel{Nilai: &kesenjanganSwasta, Label: label},
 		KesenjanganSemuaJalur:   NilaiBerlabel{Nilai: kurangiJikaAda(kesenjanganSwasta, kursiMadrasah), Label: LabelTerlemah(label, LabelProksi)},
+		BatasMuridPerRombel:     aturan.BatasMuridPerRombel,
 	}
+	if len(aturan.BentukTujuan) > 1 {
+		rincian.KursiNegeriPerBentuk = kursiPerBentuk(m.KursiNegeri, aturan.BentukTujuan)
+		rincian.KursiSPMBBersamaPerBentuk = kursiPerBentuk(m.KursiSPMBBersama, aturan.BentukTujuan)
+	}
+	return rincian
+}
+
+func totalKursi(perBentuk map[BentukSekolah]int) int {
+	total := 0
+	for _, kursi := range perBentuk {
+		total += kursi
+	}
+	return total
+}
+
+func kursiPerBentuk(perBentuk map[BentukSekolah]int, urutan []BentukSekolah) []KursiBentuk {
+	hasil := make([]KursiBentuk, len(urutan))
+	for i, bentuk := range urutan {
+		hasil[i] = KursiBentuk{Bentuk: bentuk, Kursi: perBentuk[bentuk]}
+	}
+	return hasil
 }
 
 func kurangiJikaAda(nilai int, pengurang *int) *int {
@@ -123,10 +160,10 @@ func kurangiJikaAda(nilai int, pengurang *int) *int {
 	return &hasil
 }
 
-func kursiMadrasahProksi(m MasukanKesenjanganSMP) *int {
-	if m.JumlahMTs > 0 && m.JumlahMTsDenganRombel == 0 {
+func kursiMadrasahProksi(m MasukanKesenjangan, batasMuridPerRombel int) *int {
+	if m.JumlahMadrasah > 0 && m.JumlahMadrasahDenganRombel == 0 {
 		return nil
 	}
-	kursi := m.RombelKelas7MTs * m.BatasMuridPerRombelSMP
+	kursi := m.RombelTingkatPertamaMadrasah * batasMuridPerRombel
 	return &kursi
 }

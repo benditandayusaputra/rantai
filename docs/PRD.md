@@ -60,7 +60,7 @@ Rantai terdiri dari inti tetap dan tema yang bisa dipasang; tema baru cukup satu
 
 | Lapis | Isi |
 | --- | --- |
-| **Tema** | Pendidikan (kursi vs lulusan SD) aktif. Menyusul: Banjir (genangan vs drainase), Kesehatan (penduduk vs puskesmas), Jalan (laporan vs perawatan) |
+| **Tema** | Pendidikan aktif untuk dua peralihan jenjang: kursi SMP negeri vs lulusan SD, dan kursi SMA/SMK negeri vs lulusan SMP. Menyusul: Banjir (genangan vs drainase), Kesehatan (penduduk vs puskesmas), Jalan (laporan vs perawatan) |
 | **Inti** | Wilayah (cari alamat, peta, halaman kecamatan) · Wakilku (profil, umpan dua sumber, sikap fraksi) · Arus Anggaran (paket LPSE per kecamatan, penyedia) · Aksi (Tanya Rantai, Paket Aspirasi) |
 | **Sumber data** | Peta dan data indikator tema · KPU, situs DPRD, media · LPSE, SiRUP, Opentender |
 
@@ -260,7 +260,7 @@ Untuk memperagakan Lapor Bukti, ada satu paket simulasi dengan penyedia fiktif d
 - 106 anggota DPRD DKI periode 2024 sampai 2029, 10 dapil, lima komisi, dan fraksinya.
 - Paket pengadaan LPSE DKI tahun anggaran 2025 dan 2026, prioritas Pekerjaan Konstruksi.
 - Riwayat penyedia dari Opentender 2014 sampai 2023.
-- Tema Pendidikan: SD, SMP negeri dan swasta dari Dapodik; madrasah sejauh datanya tersedia.
+- Tema Pendidikan: SD, SMP, SMA, dan SMK negeri dan swasta dari Dapodik, daya tampung negeri dari Kepkadis 258/2026, kursi swasta mitra SPMB Bersama; madrasah sejauh datanya tersedia.
 
 ### 13.2 Tidak termasuk
 

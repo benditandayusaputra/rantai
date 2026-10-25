@@ -12,10 +12,18 @@ const JobCalonLulusan = "calon_lulusan"
 
 var ErrBelumAdaDataRombel = errors.New("belum ada data rombel sekolah, jalankan job dapodik lebih dulu")
 
+type KonstantaPeralihan struct {
+	BatasMuridPerRombel int `yaml:"batas_murid_per_rombel"`
+	PembagiEstimasi     int `yaml:"pembagi_estimasi"`
+}
+
 type KonstantaPendidikan struct {
-	BatasMuridPerRombelSMP int    `yaml:"batas_murid_per_rombel_smp"`
-	PembagiEstimasiTotalSD int    `yaml:"estimasi_total_sd"`
-	URLSumberSiswa         string `yaml:"url_sumber_siswa"`
+	URLSumberSiswa string                        `yaml:"url_sumber_siswa"`
+	Peralihan      map[string]KonstantaPeralihan `yaml:"peralihan"`
+}
+
+func (k KonstantaPendidikan) Untuk(p domain.Peralihan) KonstantaPeralihan {
+	return k.Peralihan[p.Kode]
 }
 
 type CatatanProvenance struct {
@@ -34,12 +42,13 @@ type CalonLulusanTercatat struct {
 
 type DataCalonLulusan struct {
 	TahunAjaran string
+	Jenjang     domain.Jenjang
 	Daftar      []CalonLulusanTercatat
 	Provenance  []domain.Provenance
 }
 
-type PembacaSiswaSD interface {
-	SiswaSDPerKecamatan(ctx context.Context) (string, []domain.SiswaSDKecamatan, error)
+type PembacaSiswa interface {
+	SiswaPerKecamatan(ctx context.Context, peralihan domain.Peralihan) (string, []domain.SiswaKecamatan, error)
 }
 
 type PenyimpanCalonLulusan interface {
@@ -47,11 +56,11 @@ type PenyimpanCalonLulusan interface {
 }
 
 type PelaporCalonLulusan interface {
-	LaporkanKecamatanTanpaCalonLulusan(kode []string)
+	LaporkanKecamatanTanpaCalonLulusan(jenjang domain.Jenjang, kode []string)
 }
 
 type HitungCalonLulusan struct {
-	Pembaca        PembacaSiswaSD
+	Pembaca        PembacaSiswa
 	Penyimpan      PenyimpanCalonLulusan
 	Pencatat       PencatatIngest
 	Pelapor        PelaporCalonLulusan
@@ -72,35 +81,49 @@ func (u HitungCalonLulusan) Jalankan(ctx context.Context) error {
 }
 
 func (u HitungCalonLulusan) hitung(ctx context.Context) (HasilImpor, error) {
-	tahunAjaran, daftarSiswa, err := u.Pembaca.SiswaSDPerKecamatan(ctx)
+	total := HasilImpor{}
+	for _, peralihan := range domain.DaftarPeralihan() {
+		hasil, err := u.hitungPeralihan(ctx, peralihan)
+		if err != nil {
+			return HasilImpor{}, err
+		}
+		total.JumlahBaru += hasil.JumlahBaru
+		total.JumlahBerubah += hasil.JumlahBerubah
+	}
+	return total, nil
+}
+
+func (u HitungCalonLulusan) hitungPeralihan(ctx context.Context, peralihan domain.Peralihan) (HasilImpor, error) {
+	tahunAjaran, daftarSiswa, err := u.Pembaca.SiswaPerKecamatan(ctx, peralihan)
 	if err != nil {
-		return HasilImpor{}, fmt.Errorf("baca siswa SD per kecamatan: %w", err)
+		return HasilImpor{}, fmt.Errorf("baca siswa %s per kecamatan: %w", peralihan.BentukAsal, err)
 	}
 	if tahunAjaran == "" {
 		return HasilImpor{}, ErrBelumAdaDataRombel
 	}
-	data, tanpaData := u.susunData(tahunAjaran, daftarSiswa)
+	data, tanpaData := u.susunData(peralihan, tahunAjaran, daftarSiswa)
 	hasil, err := u.Penyimpan.SimpanCalonLulusan(ctx, data)
 	if err != nil {
-		return HasilImpor{}, fmt.Errorf("simpan calon lulusan: %w", err)
+		return HasilImpor{}, fmt.Errorf("simpan calon lulusan %s: %w", peralihan.BentukAsal, err)
 	}
-	u.Pelapor.LaporkanKecamatanTanpaCalonLulusan(tanpaData)
+	u.Pelapor.LaporkanKecamatanTanpaCalonLulusan(peralihan.JenjangAsal, tanpaData)
 	return hasil, nil
 }
 
-func (u HitungCalonLulusan) susunData(tahunAjaran string, daftarSiswa []domain.SiswaSDKecamatan) (DataCalonLulusan, []string) {
-	data := DataCalonLulusan{TahunAjaran: tahunAjaran, Daftar: []CalonLulusanTercatat{}, Provenance: []domain.Provenance{}}
+func (u HitungCalonLulusan) susunData(peralihan domain.Peralihan, tahunAjaran string, daftarSiswa []domain.SiswaKecamatan) (DataCalonLulusan, []string) {
+	data := DataCalonLulusan{TahunAjaran: tahunAjaran, Jenjang: peralihan.JenjangAsal, Daftar: []CalonLulusanTercatat{}, Provenance: []domain.Provenance{}}
+	estimasi := domain.AturanEstimasi{Metode: peralihan.MetodeEstimasi, Pembagi: u.Konstanta.Untuk(peralihan).PembagiEstimasi}
 	provenancePerMetode := map[domain.MetodeCalonLulusan]domain.Provenance{}
 	tanpaData := []string{}
 	for _, siswa := range daftarSiswa {
-		calon, ada := domain.HitungCalonLulusan(siswa, u.Konstanta.PembagiEstimasiTotalSD)
+		calon, ada := domain.HitungCalonLulusan(siswa, estimasi)
 		if !ada {
 			tanpaData = append(tanpaData, siswa.KodeKecamatan)
 			continue
 		}
 		p, sudahAda := provenancePerMetode[calon.Metode]
 		if !sudahAda {
-			p = u.BuatProvenance(u.catatanMetode(calon, tahunAjaran))
+			p = u.BuatProvenance(u.catatanMetode(peralihan, calon.Metode, tahunAjaran))
 			provenancePerMetode[calon.Metode] = p
 			data.Provenance = append(data.Provenance, p)
 		}
@@ -109,11 +132,14 @@ func (u HitungCalonLulusan) susunData(tahunAjaran string, daftarSiswa []domain.S
 	return data, tanpaData
 }
 
-func (u HitungCalonLulusan) catatanMetode(calon domain.CalonLulusan, tahunAjaran string) CatatanProvenance {
-	catatan := fmt.Sprintf("Jumlah siswa tingkat 6 seluruh SD di kecamatan, data Dapodik tahun ajaran %s. "+
-		"MI tidak termasuk karena data rombel madrasah tidak tersedia di sumber.", tahunAjaran)
-	if calon.Metode == domain.MetodeEstimasiTotalSD {
-		catatan = domain.RumusEstimasiTotalSD(u.Konstanta.PembagiEstimasiTotalSD) + ". Data Dapodik tahun ajaran " + tahunAjaran + "."
+func (u HitungCalonLulusan) catatanMetode(peralihan domain.Peralihan, metode domain.MetodeCalonLulusan, tahunAjaran string) CatatanProvenance {
+	catatan := fmt.Sprintf("Jumlah siswa tingkat %d seluruh %s di kecamatan, data Dapodik tahun ajaran %s. "+
+		"%s tidak termasuk karena data rombel madrasah tidak tersedia di sumber.",
+		peralihan.TingkatAsalTerakhir(), peralihan.BentukAsal, tahunAjaran, peralihan.BentukMadrasahAsal)
+	label := domain.LabelResmi
+	if metode == peralihan.MetodeEstimasi {
+		catatan = peralihan.RumusEstimasi(u.Konstanta.Untuk(peralihan).PembagiEstimasi) + ". Data Dapodik tahun ajaran " + tahunAjaran + "."
+		label = domain.LabelEstimasi
 	}
-	return CatatanProvenance{Sumber: domain.SumberRantai, URL: u.Konstanta.URLSumberSiswa, Label: calon.Label, Catatan: catatan}
+	return CatatanProvenance{Sumber: domain.SumberRantai, URL: u.Konstanta.URLSumberSiswa, Label: label, Catatan: catatan}
 }

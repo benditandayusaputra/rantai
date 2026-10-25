@@ -30,6 +30,9 @@ ON CONFLICT (npsn) DO NOTHING`,
 		`INSERT INTO daya_tampung (npsn, tahun_ajaran, jalur, kursi, provenance_id)
 VALUES ('90000101', '2026/2027', 'negeri', 90, (SELECT provenance_id FROM wilayah WHERE kode = '31.72.06')),
        ('90000102', '2026/2027', 'spmb_bersama', 12, (SELECT provenance_id FROM wilayah WHERE kode = '31.72.06'))`,
+		`INSERT INTO sekolah_rombel (npsn, tahun_ajaran, tingkat, jumlah_rombel, jumlah_siswa, provenance_id)
+SELECT n, '2026/2027', t, 3, 100, (SELECT provenance_id FROM wilayah WHERE kode = '31.72.06')
+FROM unnest(ARRAY['90000101', '90000102']) AS n, generate_series(7, 9) AS t`,
 	}
 	for _, sql := range langkah {
 		if _, err := tx.Exec(t.Context(), sql); err != nil {
@@ -50,14 +53,64 @@ func jalankanHitungIndikator(t *testing.T, tx pgx.Tx) {
 	}
 	repo := repository.IndikatorRepository{DB: tx}
 	hitung := usecase.HitungIndikator{
-		Tema: repository.TemaRepository{DB: tx},
-		Penghitung: map[string]usecase.PenghitungIndikator{domain.PenghitungKesenjanganKursiSMP: usecase.KesenjanganKursiSMP{
-			Pembaca: repo, Konstanta: usecase.KonstantaPendidikan{BatasMuridPerRombelSMP: 30}, BuatProvenance: buatProvenanceUji,
-		}},
-		Penyimpan: repo, Pencatat: repository.IngestRunRepository{DB: tx},
+		Tema:       repository.TemaRepository{DB: tx},
+		Penghitung: penghitungUji(repo),
+		Penyimpan:  repo, Pencatat: repository.IngestRunRepository{DB: tx},
 	}
 	if err := hitung.Jalankan(t.Context()); err != nil {
 		t.Fatal(err)
+	}
+}
+
+func penghitungUji(repo repository.IndikatorRepository) map[string]usecase.PenghitungIndikator {
+	hasil := map[string]usecase.PenghitungIndikator{}
+	for _, peralihan := range domain.DaftarPeralihan() {
+		hasil[peralihan.Penghitung] = usecase.KesenjanganKursi{
+			Peralihan: peralihan, Pembaca: repo, Konstanta: konstantaPendidikanUji, BuatProvenance: buatProvenanceUji,
+		}
+	}
+	return hasil
+}
+
+func siapkanSMASMKUji(t *testing.T, tx pgx.Tx) {
+	t.Helper()
+	langkah := []string{
+		`INSERT INTO sekolah (npsn, nama, bentuk, jenjang, status, is_madrasah, kode_kecamatan, provenance_id)
+VALUES ('90000111', 'SMA UJI NEGERI', 'SMA', 'menengah_atas', 'negeri', false, '31.72.06', (SELECT provenance_id FROM wilayah WHERE kode = '31.72.06')),
+       ('90000112', 'SMK UJI NEGERI', 'SMK', 'menengah_atas', 'negeri', false, '31.72.06', (SELECT provenance_id FROM wilayah WHERE kode = '31.72.06')),
+       ('90000113', 'SMK UJI SWASTA', 'SMK', 'menengah_atas', 'swasta', false, '31.72.06', (SELECT provenance_id FROM wilayah WHERE kode = '31.72.06')),
+       ('90000114', 'MA UJI', 'MA', 'menengah_atas', 'swasta', true, '31.72.06', (SELECT provenance_id FROM wilayah WHERE kode = '31.72.06'))
+ON CONFLICT (npsn) DO NOTHING`,
+		`INSERT INTO daya_tampung (npsn, tahun_ajaran, jalur, kursi, provenance_id)
+VALUES ('90000111', '2026/2027', 'negeri', 72, (SELECT provenance_id FROM wilayah WHERE kode = '31.72.06')),
+       ('90000112', '2026/2027', 'negeri', 36, (SELECT provenance_id FROM wilayah WHERE kode = '31.72.06')),
+       ('90000113', '2026/2027', 'spmb_bersama', 8, (SELECT provenance_id FROM wilayah WHERE kode = '31.72.06'))`,
+	}
+	for _, sql := range langkah {
+		if _, err := tx.Exec(t.Context(), sql); err != nil {
+			t.Fatal(err)
+		}
+	}
+}
+
+func TestHitungIndikator_SMASMK_LulusanKelas9DibandingKursiSMADanSMKNegeri(t *testing.T) {
+	tx := ujidb.BukaTransaksi(t)
+	siapkanKursiUji(t, tx)
+	siapkanSMASMKUji(t, tx)
+
+	jalankanHitungIndikator(t, tx)
+
+	var kebutuhan, kapasitas, kesenjangan, kursiSMK, kursiSPMB int
+	var kelas string
+	var madrasah *int
+	err := tx.QueryRow(t.Context(), `SELECT kebutuhan, kapasitas, kesenjangan, kelas,
+    (rincian->'kursi_negeri_per_bentuk'->1->>'kursi')::int, (rincian->'kursi_spmb_bersama'->>'nilai')::int,
+    (rincian->'kursi_madrasah'->>'nilai')::int
+FROM indikator_kecamatan WHERE tema_kode = 'pendidikan_sma_smk' AND kode_kecamatan = '31.72.06' AND periode = '2026/2027'`).
+		Scan(&kebutuhan, &kapasitas, &kesenjangan, &kelas, &kursiSMK, &kursiSPMB, &madrasah)
+	if err != nil || kebutuhan != 200 || kapasitas != 108 || kesenjangan != 92 || kelas != "kurang" || kursiSMK != 36 || kursiSPMB != 8 || madrasah != nil {
+		t.Errorf("kebutuhan %d, kapasitas %d, kesenjangan %d, kelas %s, smk %d, spmb %d, madrasah %v, err %v",
+			kebutuhan, kapasitas, kesenjangan, kelas, kursiSMK, kursiSPMB, madrasah, err)
 	}
 }
 

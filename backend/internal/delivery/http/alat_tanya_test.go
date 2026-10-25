@@ -39,12 +39,15 @@ func (ringkasanAlatTiruan) Ringkas(context.Context, string) (domain.RingkasanKec
 
 type indikatorAlatTiruan struct{ LayananIndikator }
 
-func (indikatorAlatTiruan) DetailPendidikan(context.Context, string) (domain.DetailPendidikanKecamatan, error) {
-	indikator := domain.IndikatorKesenjanganSMP{KodeKecamatan: kecamatanAlatUji.Kode, Kesenjangan: 120, Label: domain.LabelEstimasi}
-	return domain.DetailPendidikanKecamatan{IndikatorTersimpan: domain.IndikatorTersimpan{IndikatorKesenjanganSMP: indikator, ProvenanceID: provenanceAlatUji}}, nil
+func (indikatorAlatTiruan) DetailPendidikan(_ context.Context, tema, _ string) (domain.DetailPendidikanKecamatan, error) {
+	if _, err := domain.PeralihanTema(tema); err != nil {
+		return domain.DetailPendidikanKecamatan{}, err
+	}
+	indikator := domain.IndikatorKesenjangan{KodeKecamatan: kecamatanAlatUji.Kode, Kesenjangan: 120, Label: domain.LabelEstimasi}
+	return domain.DetailPendidikanKecamatan{IndikatorTersimpan: domain.IndikatorTersimpan{IndikatorKesenjangan: indikator, ProvenanceID: provenanceAlatUji}}, nil
 }
 
-func (indikatorAlatTiruan) SekolahKecamatan(context.Context, string) ([]domain.SekolahDenganKursi, error) {
+func (indikatorAlatTiruan) SekolahKecamatan(context.Context, string, string) ([]domain.SekolahDenganKursi, error) {
 	return []domain.SekolahDenganKursi{{NPSN: "20100001", Nama: "SMPN Uji", Kursi: &kursiAlatUji, ProvenanceKursi: provenanceAlatUji}}, nil
 }
 
@@ -103,7 +106,7 @@ func TestRegistryTanya_SetiapAlat_HasilMembawaProvenance(t *testing.T) {
 		"cari_wilayah":         `{"teks":"cilincing"}`,
 		"ringkasan_kecamatan":  `{"kode":"31.72.01"}`,
 		"indikator_tema":       `{"kode_kecamatan":"31.72.01","tema":"pendidikan"}`,
-		"sekolah_di_kecamatan": `{"kode":"31.72.01"}`,
+		"sekolah_di_kecamatan": `{"kode_kecamatan":"31.72.01","tema":"pendidikan_sma_smk"}`,
 		"daftar_paket":         `{"kode_kecamatan":"31.72.01","tema":"pendidikan","tahun":2026}`,
 		"detail_paket":         `{"kode":"pkt_1"}`,
 		"belanja_tema":         `{"tema":"pendidikan"}`,

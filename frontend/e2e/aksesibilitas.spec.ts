@@ -10,6 +10,7 @@ const halamanTetap = [
 	'/id',
 	`/id/kecamatan/${kecamatanUji}`,
 	`/id/kecamatan/${kecamatanUji}/pendidikan`,
+	`/id/kecamatan/${kecamatanUji}/pendidikan_sma_smk`,
 	'/id/peta',
 	'/id/dasbor',
 	'/id/dasbor?lensa=uang',

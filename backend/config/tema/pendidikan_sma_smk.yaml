@@ -1,0 +1,29 @@
+kode: pendidikan_sma_smk
+nama: { id: Pendidikan SMA/SMK, en: Senior high education }
+aktif: true
+urutan: 2
+indikator:
+  penghitung: kesenjangan_kursi_sma_smk
+  satuan_kebutuhan: siswa
+  satuan_kapasitas: kursi
+  judul: { id: "Kursi SMA dan SMK negeri dibanding lulusan SMP", en: "Public senior high and vocational seats vs junior high graduates" }
+  ambang_rasio: { sangat_kurang: 0.5, kurang: 0.8, hampir_cukup: 1.0 }
+filter_anggaran:
+  instansi_pola: ["dinas pendidikan", "suku dinas pendidikan"]
+  kata_kunci: ["pembangunan sma", "pembangunan smk", "\\b(sman|smkn)\\b", "\\bsma negeri\\b", "\\bsmk negeri\\b"]
+tanggung_jawab:
+  - masalah: kursi_sma_smk_kurang
+    label: { id: "Kursi SMA dan SMK negeri kurang", en: "Not enough public senior high and vocational seats" }
+    instansi_pelaksana: Dinas Pendidikan Provinsi DKI Jakarta
+    unit_wilayah: "Suku Dinas Pendidikan {kota}"
+    komisi: E
+    dasar_hukum: "UU 23/2014 lampiran I.A pembagian urusan pendidikan (pendidikan menengah urusan provinsi); UU 2/2024 tentang Provinsi Daerah Khusus Jakarta"
+    dasar_hukum_url: "https://peraturan.bpk.go.id/"
+tag_isu: [sekolah, spmb, zonasi, daya tampung, sma, smk]
+templat_aspirasi:
+  judul: { id: "Kekurangan kursi SMA dan SMK negeri di Kecamatan {kecamatan}", en: "Shortage of public senior high and vocational seats in {kecamatan} District" }
+  pertanyaan:
+    - id: "Berapa rencana penambahan rombel SMA dan SMK negeri yang dapat dijangkau lulusan SMP Kecamatan {kecamatan} untuk tahun ajaran {tahun_depan}?"
+      en: "How many additional public senior high and vocational classes within reach of {kecamatan} District junior high graduates are planned for the {tahun_depan} school year?"
+    - id: "Berapa kursi SMA dan SMK swasta di sekitar Kecamatan {kecamatan} yang akan ikut SPMB Bersama tahun ajaran {tahun_depan}?"
+      en: "How many private senior high and vocational seats around {kecamatan} District will join the joint admission (SPMB Bersama) in the {tahun_depan} school year?"

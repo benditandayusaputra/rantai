@@ -19,6 +19,7 @@
 
 	interface Props {
 		tema: PetaTema | null;
+		temaSekolah: string;
 		lapisan: StatusLapisan;
 		pusat: Titik;
 		zoom: number;
@@ -32,6 +33,7 @@
 
 	let {
 		tema,
+		temaSekolah,
 		lapisan,
 		pusat,
 		zoom,
@@ -133,7 +135,7 @@
 		const b = m.getBounds();
 		const radius = radiusTampilanM(b.getNorth(), b.getSouth());
 		const hasil = await tangkap(
-			ambilSekolahTerdekat(fetch, { lat: tengah.lat, lng: tengah.lng }, radius)
+			ambilSekolahTerdekat(fetch, { lat: tengah.lat, lng: tengah.lng }, radius, temaSekolah)
 		);
 		sekolah = hasil.ok ? gabungSekolah(hasil.data) : [];
 		sumber(m, 'sekolah')?.setData({
@@ -226,6 +228,11 @@
 			}
 		}
 		untrack(() => peta && muatDataTampilan(peta));
+	});
+
+	$effect(() => {
+		if (!peta || !temaSekolah) return;
+		untrack(() => peta && lapisan.sekolah && muatSekolah(peta));
 	});
 
 	$effect(() => {

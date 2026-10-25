@@ -16,7 +16,12 @@ import (
 
 type pelaporDiam struct{}
 
-func (pelaporDiam) LaporkanKecamatanTanpaCalonLulusan([]string) {}
+func (pelaporDiam) LaporkanKecamatanTanpaCalonLulusan(domain.Jenjang, []string) {}
+
+var konstantaPendidikanUji = usecase.KonstantaPendidikan{Peralihan: map[string]usecase.KonstantaPeralihan{
+	domain.PeralihanSDKeSMP:     {BatasMuridPerRombel: 30, PembagiEstimasi: 5},
+	domain.PeralihanSMPKeSMASMK: {BatasMuridPerRombel: 36, PembagiEstimasi: 3},
+}}
 
 func siapkanSDUji(t *testing.T, tx pgx.Tx) {
 	t.Helper()
@@ -42,7 +47,7 @@ func jalankanHitungCalon(t *testing.T, tx pgx.Tx) {
 	repo := repository.CalonLulusanRepository{DB: tx}
 	hitung := usecase.HitungCalonLulusan{
 		Pembaca: repo, Penyimpan: repo, Pencatat: repository.IngestRunRepository{DB: tx}, Pelapor: pelaporDiam{},
-		Konstanta: usecase.KonstantaPendidikan{PembagiEstimasiTotalSD: 5},
+		Konstanta: konstantaPendidikanUji,
 		BuatProvenance: func(c usecase.CatatanProvenance) domain.Provenance {
 			return provenance.Baru(provenance.Catatan(c), nil, time.Now())
 		},
@@ -61,7 +66,7 @@ func TestHitungCalonLulusan_DuaSDKelapaGading_JumlahKelasEnamResmi(t *testing.T)
 	var jumlah int
 	var label, metode string
 	err := tx.QueryRow(t.Context(), `SELECT jumlah, label::text, metode FROM calon_lulusan_kecamatan
-WHERE kode_kecamatan = '31.72.06' AND tahun_ajaran = '2026/2027'`).Scan(&jumlah, &label, &metode)
+WHERE kode_kecamatan = '31.72.06' AND tahun_ajaran = '2026/2027' AND jenjang = 'dasar'`).Scan(&jumlah, &label, &metode)
 	if err != nil || jumlah != 120 || label != "resmi" || metode != "per_sekolah" {
 		t.Errorf("jumlah %d, label %q, metode %q, err %v", jumlah, label, metode, err)
 	}

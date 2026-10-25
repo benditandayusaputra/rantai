@@ -21,25 +21,29 @@ ORDER BY i.kode_kecamatan`
 
 	sqlDetailPendidikanKecamatan = `WITH terbaru AS (SELECT max(periode) AS periode FROM indikator_kecamatan WHERE tema_kode = $2)
 SELECT ` + sqlKolomIndikator + `,
-    coalesce((SELECT c.provenance_id FROM calon_lulusan_kecamatan c WHERE c.kode_kecamatan = i.kode_kecamatan AND c.tahun_ajaran = i.periode), ''),
-    coalesce((SELECT d.provenance_id FROM daya_tampung d WHERE d.jalur = 'negeri' ORDER BY d.tahun_ajaran DESC, d.diubah_pada DESC LIMIT 1), ''),
-    coalesce((SELECT d.provenance_id FROM daya_tampung d WHERE d.jalur = 'spmb_bersama' ORDER BY d.tahun_ajaran DESC, d.diubah_pada DESC LIMIT 1), '')
+    coalesce((SELECT c.provenance_id FROM calon_lulusan_kecamatan c
+        WHERE c.kode_kecamatan = i.kode_kecamatan AND c.tahun_ajaran = i.periode AND c.jenjang = $3), '')
 FROM indikator_kecamatan i JOIN wilayah w ON w.kode = i.kode_kecamatan, terbaru
 WHERE i.tema_kode = $2 AND i.kode_kecamatan = $1 AND i.periode = terbaru.periode`
+
+	sqlProvenanceKursiJenjang = `SELECT DISTINCT ON (d.jalur, s.bentuk) d.jalur, s.bentuk, d.provenance_id
+FROM daya_tampung d JOIN sekolah s ON s.npsn = d.npsn
+WHERE s.jenjang = $1
+ORDER BY d.jalur, s.bentuk, d.tahun_ajaran DESC, d.diubah_pada DESC`
 
 	sqlTrenRasioKecamatan = `SELECT periode, rasio::float8, label, provenance_id FROM indikator_kecamatan
 WHERE kode_kecamatan = $1 AND tema_kode = $2 AND rasio IS NOT NULL
 ORDER BY periode`
 
-	sqlSekolahMenengahPertama = `WITH tahun_kursi AS (SELECT max(tahun_ajaran) AS t FROM daya_tampung)
+	sqlSekolahJenjang = `WITH tahun_kursi AS (SELECT max(tahun_ajaran) AS t FROM daya_tampung)
 SELECT s.npsn, s.nama, s.bentuk, s.status, ST_Y(s.lokasi), ST_X(s.lokasi),
     coalesce(d.jalur, ''), d.kursi, coalesce(d.provenance_id, ''), coalesce(f.url, ''), coalesce(f.sumber, ''), coalesce(f.halaman, ''), coalesce(f.kredit, '')
 FROM sekolah s
 CROSS JOIN tahun_kursi
 LEFT JOIN daya_tampung d ON d.npsn = s.npsn AND d.tahun_ajaran = tahun_kursi.t
 LEFT JOIN foto_sekolah f ON f.npsn = s.npsn
-WHERE s.kode_kecamatan = $1 AND s.jenjang = 'menengah_pertama'
-ORDER BY d.kursi IS NULL, s.status, s.nama`
+WHERE s.kode_kecamatan = $1 AND s.jenjang = $2
+ORDER BY d.kursi IS NULL, s.status, s.bentuk, s.nama`
 )
 
 type IndikatorBacaRepository struct {
@@ -59,15 +63,32 @@ func (r IndikatorBacaRepository) FiturPetaTema(ctx context.Context, temaKode str
 	})
 }
 
-func (r IndikatorBacaRepository) DetailPendidikanKecamatan(ctx context.Context, kode string) (domain.DetailPendidikanKecamatan, bool, error) {
+func (r IndikatorBacaRepository) DetailPendidikanKecamatan(ctx context.Context, p domain.Peralihan, kode string) (domain.DetailPendidikanKecamatan, bool, error) {
 	var d domain.DetailPendidikanKecamatan
-	tujuan := append(tujuanIndikator(&d.IndikatorTersimpan), &d.ProvenanceCalonLulusan, &d.ProvenanceKursiNegeri, &d.ProvenanceKursiSPMBBersama)
-	err := r.DB.QueryRow(ctx, sqlDetailPendidikanKecamatan, kode, domain.TemaPendidikan).Scan(tujuan...)
-	return hasilSatuBaris(d, err)
+	tujuan := append(tujuanIndikator(&d.IndikatorTersimpan), &d.ProvenanceCalonLulusan)
+	err := r.DB.QueryRow(ctx, sqlDetailPendidikanKecamatan, kode, p.TemaKode, p.JenjangAsal).Scan(tujuan...)
+	d, ada, err := hasilSatuBaris(d, err)
+	if err != nil || !ada {
+		return d, ada, err
+	}
+	d.ProvenanceKursi, err = r.provenanceKursi(ctx, p.JenjangTujuan)
+	return d, true, err
 }
 
-func (r IndikatorBacaRepository) TrenRasioPendidikan(ctx context.Context, kode string) ([]domain.TitikTren, error) {
-	baris, err := r.DB.Query(ctx, sqlTrenRasioKecamatan, kode, domain.TemaPendidikan)
+func (r IndikatorBacaRepository) provenanceKursi(ctx context.Context, jenjang domain.Jenjang) ([]domain.ProvenanceKursi, error) {
+	baris, err := r.DB.Query(ctx, sqlProvenanceKursiJenjang, jenjang)
+	if err != nil {
+		return nil, fmt.Errorf("kueri provenance kursi %s: %w", jenjang, err)
+	}
+	return pgx.CollectRows(baris, func(b pgx.CollectableRow) (domain.ProvenanceKursi, error) {
+		var p domain.ProvenanceKursi
+		err := b.Scan(&p.Jalur, &p.Bentuk, &p.ProvenanceID)
+		return p, err
+	})
+}
+
+func (r IndikatorBacaRepository) TrenRasio(ctx context.Context, temaKode, kode string) ([]domain.TitikTren, error) {
+	baris, err := r.DB.Query(ctx, sqlTrenRasioKecamatan, kode, temaKode)
 	if err != nil {
 		return nil, fmt.Errorf("kueri tren rasio %s: %w", kode, err)
 	}
@@ -78,10 +99,10 @@ func (r IndikatorBacaRepository) TrenRasioPendidikan(ctx context.Context, kode s
 	})
 }
 
-func (r IndikatorBacaRepository) SekolahMenengahPertama(ctx context.Context, kode string) ([]domain.SekolahDenganKursi, error) {
-	baris, err := r.DB.Query(ctx, sqlSekolahMenengahPertama, kode)
+func (r IndikatorBacaRepository) SekolahJenjang(ctx context.Context, jenjang domain.Jenjang, kode string) ([]domain.SekolahDenganKursi, error) {
+	baris, err := r.DB.Query(ctx, sqlSekolahJenjang, kode, jenjang)
 	if err != nil {
-		return nil, fmt.Errorf("kueri sekolah menengah pertama: %w", err)
+		return nil, fmt.Errorf("kueri sekolah %s: %w", jenjang, err)
 	}
 	return pgx.CollectRows(baris, func(b pgx.CollectableRow) (domain.SekolahDenganKursi, error) {
 		var s domain.SekolahDenganKursi

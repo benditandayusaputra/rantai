@@ -19,7 +19,7 @@ func TestKelompokkan_NegeriSPMBMadrasah_SwastaLainDiabaikan(t *testing.T) {
 
 	k := sekitar.Kelompokkan()
 
-	if len(k.SMPNegeri) != 1 || len(k.SPMBBersama) != 1 || len(k.Madrasah) != 1 || k.Madrasah[0].NPSN != "3" {
+	if len(k.Negeri) != 1 || len(k.SPMBBersama) != 1 || len(k.Madrasah) != 1 || k.Madrasah[0].NPSN != "3" {
 		t.Errorf("kelompok = %+v", k)
 	}
 }

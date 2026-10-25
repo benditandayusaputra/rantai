@@ -2,6 +2,7 @@
 	import { ChartNoAxesCombined, GraduationCap, Landmark, Wallet } from '@lucide/svelte';
 	import { invalidateAll } from '$app/navigation';
 	import { navigating, page } from '$app/state';
+	import ChoiceChips from '$lib/components/ChoiceChips.svelte';
 	import ErrorState from '$lib/components/ErrorState.svelte';
 	import LensaLayanan from '$lib/features/dasbor/LensaLayanan.svelte';
 	import LensaTanggungJawab from '$lib/features/dasbor/LensaTanggungJawab.svelte';
@@ -13,6 +14,7 @@
 		tautanTahun,
 		type Lensa
 	} from '$lib/features/dasbor/dasbor';
+	import { pilihanJenjang, teksJenjang } from '$lib/features/pendidikan/jenjang';
 	import { t, type KunciPesan } from '$lib/i18n';
 	import type { PageProps } from './$types';
 
@@ -31,6 +33,9 @@
 	const hasil = $derived(data.hasil);
 	const pilihanTahun = $derived(hasil.ok ? tahunTersedia(hasil.data) : null);
 	const IkonLensa = $derived(infoLensa[data.lensa].ikon);
+	const tanyaLensa = $derived(
+		data.lensa === 'layanan' ? teksJenjang[data.jenjang].dasborTanya : infoLensa[data.lensa].tanya
+	);
 </script>
 
 <svelte:head>
@@ -82,9 +87,20 @@
 			</span>
 			<div>
 				<h2 id="judul-lensa" class="t-h2">{t(infoLensa[data.lensa].nama)}</h2>
-				<p class="t-lead mt-1 max-w-prose">{t(infoLensa[data.lensa].tanya)}</p>
+				<p class="t-lead mt-1 max-w-prose">{t(tanyaLensa)}</p>
 			</div>
 		</div>
+		{#if data.lensa === 'layanan'}
+			<div class="flex flex-wrap items-center gap-3">
+				<p id="judul-jenjang-dasbor" class="text-small font-semibold text-muted">
+					{t('level.label')}
+				</p>
+				<ChoiceChips
+					labelledby="judul-jenjang-dasbor"
+					items={pilihanJenjang(page.url, data.jenjang)}
+				/>
+			</div>
+		{/if}
 		{#if pilihanTahun && pilihanTahun.daftar.length > 1}
 			<nav aria-label={t('dash.yearNav')}>
 				<ul class="flex flex-wrap gap-2">
@@ -112,7 +128,7 @@
 				onretry={invalidateAll}
 			/>
 		{:else if hasil.data.lensa === 'layanan'}
-			<LensaLayanan dasbor={hasil.data.dasbor} peta={hasil.data.peta} />
+			<LensaLayanan dasbor={hasil.data.dasbor} peta={hasil.data.peta} jenjang={data.jenjang} />
 		{:else if hasil.data.lensa === 'uang'}
 			<LensaUang dasbor={hasil.data.dasbor} peta={hasil.data.peta} />
 		{:else}

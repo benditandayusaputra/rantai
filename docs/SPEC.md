@@ -79,15 +79,17 @@ Tugas bertanda **[GERBANG DATA]** di PLAN.md dimulai dengan verifikasi ini. Hasi
 | GD-03 | SiRUP atau ISB Satu Data LKPP: detail paket per kode RUP (nama, satker, pagu, sumber dana, waktu pemilihan) | Mata rantai RUP tampil sebagai "kode RUP tercatat, detail tidak tersedia". **Lolos**: halaman detail publik SiRUP, lihat `docs/data-sources.md` |
 | GD-04 | Keputusan Kadis Pendidikan DKI No. 258 Tahun 2026: lampiran daya tampung SMP negeri per sekolah dengan NPSN; total 73.289 kursi | Bila lampiran tidak bisa diekstrak per sekolah, pakai total per kota dari dokumen yang sama dan tampilkan peringatan tingkat kota |
 | GD-05 | Pengumuman Disdik DKI SPMB Bersama 2026: daftar SMP swasta mitra dan kursinya per sekolah; total 1.597 kursi | Bila tidak per sekolah, tampilkan total provinsi saja dan keluarkan dari angka kecamatan dengan catatan |
-| GD-06 | Dapodik: data sekolah per NPSN (nama, bentuk, status, koordinat, kecamatan) untuk SD, MI, SMP, MTs di DKI; ketersediaan data madrasah | Cadangan: Data Referensi Kemendikdasmen per wilayah. Madrasah tanpa data per sekolah tampil sebagai catatan keterbatasan |
+| GD-06 | Dapodik: data sekolah per NPSN (nama, bentuk, status, koordinat, kecamatan) untuk SD, MI, SMP, MTs, SMA, SMK, MA di DKI; ketersediaan data madrasah | Cadangan: Data Referensi Kemendikdasmen per wilayah. Madrasah tanpa data per sekolah tampil sebagai catatan keterbatasan |
 | GD-07 | KPU: daftar 10 dapil DPRD DKI 2024 dan kecamatan anggotanya; 106 calon terpilih per dapil (9 sampai 12 kursi per dapil) | Cadangan: berita acara penetapan KPU DKI dan daftar resmi DPRD DKI |
 | GD-08 | Situs DPRD DKI: lima komisi dan bidangnya, keanggotaan komisi, alat kelengkapan dewan, fraksi, halaman profil per anggota periode 2024 sampai 2029 | Bila keanggotaan komisi tidak tersedia, WAK-01 menampilkan anggota dapil tanpa urutan komisi dan menyebut komisi pengawas saja |
 | GD-09 | Ambang nilai pengadaan langsung Pekerjaan Konstruksi menurut Perpres 16/2018 beserta perubahan terakhirnya (Perpres 12/2021, Perpres 46/2025) | Sinyal S-03 dimatikan bila ambang tidak bisa dipastikan. **Lolos**: Rp200 juta sampai 29 April 2025, Rp400 juta sejak 30 April 2025 |
 | GD-10 | Batas kelurahan dan kecamatan DKI dengan kode Kemendagri | Cadangan: GADM tingkat 4 dengan tabel padanan kode. **Lolos**, lihat `docs/data-sources.md` |
 | GD-11 | Opentender OCDS: unduhan per tahun, field buyer, supplier, nilai, tanggal | ANG-07 hanya memakai data LPSE. **Lolos** lewat salinan OCP Data Registry (situs Opentender melarang bot), lihat `docs/data-sources.md` |
-| GD-12 | Siswa kelas 6 per sekolah atau per kecamatan untuk tahun ajaran berjalan: Sekolah Kita atau Dapodik | Cadangan berurutan: Satu Data Jakarta, permintaan data resmi, estimasi `total siswa SD ÷ 6` berlabel `estimasi` |
+| GD-12 | Siswa kelas 6 dan kelas 9 per sekolah atau per kecamatan untuk tahun ajaran berjalan: Sekolah Kita atau Dapodik | Cadangan berurutan: Satu Data Jakarta, permintaan data resmi, estimasi `total siswa SD ÷ 6` atau `total siswa SMP ÷ 3` berlabel `estimasi` |
 | GD-13 | Berita situs DPRD DKI: daftar dan halaman berita, struktur judul, tanggal, nama anggota yang disebut, robots.txt | Cadangan: impor manual tautan rilis untuk anggota di skenario demo |
 | GD-14 | Liputan media: daftar perusahaan pers terverifikasi Dewan Pers, RSS per media atau RSS pencarian per nama anggota, ketentuan pemakaian dan robots.txt | Bila RSS pencarian tidak diizinkan, pakai RSS kanal tiap media terverifikasi lalu saring nama secara lokal |
+| GD-17 | Kepkadis 258/2026 lampiran D (SMA) dan E (SMK) sebagaimana diubah Kepkadis 315/2026: daya tampung SMA dan SMK negeri per sekolah dengan NPSN; total 29.337 dan 19.541 kursi | Bila tidak per sekolah, tampilkan total provinsi saja dan sebut keterbatasannya. **Lolos**, lihat `docs/data-sources.md` |
+| GD-18 | Kepkadis 262/2026 (Juknis PMB Bersama) lampiran V dan VI: SMA dan SMK swasta mitra beserta kursinya; total 2.519 dan 3.592 kursi | Bila tidak per sekolah, keluarkan dari angka kecamatan dengan catatan. **Lolos**, lihat `docs/data-sources.md` |
 | GD-15 | Dokumen dan berita paripurna DPRD DKI: pandangan umum fraksi atas raperda dan APBD, kompilasi aspirasi reses per bidang | Bila tidak ada dokumen, WAK-05 dan WAK-06 memakai kurasi manual berbasis berita resmi dengan tautan sumber. **Lolos sebagian**: dokumen periode 2024-2029 tidak terbit, kurasi berita resmi dipakai, lihat `docs/data-sources.md` |
 
 ## 2. Model data
@@ -115,10 +117,10 @@ Fungsi SQL `hierarki_wilayah(kode)` mengembalikan leluhur sebuah wilayah sebagai
 
 | Tabel | Kolom penting |
 | --- | --- |
-| `sekolah` | `npsn` PK, `nama`, `bentuk` (SD, MI, SMP, MTs), `jenjang` (dasar, menengah_pertama), `status` (negeri, swasta), `is_madrasah`, `kode_kecamatan`, `kode_kelurahan` nullable, `lokasi` Point nullable (kosong bila sumber tanpa koordinat), `provenance_id` |
-| `sekolah_rombel` | `npsn`, `tahun_ajaran`, `tingkat` (1 sampai 9), `jumlah_rombel`, `jumlah_siswa`, `provenance_id`; PK (`npsn`, `tahun_ajaran`, `tingkat`) |
+| `sekolah` | `npsn` PK, `nama`, `bentuk` (SD, MI, SMP, MTs, SMA, SMK, MA), `jenjang` (dasar, menengah_pertama, menengah_atas), `status` (negeri, swasta), `is_madrasah`, `kode_kecamatan`, `kode_kelurahan` nullable, `lokasi` Point nullable (kosong bila sumber tanpa koordinat), `provenance_id` |
+| `sekolah_rombel` | `npsn`, `tahun_ajaran`, `tingkat` (1 sampai 13), `jumlah_rombel`, `jumlah_siswa`, `provenance_id`; PK (`npsn`, `tahun_ajaran`, `tingkat`) |
 | `daya_tampung` | `npsn`, `tahun_ajaran`, `jalur` (negeri, spmb_bersama), `kursi`, `provenance_id`; PK (`npsn`, `tahun_ajaran`, `jalur`) |
-| `calon_lulusan_kecamatan` | `kode_kecamatan`, `tahun_ajaran`, `jumlah`, `label`, `metode` (per_sekolah, agregat_resmi, estimasi_total_sd), `provenance_id` |
+| `calon_lulusan_kecamatan` | `kode_kecamatan`, `tahun_ajaran`, `jenjang` (dasar untuk lulusan SD, menengah_pertama untuk lulusan SMP), `jumlah`, `label`, `metode` (per_sekolah, agregat_resmi, estimasi_total_sd, estimasi_total_smp), `provenance_id`; PK (`kode_kecamatan`, `tahun_ajaran`, `jenjang`) |
 
 ### 2.4 Arus Anggaran
 
@@ -172,8 +174,8 @@ Worker Go (`cmd/worker <job>`) menjalankan job. Setiap job: ambil, simpan mentah
 | `wilayah` | sekali, manual | Batas wilayah dan alias (GD-10) |
 | `tema` | saat konfigurasi berubah | Muat `config/tema/*.yaml` ke tabel `tema` dengan validasi |
 | `dapodik` | per semester | Sekolah, lokasi, rombel dan siswa per tingkat dari API Sekolah Kita yang menyajikan data Dapodik (GD-06) |
-| `daya_tampung` | tahunan, manual | Impor CSV hasil ekstraksi Kepkadis 258/2026 dan SPMB Bersama (GD-04, GD-05) |
-| `calon_lulusan` | per semester | Siswa kelas 6 per kecamatan (GD-12) |
+| `daya_tampung` | tahunan, manual | Impor CSV hasil ekstraksi Kepkadis 258/2026 (SMP, SMA, SMK negeri) dan SPMB Bersama (GD-04, GD-05, GD-17, GD-18) |
+| `calon_lulusan` | per semester | Siswa kelas 6 SD dan kelas 9 SMP per kecamatan (GD-12) |
 | `indikator` | setelah `calon_lulusan` dan `daya_tampung` | Penghitung indikator setiap tema aktif ke `indikator_kecamatan` |
 | `lpse_daftar` | harian 02.00 WIB | Daftar paket tender dan non-tender tahun berjalan dan sebelumnya |
 | `lpse_detail` | harian, setelah daftar | Detail paket baru dan paket yang tahapnya berubah; pemenang (GD-02) |
@@ -340,7 +342,7 @@ rasio(k, t)               = kursi_negeri ÷ calon_lulusan
 
 `indikator_kecamatan` menyimpan `kebutuhan = calon_lulusan`, `kapasitas = kursi_negeri`, serta rincian ketiga jenis kursi dan kesenjangan bila SPMB Bersama dan madrasah ikut dihitung. Label mengikuti aturan label terlemah (0.1).
 
-Konstanta di `config/pendidikan.yaml`: `batas_murid_per_rombel_smp: 32` (Kepmendikdasmen 14/2026) dan pembagi cadangan `estimasi_total_sd: 6`. Kelas rasio dari `ambang_rasio` di konfigurasi tema. Tidak ada angka 32 atau 6 tertulis langsung di kode.
+Konstanta di `config/pendidikan.yaml` per peralihan: `sd_ke_smp.batas_murid_per_rombel: 32` (Kepmendikdasmen 14/2026) dan pembagi cadangan `sd_ke_smp.pembagi_estimasi: 6`. Kelas rasio dari `ambang_rasio` di konfigurasi tema. Tidak ada angka 32 atau 6 tertulis langsung di kode.
 
 Kelas rasio: `sangat_kurang` (rasio < `sangat_kurang`), `kurang`, `hampir_cukup`, `cukup` (rasio ≥ `hampir_cukup`), dan `tidak_ada_data` bila calon lulusan 0. Indikator dihitung job `indikator`, yang menjalankan penghitung setiap tema aktif.
 
@@ -354,17 +356,18 @@ Kasus tepi yang wajib dites: kecamatan tanpa SMP negeri (kursi 0, rasio 0); calo
 
 Choropleth kecamatan dari `indikator_kecamatan` dengan skala berurutan empat kelas. Tooltip: nama kecamatan, calon lulusan, kursi negeri, selisih, label. Legenda dalam bahasa awam ("kursi negeri kurang dari separuh lulusan").
 
-API: `GET /peta/tema/pendidikan`.
+API: `GET /peta/tema/{kode}` untuk `pendidikan` dan `pendidikan_sma_smk`. Halaman Peta dan Dasbor punya pilihan jenjang (SMP, SMA/SMK) lewat parameter `tema`.
 
 ### PEN-03 Detail kecamatan
 
-Bagian Tema di halaman kecamatan, dengan rincian di `/{bahasa}/kecamatan/{kode}/pendidikan`:
+Bagian Tema di halaman kecamatan, dengan rincian di `/{bahasa}/kecamatan/{kode}/{tema}` (`pendidikan` atau `pendidikan_sma_smk`) dan pilihan jenjang di atasnya:
 
 - Grafik batang horizontal: calon lulusan dibanding kursi negeri, SPMB Bersama, madrasah; dengan tabel alternatif.
 - Daftar SMP dan MTs: nama, bentuk, status, daya tampung resmi atau kursi proksi dengan labelnya, tautan ke peta.
-- Tautan ke Arus Anggaran dengan filter tema Pendidikan di kecamatan yang sama.
+- Bagian "Cara menghitung": setiap rumus diisi angka kecamatan itu (calon lulusan, kursi negeri beserta penjumlahan per bentuk, selisih, rasio, selisih setelah SPMB Bersama, proksi madrasah), plus ambang kelas dari konfigurasi tema.
+- Tautan ke Arus Anggaran dengan filter tema yang sama di kecamatan yang sama.
 
-API: `GET /tema/pendidikan/kecamatan/{kode}`, `GET /tema/pendidikan/kecamatan/{kode}/sekolah`.
+API: `GET /tema/{tema}/kecamatan/{kode}`, `GET /tema/{tema}/kecamatan/{kode}/sekolah`. Tema tanpa peralihan jenjang mengembalikan 404. Respons detail memuat `kursi_negeri_per_bentuk` dan `kursi_spmb_bersama_per_bentuk` (kosong bila jenjang tujuan hanya satu bentuk, masing-masing dengan provenance dokumennya) dan `rumus` (`bentuk_asal`, `tingkat_asal`, `bentuk_tujuan`, `bentuk_madrasah_tujuan`, `tingkat_tujuan`, `batas_murid_per_rombel`, `ambang_rasio`).
 
 ### PEN-04 Kesenjangan vs Belanja
 
@@ -386,17 +389,38 @@ API: `GET /kecamatan/{kode}/wakil?tema=pendidikan&dengan_umpan=true`. Respons me
 
 Input alamat atau lokasi. Keluaran:
 
-- SMP negeri dalam radius 3 km (konfigurasi), diurutkan dari terdekat, dengan jarak garis lurus dan daya tampung resmi.
-- `tekanan_radius = siswa kelas 6 dalam radius ÷ kursi negeri dalam radius`, dijelaskan dengan kalimat ("sekitar 2 lulusan untuk setiap 1 kursi negeri di sekitarmu"). Label mengikuti aturan label terlemah.
+- Sekolah negeri jenjang tujuan (SMP, atau SMA dan SMK) dalam radius 3 km (konfigurasi), diurutkan dari terdekat, dengan jarak garis lurus dan daya tampung resmi.
+- `tekanan_radius = calon lulusan dalam radius ÷ kursi negeri dalam radius`, dengan calon lulusan siswa kelas 6 SD atau kelas 9 SMP, dijelaskan dengan kalimat ("sekitar 2 lulusan untuk setiap 1 kursi negeri di sekitarmu"). Label mengikuti aturan label terlemah.
 - Alternatif: sekolah SPMB Bersama dan madrasah dalam radius yang sama.
 
-API: `GET /sekolah/terdekat?lat=&lng=&radius_m=`.
+API: `GET /sekolah/terdekat?lat=&lng=&radius_m=&tema=` (bawaan `pendidikan`). Respons: `tema`, `negeri`, `spmb_bersama`, `madrasah`, `tekanan_radius{calon_lulusan, kursi_negeri, rasio}`, `keterbatasan`.
 
 ### PEN-07 Tren
 
 Grafik garis rasio per kecamatan antar tahun ajaran, tampil hanya bila data minimal dua tahun tersedia.
 
-API: field `tren` (`[{periode, rasio: Angka}]`, urut periode) pada `GET /tema/pendidikan/kecamatan/{kode}`, dari baris `indikator_kecamatan` yang rasionya terdefinisi; kosong bila kurang dari `MinimalPeriodeTren` (2) periode. Grafik di halaman detail Pendidikan punya tabel alternatif dan garis acuan satu lulusan per kursi.
+API: field `tren` (`[{periode, rasio: Angka}]`, urut periode) pada `GET /tema/{tema}/kecamatan/{kode}`, dari baris `indikator_kecamatan` yang rasionya terdefinisi; kosong bila kurang dari `MinimalPeriodeTren` (2) periode. Grafik di halaman detail Pendidikan punya tabel alternatif dan garis acuan satu lulusan per kursi.
+
+### PEN-08 Kesenjangan kursi SMA dan SMK per kecamatan
+
+Tema `pendidikan_sma_smk` dengan penghitung `kesenjangan_kursi_sma_smk`. Kedua tema Pendidikan memakai satu rumus domain; perbedaannya dideskripsikan sebagai peralihan jenjang (`domain.Peralihan`): SD ke SMP dan SMP ke SMA/SMK. Rumus per kecamatan `k` dan tahun ajaran `t`:
+
+```text
+calon_lulusan(k, t)       = siswa kelas 9 SMP dalam k (calon_lulusan_kecamatan jenjang menengah_pertama)
+kursi_sma_negeri(k, t)    = Σ daya_tampung jalur negeri, SMA negeri dalam k              label resmi
+kursi_smk_negeri(k, t)    = Σ daya_tampung jalur negeri, SMK negeri dalam k              label resmi
+kursi_negeri(k, t)        = kursi_sma_negeri + kursi_smk_negeri
+kursi_spmb_bersama(k, t)  = Σ daya_tampung jalur spmb_bersama, SMA dan SMK swasta mitra   label resmi
+kursi_madrasah(k, t)      = Σ jumlah_rombel tingkat 10 MA × batas_murid_per_rombel         label proksi
+kesenjangan(k, t)         = calon_lulusan − kursi_negeri
+rasio(k, t)               = kursi_negeri ÷ calon_lulusan
+```
+
+Kursi SMA dan SMK dijumlahkan karena lulusan SMP memilih salah satunya; rincian per bentuk disimpan di `rincian.kursi_negeri_per_bentuk` dan `rincian.kursi_spmb_bersama_per_bentuk`. Konstanta `smp_ke_sma_smk.batas_murid_per_rombel: 36` (batas normal rombel jenjang menengah atas) hanya dipakai proksi kursi MA, dan `smp_ke_sma_smk.pembagi_estimasi: 3`. Daya tampung SMK di Kepkadis 258/2026 tertulis per kompetensi keahlian dan dijumlahkan per sekolah tanpa asumsi.
+
+Keterbatasan tambahan: `sma_smk_lintas_kecamatan` (satu SMA atau SMK menampung lulusan banyak kecamatan, sehingga angka tingkat kota di Dasbor ikut ditampilkan), `calon_lulusan_tanpa_mts`, dan `kursi_ma_tidak_tersedia`. Karena data rombel MA tidak tersedia di sumber, kursi MA selalu "tidak tersedia" sampai sumbernya terbuka.
+
+Halaman kecamatan menampilkan kartu kedua tema; blok anggota komisi pengawas (PEN-05) tampil sekali untuk kedua tema Pendidikan karena komisinya sama. Arus Anggaran menampilkan PEN-04 untuk setiap tema Pendidikan. Cek Sekolahku, Peta, dan Dasbor punya pilihan jenjang.
 
 ## 7. Wakilku
 
@@ -753,7 +777,7 @@ API: `GET /panel/antrean`, `POST /hak-jawab`, `PATCH /panel/paket/{kode}/serah-t
 | GET | `/wilayah/cari`, `/wilayah/titik`, `/wilayah/{kode}`, `/kecamatan/{kode}/ringkasan` | publik |
 | GET | `/tema`, `/tema/{kode}`, `/tema/{kode}/belanja`, `/tema/{kode}/dasbor`, `/peta/tema/{kode}` | publik |
 | GET | `/dasbor/uang`, `/dasbor/tanggung-jawab` | publik |
-| GET | `/tema/pendidikan/kecamatan/{kode}`, `/tema/pendidikan/kecamatan/{kode}/sekolah`, `/sekolah/terdekat`, `/peta/sekolah` | publik |
+| GET | `/tema/{tema}/kecamatan/{kode}`, `/tema/{tema}/kecamatan/{kode}/sekolah`, `/sekolah/terdekat`, `/peta/sekolah` | publik |
 | GET | `/kecamatan/{kode}/wakil`, `/dapil/{id}`, `/anggota/{id}`, `/anggota/{id}/umpan`, `/anggota/{id}/isu`, `/fraksi/{nama}/sikap`, `/aspirasi-reses` | publik |
 | GET | `/kecamatan/{kode}/paket`, `/paket/{kode}`, `/paket/{kode}/pembanding`, `/paket/terdekat`, `/penyedia/{id}`, `/aspirasi-reses/{id}/paket-terkait`, `/peta/paket`, `/peta/laporan`, `/unduh/paket.csv` | publik |
 | GET | `/jalur-aspirasi`, `/aspirasi/pdf`, `/data-belum-dibuka`, `/data-belum-dibuka/{kode}/permohonan/pdf` | publik |

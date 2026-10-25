@@ -1,7 +1,10 @@
 <script lang="ts">
 	import { Info, MapPin, School, Search, ShieldCheck, Sparkles } from '@lucide/svelte';
+	import { untrack } from 'svelte';
+	import { page } from '$app/state';
 	import { ambilDetailWilayah, ambilSekolahTerdekat, cariWilayah, tangkap } from '$lib/api/klien';
 	import type { SekitarTitik, Titik, WilayahDitemukan } from '$lib/api/tipe';
+	import ChoiceChips from '$lib/components/ChoiceChips.svelte';
 	import EmptyState from '$lib/components/EmptyState.svelte';
 	import ErrorState from '$lib/components/ErrorState.svelte';
 	import ProvenanceBadge from '$lib/components/ProvenanceBadge.svelte';
@@ -17,6 +20,11 @@
 	import KartuSekolah from '$lib/features/cekSekolah/KartuSekolah.svelte';
 	import { tampilkanAngka } from '$lib/features/kecamatan/kecamatan';
 	import { cariPosisi } from '$lib/features/lapor/lapor';
+	import {
+		bacaTemaPendidikan,
+		pilihanJenjang,
+		teksJenjang
+	} from '$lib/features/pendidikan/jenjang';
 	import type { StatusLokasi } from '$lib/features/wilayah/lokasi';
 	import { t } from '$lib/i18n';
 
@@ -28,16 +36,23 @@
 	let status = $state<'awal' | 'memuat' | 'siap' | 'gagal'>('awal');
 
 	const km = radiusKm(radiusBawaanM);
+	const jenjang = $derived(bacaTemaPendidikan(page.url.searchParams.get('tema')));
+	const teks = $derived(teksJenjang[jenjang]);
 	const rasio = $derived(sekitar?.tekanan_radius.rasio ?? null);
 	const alternatif = $derived(sekitar ? [...sekitar.spmb_bersama, ...sekitar.madrasah] : []);
 
 	async function muat(label: string, titik: Titik) {
 		pusat = { label, titik };
 		status = 'memuat';
-		const hasil = await tangkap(ambilSekolahTerdekat(fetch, titik, radiusBawaanM));
+		const hasil = await tangkap(ambilSekolahTerdekat(fetch, titik, radiusBawaanM, jenjang));
 		sekitar = hasil.ok ? hasil.data : null;
 		status = hasil.ok ? 'siap' : 'gagal';
 	}
+
+	$effect(() => {
+		void jenjang;
+		untrack(() => pusat && muat(pusat.label, pusat.titik));
+	});
 
 	async function pilihWilayah(wilayah: WilayahDitemukan) {
 		const detail = await tangkap(ambilDetailWilayah(fetch, wilayah.kode));
@@ -71,7 +86,11 @@
 				<School size={24} strokeWidth={1.75} aria-hidden="true" />
 			</span>
 			<h1 class="t-h1">{t('check.title')}</h1>
-			<p class="t-lead max-w-prose">{t('check.lead')}</p>
+			<p class="t-lead max-w-prose">{t(teks.cekLead)}</p>
+			<div class="flex flex-wrap items-center gap-3">
+				<p id="judul-jenjang-cek" class="text-small font-semibold text-muted">{t('level.label')}</p>
+				<ChoiceChips labelledby="judul-jenjang-cek" items={pilihanJenjang(page.url, jenjang)} />
+			</div>
 		</header>
 		<div class="card flex flex-col gap-4 p-4 shadow-2 md:p-5">
 			<RegionSearch bind:value={kata} cari={(q) => cariWilayah(fetch, q)} onselect={pilihWilayah} />
@@ -116,7 +135,7 @@
 					<h2 id="judul-tekanan" class="t-h3">{t('check.pressure', { km })}</h2>
 					{#if rasio}
 						{@const pecahan = pecahanTekanan(rasio.nilai)}
-						<p class="font-heading text-h2 lg:text-h2-lg">{t('services.sentence', pecahan)}</p>
+						<p class="font-heading text-h2 lg:text-h2-lg">{t(teks.kalimatTekanan, pecahan)}</p>
 						<div class="self-start">
 							<ProvenanceBadge angka={rasio} nilai={tampilkanAngka(rasio).nilai} />
 						</div>
@@ -143,16 +162,16 @@
 				<section class="flex flex-col gap-3" aria-labelledby="judul-negeri">
 					<h2 id="judul-negeri" class="flex items-center gap-2 text-h3 font-bold">
 						<School size={20} strokeWidth={1.75} aria-hidden="true" class="text-muted" />
-						{t('check.nearest')}
+						{t(teks.cekTerdekat)}
 					</h2>
-					{#if sekitar.smp_negeri.length}
+					{#if sekitar.negeri.length}
 						<ol class="flex flex-col gap-2">
-							{#each terdekatDulu(sekitar.smp_negeri, batasDaftarNegeri) as sekolah, i (sekolah.npsn)}
-								<KartuSekolah {sekolah} urutan={i + 1} />
+							{#each terdekatDulu(sekitar.negeri, batasDaftarNegeri) as sekolah, i (sekolah.npsn)}
+								<KartuSekolah {sekolah} urutan={i + 1} tema={jenjang} />
 							{/each}
 						</ol>
 					{:else}
-						<EmptyState title={t('check.empty', { km })} />
+						<EmptyState title={t(teks.cekKosong, { km })} />
 					{/if}
 				</section>
 				{#if alternatif.length}
@@ -163,7 +182,7 @@
 						</h2>
 						<ul class="flex flex-col gap-2">
 							{#each terdekatDulu(alternatif, alternatif.length) as sekolah (sekolah.npsn)}
-								<KartuSekolah {sekolah} />
+								<KartuSekolah {sekolah} tema={jenjang} />
 							{/each}
 						</ul>
 					</section>

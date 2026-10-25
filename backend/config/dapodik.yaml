@@ -15,5 +15,5 @@ kota:
   - Kota Adm. Jakarta Barat
   - Kota Adm. Jakarta Selatan
   - Kota Adm. Jakarta Timur
-bentuk: [SD, MI, SMP, MTs]
+bentuk: [SD, MI, SMP, MTs, SMA, SMK, MA]
 bentuk_dengan_rombel: [SD, SMP]

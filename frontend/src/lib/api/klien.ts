@@ -186,18 +186,24 @@ export function ambilRingkasanKecamatan(fetchFn: Fetch, kode: string): Promise<R
 	return ambilData<RingkasanKecamatan>(fetchFn, `/kecamatan/${encodeURIComponent(kode)}/ringkasan`);
 }
 
-export function ambilDetailPendidikan(fetchFn: Fetch, kode: string): Promise<DetailPendidikan> {
-	return ambilData<DetailPendidikan>(
-		fetchFn,
-		`/tema/pendidikan/kecamatan/${encodeURIComponent(kode)}`
-	);
+function pathTemaKecamatan(tema: string, kode: string): string {
+	return `/tema/${encodeURIComponent(tema)}/kecamatan/${encodeURIComponent(kode)}`;
 }
 
-export function ambilSekolahKecamatan(fetchFn: Fetch, kode: string): Promise<Sekolah[]> {
-	return ambilData<Sekolah[]>(
-		fetchFn,
-		`/tema/pendidikan/kecamatan/${encodeURIComponent(kode)}/sekolah`
-	);
+export function ambilDetailPendidikan(
+	fetchFn: Fetch,
+	tema: string,
+	kode: string
+): Promise<DetailPendidikan> {
+	return ambilData<DetailPendidikan>(fetchFn, pathTemaKecamatan(tema, kode));
+}
+
+export function ambilSekolahKecamatan(
+	fetchFn: Fetch,
+	tema: string,
+	kode: string
+): Promise<Sekolah[]> {
+	return ambilData<Sekolah[]>(fetchFn, `${pathTemaKecamatan(tema, kode)}/sekolah`);
 }
 
 export type Hasil<T> = { ok: true; data: T } | { ok: false; galat: GalatAPI };
@@ -225,12 +231,14 @@ export function ambilPetaPaket(fetchFn: Fetch, bbox: string): Promise<PetaPaket>
 export function ambilSekolahTerdekat(
 	fetchFn: Fetch,
 	titik: Titik,
-	radiusM: number
+	radiusM: number,
+	tema: string
 ): Promise<SekitarTitik> {
 	return ambilData<SekitarTitik>(fetchFn, '/sekolah/terdekat', {
 		lat: titik.lat,
 		lng: titik.lng,
-		radius_m: radiusM
+		radius_m: radiusM,
+		tema
 	});
 }
 

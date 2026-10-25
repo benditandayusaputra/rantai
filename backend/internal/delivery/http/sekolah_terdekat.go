@@ -5,11 +5,12 @@ import (
 	"strconv"
 
 	"github.com/benditandayusaputra/rantai/backend/internal/domain"
+	"github.com/benditandayusaputra/rantai/backend/internal/usecase"
 	"github.com/gofiber/fiber/v3"
 )
 
 type LayananSekolahTerdekat interface {
-	Cari(ctx context.Context, titik domain.Titik, radiusMeter int) (domain.SekitarTitik, error)
+	Cari(ctx context.Context, permintaan usecase.PermintaanSekolahTerdekat) (domain.SekitarTitik, error)
 }
 
 type sekolahTerdekatJSON struct {
@@ -18,15 +19,16 @@ type sekolahTerdekatJSON struct {
 }
 
 type tekananRadiusJSON struct {
-	SiswaKelas6 *Angka `json:"siswa_kelas_6"`
-	KursiNegeri *Angka `json:"kursi_negeri"`
-	Rasio       *Angka `json:"rasio"`
+	CalonLulusan *Angka `json:"calon_lulusan"`
+	KursiNegeri  *Angka `json:"kursi_negeri"`
+	Rasio        *Angka `json:"rasio"`
 }
 
 type sekitarTitikJSON struct {
+	Tema          string                `json:"tema"`
 	Titik         titikJSON             `json:"titik"`
 	RadiusMeter   int                   `json:"radius_m"`
-	SMPNegeri     []sekolahTerdekatJSON `json:"smp_negeri"`
+	Negeri        []sekolahTerdekatJSON `json:"negeri"`
 	SPMBBersama   []sekolahTerdekatJSON `json:"spmb_bersama"`
 	Madrasah      []sekolahTerdekatJSON `json:"madrasah"`
 	TekananRadius tekananRadiusJSON     `json:"tekanan_radius"`
@@ -46,7 +48,7 @@ func (h handlerSekolahTerdekat) cari(c fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	sekitar, err := h.layanan.Cari(c.Context(), titik, radius)
+	sekitar, err := h.layanan.Cari(c.Context(), usecase.PermintaanSekolahTerdekat{Titik: titik, RadiusMeter: radius, TemaKode: c.Query("tema")})
 	if err != nil {
 		return err
 	}
@@ -66,15 +68,16 @@ func uraiRadius(nilai string) (int, error) {
 
 func keSekitarTitikJSON(s domain.SekitarTitik) sekitarTitikJSON {
 	kelompok := s.Kelompokkan()
-	kursi, provenanceKursi := domain.KursiNegeriDalamRadius(kelompok.SMPNegeri)
+	kursi, provenanceKursi := domain.KursiNegeriDalamRadius(kelompok.Negeri)
 	return sekitarTitikJSON{
+		Tema:          s.Peralihan.TemaKode,
 		Titik:         titikJSON(s.Titik),
 		RadiusMeter:   s.RadiusMeter,
-		SMPNegeri:     keDaftarSekolahTerdekat(kelompok.SMPNegeri),
+		Negeri:        keDaftarSekolahTerdekat(kelompok.Negeri),
 		SPMBBersama:   keDaftarSekolahTerdekat(kelompok.SPMBBersama),
 		Madrasah:      keDaftarSekolahTerdekat(kelompok.Madrasah),
 		TekananRadius: keTekananRadiusJSON(s, kursi, provenanceKursi),
-		Keterbatasan:  []string{domain.KeterbatasanCalonLulusanTanpaMI, domain.KeterbatasanJarakGarisLurus},
+		Keterbatasan:  []string{s.Peralihan.KeterbatasanCalonLulusan(), domain.KeterbatasanJarakGarisLurus},
 	}
 }
 
@@ -82,9 +85,9 @@ func keTekananRadiusJSON(s domain.SekitarTitik, kursi int, provenanceKursi strin
 	hasil := tekananRadiusJSON{}
 	if s.ProvenanceSiswa != "" {
 		siswa := pembuatAngka{label: domain.LabelResmi, provenanceID: s.ProvenanceSiswa}
-		jumlahSiswa := siswa.bulat(s.SiswaKelas6, satuanSiswa)
-		hasil.SiswaKelas6 = &jumlahSiswa
-		hasil.Rasio = siswa.opsional(domain.TekananRadius(s.SiswaKelas6, kursi), satuanRasio)
+		jumlahSiswa := siswa.bulat(s.SiswaTingkatAkhir, satuanSiswa)
+		hasil.CalonLulusan = &jumlahSiswa
+		hasil.Rasio = siswa.opsional(domain.TekananRadius(s.SiswaTingkatAkhir, kursi), satuanRasio)
 	}
 	if provenanceKursi != "" {
 		jumlahKursi := pembuatAngka{label: domain.LabelResmi, provenanceID: provenanceKursi}.bulat(kursi, satuanKursi)

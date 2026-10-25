@@ -10,6 +10,11 @@
 	import KeyNumberCard from '$lib/components/KeyNumberCard.svelte';
 	import { kunciKelas, tampilkanAngka } from '$lib/features/kecamatan/kecamatan';
 	import { formatAngka } from '$lib/format';
+	import {
+		teksJenjang,
+		temaPendidikanBawaan,
+		type TemaPendidikan
+	} from '$lib/features/pendidikan/jenjang';
 	import { bahasaAktif, t } from '$lib/i18n';
 	import BatangKelas from './BatangKelas.svelte';
 	import BatangPasangan from './BatangPasangan.svelte';
@@ -28,7 +33,15 @@
 		type IsiArea
 	} from './dasbor';
 
-	let { dasbor, peta }: { dasbor: DasborLayanan; peta: PetaTema } = $props();
+	interface Props {
+		dasbor: DasborLayanan;
+		peta: PetaTema;
+		jenjang?: TemaPendidikan;
+	}
+
+	let { dasbor, peta, jenjang = temaPendidikanBawaan }: Props = $props();
+
+	const teks = $derived(teksJenjang[jenjang]);
 
 	const terbaru = $derived(dasbor.periode.at(-1));
 	const properti = $derived(new Map(peta.features.map((f) => [f.properties.kode, f.properties])));
@@ -57,12 +70,12 @@
 		const ringkas = t('dash.svc.ofTotal', { n: totalKecamatan(terbaru), periode: terbaru.kunci });
 		return [
 			{
-				label: t('dash.svc.graduates'),
+				label: t(teks.dasborLulusan),
 				angka: angka(terbaru.kebutuhan, 'siswa'),
 				catatan: terbaru.kunci
 			},
 			{
-				label: t('dash.svc.seats'),
+				label: t(teks.dasborKursi),
 				angka: angka(terbaru.kapasitas, 'kursi'),
 				catatan: terbaru.kunci
 			},
@@ -108,7 +121,7 @@
 			>
 				<PetaWilayah fitur={peta.features} {isiDari} judul={t('dash.svc.map.title')}>
 					{#snippet legenda()}
-						<p class="text-caption font-bold">{t('map.legend')}</p>
+						<p class="text-caption font-bold">{t(teks.legenda)}</p>
 						<ul class="mt-2 flex flex-wrap gap-x-4 gap-y-2">
 							{#each [...urutanKelas, 'tidak_ada_data' as const] as kelas (kelas)}
 								<li class="flex items-center gap-2 text-caption">
@@ -141,7 +154,7 @@
 				keterangan={t('dash.svc.pair.lead', { periode: terbaru.kunci })}
 				ikon={Users}
 				angka={angka(terbaru.kebutuhan, 'siswa')}
-				kolom={[t('dash.col.city'), t('dash.svc.graduates'), t('dash.svc.seats')]}
+				kolom={[t('dash.col.city'), t(teks.dasborLulusan), t(teks.dasborKursi)]}
 				baris={dasbor.kota.map((r) => [
 					namaKota(r),
 					angkaBulat(r.kebutuhan),
@@ -156,7 +169,7 @@
 				keterangan={t('dash.svc.trend.lead')}
 				ikon={ChartNoAxesCombined}
 				angka={angka(terbaru.kebutuhan, 'siswa')}
-				kolom={[t('pen.trend.period'), t('dash.svc.graduates'), t('dash.svc.seats'), ...kolomKelas]}
+				kolom={[t('pen.trend.period'), t(teks.dasborLulusan), t(teks.dasborKursi), ...kolomKelas]}
 				baris={dasbor.periode.map((r) => [
 					r.kunci,
 					angkaBulat(r.kebutuhan),

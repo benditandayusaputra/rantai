@@ -25,7 +25,7 @@ export function radiusTampilanM(utara: number, selatan: number): number {
 }
 
 export function gabungSekolah(sekitar: SekitarTitik): SekolahTerdekat[] {
-	return [...sekitar.smp_negeri, ...sekitar.spmb_bersama, ...sekitar.madrasah];
+	return [...sekitar.negeri, ...sekitar.spmb_bersama, ...sekitar.madrasah];
 }
 
 export const pusatJakarta = { lat: -6.2, lng: 106.83 } as const;

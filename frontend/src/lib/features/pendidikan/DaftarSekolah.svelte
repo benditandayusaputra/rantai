@@ -8,20 +8,24 @@
 	import ProvenanceBadge from '$lib/components/ProvenanceBadge.svelte';
 	import { tampilkanAngka } from '$lib/features/kecamatan/kecamatan';
 	import { bahasaAktif, t } from '$lib/i18n';
+	import { teksJenjang, temaPendidikanBawaan, type TemaPendidikan } from './jenjang';
 	import { kunciJenisSekolah } from './pendidikan';
 
-	let { sekolah }: { sekolah: Sekolah[] } = $props();
+	let { sekolah, tema = temaPendidikanBawaan }: { sekolah: Sekolah[]; tema?: TemaPendidikan } =
+		$props();
+
+	const teks = $derived(teksJenjang[tema]);
 </script>
 
 {#if sekolah.length}
-	<TableScroll label={t('pen.schoolsHeading')}>
+	<TableScroll label={t(teks.judulSekolah)}>
 		<table class="w-full min-w-max text-small">
-			<caption class="sr-only">{t('pen.schoolsHeading')}</caption>
+			<caption class="sr-only">{t(teks.judulSekolah)}</caption>
 			<thead class="bg-sunken text-caption font-semibold">
 				<tr>
 					<th scope="col" class="sticky left-0 bg-sunken p-3 text-left">{t('pen.school.name')}</th>
 					<th scope="col" class="p-3 text-left">{t('pen.school.type')}</th>
-					<th scope="col" class="p-3 text-right">{t('pen.school.seats')}</th>
+					<th scope="col" class="p-3 text-right">{t(teks.kolomKursi)}</th>
 					<th scope="col" class="p-3 text-left"><span class="sr-only">{t('nav.map')}</span></th>
 				</tr>
 			</thead>
@@ -65,5 +69,5 @@
 		</table>
 	</TableScroll>
 {:else}
-	<EmptyState title={t('pen.schoolsEmpty')} />
+	<EmptyState title={t(teks.sekolahKosong)} />
 {/if}

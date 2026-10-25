@@ -9,6 +9,7 @@
 		Wallet
 	} from '@lucide/svelte';
 	import { invalidateAll } from '$app/navigation';
+	import ChoiceChips from '$lib/components/ChoiceChips.svelte';
 	import EmptyState from '$lib/components/EmptyState.svelte';
 	import ErrorState from '$lib/components/ErrorState.svelte';
 	import GapClassChip from '$lib/components/GapClassChip.svelte';
@@ -16,12 +17,23 @@
 	import DaftarSekolah from '$lib/features/pendidikan/DaftarSekolah.svelte';
 	import GrafikKursi from '$lib/features/pendidikan/GrafikKursi.svelte';
 	import GrafikTren from '$lib/features/pendidikan/GrafikTren.svelte';
+	import { daftarTemaPendidikan, kunciMetode, teksJenjang } from '$lib/features/pendidikan/jenjang';
+	import RumusKesenjangan from '$lib/features/pendidikan/RumusKesenjangan.svelte';
 	import { bahasaAktif, t } from '$lib/i18n';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
 
 	const halamanKecamatan = $derived(`/${bahasaAktif}/kecamatan/${data.kode}`);
+	const teks = $derived(teksJenjang[data.tema]);
+	const pilihan = $derived(
+		daftarTemaPendidikan.map((tema) => ({
+			key: tema,
+			href: `${halamanKecamatan}/${tema}`,
+			label: t(teksJenjang[tema].jenjang),
+			current: tema === data.tema
+		}))
+	);
 </script>
 
 <svelte:head>
@@ -30,7 +42,7 @@
 	{:then hasil}
 		<title
 			>{hasil.ok
-				? `${t('pen.title', { name: hasil.data.nama })} · ${t('brand.name')}`
+				? `${t(teks.judul, { name: hasil.data.nama })} · ${t('brand.name')}`
 				: t('brand.name')}</title
 		>
 	{/await}
@@ -42,6 +54,10 @@
 			<ArrowLeft size={18} strokeWidth={1.75} aria-hidden="true" />
 			{t('pen.backToArea')}
 		</a>
+		<div class="flex flex-wrap items-center gap-3">
+			<p id="judul-jenjang" class="text-small font-semibold text-muted">{t('level.label')}</p>
+			<ChoiceChips labelledby="judul-jenjang" items={pilihan} />
+		</div>
 		{#await data.detail}
 			<div class="flex items-center gap-4" aria-busy="true">
 				<p class="sr-only">{t('state.loadingSummary')}</p>
@@ -63,8 +79,8 @@
 						<GraduationCap size={28} strokeWidth={1.75} aria-hidden="true" />
 					</span>
 					<div class="flex min-w-0 flex-col gap-3">
-						<p class="t-over">{t('bagian.tema')} · {t('sector.edu')}</p>
-						<h1 class="t-h1">{t('pen.title', { name: detail.nama })}</h1>
+						<p class="t-over">{t('bagian.tema')} · {t('sector.edu')} · {t(teks.jenjang)}</p>
+						<h1 class="t-h1">{t(teks.judul, { name: detail.nama })}</h1>
 						<div class="flex flex-wrap items-center gap-3">
 							<GapClassChip kelas={detail.kelas} />
 							<span class="inline-flex items-center gap-1 text-small text-muted">
@@ -85,17 +101,18 @@
 	{:then hasil}
 		{#if hasil.ok}
 			{@const detail = hasil.data}
+			{@const metode = kunciMetode(data.tema, detail.metode_calon_lulusan)}
 			<div class="grid gap-6 lg:grid-cols-12 lg:gap-5">
 				<div class="flex flex-col gap-4 lg:col-span-8">
-					<GrafikKursi {detail} />
-					{#if detail.metode_calon_lulusan}
+					<GrafikKursi {detail} tema={data.tema} />
+					{#if metode}
 						<p class="flex gap-2 text-small text-muted">
 							<Info size={18} strokeWidth={1.75} aria-hidden="true" class="mt-px shrink-0" />
-							{t(`pen.method.${detail.metode_calon_lulusan}`)}
+							{t(metode)}
 						</p>
 					{/if}
 					{#if detail.tren.length}
-						<GrafikTren tren={detail.tren} />
+						<GrafikTren tren={detail.tren} tema={data.tema} />
 					{/if}
 				</div>
 				<aside class="grid grid-cols-2 gap-3 lg:col-span-4 lg:flex lg:flex-col lg:gap-4">
@@ -113,6 +130,7 @@
 					{/if}
 				</aside>
 			</div>
+			<RumusKesenjangan {detail} />
 			<section aria-labelledby="judul-keterbatasan" class="rounded-lg bg-info-bg p-4 md:p-6">
 				<h2 id="judul-keterbatasan" class="flex items-center gap-2 font-bold">
 					<Info size={20} strokeWidth={1.75} aria-hidden="true" class="text-info" />
@@ -125,7 +143,7 @@
 				</ul>
 			</section>
 			<a
-				href="{halamanKecamatan}?bagian=anggaran&tema=pendidikan"
+				href="{halamanKecamatan}?bagian=anggaran&tema={data.tema}"
 				class="btn btn-outline self-start max-md:btn-block"
 			>
 				<Wallet size={18} strokeWidth={1.75} aria-hidden="true" />
@@ -138,13 +156,13 @@
 	<section aria-labelledby="judul-sekolah" class="flex flex-col gap-4">
 		<h2 id="judul-sekolah" class="t-h2 flex items-center gap-3">
 			<span class="icon-tile"><School size={20} strokeWidth={1.75} aria-hidden="true" /></span>
-			{t('pen.schoolsHeading')}
+			{t(teks.judulSekolah)}
 		</h2>
 		{#await data.sekolah}
 			<div class="skel h-40 w-full rounded-lg" aria-busy="true"></div>
 		{:then hasil}
 			{#if hasil.ok}
-				<DaftarSekolah sekolah={hasil.data} />
+				<DaftarSekolah sekolah={hasil.data} tema={data.tema} />
 			{:else}
 				<ErrorState title={t('error.sectionFailed')} onretry={invalidateAll} />
 			{/if}

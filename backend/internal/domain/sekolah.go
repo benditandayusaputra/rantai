@@ -14,6 +14,9 @@ const (
 	BentukMI  BentukSekolah = "MI"
 	BentukSMP BentukSekolah = "SMP"
 	BentukMTs BentukSekolah = "MTs"
+	BentukSMA BentukSekolah = "SMA"
+	BentukSMK BentukSekolah = "SMK"
+	BentukMA  BentukSekolah = "MA"
 )
 
 type Jenjang string
@@ -21,6 +24,7 @@ type Jenjang string
 const (
 	JenjangDasar           Jenjang = "dasar"
 	JenjangMenengahPertama Jenjang = "menengah_pertama"
+	JenjangMenengahAtas    Jenjang = "menengah_atas"
 )
 
 type StatusSekolah string
@@ -35,6 +39,8 @@ const (
 	TingkatSDTerakhir  = 6
 	TingkatSMPPertama  = 7
 	TingkatSMPTerakhir = 9
+	TingkatSMAPertama  = 10
+	TingkatSMATerakhir = 12
 	panjangSemesterID  = 5
 	digitTahunSemester = 4
 )
@@ -43,6 +49,7 @@ var (
 	jenjangBentuk = map[BentukSekolah]Jenjang{
 		BentukSD: JenjangDasar, BentukMI: JenjangDasar,
 		BentukSMP: JenjangMenengahPertama, BentukMTs: JenjangMenengahPertama,
+		BentukSMA: JenjangMenengahAtas, BentukSMK: JenjangMenengahAtas, BentukMA: JenjangMenengahAtas,
 	}
 	prefiksKecamatanSumber = regexp.MustCompile(`(?i)^\s*kec(amatan)?\.?\s+`)
 	bukanHurufKecil        = regexp.MustCompile(`[^a-z]`)
@@ -80,14 +87,18 @@ func (b BentukSekolah) Jenjang() Jenjang {
 }
 
 func (b BentukSekolah) IsMadrasah() bool {
-	return b == BentukMI || b == BentukMTs
+	return b == BentukMI || b == BentukMTs || b == BentukMA
 }
 
 func (b BentukSekolah) RentangTingkat() (pertama, terakhir int) {
-	if b.Jenjang() == JenjangDasar {
+	switch b.Jenjang() {
+	case JenjangDasar:
 		return TingkatSDPertama, TingkatSDTerakhir
+	case JenjangMenengahAtas:
+		return TingkatSMAPertama, TingkatSMATerakhir
+	default:
+		return TingkatSMPPertama, TingkatSMPTerakhir
 	}
-	return TingkatSMPPertama, TingkatSMPTerakhir
 }
 
 func StatusDariSumber(status string) (StatusSekolah, error) {

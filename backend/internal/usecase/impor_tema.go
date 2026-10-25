@@ -10,7 +10,7 @@ import (
 
 const JobTema = "tema"
 
-var PenghitungTerdaftar = []string{domain.PenghitungKesenjanganKursiSMP}
+var PenghitungTerdaftar = []string{domain.PenghitungKesenjanganKursiSMP, domain.PenghitungKesenjanganKursiSMASMK}
 
 var ErrKodeTemaGanda = errors.New("kode tema dipakai lebih dari satu berkas")
 

@@ -4,10 +4,24 @@
 	import EmptyState from '$lib/components/EmptyState.svelte';
 	import GapClassChip from '$lib/components/GapClassChip.svelte';
 	import KeyNumberCard from '$lib/components/KeyNumberCard.svelte';
+	import {
+		isTemaPendidikan,
+		teksJenjang,
+		temaPendidikanBawaan
+	} from '$lib/features/pendidikan/jenjang';
 	import { bahasaAktif, t } from '$lib/i18n';
 	import SuaraPengawas from './SuaraPengawas.svelte';
 
 	let { tema, kodeKecamatan }: { tema: TemaKecamatan[]; kodeKecamatan: string } = $props();
+
+	const temaPendidikanPertama = $derived(tema.find((item) => isTemaPendidikan(item.kode))?.kode);
+	const isTampilkanPengawas = (kode: string) =>
+		!isTemaPendidikan(kode) || kode === temaPendidikanPertama;
+
+	const tautanCekSekolah = (kode: string) =>
+		kode === temaPendidikanBawaan
+			? `/${bahasaAktif}/cek-sekolah`
+			: `/${bahasaAktif}/cek-sekolah?tema=${kode}`;
 </script>
 
 <div class="flex flex-col gap-10">
@@ -42,27 +56,30 @@
 				{:else}
 					<EmptyState title={t('tema.empty')} />
 				{/if}
-				{#if item.kode === 'pendidikan'}
+				{#if isTemaPendidikan(item.kode)}
+					{@const jenjang = t(teksJenjang[item.kode].jenjang)}
 					<p class="flex gap-2 rounded-md bg-info-bg p-4 text-small text-fg">
 						<Info size={20} strokeWidth={1.75} aria-hidden="true" class="shrink-0 text-info" />
 						{t('services.zoningNote')}
 					</p>
 					<div class="flex flex-col gap-2 md:flex-row md:flex-wrap">
 						<a
-							href="/{bahasaAktif}/kecamatan/{kodeKecamatan}/pendidikan"
+							href="/{bahasaAktif}/kecamatan/{kodeKecamatan}/{item.kode}"
 							class="btn btn-primary max-md:btn-block"
 						>
-							{t('tema.detail')}
+							{t('tema.detailJenjang', { jenjang })}
 							<ArrowRight size={18} strokeWidth={1.75} aria-hidden="true" />
 						</a>
-						<a href="/{bahasaAktif}/cek-sekolah" class="btn btn-outline max-md:btn-block">
+						<a href={tautanCekSekolah(item.kode)} class="btn btn-outline max-md:btn-block">
 							<LocateFixed size={18} strokeWidth={1.75} aria-hidden="true" />
-							{t('services.checkMySchool')}
+							{t('services.checkMySchool')}<span class="sr-only">: {jenjang}</span>
 						</a>
 					</div>
 				{/if}
 			</div>
-			<SuaraPengawas {kodeKecamatan} kodeTema={item.kode} />
+			{#if isTampilkanPengawas(item.kode)}
+				<SuaraPengawas {kodeKecamatan} kodeTema={item.kode} />
+			{/if}
 		</section>
 	{/each}
 </div>

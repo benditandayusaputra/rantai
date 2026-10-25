@@ -8,7 +8,7 @@ Pratinjau: [rantai-civic.vercel.app](https://rantai-civic.vercel.app) (bahasa In
 
 Warga mengetik kelurahan atau kecamatan, atau memakai lokasinya, lalu membuka halaman kecamatan dengan tiga lensa:
 
-1. **Layanan**: apakah kursi SMP negeri di kecamatanku cukup untuk lulusan SD tahun ini?
+1. **Layanan**: apakah kursi SMP negeri cukup untuk lulusan SD, dan kursi SMA/SMK negeri cukup untuk lulusan SMP, di kecamatanku tahun ini?
 2. **Uang**: proyek apa yang dibiayai di sini, berapa nilainya, siapa pelaksananya, dan apakah masih dalam masa pemeliharaan?
 3. **Tanggung jawab**: instansi mana yang berwenang, komisi DPRD mana yang mengawasi, dan siapa wakil dapilku?
 
@@ -21,7 +21,7 @@ Karya cabang Web In Action, MIA 2026 (UPNVJ), tema "Designing Digital Futures, P
 | Modul | Fitur |
 | --- | --- |
 | Wilayah | Pencarian kelurahan dan kecamatan serta "pakai lokasiku"; halaman kecamatan dengan bagian Tema, Arus Anggaran, dan Wakilku; peta kesenjangan kursi, proyek, sekolah, dan laporan warga dengan tabel alternatif; lencana sumber di setiap angka; halaman Tentang Data; Pantau Wilayahku dengan feed dan Web Push |
-| Tema Pendidikan | Kesenjangan kursi SMP negeri per kecamatan; daftar sekolah dan daya tampungnya; grafik kesenjangan dibanding belanja sekolah; anggota Komisi E yang menyuarakan isu sekolah; Cek Sekolahku berbasis radius |
+| Tema Pendidikan | Kesenjangan kursi SMP negeri (lulusan SD) dan SMA/SMK negeri (lulusan SMP) per kecamatan dan per kota, dengan rumus terbuka berisi angka kecamatan; daftar sekolah dan daya tampungnya; grafik kesenjangan dibanding belanja sekolah; anggota Komisi E yang menyuarakan isu sekolah; Cek Sekolahku berbasis radius |
 | Arus Anggaran | Paket LPSE DKI bertaut ke RUP SiRUP; lokasi paket dari namanya; halaman paket berbentuk rantai dari rencana sampai bukti warga; estimasi masa pemeliharaan; pembanding HPS paket sejenis dan sinyal perlu ditanyakan; profil penyedia dari Opentender; Aspirasi ke Anggaran; Lapor Bukti dengan foto tanpa EXIF dan verifikasi saksi |
 | Wakilku | Dapil dan anggota DPRD DKI 2024 sampai 2029; profil dengan komisi, alat kelengkapan, dan tautan LHKPN; jejak kegiatan dari rilis resmi DPRD dan media terverifikasi dengan ringkasan netral; isu yang disuarakan; sikap fraksi; aspirasi reses per bidang |
 | Aksi | Tanya Rantai dengan rujukan bernomor yang membuka sumber; Paket Aspirasi dalam teks dan PDF ke kanal yang tepat; jalur aspirasi terdekat; Data yang Belum Dibuka dengan templat permohonan PPID |
@@ -175,6 +175,7 @@ API memakai IP pengunjung dari header `X-Klien-Asli` untuk batas laju hanya bila
 - [x] Redesain antarmuka, tes alur demo, aksesibilitas WCAG 2.1 AA, performa, deploy produksi
 - [ ] Snapshot luring final dari data lengkap untuk demo tanpa internet
 - [x] Cadangan P2: tren antartahun, unduh CSV paket, kartu ringkasan untuk dibagikan, bahasa Inggris, pengalih tema, ringkasan mingguan via email
+- [x] Kesenjangan kursi SMA dan SMK negeri untuk lulusan SMP
 
 Rincian setiap tugas ada di `docs/PLAN.md`.
 

@@ -372,6 +372,10 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - Menggantikan catatan T-1105: tema terang menjadi bawaan dan tidak lagi mengikuti sistem; tema gelap tetap lewat tombol.
 - [x] **T-1109** Foto anggota DPRD dan foto sekolah · `✨ Tampilkan foto anggota DPRD dan sekolah beserta sumbernya`
   - Foto anggota dari situs DPRD DKI (106/106), foto sampul sekolah dari Sekolah Kita (2.689 sekolah), dan cadangan Wikimedia Commons lewat NPSN di Wikidata (20 sekolah) dengan penulis dan lisensi. Rincian di data-sources GD-16.
+- [x] **T-1110** Kesenjangan kursi SMA dan SMK (PEN-08) **[GERBANG DATA GD-17, GD-18]** · `✨ Tambah kesenjangan kursi SMA dan SMK untuk lulusan SMP`
+  - Migrasi 000039 (bentuk SMA, SMK, MA; `calon_lulusan_kecamatan.jenjang`), impor sekolah SMA/SMK/MA dari Sekolah Kita, daya tampung SMA dan SMK negeri dari Kepkadis 258/2026 jo. 315/2026, kursi SPMB Bersama SMA dan SMK swasta dari Kepkadis 262/2026, calon lulusan kelas 9 SMP, tema `pendidikan_sma_smk`.
+  - Satu rumus domain untuk dua peralihan jenjang; API detail, sekolah, dan sekolah terdekat menerima tema; halaman detail per jenjang dengan bagian "Cara menghitung"; pilihan jenjang di Peta, Dasbor (termasuk rekap per kota), dan Cek Sekolahku.
+  - Selesai bila: total kursi terimpor sama dengan dokumen (29.337, 19.541, 2.519, 3.592) tanpa NPSN tak terpetakan; tes rumus SMA/SMK, provenance per bentuk, dan alur demo lulus.
 
 ## Keluaran lomba di luar kode
 

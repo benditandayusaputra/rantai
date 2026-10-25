@@ -123,12 +123,40 @@ export type Keterbatasan =
 	| 'spmb_tidak_dibatasi_kecamatan'
 	| 'calon_lulusan_tanpa_mi'
 	| 'kursi_madrasah_tidak_tersedia'
+	| 'calon_lulusan_tanpa_mts'
+	| 'kursi_ma_tidak_tersedia'
+	| 'sma_smk_lintas_kecamatan'
 	| 'tidak_ada_data_lulusan'
 	| 'jarak_garis_lurus';
 
-export type MetodeCalonLulusan = 'per_sekolah' | 'agregat_resmi' | 'estimasi_total_sd' | '';
+export type MetodeCalonLulusan =
+	'per_sekolah' | 'agregat_resmi' | 'estimasi_total_sd' | 'estimasi_total_smp' | '';
+
+export type BentukSekolah = 'SD' | 'MI' | 'SMP' | 'MTs' | 'SMA' | 'SMK' | 'MA';
+
+export interface KursiBentuk {
+	bentuk: BentukSekolah;
+	kursi: Angka;
+}
+
+export interface AmbangRasio {
+	sangat_kurang: number;
+	kurang: number;
+	hampir_cukup: number;
+}
+
+export interface RumusKesenjangan {
+	bentuk_asal: BentukSekolah;
+	tingkat_asal: number;
+	bentuk_tujuan: BentukSekolah[];
+	bentuk_madrasah_tujuan: BentukSekolah;
+	tingkat_tujuan: number;
+	batas_murid_per_rombel: number | null;
+	ambang_rasio: AmbangRasio;
+}
 
 export interface DetailPendidikan {
+	tema: string;
 	kode: string;
 	nama: string;
 	periode: string;
@@ -143,6 +171,9 @@ export interface DetailPendidikan {
 	kesenjangan: Angka;
 	kesenjangan_dengan_spmb_bersama: Angka | null;
 	rasio: Angka | null;
+	kursi_negeri_per_bentuk: KursiBentuk[];
+	kursi_spmb_bersama_per_bentuk: KursiBentuk[];
+	rumus: RumusKesenjangan;
 	keterbatasan: Keterbatasan[];
 	tren: TitikTren[];
 }
@@ -162,7 +193,7 @@ export interface FotoSekolah {
 export interface Sekolah {
 	npsn: string;
 	nama: string;
-	bentuk: 'SD' | 'MI' | 'SMP' | 'MTs';
+	bentuk: BentukSekolah;
 	status: 'negeri' | 'swasta';
 	lokasi: Titik | null;
 	jalur: 'negeri' | 'spmb_bersama' | null;
@@ -211,13 +242,14 @@ export interface SekolahTerdekat extends Sekolah {
 }
 
 export interface SekitarTitik {
+	tema: string;
 	titik: Titik;
 	radius_m: number;
-	smp_negeri: SekolahTerdekat[];
+	negeri: SekolahTerdekat[];
 	spmb_bersama: SekolahTerdekat[];
 	madrasah: SekolahTerdekat[];
 	tekanan_radius: {
-		siswa_kelas_6: Angka | null;
+		calon_lulusan: Angka | null;
 		kursi_negeri: Angka | null;
 		rasio: Angka | null;
 	};

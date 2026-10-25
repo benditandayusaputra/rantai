@@ -5,11 +5,22 @@
 	import KreditFoto from '$lib/components/KreditFoto.svelte';
 	import ProvenanceBadge from '$lib/components/ProvenanceBadge.svelte';
 	import { tampilkanAngka } from '$lib/features/kecamatan/kecamatan';
+	import {
+		teksJenjang,
+		temaPendidikanBawaan,
+		type TemaPendidikan
+	} from '$lib/features/pendidikan/jenjang';
 	import { kunciJenisSekolah } from '$lib/features/pendidikan/pendidikan';
 	import { formatJarak } from '$lib/format';
 	import { bahasaAktif, t } from '$lib/i18n';
 
-	let { sekolah, urutan }: { sekolah: SekolahTerdekat; urutan?: number } = $props();
+	interface Props {
+		sekolah: SekolahTerdekat;
+		urutan?: number;
+		tema?: TemaPendidikan;
+	}
+
+	let { sekolah, urutan, tema = temaPendidikanBawaan }: Props = $props();
 
 	const kursi = $derived(sekolah.daya_tampung ? tampilkanAngka(sekolah.daya_tampung) : null);
 </script>
@@ -28,7 +39,7 @@
 			</span>
 		</span>
 		<span class="flex flex-wrap items-center gap-2 text-small">
-			{t('pen.school.seats')}:
+			{t(teksJenjang[tema].kolomKursi)}:
 			{#if sekolah.daya_tampung && kursi}
 				<span class="num font-bold">{kursi.nilai}</span>
 				<ProvenanceBadge angka={sekolah.daya_tampung} nilai={kursi.nilai} compact />

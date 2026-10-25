@@ -55,17 +55,23 @@ export function tautanTahun(url: URL, tahun: number): string {
 export async function muatDasbor(
 	fetchFn: Fetch,
 	lensa: Lensa,
-	tahun?: number
+	tahun?: number,
+	temaLayanan: string = temaDasbor
 ): Promise<DataDasbor> {
 	if (lensa === 'tanggung-jawab') {
 		return { lensa, dasbor: await ambilDasborTanggungJawab(fetchFn, tahun) };
 	}
-	const peta = ambilPetaTema(fetchFn, temaDasbor);
 	if (lensa === 'uang') {
-		const [dasbor, petaTema] = await Promise.all([ambilDasborUang(fetchFn, tahun), peta]);
+		const [dasbor, petaTema] = await Promise.all([
+			ambilDasborUang(fetchFn, tahun),
+			ambilPetaTema(fetchFn, temaDasbor)
+		]);
 		return { lensa, dasbor, peta: petaTema };
 	}
-	const [dasbor, petaTema] = await Promise.all([ambilDasborLayanan(fetchFn, temaDasbor), peta]);
+	const [dasbor, petaTema] = await Promise.all([
+		ambilDasborLayanan(fetchFn, temaLayanan),
+		ambilPetaTema(fetchFn, temaLayanan)
+	]);
 	return { lensa, dasbor, peta: petaTema };
 }
 

@@ -16,8 +16,8 @@ const (
 
 type LayananIndikator interface {
 	PetaTema(ctx context.Context, temaKode string) (domain.PetaTema, error)
-	DetailPendidikan(ctx context.Context, kodeKecamatan string) (domain.DetailPendidikanKecamatan, error)
-	SekolahKecamatan(ctx context.Context, kodeKecamatan string) ([]domain.SekolahDenganKursi, error)
+	DetailPendidikan(ctx context.Context, temaKode, kodeKecamatan string) (domain.DetailPendidikanKecamatan, error)
+	SekolahKecamatan(ctx context.Context, temaKode, kodeKecamatan string) ([]domain.SekolahDenganKursi, error)
 }
 
 type handlerPendidikan struct {

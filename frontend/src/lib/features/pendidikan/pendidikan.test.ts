@@ -5,6 +5,7 @@ import {
 	persenLebar,
 	skalaTren,
 	susunBarisGrafik,
+	susunRumus,
 	ukuranGrafikTren
 } from './pendidikan';
 
@@ -24,13 +25,74 @@ const detail = {
 
 describe('susunBarisGrafik', () => {
 	it('melewati jenis kursi yang tidak tersedia dan mempertahankan labelnya', () => {
-		const baris = susunBarisGrafik(detail);
+		const baris = susunBarisGrafik(detail, 'pendidikan');
 		expect(baris.map((b) => b.kunci)).toEqual([
 			'pen.graduates',
 			'pen.seats.negeri',
 			'pen.seats.madrasah'
 		]);
 		expect(baris[2]?.angka.label).toBe('proksi');
+	});
+});
+
+const ambang = { sangat_kurang: 0.5, kurang: 0.8, hampir_cukup: 1 };
+
+const detailSMASMK = {
+	calon_lulusan: angka(4460),
+	kursi_negeri: angka(576),
+	kursi_spmb_bersama: angka(40),
+	kursi_madrasah: null,
+	kesenjangan: angka(3884),
+	kesenjangan_dengan_spmb_bersama: angka(3844),
+	rasio: { nilai: 0.129, satuan: 'rasio', label: 'resmi', provenance_id: 'p' },
+	kursi_negeri_per_bentuk: [
+		{ bentuk: 'SMA', kursi: angka(576) },
+		{ bentuk: 'SMK', kursi: angka(0) }
+	],
+	kursi_spmb_bersama_per_bentuk: [
+		{ bentuk: 'SMA', kursi: angka(0) },
+		{ bentuk: 'SMK', kursi: angka(40) }
+	],
+	rumus: {
+		bentuk_asal: 'SMP',
+		tingkat_asal: 9,
+		bentuk_tujuan: ['SMA', 'SMK'],
+		bentuk_madrasah_tujuan: 'MA',
+		tingkat_tujuan: 10,
+		batas_murid_per_rombel: 36,
+		ambang_rasio: ambang
+	}
+} as DetailPendidikan;
+
+describe('susunBarisGrafik SMA/SMK', () => {
+	it('memecah kursi negeri dan PMB Bersama per bentuk SMA dan SMK', () => {
+		const baris = susunBarisGrafik(detailSMASMK, 'pendidikan_sma_smk');
+		expect(baris.map((b) => b.kunci)).toEqual([
+			'pen.sma.graduates',
+			'pen.seats.negeri.SMA',
+			'pen.seats.negeri.SMK',
+			'pen.seats.spmb.SMA',
+			'pen.seats.spmb.SMK'
+		]);
+		expect(baris.filter((b) => b.isKebutuhan)).toHaveLength(1);
+	});
+});
+
+describe('susunRumus', () => {
+	it('menampilkan rumus dengan angka kecamatan, termasuk penjumlahan kursi SMA dan SMK', () => {
+		const baris = susunRumus(detailSMASMK);
+		const perKunci = Object.fromEntries(baris.map((b) => [b.kunci, b]));
+		expect(perKunci['pen.formula.graduates']?.parameter).toEqual({ tingkat: 9, bentuk: 'SMP' });
+		expect(perKunci['pen.formula.seats']?.hitungan).toBe('576 + 0 = 576');
+		expect(perKunci['pen.formula.gap']?.hitungan).toBe('4.460 − 576 = 3.884');
+		expect(perKunci['pen.formula.ratio']?.hitungan).toBe('576 ÷ 4.460 = 0,13');
+		expect(perKunci['pen.formula.gapSpmb']?.hitungan).toBe('3.884 − 40 = 3.844');
+	});
+
+	it('menandai kursi madrasah tidak tersedia tanpa menebak angka', () => {
+		const madrasah = susunRumus(detailSMASMK).find((b) => b.kunci === 'pen.formula.madrasah');
+		expect(madrasah?.parameter).toEqual({ madrasah: 'MA', tingkat: 10, batas: 36 });
+		expect(madrasah?.hitungan).toBeNull();
 	});
 });
 
@@ -47,7 +109,11 @@ describe('kunciJenisSekolah', () => {
 		[{ ...dasar, bentuk: 'SMP', status: 'negeri', jalur: 'negeri' }, 'pen.school.negeri'],
 		[{ ...dasar, bentuk: 'SMP', status: 'swasta', jalur: 'spmb_bersama' }, 'pen.school.spmb'],
 		[{ ...dasar, bentuk: 'SMP', status: 'swasta', jalur: null }, 'pen.school.swasta'],
-		[{ ...dasar, bentuk: 'MTs', status: 'negeri', jalur: null }, 'pen.school.madrasah']
+		[{ ...dasar, bentuk: 'MTs', status: 'negeri', jalur: null }, 'pen.school.madrasah'],
+		[{ ...dasar, bentuk: 'SMA', status: 'negeri', jalur: 'negeri' }, 'pen.school.sma.negeri'],
+		[{ ...dasar, bentuk: 'SMK', status: 'swasta', jalur: 'spmb_bersama' }, 'pen.school.smk.spmb'],
+		[{ ...dasar, bentuk: 'SMK', status: 'swasta', jalur: null }, 'pen.school.smk.swasta'],
+		[{ ...dasar, bentuk: 'MA', status: 'negeri', jalur: null }, 'pen.school.ma']
 	] as [Sekolah, string][])('%o menjadi %s', (sekolah, harapan) => {
 		expect(kunciJenisSekolah(sekolah)).toBe(harapan);
 	});

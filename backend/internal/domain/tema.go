@@ -10,8 +10,10 @@ import (
 )
 
 const (
-	PenghitungKesenjanganKursiSMP = "kesenjangan_kursi_smp"
-	TemaPendidikan                = "pendidikan"
+	PenghitungKesenjanganKursiSMP    = "kesenjangan_kursi_smp"
+	PenghitungKesenjanganKursiSMASMK = "kesenjangan_kursi_sma_smk"
+	TemaPendidikan                   = "pendidikan"
+	TemaPendidikanSMASMK             = "pendidikan_sma_smk"
 )
 
 var (

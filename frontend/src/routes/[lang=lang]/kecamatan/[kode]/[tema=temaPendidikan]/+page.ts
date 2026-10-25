@@ -3,6 +3,7 @@ import type { PageLoad } from './$types';
 
 export const load: PageLoad = ({ params, fetch }) => ({
 	kode: params.kode,
-	detail: tangkap(ambilDetailPendidikan(fetch, params.kode)),
-	sekolah: tangkap(ambilSekolahKecamatan(fetch, params.kode))
+	tema: params.tema,
+	detail: tangkap(ambilDetailPendidikan(fetch, params.tema, params.kode)),
+	sekolah: tangkap(ambilSekolahKecamatan(fetch, params.tema, params.kode))
 });

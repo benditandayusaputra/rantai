@@ -8,3 +8,19 @@ berkas:
     jalur: spmb_bersama
     url: https://dokumen-jkt.spmb.id/2026/20260612/Petunjuk%20Teknis%20Pelaksanaan%20Penerimaan%20Murid%20Baru%20Bersama-berkas--260612061506.pdf
     catatan: Lampiran IV Keputusan Kepala Dinas Pendidikan Provinsi DKI Jakarta Nomor 262 Tahun 2026 tentang Petunjuk Teknis PMB Bersama, daftar nama dan daya tampung SMP swasta peserta, diekstrak ke CSV
+  - path: ../data/snapshot/daya_tampung_sma_negeri_2026.csv
+    jalur: negeri
+    url: https://dokumen-jkt.spmb.id/2026/20260612/SK%20Kadis%20Nomor%20258%20Tentang%20Daya%20Tampung%20Satuan%20Pendidikan%20Negeri%20Pada%20Penerimaan%20Murid%20Baru-berkas--260612061433.pdf
+    catatan: Lampiran bagian D Keputusan Kepala Dinas Pendidikan Provinsi DKI Jakarta Nomor 258 Tahun 2026 (bagian SMA tidak diubah oleh Keputusan Nomor 315 Tahun 2026), diekstrak ke CSV tanpa perubahan angka
+  - path: ../data/snapshot/daya_tampung_smk_negeri_2026.csv
+    jalur: negeri
+    url: https://dokumen-jkt.spmb.id/2026/20260612/SK%20Kadis%20Nomor%20315%20Tentang%20Perubahan%20atas%20Keputusan%20Kepala%20Dinas%20Pendidikan%20Nomor%20258%20Tahun%202026%20tentang%20Daya%20Tampung%20Satuan%20Pendidikan%20Negeri%20pada%20PMB-berkas--260612061834.pdf
+    catatan: Lampiran bagian E Keputusan Kepala Dinas Pendidikan Provinsi DKI Jakarta Nomor 258 Tahun 2026 sebagaimana diubah Keputusan Nomor 315 Tahun 2026 (SMK Negeri 64 dan 66); daya tampung per kompetensi keahlian dijumlahkan per sekolah
+  - path: ../data/snapshot/spmb_bersama_sma_2026.csv
+    jalur: spmb_bersama
+    url: https://dokumen-jkt.spmb.id/2026/20260612/Petunjuk%20Teknis%20Pelaksanaan%20Penerimaan%20Murid%20Baru%20Bersama-berkas--260612061506.pdf
+    catatan: Lampiran V Keputusan Kepala Dinas Pendidikan Provinsi DKI Jakarta Nomor 262 Tahun 2026 tentang Petunjuk Teknis PMB Bersama, daftar nama dan daya tampung SMA swasta peserta, diekstrak ke CSV
+  - path: ../data/snapshot/spmb_bersama_smk_2026.csv
+    jalur: spmb_bersama
+    url: https://dokumen-jkt.spmb.id/2026/20260612/Petunjuk%20Teknis%20Pelaksanaan%20Penerimaan%20Murid%20Baru%20Bersama-berkas--260612061506.pdf
+    catatan: Lampiran VI Keputusan Kepala Dinas Pendidikan Provinsi DKI Jakarta Nomor 262 Tahun 2026 tentang Petunjuk Teknis PMB Bersama, daftar SMK swasta peserta; daya tampung per konsentrasi keahlian dijumlahkan per sekolah

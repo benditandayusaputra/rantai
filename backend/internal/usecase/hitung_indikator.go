@@ -13,7 +13,7 @@ const JobIndikator = "indikator"
 var ErrPenghitungBelumTersedia = errors.New("penghitung indikator belum tersedia di kode")
 
 type IndikatorTercatat struct {
-	domain.IndikatorKesenjanganSMP
+	domain.IndikatorKesenjangan
 	ProvenanceID string
 }
 

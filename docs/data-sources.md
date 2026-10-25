@@ -168,6 +168,7 @@ Catatan hasil Gerbang Data (SPEC bagian 1). Setiap entri memuat URL, tanggal cek
   - `GET /rombongan-belajar/{sekolah_id}`: `rombel_1` sampai `rombel_13`.
   - `GET /peserta-didik/{sekolah_id}`: `pd_tkt_{n}_l` dan `pd_tkt_{n}_p` per tingkat.
 - **Jumlah sekolah DKI per 23 Oktober 2026**: SD 2.170, MI 479, SMP 1.039, MTs 256 (enam kota/kabupaten administrasi).
+- **Jenjang menengah atas (dicek 26 Oktober 2026)**: `bentuk_pendidikan` SMA, SMK, dan MA diterima endpoint yang sama. Terimpor SMA 476 (121 negeri), SMK 560 (74 negeri), MA 105 (25 negeri); seluruhnya terpetakan ke kecamatan, 41 lewat nama kecamatan karena koordinat di luar batas DKI. Rombel dan peserta didik SMA/SMK tidak diminta (`bentuk_dengan_rombel` tetap SD dan SMP) karena indikator hanya butuh identitas, lokasi, dan NPSN sekolah tujuan.
 - **Madrasah**: MI dan MTs punya identitas dan koordinat, tetapi rombel dan peserta didik kosong (contoh MTsN 39 Jakarta, NPSN 20178210), karena datanya dikelola EMIS Kemenag. Keterbatasan: kursi madrasah (proksi rombel kelas 7) dan siswa kelas 6 MI belum bisa dihitung. Job hanya meminta rombel untuk `bentuk_dengan_rombel` di `config/dapodik.yaml`.
 - **Cadangan Data Referensi**: [referensi.data.kemendikdasmen.go.id](https://referensi.data.kemendikdasmen.go.id/pendidikan/dikdas/010000/1) dapat diakses (`robots.txt` 404) dan memuat daftar per kecamatan beserta lintang/bujur di halaman per NPSN, tetapi tanpa rombel per tingkat. Tidak dipakai.
 - **robots.txt**: `sekolah.data.kemendikdasmen.go.id/robots.txt` mengembalikan halaman aplikasi (bukan berkas robots), sehingga tidak ada pembatasan tertulis. Job memberi jeda 1 detik antarpermintaan, berhenti pada 403 atau 429, dan menyimpan setiap respons di `data/raw/dapodik/<tanggal>/` sebagai cache. Pengambilan ulang di hari yang sama tidak mengirim permintaan baru.
@@ -197,7 +198,27 @@ Catatan hasil Gerbang Data (SPEC bagian 1). Setiap entri memuat URL, tanggal cek
 - **Tanggal cek**: 23 Oktober 2026
 - **Sumber**: `GET /peserta-didik/{sekolah_id}` Sekolah Kita, field `pd_tkt_6_l` + `pd_tkt_6_p`, semester 20261 (tahun ajaran 2026/2027). Siswa kelas 6 tahun ajaran ini adalah lulusan SD pertengahan 2027.
 - **Keterbatasan**: MI tidak punya data peserta didik di sumber, sehingga calon lulusan per kecamatan tidak termasuk lulusan MI. Ini tercatat di provenance dan dikirim API sebagai kunci keterbatasan `calon_lulusan_tanpa_mi`. Cadangan `estimasi_total_sd` tetap tersedia di kode untuk kecamatan yang hanya punya total siswa.
+- **Kelas 9 SMP (dicek 26 Oktober 2026)**: field `pd_tkt_9_l` + `pd_tkt_9_p` dari endpoint yang sama, sudah ikut terimpor bersama rombel SMP. Calon lulusan SMP 2026/2027: 116.438 siswa di 44 kecamatan, seluruhnya metode `per_sekolah`. Lulusan MTs belum termasuk (kunci keterbatasan `calon_lulusan_tanpa_mts`).
 - **Pasangan periode**: daya tampung terbit terakhir adalah untuk penerimaan 2026/2027. Indikator membandingkan calon lulusan 2026/2027 dengan daya tampung terbit terakhir itu, dan menyebut tahun keduanya di provenance.
+
+## GD-17 Daya tampung SMA dan SMK negeri (Kepkadis 258/2026 jo. 315/2026)
+
+- **Status**: lolos. Lampiran D dan E dapat diekstrak per sekolah beserta NPSN.
+- **Tanggal cek**: 26 Oktober 2026
+- **Dokumen**: Keputusan Kepala Dinas Pendidikan Nomor 258 Tahun 2026 yang sama dengan GD-04 (lampiran bagian D halaman PDF 39 sampai 41, bagian E halaman PDF 42 sampai 48), dan Keputusan Nomor 315 Tahun 2026 (hasil pindai, dibaca dari gambar halaman 3).
+- **Bagian D (SMA)**: 117 baris (SMAN 1 sampai 117 Jakarta) dengan NPSN, jumlah **29.337**, sama dengan dokumen. Kepkadis 315/2026 tidak mengubah SMA. Ekstraksi ke `data/snapshot/daya_tampung_sma_negeri_2026.csv`.
+- **Bagian E (SMK)**: 74 sekolah (SMK Negeri 1 sampai 74), daya tampung tertulis per kompetensi keahlian dengan nama dan NPSN sekolah di tengah kelompok barisnya. Nomor kompetensi mulai dari 1 di setiap sekolah, sehingga baris dikelompokkan per sekolah lalu dijumlahkan; jumlah sebelum perubahan **19.577**, sama dengan dokumen.
+- **Perubahan Kepkadis 315/2026**: mengganti daftar kompetensi dua sekolah. SMK Negeri 64 (NPSN 69992315): Desain Komunikasi Visual 72 menjadi 36, total sekolah 144 menjadi 108. SMK Negeri 66 (NPSN 69992317): Usaha Layanan Wisata 72 menjadi 36 dan Kuliner 72 menjadi 108, total sekolah tetap 216. Jumlah SMK setelah perubahan **19.541**, sama dengan angka di Kepkadis 315/2026. Ekstraksi ke `data/snapshot/daya_tampung_smk_negeri_2026.csv` memakai angka setelah perubahan.
+- **Pencocokan**: seluruh 117 SMA dan 74 SMK negeri terpetakan ke NPSN Dapodik; job `daya_tampung` melaporkan kursi terimpor 29.337 dan 19.541 tanpa selisih.
+
+## GD-18 Kursi SMA dan SMK swasta SPMB Bersama
+
+- **Status**: lolos. Daftar tersedia per sekolah beserta NPSN.
+- **Tanggal cek**: 26 Oktober 2026
+- **Dokumen**: Kepkadis 262/2026 yang sama dengan GD-05. Lampiran V (halaman PDF 44 sampai 48): 117 SMA swasta, jumlah **2.519**. Lampiran VI (halaman PDF 49 sampai 63): 144 SMK swasta, daya tampung per konsentrasi keahlian, jumlah **3.592**.
+- **Ekstraksi**: `data/snapshot/spmb_bersama_sma_2026.csv` dan `data/snapshot/spmb_bersama_smk_2026.csv` (`no,nama,kategori,npsn,kursi`); kursi SMK dijumlahkan per sekolah. Lampiran VI dibaca per sel tabel karena nama dan NPSN sekolah berupa sel gabungan; 11 kelompok baris yang berlanjut ke halaman berikutnya digabung ke sekolah di halaman sebelumnya.
+- **Halaman pindai**: halaman 48 (SMA nomor 104 sampai 117) dan 63 (SMK nomor 141 sampai 144) hasil pindai ber-OCR dan dicocokkan manual dengan gambar halaman. Koreksi: SMA nomor 107 (SMAS Pratama) dari `B` hasil OCR menjadi **5**; seluruh angka halaman 63 diambil dari gambar (contoh Manajemen Perkantoran SMKS Islam Said Naum dari `i` menjadi **7**). Setelah koreksi, total sama dengan dokumen.
+- **Pencocokan**: seluruh sekolah terpetakan ke NPSN Dapodik; job `daya_tampung` melaporkan kursi terimpor 2.519 dan 3.592 tanpa selisih.
 
 ## GD-15 Dokumen paripurna: pandangan umum fraksi dan aspirasi reses
 

@@ -10,19 +10,25 @@ import (
 
 type pembacaSiswaTiruan struct {
 	tahunAjaran string
-	daftar      []domain.SiswaSDKecamatan
+	daftar      []domain.SiswaKecamatan
+	diminta     []domain.BentukSekolah
 }
 
-func (p pembacaSiswaTiruan) SiswaSDPerKecamatan(context.Context) (string, []domain.SiswaSDKecamatan, error) {
+func (p *pembacaSiswaTiruan) SiswaPerKecamatan(_ context.Context, peralihan domain.Peralihan) (string, []domain.SiswaKecamatan, error) {
+	p.diminta = append(p.diminta, peralihan.BentukAsal)
 	return p.tahunAjaran, p.daftar, nil
 }
 
 type penyimpanCalonTiruan struct {
-	data DataCalonLulusan
+	semua []DataCalonLulusan
+	data  DataCalonLulusan
 }
 
 func (p *penyimpanCalonTiruan) SimpanCalonLulusan(_ context.Context, data DataCalonLulusan) (HasilImpor, error) {
-	p.data = data
+	p.semua = append(p.semua, data)
+	if len(p.semua) == 1 {
+		p.data = data
+	}
 	return HasilImpor{}, nil
 }
 
@@ -30,13 +36,22 @@ type pelaporCalonTiruan struct {
 	tanpaData []string
 }
 
-func (p *pelaporCalonTiruan) LaporkanKecamatanTanpaCalonLulusan(kode []string) { p.tanpaData = kode }
+func (p *pelaporCalonTiruan) LaporkanKecamatanTanpaCalonLulusan(jenjang domain.Jenjang, kode []string) {
+	if jenjang == domain.JenjangDasar {
+		p.tanpaData = kode
+	}
+}
 
-func hitungCalonUji(pembaca PembacaSiswaSD, penyimpan *penyimpanCalonTiruan, pelapor *pelaporCalonTiruan) HitungCalonLulusan {
+var konstantaUji = KonstantaPendidikan{Peralihan: map[string]KonstantaPeralihan{
+	domain.PeralihanSDKeSMP:     {BatasMuridPerRombel: 30, PembagiEstimasi: 5},
+	domain.PeralihanSMPKeSMASMK: {BatasMuridPerRombel: 36, PembagiEstimasi: 3},
+}}
+
+func hitungCalonUji(pembaca PembacaSiswa, penyimpan *penyimpanCalonTiruan, pelapor *pelaporCalonTiruan) HitungCalonLulusan {
 	nomor := 0
 	return HitungCalonLulusan{
 		Pembaca: pembaca, Penyimpan: penyimpan, Pencatat: &pencatatTiruan{}, Pelapor: pelapor,
-		Konstanta: KonstantaPendidikan{PembagiEstimasiTotalSD: 5},
+		Konstanta: konstantaUji,
 		BuatProvenance: func(c CatatanProvenance) domain.Provenance {
 			nomor++
 			return domain.Provenance{ID: "prv_" + string(rune('0'+nomor)), Sumber: c.Sumber, Label: c.Label, Catatan: c.Catatan}
@@ -46,8 +61,8 @@ func hitungCalonUji(pembaca PembacaSiswaSD, penyimpan *penyimpanCalonTiruan, pel
 
 func TestHitungCalonLulusan_MetodeEstimasi_LabelEstimasiDanRumusDiProvenance(t *testing.T) {
 	penyimpan, pelapor := &penyimpanCalonTiruan{}, &pelaporCalonTiruan{}
-	pembaca := pembacaSiswaTiruan{tahunAjaran: "2026/2027", daftar: []domain.SiswaSDKecamatan{
-		{KodeKecamatan: "31.72.05", SiswaKelas6: 0, TotalSiswa: 600},
+	pembaca := &pembacaSiswaTiruan{tahunAjaran: "2026/2027", daftar: []domain.SiswaKecamatan{
+		{KodeKecamatan: "31.72.05", SiswaTingkatAkhir: 0, TotalSiswa: 600},
 	}}
 
 	if err := hitungCalonUji(pembaca, penyimpan, pelapor).Jalankan(t.Context()); err != nil {
@@ -65,10 +80,10 @@ func TestHitungCalonLulusan_MetodeEstimasi_LabelEstimasiDanRumusDiProvenance(t *
 
 func TestHitungCalonLulusan_DuaMetode_ProvenanceTerpisahDanKecamatanKosongDilaporkan(t *testing.T) {
 	penyimpan, pelapor := &penyimpanCalonTiruan{}, &pelaporCalonTiruan{}
-	pembaca := pembacaSiswaTiruan{tahunAjaran: "2026/2027", daftar: []domain.SiswaSDKecamatan{
+	pembaca := &pembacaSiswaTiruan{tahunAjaran: "2026/2027", daftar: []domain.SiswaKecamatan{
 		{KodeKecamatan: "31.72.05", TotalSiswa: 600},
-		{KodeKecamatan: "31.72.06", SiswaKelas6: 1250, TotalSiswa: 7400},
-		{KodeKecamatan: "31.72.07", SiswaKelas6: 900},
+		{KodeKecamatan: "31.72.06", SiswaTingkatAkhir: 1250, TotalSiswa: 7400},
+		{KodeKecamatan: "31.72.07", SiswaTingkatAkhir: 900},
 		{KodeKecamatan: "31.01.01"},
 	}}
 
@@ -85,9 +100,32 @@ func TestHitungCalonLulusan_DuaMetode_ProvenanceTerpisahDanKecamatanKosongDilapo
 }
 
 func TestHitungCalonLulusan_BelumAdaRombel_Gagal(t *testing.T) {
-	err := hitungCalonUji(pembacaSiswaTiruan{}, &penyimpanCalonTiruan{}, &pelaporCalonTiruan{}).Jalankan(t.Context())
+	err := hitungCalonUji(&pembacaSiswaTiruan{}, &penyimpanCalonTiruan{}, &pelaporCalonTiruan{}).Jalankan(t.Context())
 
 	if err == nil || !strings.Contains(err.Error(), ErrBelumAdaDataRombel.Error()) {
 		t.Errorf("harap ErrBelumAdaDataRombel, dapat %v", err)
+	}
+}
+
+func TestHitungCalonLulusan_DuaPeralihan_LulusanSDDanSMPDisimpanPerJenjang(t *testing.T) {
+	penyimpan, pelapor := &penyimpanCalonTiruan{}, &pelaporCalonTiruan{}
+	pembaca := &pembacaSiswaTiruan{tahunAjaran: "2026/2027", daftar: []domain.SiswaKecamatan{
+		{KodeKecamatan: "31.72.05", TotalSiswa: 900},
+	}}
+
+	if err := hitungCalonUji(pembaca, penyimpan, pelapor).Jalankan(t.Context()); err != nil {
+		t.Fatal(err)
+	}
+
+	if len(penyimpan.semua) != 2 || pembaca.diminta[0] != domain.BentukSD || pembaca.diminta[1] != domain.BentukSMP {
+		t.Fatalf("diminta %v, disimpan %d", pembaca.diminta, len(penyimpan.semua))
+	}
+	smp := penyimpan.semua[1]
+	calon := smp.Daftar[0]
+	if smp.Jenjang != domain.JenjangMenengahPertama || calon.Jumlah != 300 || calon.Metode != domain.MetodeEstimasiTotalSMP {
+		t.Errorf("lulusan SMP = %+v, %+v", smp.Jenjang, calon)
+	}
+	if !strings.Contains(smp.Provenance[0].Catatan, "siswa SMP") || !strings.Contains(smp.Provenance[0].Catatan, "÷ 3") {
+		t.Errorf("catatan = %q", smp.Provenance[0].Catatan)
 	}
 }
