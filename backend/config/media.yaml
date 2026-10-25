@@ -1,6 +1,8 @@
 pengunduh:
   user_agent: RantaiBot/1.0 (+https://github.com/benditandayusaputra/rantai)
   jeda_permintaan: 1s
+  percobaan_ulang: 3
+  jeda_ulang: 30s
 
 url_rujukan: https://dewanpers.or.id/data
 catatan: Judul dan cuplikan dari RSS kanal perusahaan pers dalam daftar tertutup; Rantai menyimpan judul, cuplikan pendek, dan tautan, bukan isi berita

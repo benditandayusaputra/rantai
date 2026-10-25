@@ -4,6 +4,8 @@ catatan: Data Dapodik melalui layanan Sekolah Kita Kemendikdasmen; rombel dan pe
 pengunduh:
   user_agent: RantaiBot/1.0 (+https://github.com/benditandayusaputra/rantai)
   jeda_permintaan: 1s
+  percobaan_ulang: 3
+  jeda_ulang: 30s
 ukuran_halaman: 100
 kota:
   - Kab. Adm. Kep. Seribu

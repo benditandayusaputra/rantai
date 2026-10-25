@@ -54,7 +54,7 @@ make hitung-indikator
 
 ### Basis data
 
-Basis data utama (lokal dan produksi) adalah PostgreSQL di Neon dengan ekstensi PostGIS. Isi `DATABASE_URL` dengan URL pooler Neon dan `DATABASE_URL_MIGRASI` dengan URL endpoint langsung (tanpa `-pooler`), karena migrasi memakai advisory lock tingkat sesi. Tanpa kedua variabel itu, semua perintah memakai PostgreSQL dari `make up`.
+Basis data utama (lokal dan produksi) adalah PostgreSQL di Neon dengan ekstensi PostGIS. Isi `DATABASE_URL` dengan URL pooler Neon dan `DATABASE_URL_MIGRASI` dengan URL endpoint langsung (tanpa `-pooler`), karena migrasi memakai advisory lock tingkat sesi. Tambahkan `&pool_max_conn_idle_time=30s&pool_max_conn_lifetime=5m&pool_health_check_period=15s` di akhir `DATABASE_URL` agar koneksi yang menganggur selama job mengambil data tidak diputus Neon di tengah jalan. Tanpa kedua variabel itu, semua perintah memakai PostgreSQL dari `make up`.
 
 Tes integrasi selalu memakai basis data lokal terpisah `rantai_uji` agar tidak menyentuh data utama. Siapkan sekali dengan `make up && make siapkan-uji`, lalu `make test`.
 

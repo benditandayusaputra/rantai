@@ -55,6 +55,8 @@ sumber:
 pengunduh:
   user_agent: RantaiBot/1.0 (+https://github.com/benditandayusaputra/rantai)
   jeda_permintaan: 1s
+  percobaan_ulang: 3
+  jeda_ulang: 30s
 
 rilis:
   url_api: https://dprd-dkijakartaprov.go.id/wp-json/wp/v2/posts
