@@ -25,7 +25,7 @@
 </script>
 
 <div class="flex flex-col gap-4">
-	<h1 class="text-balance font-serif text-h1">{t('report.s6.title')}</h1>
+	<h1 class="text-balance font-heading text-h1">{t('report.s6.title')}</h1>
 	<dl class="card flex flex-col divide-y divide-line overflow-hidden">
 		{#each baris as b (b.langkah)}
 			<div class="flex items-start gap-3 p-4">

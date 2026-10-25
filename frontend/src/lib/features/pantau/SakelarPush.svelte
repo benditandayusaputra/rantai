@@ -44,7 +44,7 @@
 {#if kunciPublik}
 	<section class="card flex flex-col gap-2 p-5">
 		<h2 class="flex items-center gap-2 font-bold">
-			<BellRing size={18} strokeWidth={1.75} aria-hidden="true" class="text-primary" />
+			<BellRing size={18} strokeWidth={1.75} aria-hidden="true" class="text-muted" />
 			{t('watch.push.title')}
 		</h2>
 		<label class="flex min-h-touch cursor-pointer items-center justify-between gap-3">

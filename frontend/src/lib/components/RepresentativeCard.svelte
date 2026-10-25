@@ -12,7 +12,7 @@
 	class="card-link group flex h-full items-start gap-3 p-4"
 >
 	<span
-		class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-pill bg-primary font-bold text-primary-on"
+		class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-pill border border-line-strong bg-sunken font-semibold text-fg"
 		aria-hidden="true">{inisial(wakil.nama)}</span
 	>
 	<span class="flex min-w-0 flex-1 flex-col gap-1">
@@ -24,7 +24,7 @@
 		</span>
 		{#if wakil.duduk_di_komisi_pengawas}
 			<span
-				class="mt-1 inline-flex items-center gap-1 self-start rounded-pill bg-secondary px-3 py-1 text-caption font-bold text-secondary-on"
+				class="mt-1 inline-flex items-center gap-1 self-start rounded-xs bg-secondary px-2 py-0.5 text-caption font-bold text-secondary-on"
 				><Landmark size={14} strokeWidth={1.75} aria-hidden="true" />{t('acc.oversees')}</span
 			>
 		{/if}
@@ -33,6 +33,6 @@
 		size={20}
 		strokeWidth={1.75}
 		aria-hidden="true"
-		class="mt-3 shrink-0 text-muted transition-transform duration-fast ease-standard group-hover:translate-x-0.5 group-hover:text-primary"
+		class="mt-3 shrink-0 text-muted transition-transform duration-fast ease-standard group-hover:translate-x-0.5 group-hover:text-fg"
 	/>
 </a>

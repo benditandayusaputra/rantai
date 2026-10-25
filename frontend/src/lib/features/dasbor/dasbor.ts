@@ -147,6 +147,20 @@ export function tingkatKuantil(nilai: number, ambang: number[]): number {
 }
 
 export const urutanKelas: KelasRasio[] = ['sangat_kurang', 'kurang', 'hampir_cukup', 'cukup'];
+export const isiKelasPeta: Record<KelasRasio, string> = {
+	sangat_kurang: 'fill-gap-1',
+	kurang: 'fill-gap-2',
+	hampir_cukup: 'fill-gap-3',
+	cukup: 'fill-gap-4',
+	tidak_ada_data: 'fill-sunken'
+};
+export const kotakKelasPeta: Record<KelasRasio, string> = {
+	sangat_kurang: 'bg-gap-1',
+	kurang: 'bg-gap-2',
+	hampir_cukup: 'bg-gap-3',
+	cukup: 'bg-gap-4',
+	tidak_ada_data: 'border-ctrl border-dashed border-line-strong bg-sunken'
+};
 export const kelasKurang: KelasRasio[] = ['sangat_kurang', 'kurang'];
 export const kelasCukup: KelasRasio[] = ['hampir_cukup', 'cukup'];
 

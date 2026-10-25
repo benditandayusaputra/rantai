@@ -22,7 +22,7 @@
 	let { lapisan, tema, paket, sekolah, laporan, terpilih }: Props = $props();
 
 	const kelasTabel = 'w-full min-w-max text-small';
-	const kelasKepala = 'bg-sunken text-caption uppercase';
+	const kelasKepala = 'bg-sunken text-caption font-semibold';
 	const angkaSel = (a: Parameters<typeof tampilkanAngka>[0] | null) =>
 		a ? tampilkanAngka(a).nilai : '';
 </script>

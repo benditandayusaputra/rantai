@@ -61,7 +61,7 @@
 			<div class="max-h-96 overflow-auto rounded-md border border-line">
 				<table class="w-full text-small">
 					<caption class="sr-only">{judul}</caption>
-					<thead class="sticky top-0 bg-sunken text-caption uppercase">
+					<thead class="sticky top-0 bg-sunken text-caption font-semibold">
 						<tr>
 							{#each kolom as judulKolom, i (judulKolom)}
 								<th scope="col" class="p-3 {i === 0 ? 'text-left' : 'text-right'}">{judulKolom}</th>

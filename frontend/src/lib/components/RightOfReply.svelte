@@ -32,7 +32,7 @@
 					: ''}
 			</p>
 		</div>
-		<blockquote class="whitespace-pre-line font-serif text-body-lg">{hakJawab.isi}</blockquote>
+		<blockquote class="whitespace-pre-line font-heading text-body-lg">{hakJawab.isi}</blockquote>
 		{#if hakJawab.tautan_dokumen}
 			<a
 				href={hakJawab.tautan_dokumen}

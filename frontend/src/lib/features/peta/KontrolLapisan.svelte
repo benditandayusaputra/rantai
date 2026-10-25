@@ -9,7 +9,7 @@
 
 <fieldset>
 	<legend class="flex items-center gap-2 text-small font-bold">
-		<Layers size={16} strokeWidth={1.75} aria-hidden="true" class="text-primary" />
+		<Layers size={16} strokeWidth={1.75} aria-hidden="true" class="text-muted" />
 		{t('map.layers')}
 	</legend>
 	<div class="mt-2 flex flex-col">

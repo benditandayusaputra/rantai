@@ -59,6 +59,8 @@ export default {
 					3: { DEFAULT: v('gap-3'), on: v('gap-3-on') },
 					4: { DEFAULT: v('gap-4'), on: v('gap-4-on') }
 				},
+				foto: { DEFAULT: v('photo-ink'), on: v('on-photo') },
+				chart: { DEFAULT: v('chart'), 2: v('chart-2'), on: v('on-chart') },
 				map: { DEFAULT: v('map'), road: v('map-road'), water: v('map-water'), park: v('map-park') },
 				skel: { DEFAULT: v('skel'), hi: v('skel-hi') },
 				illu: {
@@ -70,36 +72,36 @@ export default {
 			},
 			fontFamily: {
 				sans: [v('font-sans')],
-				serif: [v('font-serif')],
+				heading: [v('font-heading')],
 				mono: [v('font-mono')]
 			},
 			fontSize: {
-				display: ['34px', { lineHeight: '40px', letterSpacing: '-0.015em', fontWeight: '500' }],
-				'display-lg': [
-					'60px',
-					{ lineHeight: '64px', letterSpacing: '-0.015em', fontWeight: '500' }
-				],
-				h1: ['28px', { lineHeight: '34px', letterSpacing: '-0.01em', fontWeight: '500' }],
-				'h1-lg': ['44px', { lineHeight: '50px', letterSpacing: '-0.01em', fontWeight: '500' }],
-				h2: ['22px', { lineHeight: '28px', letterSpacing: '-0.01em', fontWeight: '700' }],
-				'h2-lg': ['30px', { lineHeight: '36px', letterSpacing: '-0.01em', fontWeight: '700' }],
-				h3: ['18px', { lineHeight: '24px', fontWeight: '700' }],
-				'h3-lg': ['22px', { lineHeight: '28px', fontWeight: '700' }],
-				'body-lg': ['17px', { lineHeight: '26px' }],
-				'body-lg-lg': ['18px', { lineHeight: '28px' }],
-				body: ['16px', { lineHeight: '24px' }],
-				small: ['14px', { lineHeight: '20px' }],
-				caption: ['12px', { lineHeight: '16px', fontWeight: '500' }],
-				overline: ['12px', { lineHeight: '16px', letterSpacing: '0.08em', fontWeight: '700' }],
-				'num-xl': ['44px', { lineHeight: '48px', letterSpacing: '-0.03em', fontWeight: '700' }],
-				'num-xl-lg': ['72px', { lineHeight: '72px', letterSpacing: '-0.03em', fontWeight: '700' }],
-				'num-lg': ['30px', { lineHeight: '36px', letterSpacing: '-0.02em', fontWeight: '700' }],
-				'num-lg-lg': ['44px', { lineHeight: '48px', letterSpacing: '-0.02em', fontWeight: '700' }],
-				'num-md': ['20px', { lineHeight: '26px', letterSpacing: '-0.01em', fontWeight: '600' }],
-				'num-md-lg': ['24px', { lineHeight: '30px', letterSpacing: '-0.01em', fontWeight: '600' }],
-				mono: ['13px', { lineHeight: '20px' }]
+				display: ['30px', { lineHeight: '36px', letterSpacing: '-0.03em', fontWeight: '700' }],
+				'display-lg': ['40px', { lineHeight: '48px', letterSpacing: '-0.03em', fontWeight: '700' }],
+				h1: ['26px', { lineHeight: '34px', letterSpacing: '-0.02em', fontWeight: '700' }],
+				'h1-lg': ['32px', { lineHeight: '42px', letterSpacing: '-0.025em', fontWeight: '700' }],
+				h2: ['22px', { lineHeight: '30px', letterSpacing: '-0.02em', fontWeight: '700' }],
+				'h2-lg': ['24px', { lineHeight: '32px', letterSpacing: '-0.025em', fontWeight: '700' }],
+				h3: ['18px', { lineHeight: '26px', letterSpacing: '-0.01em', fontWeight: '700' }],
+				'h3-lg': ['20px', { lineHeight: '28px', letterSpacing: '-0.015em', fontWeight: '700' }],
+				'body-lg': ['16px', { lineHeight: '26px' }],
+				'body-lg-lg': ['17px', { lineHeight: '28px' }],
+				body: ['16px', { lineHeight: '26px' }],
+				small: ['14px', { lineHeight: '21px' }],
+				caption: ['12px', { lineHeight: '18px', fontWeight: '500' }],
+				overline: ['12px', { lineHeight: '18px', fontWeight: '600' }],
+				'num-xl': ['32px', { lineHeight: '36px', letterSpacing: '-0.04em', fontWeight: '700' }],
+				'num-xl-lg': ['36px', { lineHeight: '40px', letterSpacing: '-0.04em', fontWeight: '700' }],
+				'num-lg': ['26px', { lineHeight: '32px', letterSpacing: '-0.03em', fontWeight: '700' }],
+				'num-lg-lg': ['30px', { lineHeight: '36px', letterSpacing: '-0.03em', fontWeight: '700' }],
+				'num-md': ['20px', { lineHeight: '26px', letterSpacing: '-0.02em', fontWeight: '700' }],
+				'num-md-lg': ['22px', { lineHeight: '28px', letterSpacing: '-0.02em', fontWeight: '700' }],
+				mono: ['13px', { lineHeight: '20px' }],
+				merek: ['28px', { lineHeight: '1', letterSpacing: '-0.05em', fontWeight: '800' }],
+				'merek-lg': ['34px', { lineHeight: '1', letterSpacing: '-0.05em', fontWeight: '800' }]
 			},
 			spacing: {
+				0.75: '3px',
 				5.5: '22px',
 				6.5: '26px',
 				7.5: '30px',
@@ -113,14 +115,15 @@ export default {
 				66: '264px'
 			},
 			height: {
-				peta: 'calc(100dvh - 72px)',
+				kepala: '83px',
+				peta: 'calc(100dvh - 83px)',
 				'peta-ponsel': 'calc(100dvh - 128px)'
 			},
 			width: {
 				'panel-tanya': '440px'
 			},
 			maxWidth: {
-				content: '1296px',
+				content: '1316px',
 				prose: '720px',
 				chat: '860px',
 				form: '460px'
@@ -129,12 +132,13 @@ export default {
 				xs: v('r-xs'),
 				sm: v('r-sm'),
 				md: v('r-md'),
+				group: v('r-group'),
 				lg: v('r-lg'),
 				xl: v('r-xl'),
 				pill: v('r-pill')
 			},
 			borderWidth: {
-				ctrl: '1.5px',
+				ctrl: '1px',
 				focus: '2px',
 				link: '3px'
 			},
@@ -146,8 +150,8 @@ export default {
 			},
 			transitionDuration: {
 				instant: '80ms',
-				fast: '140ms',
-				base: '220ms',
+				fast: '160ms',
+				base: '160ms',
 				enter: '320ms'
 			},
 			transitionTimingFunction: {
@@ -166,7 +170,7 @@ export default {
 				tooltip: '700',
 				ribbon: '800'
 			},
-			minHeight: { touch: '44px' },
+			minHeight: { touch: '44px', foto: '320px' },
 			minWidth: { touch: '44px' },
 			keyframes: {
 				shimmer: {

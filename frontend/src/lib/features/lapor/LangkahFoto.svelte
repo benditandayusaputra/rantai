@@ -36,7 +36,7 @@
 </script>
 
 <div class="flex flex-col gap-4">
-	<h1 class="text-balance font-serif text-h1">{t('report.s3.title')}</h1>
+	<h1 class="text-balance font-heading text-h1">{t('report.s3.title')}</h1>
 	<PhotoGrid
 		id="foto-bukti"
 		photos={draf.foto.map((f) => ({ id: f.id, src: f.pratinjau, takenAt: f.diambilPada }))}

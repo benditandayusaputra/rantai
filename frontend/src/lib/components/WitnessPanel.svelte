@@ -25,7 +25,7 @@
 		{#each Array.from({ length: needed }, (_, i) => i) as urutan (urutan)}
 			<span
 				class="h-2 flex-1 rounded-pill {urutan < count
-					? 'bg-primary'
+					? 'bg-fg'
 					: 'border-ctrl border-dotted border-line-strong'}"
 			></span>
 		{/each}

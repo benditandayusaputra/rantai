@@ -6,7 +6,7 @@
 <div
 	role="group"
 	aria-label={t('lang.label')}
-	class="inline-flex shrink-0 rounded-pill border border-line bg-raised p-0.5"
+	class="inline-flex shrink-0 rounded-md border border-line bg-surface p-0.5"
 >
 	{#each bahasaTersedia as bahasa (bahasa)}
 		<a
@@ -15,7 +15,7 @@
 			lang={bahasa}
 			aria-current={bahasa === bahasaAktif ? 'true' : undefined}
 			title={t(`lang.${bahasa}`)}
-			class="inline-flex h-10 min-w-10 items-center justify-center rounded-pill px-2 text-caption font-bold uppercase text-muted transition-colors duration-fast ease-standard hover:text-fg aria-[current=true]:bg-secondary aria-[current=true]:text-secondary-on"
+			class="inline-flex h-9 min-w-9 items-center justify-center rounded-xs px-2 text-caption font-bold uppercase text-muted transition-colors duration-fast ease-standard hover:text-fg aria-[current=true]:bg-secondary aria-[current=true]:text-secondary-on"
 		>
 			<span aria-hidden="true">{bahasa}</span>
 			<span class="sr-only">{t(`lang.${bahasa}`)}</span>

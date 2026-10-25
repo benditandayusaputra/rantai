@@ -30,7 +30,7 @@
 		{#if isTabel}
 			<table class="w-full text-small">
 				<caption class="sr-only">{t('pen.chartTitle')}</caption>
-				<thead class="bg-sunken text-caption uppercase">
+				<thead class="bg-sunken text-caption font-semibold">
 					<tr>
 						<th scope="col" class="p-3 text-left">{t('pen.school.type')}</th>
 						<th scope="col" class="p-3 text-right">{t('pen.value')}</th>
@@ -63,8 +63,8 @@
 									class="h-full rounded-sm {item.kunci === 'pen.graduates'
 										? 'bg-fg'
 										: item.angka.label === 'resmi'
-											? 'bg-primary'
-											: 'border-ctrl border-dashed border-primary bg-secondary'}"
+											? 'bg-chart-2'
+											: 'border-ctrl border-dashed border-chart-2 bg-secondary'}"
 									style="width: {persenLebar(item.angka.nilai, maksimum)}%"
 								></div>
 							</div>

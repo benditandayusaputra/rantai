@@ -74,7 +74,7 @@
 				<div class="max-h-96 overflow-auto rounded-md border border-line">
 					<table class="w-full text-small">
 						<caption class="sr-only">{t('spend.title')}</caption>
-						<thead class="sticky top-0 bg-sunken text-caption uppercase">
+						<thead class="sticky top-0 bg-sunken text-caption font-semibold">
 							<tr>
 								<th scope="col" class="p-3 text-left">{t('spend.col.area')}</th>
 								<th scope="col" class="p-3 text-right">{t('spend.col.ratio')}</th>

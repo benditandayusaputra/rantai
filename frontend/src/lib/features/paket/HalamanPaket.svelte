@@ -51,7 +51,7 @@
 		].filter((tautan) => tautan.href)
 	);
 	const kelasPil =
-		'inline-flex items-center gap-1.5 rounded-pill border border-line bg-raised px-3 py-1';
+		'inline-flex items-center gap-1.5 rounded-xs border border-line bg-raised px-3 py-1';
 </script>
 
 <article class="wrap flex flex-col gap-6 pt-6 lg:gap-8 lg:pt-10">
@@ -64,7 +64,7 @@
 		<div class="flex flex-col gap-4 p-5 md:p-6 lg:p-8">
 			<div class="flex flex-wrap items-center gap-2 text-small text-muted">
 				<span
-					class="inline-flex items-center gap-1.5 rounded-pill bg-secondary px-3 py-1 font-semibold text-secondary-on"
+					class="inline-flex items-center gap-1.5 rounded-xs bg-secondary px-3 py-1 font-semibold text-secondary-on"
 				>
 					<IkonSektor size={16} strokeWidth={1.75} aria-hidden="true" />
 					{t(kunciSektor[paket.sektor])}
@@ -137,7 +137,7 @@
 							</li>
 						{/each}
 					</ul>
-					<p class="font-serif italic text-muted">{t('signal.disclaimer')}</p>
+					<p class="font-heading italic text-muted">{t('signal.disclaimer')}</p>
 				{:else}
 					<p
 						class="flex items-center gap-2 rounded-lg border border-dashed border-line-strong p-4 text-small text-muted"

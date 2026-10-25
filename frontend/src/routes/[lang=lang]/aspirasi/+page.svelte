@@ -61,7 +61,7 @@
 				<div class="card flex flex-col gap-6 self-start p-5 lg:sticky lg:top-24 lg:col-span-4">
 					<div class="flex flex-col gap-3">
 						<h2 id="judul-masalah" class="t-h3 flex items-center gap-2">
-							<ListChecks size={20} strokeWidth={1.75} aria-hidden="true" class="text-primary" />
+							<ListChecks size={20} strokeWidth={1.75} aria-hidden="true" class="text-muted" />
 							{t('acc.issueTitle')}
 						</h2>
 						<ChoiceChips
@@ -76,7 +76,7 @@
 					</div>
 					<div class="flex flex-col gap-3">
 						<h2 id="judul-bahasa" class="t-h3 flex items-center gap-2">
-							<Globe size={20} strokeWidth={1.75} aria-hidden="true" class="text-primary" />
+							<Globe size={20} strokeWidth={1.75} aria-hidden="true" class="text-muted" />
 							{t('packet.docLang')}
 						</h2>
 						<ChoiceChips

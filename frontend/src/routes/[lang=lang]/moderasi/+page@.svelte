@@ -180,7 +180,7 @@
 			</ul>
 			<p class="mt-auto flex items-center gap-3 border-t border-line pt-4 text-small">
 				<span
-					class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-pill bg-primary font-bold text-primary-on"
+					class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-pill border border-line-strong bg-sunken font-semibold text-fg"
 					>{inisial(sesi.pengguna)}</span
 				>
 				<span class="min-w-0 truncate font-semibold"

@@ -75,7 +75,7 @@
 			return { kelas: 'fill-sunken', keterangan: t('dash.money.map.none') };
 		}
 		return {
-			kelas: 'fill-primary',
+			kelas: 'fill-chart',
 			opasitas: tingkatOpasitas[tingkat],
 			keterangan: `${rupiah(p.nilai)} · ${paket(p)}`
 		};
@@ -222,7 +222,7 @@
 						{#each legendaNilai as tingkat (tingkat.label)}
 							<li class="flex items-center gap-2 text-caption">
 								<span
-									class="h-3 w-5 rounded-xs bg-primary"
+									class="h-3 w-5 rounded-xs bg-chart"
 									style:opacity={tingkat.opasitas}
 									aria-hidden="true"
 								></span>

@@ -64,7 +64,7 @@
 <section aria-labelledby="judul-daftar-paket" class="flex flex-col gap-4">
 	<div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
 		<h3 id="judul-daftar-paket" class="flex items-center gap-2 text-h3 font-bold">
-			<ListFilter size={20} strokeWidth={1.75} aria-hidden="true" class="text-primary" />
+			<ListFilter size={20} strokeWidth={1.75} aria-hidden="true" class="text-muted" />
 			{t('money.listTitle')}
 		</h3>
 		<div class="grid grid-cols-2 gap-3 md:flex md:w-auto">

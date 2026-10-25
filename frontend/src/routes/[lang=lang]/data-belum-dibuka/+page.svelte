@@ -116,7 +116,7 @@
 						</div>
 						<div class="flex flex-col gap-3">
 							<h3 id="judul-bahasa-surat" class="t-h3 flex items-center gap-2">
-								<Globe size={20} strokeWidth={1.75} aria-hidden="true" class="text-primary" />
+								<Globe size={20} strokeWidth={1.75} aria-hidden="true" class="text-muted" />
 								{t('packet.docLang')}
 							</h3>
 							<ChoiceChips

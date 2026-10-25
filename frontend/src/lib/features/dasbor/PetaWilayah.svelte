@@ -8,11 +8,13 @@
 		isiDari: (kode: string) => IsiArea;
 		judul: string;
 		legenda: Snippet;
+		terpilih?: string;
 	}
 
-	let { fitur, isiDari, judul, legenda }: Props = $props();
+	let { fitur, isiDari, judul, legenda, terpilih }: Props = $props();
 
 	const susunan = $derived(susunPeta(fitur));
+	const areaTerpilih = $derived(susunan.area.find((area) => area.kode === terpilih));
 	let disorot = $state<AreaPeta | null>(null);
 </script>
 
@@ -56,6 +58,16 @@
 					/>
 				</a>
 			{/each}
+			{#if areaTerpilih}
+				<path
+					d={areaTerpilih.d}
+					class="pointer-events-none fill-primary stroke-primary"
+					fill-opacity="0.12"
+					stroke-width="2"
+					stroke-dasharray="5 3"
+					vector-effect="non-scaling-stroke"
+				/>
+			{/if}
 			{#if disorot}
 				<path
 					d={disorot.d}

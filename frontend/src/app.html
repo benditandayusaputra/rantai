@@ -4,16 +4,14 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="icon" href="%sveltekit.assets%/favicon.svg" />
+		<meta name="theme-color" content="#fafaf8" />
 		<script>
 			(function () {
-				var pref = 'system';
+				var tema = 'light';
 				try {
-					pref = localStorage.getItem('rantai-theme') || 'system';
+					tema = localStorage.getItem('rantai-theme') === 'dark' ? 'dark' : 'light';
 				} catch (e) {}
-				var dark =
-					pref === 'dark' ||
-					(pref === 'system' && matchMedia('(prefers-color-scheme: dark)').matches);
-				document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+				document.documentElement.setAttribute('data-theme', tema);
 			})();
 		</script>
 		%sveltekit.head%

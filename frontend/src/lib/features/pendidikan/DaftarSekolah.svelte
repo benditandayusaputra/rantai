@@ -15,7 +15,7 @@
 	<TableScroll label={t('pen.schoolsHeading')}>
 		<table class="w-full min-w-max text-small">
 			<caption class="sr-only">{t('pen.schoolsHeading')}</caption>
-			<thead class="bg-sunken text-caption uppercase">
+			<thead class="bg-sunken text-caption font-semibold">
 				<tr>
 					<th scope="col" class="sticky left-0 bg-sunken p-3 text-left">{t('pen.school.name')}</th>
 					<th scope="col" class="p-3 text-left">{t('pen.school.type')}</th>

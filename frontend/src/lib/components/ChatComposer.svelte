@@ -54,7 +54,7 @@
 							size={18}
 							strokeWidth={1.75}
 							aria-hidden="true"
-							class="mt-0.5 shrink-0 text-primary"
+							class="mt-0.5 shrink-0 text-muted"
 						/>{saran}</button
 					>
 				</li>
@@ -68,7 +68,7 @@
 		{#if context}
 			<div class="flex px-3 pt-3">
 				<span
-					class="inline-flex h-8 items-center gap-1 rounded-pill bg-secondary pl-3 text-small text-secondary-on"
+					class="inline-flex h-8 items-center gap-1 rounded-md bg-secondary pl-3 text-small text-secondary-on"
 				>
 					<MapPin size={16} strokeWidth={1.75} aria-hidden="true" />
 					{t('ask.context', { area: context.label })}

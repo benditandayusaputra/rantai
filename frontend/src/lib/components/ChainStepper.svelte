@@ -33,8 +33,8 @@
 	const tampilanStatus: Record<StatusMata, { ikon: typeof Camera; mata: string; teks: string }> = {
 		ada: {
 			ikon: Check,
-			mata: 'border-solid border-primary bg-secondary text-primary',
-			teks: 'text-primary'
+			mata: 'border-solid border-fg bg-secondary text-fg',
+			teks: 'text-fg'
 		},
 		putus: {
 			ikon: Unlink2,
@@ -75,7 +75,7 @@
 						? 'border-dashed border-attn-fill opacity-60'
 						: rantai[indeks + 1]?.status === 'menunggu'
 							? 'border-dotted border-line-strong'
-							: 'border-primary'}"
+							: 'border-fg'}"
 				></span>
 			{/if}
 			<span
@@ -90,7 +90,7 @@
 			</span>
 			<span class="flex flex-col gap-1 pt-1 lg:px-1 lg:pt-3">
 				<span class="font-bold">{t(kunciTahap[mata.kode])}</span>
-				<span class="text-caption font-bold uppercase {status.teks}"
+				<span class="text-caption font-semibold {status.teks}"
 					>{t(`chain.status.${mata.status}`)}</span
 				>
 				{#if mata.alasan}<span class="text-small text-muted">{mata.alasan}</span>{/if}

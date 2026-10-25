@@ -106,7 +106,7 @@
 
 <a
 	href="#konten"
-	class="sr-only z-tooltip rounded-md bg-primary px-4 py-3 font-bold text-primary-on focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
+	class="sr-only z-tooltip rounded-md bg-surface px-4 py-3 font-semibold text-fg shadow-2 focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
 	>{t('nav.skip')}</a
 >
 

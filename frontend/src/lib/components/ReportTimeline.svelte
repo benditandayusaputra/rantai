@@ -21,13 +21,13 @@
 				<span
 					aria-hidden="true"
 					class="absolute left-4 top-9 h-full border-l-link {events[i + 1]?.isTerjadi
-						? 'border-primary'
+						? 'border-fg'
 						: 'border-dotted border-line-strong'}"
 				></span>
 			{/if}
 			<span
 				class="relative z-raised inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-pill border-link bg-surface {peristiwa.isTerjadi
-					? 'border-primary text-primary'
+					? 'border-fg text-fg'
 					: 'border-dotted border-line-strong text-muted'}"
 			>
 				{#if peristiwa.isTerjadi}

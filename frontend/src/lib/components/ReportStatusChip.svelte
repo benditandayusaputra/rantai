@@ -20,7 +20,7 @@
 </script>
 
 <span
-	class="inline-flex min-h-8 items-center gap-1.5 rounded-pill border-ctrl px-3 text-small font-bold {tampilan.kelas}"
+	class="inline-flex min-h-8 items-center gap-1.5 rounded-xs border-ctrl px-2.5 text-small font-bold {tampilan.kelas}"
 >
 	<Ikon size={16} strokeWidth={1.75} aria-hidden="true" />{label}
 </span>

@@ -100,14 +100,14 @@
 			<div class="flex flex-col gap-6 lg:col-span-8">
 				<section aria-labelledby="judul-dipantau" class="card flex flex-col gap-4 p-5">
 					<h2 id="judul-dipantau" class="t-h3 flex items-center gap-2">
-						<MapPin size={20} strokeWidth={1.75} aria-hidden="true" class="text-primary" />
+						<MapPin size={20} strokeWidth={1.75} aria-hidden="true" class="text-muted" />
 						{t('watch.areas')}
 					</h2>
 					{#if langganan.length}
 						<ul class="flex flex-wrap gap-2">
 							{#each langganan as l (l.id)}
 								<li
-									class="inline-flex min-h-touch items-center gap-1 rounded-pill bg-secondary pl-4 pr-1 text-small font-semibold text-secondary-on"
+									class="inline-flex min-h-touch items-center gap-1 rounded-md bg-secondary pl-4 pr-1 text-small font-semibold text-secondary-on"
 								>
 									<a
 										href="/{bahasaAktif}/kecamatan/{l.kode_wilayah}"
@@ -115,7 +115,7 @@
 									>
 									<button
 										type="button"
-										class="inline-flex h-11 w-11 items-center justify-center rounded-pill hover:bg-raised"
+										class="inline-flex h-11 w-11 items-center justify-center rounded-md hover:bg-raised"
 										aria-label={t('watch.remove', { nama: l.nama_wilayah })}
 										onclick={() => hapus(l)}
 									>

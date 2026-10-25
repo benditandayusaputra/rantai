@@ -24,7 +24,7 @@
 			</div>
 			<div class="h-3 rounded-sm bg-sunken" aria-hidden="true">
 				<div
-					class="h-full rounded-sm bg-primary"
+					class="h-full rounded-sm bg-chart"
 					style:width="{persenDari(nilaiDari(p), maksimum)}%"
 				></div>
 			</div>

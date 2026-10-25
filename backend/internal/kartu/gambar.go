@@ -2,6 +2,7 @@ package kartu
 
 import (
 	"bytes"
+	_ "embed"
 	"fmt"
 	"image"
 	"image/color"
@@ -27,29 +28,34 @@ const (
 	tinggiBlok      = 220
 	jarakBlok       = 20
 	radiusBlok      = 28
+	radiusChip      = 8
+	jarakMerek      = 20
 	tebalGaris      = 3
 	pembulatanKurva = 0.5523
 	dpiLayar        = 72
 )
 
+//go:embed merek.png
+var berkasMerek []byte
+
 var (
-	warnaLatar    = color.RGBA{0xf9, 0xfa, 0xf8, 0xff}
-	warnaKartu    = color.RGBA{0xff, 0xff, 0xff, 0xff}
-	warnaGaris    = color.RGBA{0xd5, 0xda, 0xd6, 0xff}
-	warnaTeks     = color.RGBA{0x14, 0x19, 0x1c, 0xff}
-	warnaRedup    = color.RGBA{0x4e, 0x58, 0x5e, 0xff}
-	warnaPrimer   = color.RGBA{0x0f, 0x59, 0x64, 0xff}
-	warnaSekunder = color.RGBA{0xe2, 0xec, 0xeb, 0xff}
-	warnaAksen    = color.RGBA{0xe9, 0xa9, 0x3a, 0xff}
+	warnaLatar  = color.RGBA{0xfa, 0xfa, 0xf8, 0xff}
+	warnaKartu  = color.RGBA{0xff, 0xff, 0xff, 0xff}
+	warnaGaris  = color.RGBA{0xe3, 0xe5, 0xe1, 0xff}
+	warnaTeks   = color.RGBA{0x20, 0x23, 0x23, 0xff}
+	warnaRedup  = color.RGBA{0x62, 0x66, 0x64, 0xff}
+	warnaMerah  = color.RGBA{0xc6, 0x2d, 0x31, 0xff}
+	warnaGrafik = color.RGBA{0x39, 0x3f, 0x3b, 0xff}
+	warnaNetral = color.RGBA{0xef, 0xf0, 0xea, 0xff}
 )
 
 type pasanganWarna struct{ latar, teks color.RGBA }
 
 var warnaLabel = map[domain.Label]pasanganWarna{
-	domain.LabelResmi:    {warnaPrimer, warnaKartu},
-	domain.LabelProksi:   {color.RGBA{0xe5, 0xec, 0xfa, 0xff}, color.RGBA{0x25, 0x56, 0xb8, 0xff}},
-	domain.LabelEstimasi: {color.RGBA{0xe6, 0xe9, 0xe5, 0xff}, color.RGBA{0x5a, 0x63, 0x6a, 0xff}},
-	domain.LabelSimulasi: {color.RGBA{0xfb, 0xe5, 0xf1, 0xff}, color.RGBA{0x8e, 0x1b, 0x5e, 0xff}},
+	domain.LabelResmi:    {warnaGrafik, warnaKartu},
+	domain.LabelProksi:   {warnaNetral, warnaGrafik},
+	domain.LabelEstimasi: {warnaNetral, warnaRedup},
+	domain.LabelSimulasi: {color.RGBA{0xf6, 0xef, 0xe0, 0xff}, color.RGBA{0x6b, 0x4a, 0x12, 0xff}},
 }
 
 type gaya struct {
@@ -58,7 +64,7 @@ type gaya struct {
 }
 
 var (
-	gayaMerek       = gaya{true, 52}
+	gayaMerek       = gaya{true, 56}
 	gayaTagline     = gaya{false, 26}
 	gayaJudul       = gaya{true, 64}
 	gayaKota        = gaya{false, 34}
@@ -76,11 +82,13 @@ type Pembuat struct {
 	Konfigurasi Konfigurasi
 	tebal       *opentype.Font
 	biasa       *opentype.Font
+	merek       image.Image
 }
 
 type pelukis struct {
 	kanvas *image.RGBA
 	wajah  map[gaya]font.Face
+	merek  image.Image
 }
 
 func Baru(k Konfigurasi) (Pembuat, error) {
@@ -92,7 +100,11 @@ func Baru(k Konfigurasi) (Pembuat, error) {
 	if err != nil {
 		return Pembuat{}, fmt.Errorf("baca huruf biasa: %w", err)
 	}
-	return Pembuat{Konfigurasi: k, tebal: tebal, biasa: biasa}, nil
+	merek, err := png.Decode(bytes.NewReader(berkasMerek))
+	if err != nil {
+		return Pembuat{}, fmt.Errorf("baca gambar merek: %w", err)
+	}
+	return Pembuat{Konfigurasi: k, tebal: tebal, biasa: biasa, merek: merek}, nil
 }
 
 func (p Pembuat) buatWajah() (map[gaya]font.Face, error) {
@@ -119,7 +131,7 @@ func (p Pembuat) Gambar(r domain.RingkasanKecamatan, bahasa string) ([]byte, err
 	isi := susunIsi(r, p.Konfigurasi, bahasa)
 	kanvas := image.NewRGBA(image.Rect(0, 0, lebarKartu, tinggiKartu))
 	draw.Draw(kanvas, kanvas.Bounds(), image.NewUniform(warnaLatar), image.Point{}, draw.Src)
-	g := pelukis{kanvas: kanvas, wajah: wajah}
+	g := pelukis{kanvas: kanvas, wajah: wajah, merek: p.merek}
 	g.kepala(isi.Tagline)
 	y := g.judul(isi.Judul, isi.Kota)
 	for _, b := range isi.Blok {
@@ -134,11 +146,15 @@ func (p Pembuat) Gambar(r domain.RingkasanKecamatan, bahasa string) ([]byte, err
 }
 
 func (g pelukis) kepala(tagline string) {
-	g.isiBulat(image.Rect(0, 0, lebarKartu, tinggiKepala), 0, warnaPrimer)
-	g.cincin(image.Rect(tepi, 62, tepi+64, 106), warnaKartu)
-	g.cincin(image.Rect(tepi+36, 62, tepi+100, 106), warnaAksen)
-	g.tulis("rantai", gayaMerek, image.Pt(tepi+124, 104), warnaKartu)
-	g.tulis(tagline, gayaTagline, image.Pt(lebarKartu-tepi-g.lebarTeks(tagline, gayaTagline), 100), warnaSekunder)
+	g.isiBulat(image.Rect(0, 0, lebarKartu, tinggiKepala), 0, warnaKartu)
+	g.isiBulat(image.Rect(0, tinggiKepala-tebalGaris, lebarKartu, tinggiKepala), 0, warnaGaris)
+	ukuranMerek := g.merek.Bounds().Size()
+	letakMerek := image.Pt(tepi, (tinggiKepala-ukuranMerek.Y)/2)
+	draw.Draw(g.kanvas, image.Rectangle{Min: letakMerek, Max: letakMerek.Add(ukuranMerek)}, g.merek, image.Point{}, draw.Over)
+	xKata := tepi + ukuranMerek.X + jarakMerek
+	lebarKata := g.tulis("rantai", gayaMerek, image.Pt(xKata, 104), warnaTeks)
+	g.tulis(".", gayaMerek, image.Pt(xKata+lebarKata, 104), warnaMerah)
+	g.tulis(tagline, gayaTagline, image.Pt(lebarKartu-tepi-g.lebarTeks(tagline, gayaTagline), 100), warnaRedup)
 }
 
 func (g pelukis) judul(judul, kota string) int {
@@ -170,7 +186,7 @@ func (g pelukis) blok(b blok, label map[domain.Label]string, y int) int {
 
 func (g pelukis) chip(teks string, warna pasanganWarna, kiriAtas image.Point) int {
 	lebar := g.lebarTeks(teks, gayaChip) + 32
-	g.isiBulat(image.Rectangle{Min: kiriAtas, Max: kiriAtas.Add(image.Pt(lebar, 38))}, 19, warna.latar)
+	g.isiBulat(image.Rectangle{Min: kiriAtas, Max: kiriAtas.Add(image.Pt(lebar, 38))}, radiusChip, warna.latar)
 	g.tulis(teks, gayaChip, kiriAtas.Add(image.Pt(16, 27)), warna.teks)
 	return lebar
 }
@@ -178,13 +194,7 @@ func (g pelukis) chip(teks string, warna pasanganWarna, kiriAtas image.Point) in
 func (g pelukis) kaki(ajakan, tautan string) {
 	g.isiBulat(image.Rect(tepi, 1190, lebarKartu-tepi, 1192), 0, warnaGaris)
 	g.tulis(ajakan, gayaJudulBlok, image.Pt(tepi, 1246), warnaRedup)
-	g.tulis(tautan, gayaTautan, image.Pt(tepi, 1296), warnaPrimer)
-}
-
-func (g pelukis) cincin(kotak image.Rectangle, warna color.RGBA) {
-	radius := kotak.Dy() / 2
-	g.isiBulat(kotak, radius, warna)
-	g.isiBulat(kotak.Inset(9), radius-9, warnaPrimer)
+	g.tulis(tautan, gayaTautan, image.Pt(tepi, 1296), warnaTeks)
 }
 
 func (g pelukis) lebarTeks(teks string, h gaya) int {

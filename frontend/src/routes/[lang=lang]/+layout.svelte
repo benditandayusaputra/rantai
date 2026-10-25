@@ -38,7 +38,7 @@
 
 <a
 	href="#konten"
-	class="sr-only z-tooltip rounded-md bg-primary px-4 py-3 font-bold text-primary-on focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
+	class="sr-only z-tooltip rounded-md bg-surface px-4 py-3 font-semibold text-fg shadow-2 focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
 	>{t('nav.skip')}</a
 >
 
@@ -46,28 +46,27 @@
 	class="flex min-h-dvh flex-col max-lg:pb-[calc(theme(spacing.16)+env(safe-area-inset-bottom))]"
 >
 	<header class="glass sticky top-0 z-sticky border-b border-line">
-		<div class="wrap flex h-16 items-center justify-between gap-4 lg:h-18">
+		<div class="wrap flex h-16 items-center gap-6 md:h-18 lg:h-kepala xl:gap-10">
 			<Logo />
-			<nav aria-label={t('nav.main')} class="hidden lg:block">
-				<ul class="flex items-center gap-1">
+			<nav aria-label={t('nav.main')} class="hidden self-stretch lg:mx-auto lg:block">
+				<ul class="flex h-full items-stretch gap-6 xl:gap-7.5">
 					{#each tujuanUtama as tujuan (tujuan.kunci)}
-						{@const Ikon = tujuan.ikon}
-						<li>
+						<li class="flex">
 							<a
 								href="/{bahasaAktif}{tujuan.path}"
 								aria-current={aktif === tujuan.kunci ? 'page' : undefined}
-								class="inline-flex min-h-touch items-center gap-2 rounded-pill px-3.5 text-small font-semibold text-muted transition-colors duration-fast ease-standard hover:bg-sunken hover:text-fg aria-[current=page]:bg-secondary aria-[current=page]:text-secondary-on"
+								class="relative inline-flex items-center whitespace-nowrap text-small font-medium text-fg transition-colors duration-fast ease-standard after:absolute after:inset-x-0 after:bottom-0 after:h-0.75 after:bg-transparent hover:text-primary aria-[current=page]:font-semibold aria-[current=page]:after:bg-primary"
 							>
-								<Ikon size={18} strokeWidth={1.75} aria-hidden="true" />
 								{t(tujuan.label)}
 							</a>
 						</li>
 					{/each}
 				</ul>
 			</nav>
-			<div class="flex items-center gap-2">
+			<div class="ml-auto flex items-center gap-2 lg:ml-0">
 				<PengalihTema class="max-md:hidden" />
 				<PengalihBahasa />
+				<span class="mx-1 hidden h-6 w-px bg-line md:block" aria-hidden="true"></span>
 				{#if sesi}
 					{#if isAkunPanel(sesi.pengguna.peran)}
 						<a href="/{bahasaAktif}/panel" class="btn btn-ghost btn-sm hidden lg:inline-flex">
@@ -77,7 +76,7 @@
 					{/if}
 					<span
 						title={t('auth.account', { email: sesi.pengguna.email })}
-						class="inline-flex h-10 w-10 items-center justify-center rounded-pill bg-primary text-small font-bold text-primary-on"
+						class="inline-flex h-9 w-9 items-center justify-center rounded-pill border border-line-strong bg-sunken text-small font-semibold text-fg"
 					>
 						<span aria-hidden="true">{inisial(sesi.pengguna)}</span>
 						<span class="sr-only">{t('auth.account', { email: sesi.pengguna.email })}</span>
@@ -92,7 +91,7 @@
 						<LogOut size={20} strokeWidth={1.75} aria-hidden="true" />
 					</button>
 				{:else}
-					<a href={tautanMasuk} class="btn btn-primary btn-sm">
+					<a href={tautanMasuk} class="btn btn-outline btn-sm">
 						<LogIn size={18} strokeWidth={1.75} aria-hidden="true" />
 						{t('action.signIn')}
 					</a>
@@ -119,14 +118,10 @@
 				<a
 					href="/{bahasaAktif}{tujuan.path}"
 					aria-current={aktif === tujuan.kunci ? 'page' : undefined}
-					class="group flex h-full flex-col items-center justify-center gap-1 text-caption text-muted aria-[current=page]:font-bold aria-[current=page]:text-fg"
+					class="relative flex h-full flex-col items-center justify-center gap-1 text-caption text-muted before:absolute before:inset-x-3 before:top-0 before:h-0.75 before:bg-transparent aria-[current=page]:font-semibold aria-[current=page]:text-fg aria-[current=page]:before:bg-primary"
 				>
-					<span
-						class="inline-flex h-7.5 w-14 items-center justify-center rounded-pill transition-colors duration-fast ease-standard group-aria-[current=page]:bg-secondary group-aria-[current=page]:text-secondary-on"
-					>
-						<Ikon size={20} strokeWidth={1.75} aria-hidden="true" />
-					</span>
-					<span class="truncate">{t(tujuan.labelPonsel ?? tujuan.label)}</span>
+					<Ikon size={20} strokeWidth={1.75} aria-hidden="true" />
+					<span class="max-w-full truncate px-1">{t(tujuan.labelPonsel ?? tujuan.label)}</span>
 				</a>
 			</li>
 		{/each}

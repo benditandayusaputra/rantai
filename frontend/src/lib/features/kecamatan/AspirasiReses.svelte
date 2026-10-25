@@ -33,7 +33,7 @@
 
 <section aria-labelledby="judul-reses" class="flex flex-col gap-4">
 	<h3 id="judul-reses" class="flex items-center gap-2 text-h3 font-bold">
-		<Megaphone size={20} strokeWidth={1.75} aria-hidden="true" class="text-primary" />
+		<Megaphone size={20} strokeWidth={1.75} aria-hidden="true" class="text-muted" />
 		{t('reses.title')}
 	</h3>
 	<p class="flex gap-2 rounded-md bg-info-bg p-3 text-small">
@@ -61,7 +61,7 @@
 						<li class="card flex flex-col gap-2 p-4">
 							<p class="flex flex-wrap items-center gap-2 text-small">
 								<span
-									class="rounded-xs bg-secondary px-2 py-0.5 text-caption font-bold uppercase text-secondary-on"
+									class="rounded-xs bg-secondary px-2 py-0.5 text-caption font-semibold text-secondary-on"
 									>{a.bidang}</span
 								>
 								<span class="inline-flex items-center gap-1 text-muted">

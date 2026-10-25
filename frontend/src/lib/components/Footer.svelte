@@ -5,8 +5,8 @@
 	import PengalihTema from './PengalihTema.svelte';
 </script>
 
-<footer class="mt-16 border-t border-line bg-surface">
-	<div class="wrap grid gap-10 py-12 md:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr]">
+<footer class="mt-16 border-t border-line bg-sunken lg:mt-20">
+	<div class="wrap grid gap-10 py-10 md:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr] lg:py-12">
 		<div class="flex max-w-sm flex-col gap-3">
 			<Logo />
 			<p class="text-small text-muted">{t('footer.tagline')}</p>
@@ -15,15 +15,13 @@
 		{#each kelompokKaki as kelompok (kelompok.judul)}
 			<nav aria-label={t(kelompok.judul)}>
 				<p class="t-over">{t(kelompok.judul)}</p>
-				<ul class="mt-3 flex flex-col">
+				<ul class="mt-2 flex flex-col">
 					{#each kelompok.tautan as tautan (tautan.path)}
-						{@const Ikon = tautan.ikon}
 						<li>
 							<a
 								href="/{bahasaAktif}{tautan.path}"
-								class="inline-flex min-h-touch items-center gap-2 text-small font-semibold text-muted hover:text-fg"
+								class="inline-flex min-h-touch items-center text-small font-medium text-fg underline-offset-4 hover:underline"
 							>
-								<Ikon size={16} strokeWidth={1.75} aria-hidden="true" />
 								{t(tautan.label)}
 							</a>
 						</li>

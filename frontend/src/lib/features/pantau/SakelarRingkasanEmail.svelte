@@ -37,7 +37,7 @@
 {#if isSiap}
 	<section class="card flex flex-col gap-2 p-5">
 		<h2 class="flex items-center gap-2 font-bold">
-			<Mail size={18} strokeWidth={1.75} aria-hidden="true" class="text-primary" />
+			<Mail size={18} strokeWidth={1.75} aria-hidden="true" class="text-muted" />
 			{t('watch.email.title')}
 		</h2>
 		<label class="flex min-h-touch cursor-pointer items-center justify-between gap-3">

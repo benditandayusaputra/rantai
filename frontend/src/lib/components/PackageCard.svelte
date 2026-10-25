@@ -36,7 +36,7 @@
 				size={18}
 				strokeWidth={1.75}
 				aria-hidden="true"
-				class="ml-auto mt-0.5 shrink-0 text-muted transition-transform duration-fast ease-standard group-hover:translate-x-1 group-hover:text-primary"
+				class="ml-auto mt-0.5 shrink-0 text-muted transition-transform duration-fast ease-standard group-hover:translate-x-1 group-hover:text-fg"
 			/>
 		</span>
 		{#if tampil && nilai}

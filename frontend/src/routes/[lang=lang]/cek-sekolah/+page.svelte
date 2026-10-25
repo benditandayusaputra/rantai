@@ -116,7 +116,7 @@
 					<h2 id="judul-tekanan" class="t-h3">{t('check.pressure', { km })}</h2>
 					{#if rasio}
 						{@const pecahan = pecahanTekanan(rasio.nilai)}
-						<p class="font-serif text-h2 lg:text-h2-lg">{t('services.sentence', pecahan)}</p>
+						<p class="font-heading text-h2 lg:text-h2-lg">{t('services.sentence', pecahan)}</p>
 						<div class="self-start">
 							<ProvenanceBadge angka={rasio} nilai={tampilkanAngka(rasio).nilai} />
 						</div>
@@ -142,7 +142,7 @@
 			<div class="flex flex-col gap-8 lg:col-span-5">
 				<section class="flex flex-col gap-3" aria-labelledby="judul-negeri">
 					<h2 id="judul-negeri" class="flex items-center gap-2 text-h3 font-bold">
-						<School size={20} strokeWidth={1.75} aria-hidden="true" class="text-primary" />
+						<School size={20} strokeWidth={1.75} aria-hidden="true" class="text-muted" />
 						{t('check.nearest')}
 					</h2>
 					{#if sekitar.smp_negeri.length}
@@ -158,7 +158,7 @@
 				{#if alternatif.length}
 					<section class="flex flex-col gap-3" aria-labelledby="judul-alternatif">
 						<h2 id="judul-alternatif" class="flex items-center gap-2 text-h3 font-bold">
-							<Sparkles size={20} strokeWidth={1.75} aria-hidden="true" class="text-primary" />
+							<Sparkles size={20} strokeWidth={1.75} aria-hidden="true" class="text-muted" />
 							{t('check.alternatives')}
 						</h2>
 						<ul class="flex flex-col gap-2">

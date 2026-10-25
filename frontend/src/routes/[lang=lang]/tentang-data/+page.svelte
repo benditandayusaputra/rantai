@@ -114,7 +114,7 @@
 						<TableScroll label={t('about.sources')}>
 							<table class="w-full min-w-max text-small">
 								<caption class="sr-only">{t('about.sources')}</caption>
-								<thead class="bg-sunken text-caption uppercase">
+								<thead class="bg-sunken text-caption font-semibold">
 									<tr>
 										<th scope="col" class="sticky left-0 bg-sunken p-3 text-left"
 											>{t('about.col.source')}</th
@@ -189,7 +189,7 @@
 					</div>
 				{/each}
 			</dl>
-			<p class="font-serif italic text-muted">{t('signal.disclaimer')}</p>
+			<p class="font-heading italic text-muted">{t('signal.disclaimer')}</p>
 		</section>
 
 		<section id="media" aria-labelledby="judul-media" class={kelasBagian}>
@@ -201,7 +201,7 @@
 					<ul class="flex flex-wrap gap-2">
 						{#each hasil.data.media as media (media.domain)}
 							<li
-								class="inline-flex items-center gap-2 rounded-pill bg-secondary px-3 py-1 text-small text-secondary-on"
+								class="inline-flex items-center gap-2 rounded-xs bg-secondary px-3 py-1 text-small text-secondary-on"
 							>
 								<Newspaper size={14} strokeWidth={1.75} aria-hidden="true" />
 								{media.nama} <span class="text-caption">({media.domain})</span>

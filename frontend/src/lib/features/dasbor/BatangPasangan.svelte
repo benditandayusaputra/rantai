@@ -14,7 +14,7 @@
 	const maksimum = $derived(Math.max(0, ...daftar.flatMap((r) => [r.kebutuhan, r.kapasitas])));
 	const ukuran = [
 		{ kunci: 'kebutuhan', label: t('dash.svc.graduates'), warna: 'bg-fg' },
-		{ kunci: 'kapasitas', label: t('dash.svc.seats'), warna: 'bg-primary' }
+		{ kunci: 'kapasitas', label: t('dash.svc.seats'), warna: 'bg-chart-2' }
 	] as const;
 </script>
 

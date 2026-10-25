@@ -77,7 +77,7 @@
 			{laporan.paket_nama ? t('mod.project', { nama: laporan.paket_nama }) : t('mod.noProject')}
 		</p>
 		{#if laporan.catatan}
-			<blockquote class="border-l-link border-line-strong pl-3 font-serif">
+			<blockquote class="border-l-link border-line-strong pl-3 font-heading">
 				{laporan.catatan}
 			</blockquote>
 		{/if}

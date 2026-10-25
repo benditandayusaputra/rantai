@@ -6,7 +6,7 @@
 		Map as IkonPeta,
 		Users
 	} from '@lucide/svelte';
-	import type { DasborLayanan, KelasRasio, PetaTema, RekapKursi } from '$lib/api/tipe';
+	import type { DasborLayanan, PetaTema, RekapKursi } from '$lib/api/tipe';
 	import KeyNumberCard from '$lib/components/KeyNumberCard.svelte';
 	import { kunciKelas, tampilkanAngka } from '$lib/features/kecamatan/kecamatan';
 	import { formatAngka } from '$lib/format';
@@ -18,8 +18,10 @@
 	import {
 		angkaDari,
 		hitungKelas,
+		isiKelasPeta,
 		kelasCukup,
 		kelasKurang,
+		kotakKelasPeta,
 		namaWilayahPendek,
 		totalKecamatan,
 		urutanKelas,
@@ -33,20 +35,6 @@
 	const kecamatan = $derived(
 		[...properti.values()].sort((a, b) => a.nama.localeCompare(b.nama, 'id'))
 	);
-	const isiPeta: Record<KelasRasio, string> = {
-		sangat_kurang: 'fill-gap-1',
-		kurang: 'fill-gap-2',
-		hampir_cukup: 'fill-gap-3',
-		cukup: 'fill-gap-4',
-		tidak_ada_data: 'fill-sunken'
-	};
-	const kotakLegenda: Record<KelasRasio, string> = {
-		sangat_kurang: 'bg-gap-1',
-		kurang: 'bg-gap-2',
-		hampir_cukup: 'bg-gap-3',
-		cukup: 'bg-gap-4',
-		tidak_ada_data: 'border-ctrl border-dashed border-line-strong bg-sunken'
-	};
 	const angka = (nilai: number, satuan: string) => angkaDari(dasbor, nilai, satuan);
 	const angkaBulat = (n: number) => formatAngka(n, bahasaAktif);
 	const namaKota = (r: RekapKursi) => namaWilayahPendek(r.nama ?? r.kunci);
@@ -59,7 +47,7 @@
 	function isiDari(kode: string): IsiArea {
 		const kelas = properti.get(kode)?.kelas ?? 'tidak_ada_data';
 		return {
-			kelas: isiPeta[kelas],
+			kelas: isiKelasPeta[kelas],
 			keterangan: `${t(kunciKelas[kelas])} · ${rasioTampil(kode)} ${t('satuan.rasio')}`
 		};
 	}
@@ -124,7 +112,8 @@
 						<ul class="mt-2 flex flex-wrap gap-x-4 gap-y-2">
 							{#each [...urutanKelas, 'tidak_ada_data' as const] as kelas (kelas)}
 								<li class="flex items-center gap-2 text-caption">
-									<span class="h-3 w-5 rounded-xs {kotakLegenda[kelas]}" aria-hidden="true"></span>
+									<span class="h-3 w-5 rounded-xs {kotakKelasPeta[kelas]}" aria-hidden="true"
+									></span>
 									{t(kunciKelas[kelas])}
 								</li>
 							{/each}

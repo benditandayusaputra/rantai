@@ -158,7 +158,7 @@
 					{@render panelSaksi(laporan)}
 				</div>
 				{#if laporan.catatan}
-					<blockquote class="card flex gap-3 p-5 font-serif text-body-lg">
+					<blockquote class="card flex gap-3 p-5 font-heading text-body-lg">
 						<Quote
 							size={20}
 							strokeWidth={1.75}

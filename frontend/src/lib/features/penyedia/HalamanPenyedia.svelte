@@ -27,7 +27,7 @@
 	<header class="card flex flex-col gap-4 p-5 md:p-6 lg:p-8">
 		<div class="flex items-center gap-4">
 			<span
-				class="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-lg bg-primary text-h3 font-bold text-primary-on lg:h-16 lg:w-16"
+				class="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-lg border border-line-strong bg-sunken font-heading text-h3 font-bold text-fg lg:h-16 lg:w-16"
 				aria-hidden="true">{inisialPenyedia(penyedia.nama)}</span
 			>
 			<div class="flex min-w-0 flex-col gap-1">
@@ -75,7 +75,7 @@
 							<TableScroll label={t('vendor.perYear')}>
 								<table class="w-full text-small">
 									<caption class="sr-only">{t('vendor.perYear')}</caption>
-									<thead class="bg-sunken text-caption uppercase">
+									<thead class="bg-sunken text-caption font-semibold">
 										<tr>
 											<th scope="col" class="p-3 text-left">{t('vendor.col.year')}</th>
 											<th scope="col" class="p-3 text-right">{t('vendor.col.count')}</th>
@@ -109,7 +109,7 @@
 								{#each urutTahun as item (`${item.tahun}-${item.sumber}`)}
 									<li class="flex h-full min-w-11 flex-1 flex-col items-center justify-end gap-1">
 										<span
-											class="flex w-full items-start justify-center rounded-t-sm bg-primary pt-1 text-caption font-bold text-primary-on num"
+											class="flex w-full items-start justify-center rounded-t-sm bg-chart pt-1 text-caption font-bold text-chart-on num"
 											style:height="{Math.max(12, (tinggi.get(item.tahun) ?? 0) * 100)}%"
 											>{tampilkanAngka(item.jumlah_paket).nilai}</span
 										>
@@ -170,7 +170,7 @@
 						</h2>
 						<ul class="flex flex-wrap gap-2 text-small">
 							{#each blok.isi as item (item)}
-								<li class="rounded-pill bg-sunken px-3 py-1">{item}</li>
+								<li class="rounded-xs bg-sunken px-3 py-1">{item}</li>
 							{/each}
 						</ul>
 					</section>

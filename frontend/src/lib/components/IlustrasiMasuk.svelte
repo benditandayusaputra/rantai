@@ -32,9 +32,7 @@
 
 	<rect x="306" y="102" width="150" height="196" rx="18" class="fill-line" />
 	<rect x="298" y="94" width="150" height="196" rx="18" class="fill-raised stroke-line" />
-	<rect x="314" y="112" width="20" height="14" rx="7" stroke-width="3.5" class="stroke-primary" />
-	<rect x="326" y="112" width="20" height="14" rx="7" stroke-width="3.5" class="stroke-fg" />
-	<rect x="356" y="114" width="72" height="9" rx="4.5" class="fill-line" />
+	<rect x="314" y="114" width="100" height="9" rx="4.5" class="fill-line" />
 	<rect x="314" y="138" width="56" height="7" rx="3.5" class="fill-sunken" />
 	{#each batang as b (b.x)}
 		<rect x={b.x} y={250 - b.tinggi} width="18" height={b.tinggi} rx="4" class={b.warna} />
@@ -51,16 +49,6 @@
 		stroke-linecap="round"
 		stroke-linejoin="round"
 		class="stroke-primary"
-	/>
-
-	<g stroke-width="5" class="stroke-attn-fill">
-		<rect x="404" y="330" width="34" height="22" rx="11" />
-		<rect x="424" y="330" width="34" height="22" rx="11" />
-	</g>
-
-	<path
-		d="M262 70l4 10 10 4-10 4-4 10-4-10-10-4 10-4z M444 58l3 7 7 3-7 3-3 7-3-7-7-3 7-3z M60 248l3 6 6 3-6 3-3 6-3-6-6-3 6-3z"
-		class="fill-attn-fill"
 	/>
 
 	<ellipse cx="212" cy="388" rx="62" ry="8" class="fill-line" />

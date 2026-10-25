@@ -7,7 +7,7 @@
 </script>
 
 <div class="flex flex-col gap-4">
-	<h1 class="text-balance font-serif text-h1">{t('report.s5.title')}</h1>
+	<h1 class="text-balance font-heading text-h1">{t('report.s5.title')}</h1>
 	<p class="flex gap-2 rounded-md bg-attn-bg p-3 text-small">
 		<Info size={18} strokeWidth={1.75} aria-hidden="true" class="mt-0.5 shrink-0 text-attn" />
 		{t('report.s5.rules')}

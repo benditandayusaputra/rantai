@@ -38,7 +38,7 @@
 		{#if isTabel}
 			<table class="w-full text-small">
 				<caption class="sr-only">{t('pen.trend.title')}</caption>
-				<thead class="bg-sunken text-caption uppercase">
+				<thead class="bg-sunken text-caption font-semibold">
 					<tr>
 						<th scope="col" class="p-3 text-left">{t('pen.trend.period')}</th>
 						<th scope="col" class="p-3 text-right">{t('pen.trend.ratio')}</th>
@@ -75,16 +75,10 @@
 					fill="none"
 					stroke-width="3"
 					stroke-linejoin="round"
-					class="stroke-primary"
+					class="stroke-chart"
 				/>
 				{#each titik as item (item.periode)}
-					<circle
-						cx={item.x}
-						cy={item.y}
-						r="6"
-						stroke-width="3"
-						class="fill-raised stroke-primary"
-					/>
+					<circle cx={item.x} cy={item.y} r="6" stroke-width="3" class="fill-raised stroke-chart" />
 					<text x={item.x} y={item.y - 14} text-anchor="middle" class="num fill-fg font-bold"
 						>{item.tampil.nilai}</text
 					>

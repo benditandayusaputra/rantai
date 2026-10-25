@@ -66,7 +66,7 @@
 					onpointerleave={() => (disorot = null)}
 				>
 					<div
-						class="w-full max-w-14 rounded-t-xs bg-primary transition-opacity duration-fast ease-standard {sorot &&
+						class="w-full max-w-14 rounded-t-xs bg-chart transition-opacity duration-fast ease-standard {sorot &&
 						sorot !== k.porsi.kunci
 							? 'opacity-40'
 							: ''} {disorot === k ? 'opacity-80' : ''}"

@@ -15,6 +15,6 @@
 </script>
 
 <span
-	class="inline-flex h-7 items-center rounded-pill px-3 text-caption font-bold {warna[kelas]}"
+	class="inline-flex h-7 items-center rounded-xs px-2.5 text-caption font-bold {warna[kelas]}"
 	data-kelas={kelas}>{t(kunciKelas[kelas])}</span
 >

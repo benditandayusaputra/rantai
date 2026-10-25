@@ -5,9 +5,11 @@
 
 <a
 	href="/{bahasaAktif}"
-	class="inline-flex min-h-touch items-center gap-2 rounded-md"
+	class="inline-flex min-h-touch shrink-0 items-center gap-2.5 rounded-md"
 	aria-label={t('brand.home')}
 >
-	<LogoMark />
-	<span class="text-h3 font-extrabold tracking-tight">{t('brand.name')}</span>
+	<LogoMark class="h-6 w-auto fill-primary lg:h-7" />
+	<span class="font-heading text-merek lg:text-merek-lg"
+		>{t('brand.name')}<span class="text-primary">.</span></span
+	>
 </a>

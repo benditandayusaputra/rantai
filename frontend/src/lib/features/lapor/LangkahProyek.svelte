@@ -24,7 +24,7 @@
 </script>
 
 <fieldset class="flex flex-col gap-3">
-	<legend class="mb-2 text-balance font-serif text-h1">{t('report.s2.title')}</legend>
+	<legend class="mb-2 text-balance font-heading text-h1">{t('report.s2.title')}</legend>
 	<p class="text-small text-muted">{t('report.s1.accuracy', { m: Math.round(draf.akurasiM) })}</p>
 	{#if pesanGalat}
 		<p role="alert" class="text-danger">{pesanGalat}</p>

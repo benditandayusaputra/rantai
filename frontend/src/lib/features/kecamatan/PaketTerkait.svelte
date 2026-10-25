@@ -23,7 +23,7 @@
 	<summary
 		class="flex min-h-touch cursor-pointer list-none items-center gap-2 px-3 text-small font-semibold [&::-webkit-details-marker]:hidden"
 	>
-		<Link2 size={16} strokeWidth={1.75} aria-hidden="true" class="text-primary" />
+		<Link2 size={16} strokeWidth={1.75} aria-hidden="true" class="text-muted" />
 		<span class="flex-1">{t('related.toggle')}</span>
 		<ChevronDown
 			size={16}

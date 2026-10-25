@@ -29,7 +29,7 @@
 		>
 			<div class="flex items-start gap-4 md:items-center">
 				<span
-					class="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-pill bg-primary text-h3 font-bold text-primary-on md:h-18 md:w-18 md:text-h2"
+					class="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-pill border border-line-strong bg-sunken font-heading text-h3 font-bold text-fg md:h-18 md:w-18 md:text-h2"
 					aria-hidden="true">{inisial(anggota.nama)}</span
 				>
 				<div class="flex min-w-0 flex-col gap-2">
@@ -37,7 +37,7 @@
 					<h1 class="t-h1">{anggota.nama}</h1>
 					<p class="text-muted">{anggota.fraksi} · {anggota.partai}</p>
 					<p
-						class="inline-flex items-center gap-2 self-start rounded-pill bg-secondary px-3 py-1 text-small font-bold text-secondary-on"
+						class="inline-flex items-center gap-2 self-start rounded-xs bg-secondary px-3 py-1 text-small font-bold text-secondary-on"
 					>
 						<Landmark size={16} strokeWidth={1.75} aria-hidden="true" />{keteranganKomisi}
 					</p>

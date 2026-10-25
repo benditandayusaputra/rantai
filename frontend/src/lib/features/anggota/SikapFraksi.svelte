@@ -32,7 +32,7 @@
 			{#each daftar as sikap (sikap.url)}
 				<li class="card flex flex-col gap-3 p-4 md:p-5">
 					<p class="flex flex-wrap items-center gap-2 text-small">
-						<span class="rounded-xs bg-sunken px-2 py-0.5 text-caption font-bold uppercase"
+						<span class="rounded-xs bg-sunken px-2 py-0.5 text-caption font-semibold"
 							>{t(`stance.agenda.${sikap.agenda}`)}</span
 						>
 						<span class="font-semibold">{sikap.judul_agenda}</span>

@@ -50,7 +50,7 @@
 			<p>{t('report.s1.poorBody', { m: Math.round(hasil.akurasiM) })}</p>
 		</div>
 	{:else}
-		<h1 class="text-balance font-serif text-h1">{t('report.s1.title')}</h1>
+		<h1 class="text-balance font-heading text-h1">{t('report.s1.title')}</h1>
 	{/if}
 
 	<ul class="flex flex-col gap-3 rounded-lg bg-secondary p-4 text-secondary-on">

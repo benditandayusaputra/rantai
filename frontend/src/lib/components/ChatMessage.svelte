@@ -16,7 +16,7 @@
 {#if role === 'user'}
 	<div class="flex justify-end">
 		<p class="sr-only">{t('ask.you')}</p>
-		<div class="ml-12 rounded-lg rounded-br-xs bg-primary px-4 py-3 text-primary-on shadow-1">
+		<div class="ml-12 rounded-lg rounded-br-xs bg-fg px-4 py-3 text-page">
 			{@render children()}
 		</div>
 	</div>
@@ -24,7 +24,7 @@
 	<div class="flex items-start gap-3" aria-busy={state === 'streaming'}>
 		<span
 			class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-pill border border-line bg-raised"
-			><LogoMark class="h-5 w-5" /></span
+			><LogoMark class="h-auto w-6.5 fill-primary" /></span
 		>
 		<div
 			class="min-w-0 flex-1 rounded-lg rounded-tl-xs border px-4 py-3 {state === 'no-data'

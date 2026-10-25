@@ -26,7 +26,7 @@
 {:else if data && pengawas.length}
 	<section aria-labelledby="judul-suara-{kodeTema}" class="flex flex-col gap-3">
 		<h4 id="judul-suara-{kodeTema}" class="flex items-center gap-2 text-h3 font-bold">
-			<Landmark size={20} strokeWidth={1.75} aria-hidden="true" class="text-primary" />
+			<Landmark size={20} strokeWidth={1.75} aria-hidden="true" class="text-muted" />
 			{t('voice.title')}
 		</h4>
 		<p class="max-w-prose text-small text-muted">{t('voice.lead')}</p>
@@ -47,7 +47,7 @@
 							size={18}
 							strokeWidth={1.75}
 							aria-hidden="true"
-							class="shrink-0 text-muted transition-transform duration-fast ease-standard group-hover:translate-x-0.5 group-hover:text-primary"
+							class="shrink-0 text-muted transition-transform duration-fast ease-standard group-hover:translate-x-0.5 group-hover:text-fg"
 						/>
 					</a>
 					{#if umpan.length}

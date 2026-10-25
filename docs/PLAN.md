@@ -367,6 +367,9 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - Ruang bilah navigasi bawah dipindah dari `<main>` ke pembungkus halaman agar baris terakhir kaki halaman tidak tertutup di ponsel.
 - [x] **T-1106** Ringkasan mingguan via email (WIL-06) · `✨ Kirim ringkasan mingguan Pantau lewat email`
 - [x] **T-1107** Dasbor tren per lensa (WIL-07) · `✨ Tambah dasbor tren tahunan dan bulanan untuk tiap lensa`
+- [x] **T-1108** Redesain mengikuti DESIGN.md 1.0 · `💄 Redesain antarmuka mengikuti sistem desain baru dan logo rantai`
+  - Token baru (kertas, tinta, merah Rantai), Plus Jakarta Sans untuk judul dan Inter untuk teks, logo rantai hasil vektorisasi `logo-rantai.png`, kepala halaman bergaris bawah merah, dan beranda baru berisi sorotan satu kecamatan dengan data asli (peta kesenjangan, kursi SMP, paket LPSE, komisi pengawas).
+  - Menggantikan catatan T-1105: tema terang menjadi bawaan dan tidak lagi mengikuti sistem; tema gelap tetap lewat tombol.
 
 ## Keluaran lomba di luar kode
 

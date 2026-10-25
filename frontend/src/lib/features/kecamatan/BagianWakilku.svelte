@@ -41,7 +41,7 @@
 	</div>
 	<div class="flex flex-col gap-3">
 		<h3 class="flex items-center gap-2 text-h3 font-bold">
-			<Users size={20} strokeWidth={1.75} aria-hidden="true" class="text-primary" />
+			<Users size={20} strokeWidth={1.75} aria-hidden="true" class="text-muted" />
 			{t('acc.reps', { dapil: dapil.nomor })}
 		</h3>
 		<ul class="grid gap-3 md:grid-cols-2 md:gap-4 xl:grid-cols-3">
