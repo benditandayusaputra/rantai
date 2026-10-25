@@ -689,6 +689,8 @@ API: `GET /data-belum-dibuka`, `POST /data-belum-dibuka/{kode}/permohonan` denga
 
 Kartu ringkasan kecamatan 1080 × 1350 dirender server (SVG ke PNG) dengan angka kunci, label, sumber, dan tautan pendek.
 
+API: `GET /kecamatan/{kode}/kartu.png?bahasa=id|en` menggambar PNG langsung dengan `golang.org/x/image` (huruf Go, tanpa langkah SVG) dari data `GET /kecamatan/{kode}/ringkasan`: rasio tema pertama yang terhitung, nilai paket tahun berjalan, dan dapil beserta komisi pengawasnya, masing-masing dengan label kepastian dan nama sumber. Teks dan alamat situs untuk tautan pendek ada di `config/kartu.yaml`. Tombol "Unduh kartu" ada di kepala halaman kecamatan.
+
 ## 10. Fondasi
 
 ### DSR-01 Mode demo luring

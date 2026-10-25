@@ -358,7 +358,7 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
 
 - [x] **T-1101** Tren kesenjangan antar tahun (PEN-07) · `✨ Tampilkan tren kesenjangan kursi antar tahun ajaran`
 - [x] **T-1102** Unduh CSV paket (ANG-09) · `✨ Tambah unduhan CSV paket per wilayah`
-- [ ] **T-1103** Bagikan sebagai gambar (AKS-05) · `✨ Buat kartu ringkasan kecamatan untuk dibagikan`
+- [x] **T-1103** Bagikan sebagai gambar (AKS-05) · `✨ Buat kartu ringkasan kecamatan untuk dibagikan`
 - [ ] **T-1104** Bahasa Inggris dan pengalih bahasa (DSR-04) · `🌐 Tambah terjemahan Inggris dan pengalih bahasa`
 - [ ] **T-1105** Pengalih tema terang dan gelap (DSR-04) · `💄 Tambah pengalih tema terang dan gelap`
 - [ ] **T-1106** Ringkasan mingguan via email (WIL-06) · `✨ Kirim ringkasan mingguan Pantau lewat email`

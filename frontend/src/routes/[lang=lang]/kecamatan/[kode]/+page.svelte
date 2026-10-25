@@ -4,6 +4,7 @@
 		ChevronRight,
 		GraduationCap,
 		House,
+		ImageDown,
 		Landmark,
 		MapPin,
 		MessageCircle,
@@ -11,6 +12,7 @@
 		Wallet
 	} from '@lucide/svelte';
 	import { invalidateAll } from '$app/navigation';
+	import { alamatKartuKecamatan } from '$lib/api/klien';
 	import { page } from '$app/state';
 	import ErrorState from '$lib/components/ErrorState.svelte';
 	import BagianAnggaran from '$lib/features/kecamatan/BagianAnggaran.svelte';
@@ -119,6 +121,15 @@
 						<Share2 size={18} strokeWidth={1.75} aria-hidden="true" />
 						{t('action.share')}
 					</button>
+					<a
+						href={alamatKartuKecamatan(ringkasan.kecamatan.kode, bahasaBawaan)}
+						download="rantai-{ringkasan.kecamatan.kode}.png"
+						class="btn btn-outline max-md:btn-icon"
+						title={t('action.shareImage')}
+					>
+						<ImageDown size={18} strokeWidth={1.75} aria-hidden="true" />
+						<span class="max-md:sr-only">{t('action.shareImage')}</span>
+					</a>
 					<a
 						href="/{bahasaBawaan}/tanya?w={encodeURIComponent(ringkasan.kecamatan.kode)}"
 						class="btn btn-secondary max-md:px-3 max-md:text-small lg:hidden"

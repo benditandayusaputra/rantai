@@ -11,10 +11,16 @@ const (
 	satuanPaket  = "paket"
 	satuanRupiah = "rupiah"
 	satuanRasio  = "rasio"
+	tipePNG      = "image/png"
+	simpanKartu  = "public, max-age=3600"
 )
 
 type LayananRingkasanKecamatan interface {
 	Ringkas(ctx context.Context, kode string) (domain.RingkasanKecamatan, error)
+}
+
+type PembuatKartu interface {
+	Gambar(r domain.RingkasanKecamatan, bahasa string) ([]byte, error)
 }
 
 type indikatorJSON struct {
@@ -48,7 +54,8 @@ type ringkasanKecamatanJSON struct {
 }
 
 type handlerRingkasanKecamatan struct {
-	layanan LayananRingkasanKecamatan
+	layanan        LayananRingkasanKecamatan
+	kartuKecamatan PembuatKartu
 }
 
 func (h handlerRingkasanKecamatan) ringkas(c fiber.Ctx) error {
@@ -57,6 +64,27 @@ func (h handlerRingkasanKecamatan) ringkas(c fiber.Ctx) error {
 		return err
 	}
 	return kirimData(c, keRingkasanKecamatanJSON(r))
+}
+
+func daftarkanRingkasan(api fiber.Router, h handlerRingkasanKecamatan) {
+	api.Get("/kecamatan/:kode/ringkasan", h.ringkas)
+	if h.kartuKecamatan != nil {
+		api.Get("/kecamatan/:kode/kartu.png", h.kartu)
+	}
+}
+
+func (h handlerRingkasanKecamatan) kartu(c fiber.Ctx) error {
+	r, err := h.layanan.Ringkas(c.Context(), c.Params("kode"))
+	if err != nil {
+		return err
+	}
+	gambar, err := h.kartuKecamatan.Gambar(r, c.Query("bahasa"))
+	if err != nil {
+		return err
+	}
+	c.Set(fiber.HeaderContentType, tipePNG)
+	c.Set(fiber.HeaderCacheControl, simpanKartu)
+	return c.Send(gambar)
 }
 
 func keRingkasanKecamatanJSON(r domain.RingkasanKecamatan) ringkasanKecamatanJSON {

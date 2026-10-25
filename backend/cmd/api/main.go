@@ -12,6 +12,7 @@ import (
 	"github.com/benditandayusaputra/rantai/backend/internal/config"
 	deliveryhttp "github.com/benditandayusaputra/rantai/backend/internal/delivery/http"
 	"github.com/benditandayusaputra/rantai/backend/internal/domain"
+	"github.com/benditandayusaputra/rantai/backend/internal/kartu"
 	"github.com/benditandayusaputra/rantai/backend/internal/repository"
 	"github.com/benditandayusaputra/rantai/backend/internal/usecase"
 	"github.com/gofiber/fiber/v3"
@@ -25,6 +26,7 @@ const (
 	pathKonfigurasiSinyal       = "config/sinyal.yaml"
 	pathKonfigurasiOpentender   = "config/opentender.yaml"
 	pathKonfigurasiMedia        = "config/media.yaml"
+	pathKonfigurasiKartu        = "config/kartu.yaml"
 )
 
 func main() {
@@ -50,7 +52,7 @@ func jalankan() error {
 		return err
 	}
 	layanan = denganLayananPendidikan(layanan, pool, cfg)
-	if layanan.SumberData, err = buatBacaSumberData(pool); err != nil {
+	if layanan, err = denganSumberDanKartu(layanan, pool); err != nil {
 		return err
 	}
 	if layanan, err = denganTanyaAuthLaporan(ctx, layanan, pool, cfg.Server.Auth); err != nil {
@@ -122,6 +124,23 @@ func buatBacaPenyedia(pool *pgxpool.Pool, batas int) (usecase.BacaPenyedia, erro
 		return usecase.BacaPenyedia{}, err
 	}
 	return usecase.BacaPenyedia{Pembaca: repository.PenyediaRepository{DB: pool}, Batas: batas, Atribusi: atribusi}, nil
+}
+
+func denganSumberDanKartu(layanan deliveryhttp.Layanan, pool *pgxpool.Pool) (deliveryhttp.Layanan, error) {
+	var err error
+	if layanan.SumberData, err = buatBacaSumberData(pool); err != nil {
+		return layanan, err
+	}
+	layanan.Kartu, err = buatPembuatKartu()
+	return layanan, err
+}
+
+func buatPembuatKartu() (kartu.Pembuat, error) {
+	var k kartu.Konfigurasi
+	if err := config.BacaYAML(pathKonfigurasiKartu, &k); err != nil {
+		return kartu.Pembuat{}, err
+	}
+	return kartu.Baru(k)
 }
 
 func buatBacaSumberData(pool *pgxpool.Pool) (usecase.BacaSumberData, error) {

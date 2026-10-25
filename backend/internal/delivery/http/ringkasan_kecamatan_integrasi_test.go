@@ -1,11 +1,14 @@
 package http
 
 import (
+	"image/png"
+	"net/http/httptest"
 	"slices"
 	"testing"
 	"time"
 
 	"github.com/benditandayusaputra/rantai/backend/internal/config"
+	"github.com/benditandayusaputra/rantai/backend/internal/kartu"
 	"github.com/benditandayusaputra/rantai/backend/internal/repository"
 	"github.com/benditandayusaputra/rantai/backend/internal/ujidb"
 	"github.com/benditandayusaputra/rantai/backend/internal/ujidb/ujiwakil"
@@ -33,6 +36,11 @@ var kunciPengenal = []string{"id", "nomor", "tahun", "tahun_pemilu"}
 
 func appUjiRingkasan(t *testing.T) *fiber.App {
 	t.Helper()
+	return appUjiRingkasanDengan(t, nil)
+}
+
+func appUjiRingkasanDengan(t *testing.T, pembuatKartu PembuatKartu) *fiber.App {
+	t.Helper()
 	tx := ujidb.BukaTransaksi(t)
 	ujiwakil.MuatDPRD(t, tx)
 	ujiwakil.MuatTema(t, tx)
@@ -41,7 +49,7 @@ func appUjiRingkasan(t *testing.T) *fiber.App {
 	}
 	tema := usecase.BacaTema{Pembaca: repository.TemaRepository{DB: tx}}
 	ringkasan := repository.RingkasanKecamatanRepository{DB: tx}
-	return NewApp(config.Server{}, Layanan{Ringkasan: usecase.RingkasKecamatan{
+	return NewApp(config.Server{}, Layanan{Kartu: pembuatKartu, Ringkasan: usecase.RingkasKecamatan{
 		Wilayah: repository.WilayahRepository{DB: tx}, Tema: tema, Indikator: ringkasan, Anggaran: ringkasan,
 		Wakil:    usecase.BacaWakil{Pembaca: repository.WakilRepository{DB: tx}, Tema: tema},
 		Sekarang: func() time.Time { return time.Date(2026, time.October, 23, 9, 0, 0, 0, time.UTC) },
@@ -122,5 +130,29 @@ func TestAngkaTelanjang_NilaiTanpaRujukan_Terdeteksi(t *testing.T) {
 
 	if temuan := angkaTelanjang(data, "data"); !slices.Equal(temuan, []string{"data.jumlah"}) {
 		t.Errorf("temuan = %v", temuan)
+	}
+}
+
+func TestKartuKecamatan_RingkasanAda_GambarPNG(t *testing.T) {
+	var k kartu.Konfigurasi
+	if err := config.BacaYAML("../../../config/kartu.yaml", &k); err != nil {
+		t.Fatal(err)
+	}
+	pembuat, err := kartu.Baru(k)
+	if err != nil {
+		t.Fatal(err)
+	}
+	permintaan := httptest.NewRequestWithContext(t.Context(), fiber.MethodGet, "/api/v1/kecamatan/31.72.06/kartu.png?bahasa=en", nil)
+	resp, err := appUjiRingkasanDengan(t, pembuat).Test(permintaan)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer func() { _ = resp.Body.Close() }()
+	gambar, err := png.Decode(resp.Body)
+	if resp.StatusCode != fiber.StatusOK || resp.Header.Get(fiber.HeaderContentType) != "image/png" || err != nil {
+		t.Fatalf("kode %d, tipe %s, galat %v", resp.StatusCode, resp.Header.Get(fiber.HeaderContentType), err)
+	}
+	if ukuran := gambar.Bounds().Size(); ukuran.X != 1080 || ukuran.Y != 1350 {
+		t.Errorf("ukuran = %v", ukuran)
 	}
 }

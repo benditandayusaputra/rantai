@@ -120,6 +120,10 @@ export function alamatUnduhPaket(kodeWilayah: string, tahun: number): string {
 	return susunURL('/unduh/paket.csv', { kode_wilayah: kodeWilayah, tahun });
 }
 
+export function alamatKartuKecamatan(kode: string, bahasa: string): string {
+	return susunURL(`/kecamatan/${encodeURIComponent(kode)}/kartu.png`, { bahasa });
+}
+
 export function urlServer(path: string): string {
 	return new URL(path, env.PUBLIC_API_URL || alamatBawaan).toString();
 }

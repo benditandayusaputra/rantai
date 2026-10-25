@@ -1,0 +1,50 @@
+alamat_situs: https://rantai-civic.vercel.app
+teks:
+  id:
+    tagline: Transparansi publik DKI Jakarta
+    judul: "Kecamatan {nama}"
+    tema_kosong: Belum dihitung
+    satuan_rasio: lulusan per kursi
+    periode: "Tahun ajaran {periode}"
+    anggaran: "Nilai paket {tahun}"
+    anggaran_kosong: Belum ada paket berlokasi
+    jumlah_paket: "{n} paket"
+    dapil: "Dapil {nomor}"
+    kursi: "{n} kursi DPRD"
+    komisi: "Diawasi Komisi {komisi}"
+    sumber_tema: Dapodik dan Disdik DKI
+    sumber_anggaran: LPSE DKI
+    sumber_wakil: KPU dan DPRD DKI
+    ajakan: Cek sumber dan rumus setiap angka di
+    miliar: miliar
+    juta: juta
+    pemisah_desimal: ","
+    label:
+      resmi: Resmi
+      proksi: Proksi
+      estimasi: Estimasi
+      simulasi: Data simulasi
+  en:
+    tagline: Public transparency for Jakarta
+    judul: "{nama} District"
+    tema_kosong: Not calculated yet
+    satuan_rasio: graduates per seat
+    periode: "School year {periode}"
+    anggaran: "Package value {tahun}"
+    anggaran_kosong: No located packages yet
+    jumlah_paket: "{n} packages"
+    dapil: "Electoral district {nomor}"
+    kursi: "{n} DPRD seats"
+    komisi: "Overseen by Commission {komisi}"
+    sumber_tema: Dapodik and Jakarta Education Office
+    sumber_anggaran: LPSE DKI
+    sumber_wakil: KPU and DPRD DKI
+    ajakan: Check the source and formula of every number at
+    miliar: billion
+    juta: million
+    pemisah_desimal: "."
+    label:
+      resmi: Official
+      proksi: Proxy
+      estimasi: Estimate
+      simulasi: Simulated data
