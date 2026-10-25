@@ -195,16 +195,14 @@
 			{@const ringkasan = data.ringkasan.data}
 			{@const nama = ringkasan.kecamatan.nama}
 			{@const kota = ringkasan.kecamatan.hierarki.find((h) => h.tingkat === 'kota')}
+			{@const lokasi = kota ? `${nama} · ${namaWilayahPendek(kota.nama)}` : nama}
 			{@const indikator = indikatorPendidikan(ringkasan.tema)}
 			{@const dapil = ringkasan.wakilku.dapil}
 			{@const komisi = ringkasan.wakilku.komisi_pengawas.join(', ')}
 			<section class="mt-8 lg:mt-10" aria-labelledby="judul-wilayah">
 				<div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
 					<div>
-						<p class="t-over">
-							{nama}{#if kota}
-								· {namaWilayahPendek(kota.nama)}{/if}
-						</p>
+						<p class="t-over">{lokasi}</p>
 						<h2 id="judul-wilayah" class="t-h2 mt-1">{t('home.area.title')}</h2>
 					</div>
 					<a
@@ -264,8 +262,7 @@
 						<div class="mt-2 flex flex-wrap items-center justify-between gap-x-4">
 							<p class="flex items-center gap-1.5 text-caption text-muted">
 								<MapPin size={14} strokeWidth={1.75} aria-hidden="true" />
-								{nama}{#if kota}
-									· {namaWilayahPendek(kota.nama)}{/if}
+								{lokasi}
 							</p>
 							<a
 								href="/{bahasaAktif}/peta"
