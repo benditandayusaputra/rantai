@@ -309,6 +309,19 @@ API: `GET /langganan`, `POST /langganan` (`{kode_wilayah}`), `DELETE /langganan/
 Web Push: kunci VAPID dari env `VAPID_KUNCI_PUBLIK`, `VAPID_KUNCI_PRIVAT`, `VAPID_SUBJEK` (`make kunci-vapid` membuat pasangan kunci); bila kosong, fitur tidak dipasang. Mengaktifkan push menyalin langganan perangkat ke setiap kecamatan feed pengguna (`langganan.kanal = webpush`, `webpush_endpoint` berisi objek PushSubscription), dan kecamatan yang ditambahkan kemudian ikut tersalin. Job `turunan` mendorong setiap kejadian sekali (`kejadian.didorong_pada`) untuk kejadian 24 jam terakhir; endpoint yang dijawab 404 atau 410 dihapus. Satu perangkat per pengguna per kecamatan: perangkat terakhir yang diaktifkan menggantikan yang lama. API: `GET /webpush/kunci-publik`, `POST /webpush/langganan`, `POST /webpush/berhenti` (`{endpoint}`).
 
 Ringkasan mingguan via email: pengguna menyalakannya di halaman Pantau (`GET`, `PUT`, `DELETE /ringkasan-email`, tabel `ringkasan_email`). Job `ringkasan_mingguan` (`make ringkasan-mingguan`, dijadwalkan sepekan sekali) mengirim paling banyak `BatasKabarRingkasan` (50) kejadian tujuh hari terakhir dari kecamatan kanal feed pengguna, dikelompokkan per kecamatan dengan tautan ke `config/situs.yaml`, ditandai "Data simulasi" bila perlu; pengguna tanpa kejadian tidak dikirimi email. Setiap pengguna paling banyak menerima satu ringkasan per tujuh hari (`terakhir_dikirim`). Pengirim memakai SMTP dari env yang sama dengan OTP; dalam mode demo tanpa `SMTP_HOST`, subjek email ditulis ke log.
+### WIL-07 Dasbor tren
+
+Menu Dasbor (`/{bahasa}/dasbor`) merangkum tren seluruh DKI untuk tiap lensa, dipilih lewat `?lensa=layanan|uang|tanggung-jawab` dan `?tahun=`. Tanpa `tahun`, API memilih tahun dengan jumlah data terbanyak (`domain.TahunTerlengkap`); seri bulanan selalu berisi 12 bulan dengan bulan kosong bernilai nol (`domain.LengkapiBulan`). Setiap seri membawa `label` dan `provenance_id` dari provenance terbaru sumbernya. Paket batal dan paket simulasi tidak dihitung.
+
+| Lensa | Isi | Sumber |
+| --- | --- | --- |
+| Layanan | Calon lulusan dan kursi per tahun ajaran, sebaran kelas kesenjangan per tahun ajaran dan per kota administrasi, peta kelas per kecamatan. Label rekap memakai label terlemah dari indikator | `indikator_kecamatan`, `/peta/tema/{kode}` |
+| Uang | Jumlah dan HPS paket per tahun anggaran, paket per bulan menurut tanggal dibuat (cakupan tanggal disebut), peta HPS per kecamatan (kelas kuantil), per kota administrasi (paket tingkat provinsi disebut terpisah), per jenis dan metode pengadaan | `paket` |
+| Tanggung jawab | Kegiatan DPRD per bulan dan per tahun menurut tanggal terbit waktu Jakarta, isu pendidikan yang disuarakan, aspirasi reses per bidang, instansi dengan HPS terbesar (`BatasInstansiDasbor` = 10). Instansi `instansi_tanpa_rincian` di `config/arus_anggaran.yaml` (label K/L/PD tanpa satuan kerja) tidak ikut diperingkat | `umpan_kegiatan`, `aspirasi_reses`, `paket` |
+
+Kartu angka tidak membandingkan antartahun karena tahun berjalan dan tahun pertama pencatatan belum lengkap; lensa Tanggung Jawab menampilkan rata-rata per bulan yang tercatat. Tidak ada hitungan per anggota atau fraksi. Setiap grafik dan peta punya tabel setara, dan peta memakai SVG dari geometri `/peta/tema/{kode}` dengan Kepulauan Seribu sebagai petak sisipan.
+
+API: `GET /tema/{kode}/dasbor`, `GET /dasbor/uang?tahun=`, `GET /dasbor/tanggung-jawab?tahun=`.
 
 ## 6. Tema Pendidikan
 
@@ -738,7 +751,8 @@ API: `GET /panel/antrean`, `POST /hak-jawab`, `PATCH /panel/paket/{kode}/serah-t
 | --- | --- | --- |
 | GET | `/kesehatan`, `/provenance/{id}`, `/sumber-data` | publik |
 | GET | `/wilayah/cari`, `/wilayah/titik`, `/wilayah/{kode}`, `/kecamatan/{kode}/ringkasan` | publik |
-| GET | `/tema`, `/tema/{kode}`, `/tema/{kode}/belanja`, `/peta/tema/{kode}` | publik |
+| GET | `/tema`, `/tema/{kode}`, `/tema/{kode}/belanja`, `/tema/{kode}/dasbor`, `/peta/tema/{kode}` | publik |
+| GET | `/dasbor/uang`, `/dasbor/tanggung-jawab` | publik |
 | GET | `/tema/pendidikan/kecamatan/{kode}`, `/tema/pendidikan/kecamatan/{kode}/sekolah`, `/sekolah/terdekat`, `/peta/sekolah` | publik |
 | GET | `/kecamatan/{kode}/wakil`, `/dapil/{id}`, `/anggota/{id}`, `/anggota/{id}/umpan`, `/anggota/{id}/isu`, `/fraksi/{nama}/sikap`, `/aspirasi-reses` | publik |
 | GET | `/kecamatan/{kode}/paket`, `/paket/{kode}`, `/paket/{kode}/pembanding`, `/paket/terdekat`, `/penyedia/{id}`, `/aspirasi-reses/{id}/paket-terkait`, `/peta/paket`, `/peta/laporan`, `/unduh/paket.csv` | publik |

@@ -10,6 +10,9 @@ import type {
 	WakilDenganUmpan,
 	BelanjaTema,
 	DaftarDataBelumDibuka,
+	DasborLayanan,
+	DasborTanggungJawab,
+	DasborUang,
 	DetailPaket,
 	DetailPendidikan,
 	DetailWilayah,
@@ -332,4 +335,19 @@ export function ambilAspirasiReses(fetchFn: Fetch, dapil: number): Promise<Aspir
 
 export function ambilPaketTerkait(fetchFn: Fetch, idAspirasi: number): Promise<HasilPaketTerkait> {
 	return ambilData<HasilPaketTerkait>(fetchFn, `/aspirasi-reses/${idAspirasi}/paket-terkait`);
+}
+
+export function ambilDasborLayanan(fetchFn: Fetch, kodeTema: string): Promise<DasborLayanan> {
+	return ambilData<DasborLayanan>(fetchFn, `/tema/${encodeURIComponent(kodeTema)}/dasbor`);
+}
+
+export function ambilDasborUang(fetchFn: Fetch, tahun?: number): Promise<DasborUang> {
+	return ambilData<DasborUang>(fetchFn, '/dasbor/uang', { tahun });
+}
+
+export function ambilDasborTanggungJawab(
+	fetchFn: Fetch,
+	tahun?: number
+): Promise<DasborTanggungJawab> {
+	return ambilData<DasborTanggungJawab>(fetchFn, '/dasbor/tanggung-jawab', { tahun });
 }

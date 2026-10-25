@@ -53,7 +53,7 @@ func jalankan() error {
 		return err
 	}
 	layanan = denganLayananPendidikan(layanan, pool, cfg)
-	if layanan, err = denganSumberDanKartu(layanan, pool); err != nil {
+	if layanan, err = denganSumberDasborDanKartu(layanan, pool); err != nil {
 		return err
 	}
 	if layanan, err = denganTanyaAuthLaporan(ctx, layanan, pool, cfg.Server.Auth); err != nil {
@@ -111,6 +111,19 @@ func susunLayanan(pool *pgxpool.Pool) (deliveryhttp.Layanan, error) {
 	}, pool)
 }
 
+func buatBacaDasbor(pool *pgxpool.Pool) (usecase.BacaDasbor, error) {
+	var cfg struct {
+		InstansiTanpaRincian string `yaml:"instansi_tanpa_rincian"`
+	}
+	if err := config.BacaYAML(pathKonfigurasiArusAnggaran, &cfg); err != nil {
+		return usecase.BacaDasbor{}, err
+	}
+	return usecase.BacaDasbor{
+		Tema:    usecase.BacaTema{Pembaca: repository.TemaRepository{DB: pool}},
+		Pembaca: repository.DasborRepository{DB: pool}, Sekarang: time.Now, InstansiTanpaRincian: cfg.InstansiTanpaRincian,
+	}, nil
+}
+
 func bacaAtribusiOpentender() (string, error) {
 	var cfg struct {
 		Atribusi string `yaml:"atribusi"`
@@ -127,9 +140,12 @@ func buatBacaPenyedia(pool *pgxpool.Pool, batas int) (usecase.BacaPenyedia, erro
 	return usecase.BacaPenyedia{Pembaca: repository.PenyediaRepository{DB: pool}, Batas: batas, Atribusi: atribusi}, nil
 }
 
-func denganSumberDanKartu(layanan deliveryhttp.Layanan, pool *pgxpool.Pool) (deliveryhttp.Layanan, error) {
+func denganSumberDasborDanKartu(layanan deliveryhttp.Layanan, pool *pgxpool.Pool) (deliveryhttp.Layanan, error) {
 	var err error
 	if layanan.SumberData, err = buatBacaSumberData(pool); err != nil {
+		return layanan, err
+	}
+	if layanan.Dasbor, err = buatBacaDasbor(pool); err != nil {
 		return layanan, err
 	}
 	layanan.Kartu, err = buatPembuatKartu()

@@ -32,6 +32,13 @@ export function formatJam(d: Date): string {
 		.replace(':', '.');
 }
 
+export function formatBulan(kunciBulan: string, bahasa: Bahasa): string {
+	const [tahun = 0, bulan = 1] = kunciBulan.split('-').map(Number);
+	return new Intl.DateTimeFormat(tagBahasa[bahasa], { month: 'short', timeZone: zonaWaktu })
+		.format(new Date(Date.UTC(tahun, bulan - 1, 1)))
+		.replace(/\.$/, '');
+}
+
 const meterPerKilometer = 1000;
 
 export function formatJarak(meter: number, bahasa: Bahasa): string {

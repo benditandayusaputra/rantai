@@ -17,6 +17,7 @@ type Layanan struct {
 	Kartu      PembuatKartu
 	Paket      LayananPaket
 	Belanja    LayananBelanja
+	Dasbor     LayananDasbor
 	Pembanding LayananPembanding
 	Penyedia   LayananPenyedia
 	Indikator  LayananIndikator
@@ -51,10 +52,7 @@ func NewApp(cfg config.Server, layanan Layanan) *fiber.App {
 	daftarkanWakil(api, handlerWakil{layanan: layanan.Wakil})
 	daftarkanUmpan(api, handlerUmpan{layanan: layanan.Umpan})
 	daftarkanRingkasan(api, handlerRingkasanKecamatan{layanan: layanan.Ringkasan, kartuKecamatan: layanan.Kartu})
-	daftarkanPaket(api, handlerPaket{layanan: layanan.Paket})
-	api.Get("/tema/:kode/belanja", handlerBelanja{layanan: layanan.Belanja}.hitung)
-	api.Get("/paket/:kode/pembanding", handlerPembanding{layanan: layanan.Pembanding}.bandingkan)
-	api.Get("/penyedia/:id", handlerPenyedia{layanan: layanan.Penyedia}.ambil)
+	daftarkanAnggaran(api, layanan)
 	daftarkanPendidikan(api, handlerPendidikan{layanan: layanan.Indikator})
 	api.Get("/sumber-data", handlerSumberData{layanan: layanan.SumberData}.baca)
 	api.Get("/sekolah/terdekat", handlerSekolahTerdekat{layanan: layanan.Sekolah}.cari)
@@ -78,6 +76,14 @@ func konfigurasiFiber(cfg config.Server) fiber.Config {
 		TrustProxyConfig: fiber.TrustProxyConfig{Proxies: cfg.ProxyTepercaya},
 		ProxyHeader:      fiber.HeaderXForwardedFor,
 	}
+}
+
+func daftarkanAnggaran(api fiber.Router, layanan Layanan) {
+	daftarkanPaket(api, handlerPaket{layanan: layanan.Paket})
+	api.Get("/tema/:kode/belanja", handlerBelanja{layanan: layanan.Belanja}.hitung)
+	daftarkanDasbor(api, handlerDasbor{layanan: layanan.Dasbor})
+	api.Get("/paket/:kode/pembanding", handlerPembanding{layanan: layanan.Pembanding}.bandingkan)
+	api.Get("/penyedia/:id", handlerPenyedia{layanan: layanan.Penyedia}.ambil)
 }
 
 func daftarkanAksiWarga(api fiber.Router, layanan Layanan) {

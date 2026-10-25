@@ -7,9 +7,10 @@
 		label: string;
 		angka: Angka;
 		size?: 'md' | 'lg';
+		catatan?: string;
 	}
 
-	let { label, angka, size = 'md' }: Props = $props();
+	let { label, angka, size = 'md', catatan }: Props = $props();
 
 	const tampil = $derived(tampilkanAngka(angka));
 </script>
@@ -24,5 +25,6 @@
 		{tampil.nilai}
 		{#if tampil.satuan}<span class="text-small font-semibold text-muted">{tampil.satuan}</span>{/if}
 	</p>
+	{#if catatan}<p class="text-caption text-muted">{catatan}</p>{/if}
 	<div><ProvenanceBadge {angka} nilai={tampil.nilai} compact /></div>
 </div>

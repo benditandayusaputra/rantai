@@ -734,3 +734,51 @@ export interface HakJawabMasuk {
 	isi: string;
 	tautan_dokumen: string;
 }
+
+export interface Porsi {
+	kunci: string;
+	nama?: string;
+	jumlah: number;
+	nilai: number;
+}
+
+export interface Seri {
+	label: Label | '';
+	provenance_id: string;
+	isi: Porsi[];
+}
+
+export interface RekapKursi {
+	kunci: string;
+	nama?: string;
+	kebutuhan: number;
+	kapasitas: number;
+	per_kelas: Partial<Record<KelasRasio, number>>;
+}
+
+export interface DasborLayanan {
+	tema: string;
+	label: Label | '';
+	provenance_id: string;
+	periode: RekapKursi[];
+	kota: RekapKursi[];
+}
+
+export interface DasborUang {
+	tahun: number;
+	tahunan: Seri;
+	bulanan: Seri;
+	jenis: Seri;
+	metode: Seri;
+	kota: Seri;
+	kecamatan: Seri;
+}
+
+export interface DasborTanggungJawab {
+	tahun: number;
+	kegiatan_tahunan: Seri;
+	kegiatan_bulanan: Seri;
+	topik: Seri;
+	reses: Seri;
+	instansi: Seri;
+}

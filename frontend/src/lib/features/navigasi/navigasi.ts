@@ -1,7 +1,17 @@
-import { Bell, Camera, FileLock, House, Info, Map, MessageCircle, School } from '@lucide/svelte';
+import {
+	Bell,
+	Camera,
+	ChartNoAxesCombined,
+	FileLock,
+	House,
+	Info,
+	Map,
+	MessageCircle,
+	School
+} from '@lucide/svelte';
 import type { KunciPesan } from '$lib/i18n';
 
-export type Tujuan = 'beranda' | 'peta' | 'tanya' | 'lapor' | 'pantau' | 'tentang';
+export type Tujuan = 'beranda' | 'peta' | 'dasbor' | 'tanya' | 'lapor' | 'pantau' | 'tentang';
 
 interface TujuanNavigasi {
 	kunci: Tujuan;
@@ -21,6 +31,7 @@ interface TautanKaki {
 export const tujuanUtama: TujuanNavigasi[] = [
 	{ kunci: 'beranda', path: '', label: 'nav.home', ikon: House },
 	{ kunci: 'peta', path: '/peta', label: 'nav.map', ikon: Map },
+	{ kunci: 'dasbor', path: '/dasbor', label: 'nav.dashboard', ikon: ChartNoAxesCombined },
 	{ kunci: 'tanya', path: '/tanya', label: 'nav.ask', ikon: MessageCircle },
 	{ kunci: 'lapor', path: '/lapor', label: 'nav.report', ikon: Camera },
 	{ kunci: 'pantau', path: '/pantau', label: 'nav.watch', ikon: Bell, isHanyaLayarLebar: true },
@@ -38,6 +49,7 @@ export const kelompokKaki: { judul: KunciPesan; tautan: TautanKaki[] }[] = [
 		judul: 'nav.explore',
 		tautan: [
 			{ path: '/peta', label: 'nav.map', ikon: Map },
+			{ path: '/dasbor', label: 'nav.dashboard', ikon: ChartNoAxesCombined },
 			{ path: '/tanya', label: 'ask.title', ikon: MessageCircle },
 			{ path: '/cek-sekolah', label: 'check.title', ikon: School }
 		]
