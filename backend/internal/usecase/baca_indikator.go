@@ -10,6 +10,7 @@ import (
 type PembacaTampilanPendidikan interface {
 	FiturPetaTema(ctx context.Context, temaKode string) ([]domain.FiturPetaIndikator, error)
 	DetailPendidikanKecamatan(ctx context.Context, kodeKecamatan string) (domain.DetailPendidikanKecamatan, bool, error)
+	TrenRasioPendidikan(ctx context.Context, kodeKecamatan string) ([]domain.TitikTren, error)
 	SekolahMenengahPertama(ctx context.Context, kodeKecamatan string) ([]domain.SekolahDenganKursi, error)
 }
 
@@ -41,6 +42,11 @@ func (u BacaIndikator) DetailPendidikan(ctx context.Context, kodeKecamatan strin
 	if !ada {
 		return domain.DetailPendidikanKecamatan{}, domain.TidakDitemukan("data pendidikan kecamatan tidak ditemukan")
 	}
+	tren, err := u.Pembaca.TrenRasioPendidikan(ctx, kodeKecamatan)
+	if err != nil {
+		return domain.DetailPendidikanKecamatan{}, fmt.Errorf("ambil tren pendidikan %s: %w", kodeKecamatan, err)
+	}
+	detail.Tren = domain.TrenLayakTampil(tren)
 	return detail, nil
 }
 

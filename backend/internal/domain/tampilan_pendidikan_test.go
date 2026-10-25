@@ -14,3 +14,23 @@ func TestKeterbatasan_DataPerSekolahTanpaMadrasah_TigaCatatan(t *testing.T) {
 		t.Errorf("keterbatasan = %v", daftar)
 	}
 }
+
+func TestTrenLayakTampil_KurangDariDuaPeriode_Kosong(t *testing.T) {
+	kasus := []struct {
+		nama   string
+		titik  []TitikTren
+		jumlah int
+	}{
+		{"tanpa periode", nil, 0},
+		{"satu periode", []TitikTren{{Periode: "2026/2027", Rasio: 1.4}}, 0},
+		{"dua periode", []TitikTren{{Periode: "2025/2026", Rasio: 1.2}, {Periode: "2026/2027", Rasio: 1.4}}, 2},
+	}
+	for _, k := range kasus {
+		t.Run(k.nama, func(t *testing.T) {
+			hasil := TrenLayakTampil(k.titik)
+			if hasil == nil || len(hasil) != k.jumlah {
+				t.Errorf("tren = %v, harap %d titik", hasil, k.jumlah)
+			}
+		})
+	}
+}

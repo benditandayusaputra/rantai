@@ -112,6 +112,43 @@ func TestDetailPendidikan_KelapaGading_RincianKursiDanKeterbatasan(t *testing.T)
 	}
 }
 
+func TestDetailPendidikan_SatuPeriode_TrenKosong(t *testing.T) {
+	hasil := panggil(t, appUjiPendidikan(t), "/api/v1/tema/pendidikan/kecamatan/31.72.06")
+
+	data, _ := hasil.respons.Data.(map[string]any)
+	tren, isDaftar := data["tren"].([]any)
+	if hasil.kode != fiber.StatusOK || !isDaftar || len(tren) != 0 {
+		t.Errorf("kode %d, tren %v", hasil.kode, data["tren"])
+	}
+}
+
+func TestDetailPendidikan_DuaPeriode_TrenUrutPeriode(t *testing.T) {
+	tx := ujidb.BukaTransaksi(t)
+	siapkanIndikatorUji(t, tx)
+	_, err := tx.Exec(t.Context(), `INSERT INTO indikator_kecamatan (tema_kode, kode_kecamatan, periode, kebutuhan, kapasitas, kesenjangan, rasio, kelas, label, rincian, provenance_id)
+SELECT 'pendidikan', kode, '2025/2026', 900, 600, 300, 1.5, 'kurang', 'resmi', '{}'::jsonb, provenance_id FROM wilayah WHERE kode = '31.72.06'`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	app := NewApp(config.Server{}, Layanan{Indikator: usecase.BacaIndikator{
+		Pembaca: repository.IndikatorBacaRepository{DB: tx},
+		Tema:    repository.TemaRepository{DB: tx},
+	}})
+
+	hasil := panggil(t, app, "/api/v1/tema/pendidikan/kecamatan/31.72.06")
+
+	data, _ := hasil.respons.Data.(map[string]any)
+	tren, _ := data["tren"].([]any)
+	if len(tren) != 2 {
+		t.Fatalf("tren = %v", data["tren"])
+	}
+	pertama, _ := tren[0].(map[string]any)
+	rasio, _ := pertama["rasio"].(map[string]any)
+	if pertama["periode"] != "2025/2026" || rasio["nilai"] != 1.5 || rasio["provenance_id"] == "" {
+		t.Errorf("titik pertama = %v", pertama)
+	}
+}
+
 func TestDetailPendidikan_KodeKelurahan_400(t *testing.T) {
 	if hasil := panggil(t, appUjiPendidikan(t), "/api/v1/tema/pendidikan/kecamatan/31.72.06.1001"); hasil.kode != fiber.StatusBadRequest {
 		t.Errorf("kode = %d", hasil.kode)

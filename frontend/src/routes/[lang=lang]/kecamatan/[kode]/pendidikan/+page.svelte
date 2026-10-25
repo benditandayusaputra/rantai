@@ -15,6 +15,7 @@
 	import KeyNumberCard from '$lib/components/KeyNumberCard.svelte';
 	import DaftarSekolah from '$lib/features/pendidikan/DaftarSekolah.svelte';
 	import GrafikKursi from '$lib/features/pendidikan/GrafikKursi.svelte';
+	import GrafikTren from '$lib/features/pendidikan/GrafikTren.svelte';
 	import { bahasaBawaan, t } from '$lib/i18n';
 	import type { PageProps } from './$types';
 
@@ -92,6 +93,9 @@
 							<Info size={18} strokeWidth={1.75} aria-hidden="true" class="mt-px shrink-0" />
 							{t(`pen.method.${detail.metode_calon_lulusan}`)}
 						</p>
+					{/if}
+					{#if detail.tren.length}
+						<GrafikTren tren={detail.tren} />
 					{/if}
 				</div>
 				<aside class="grid grid-cols-2 gap-3 lg:col-span-4 lg:flex lg:flex-col lg:gap-4">

@@ -27,6 +27,10 @@ SELECT ` + sqlKolomIndikator + `,
 FROM indikator_kecamatan i JOIN wilayah w ON w.kode = i.kode_kecamatan, terbaru
 WHERE i.tema_kode = $2 AND i.kode_kecamatan = $1 AND i.periode = terbaru.periode`
 
+	sqlTrenRasioKecamatan = `SELECT periode, rasio::float8, label, provenance_id FROM indikator_kecamatan
+WHERE kode_kecamatan = $1 AND tema_kode = $2 AND rasio IS NOT NULL
+ORDER BY periode`
+
 	sqlSekolahMenengahPertama = `WITH tahun_kursi AS (SELECT max(tahun_ajaran) AS t FROM daya_tampung)
 SELECT s.npsn, s.nama, s.bentuk, s.status, ST_Y(s.lokasi), ST_X(s.lokasi),
     coalesce(d.jalur, ''), d.kursi, coalesce(d.provenance_id, '')
@@ -59,6 +63,18 @@ func (r IndikatorBacaRepository) DetailPendidikanKecamatan(ctx context.Context, 
 	tujuan := append(tujuanIndikator(&d.IndikatorTersimpan), &d.ProvenanceCalonLulusan, &d.ProvenanceKursiNegeri, &d.ProvenanceKursiSPMBBersama)
 	err := r.DB.QueryRow(ctx, sqlDetailPendidikanKecamatan, kode, domain.TemaPendidikan).Scan(tujuan...)
 	return hasilSatuBaris(d, err)
+}
+
+func (r IndikatorBacaRepository) TrenRasioPendidikan(ctx context.Context, kode string) ([]domain.TitikTren, error) {
+	baris, err := r.DB.Query(ctx, sqlTrenRasioKecamatan, kode, domain.TemaPendidikan)
+	if err != nil {
+		return nil, fmt.Errorf("kueri tren rasio %s: %w", kode, err)
+	}
+	return pgx.CollectRows(baris, func(b pgx.CollectableRow) (domain.TitikTren, error) {
+		var titik domain.TitikTren
+		err := b.Scan(&titik.Periode, &titik.Rasio, &titik.Label, &titik.ProvenanceID)
+		return titik, err
+	})
 }
 
 func (r IndikatorBacaRepository) SekolahMenengahPertama(ctx context.Context, kode string) ([]domain.SekolahDenganKursi, error) {

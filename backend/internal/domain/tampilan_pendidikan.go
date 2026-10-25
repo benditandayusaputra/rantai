@@ -16,6 +16,23 @@ type DetailPendidikanKecamatan struct {
 	ProvenanceCalonLulusan     string
 	ProvenanceKursiNegeri      string
 	ProvenanceKursiSPMBBersama string
+	Tren                       []TitikTren
+}
+
+const MinimalPeriodeTren = 2
+
+type TitikTren struct {
+	Periode      string
+	Rasio        float64
+	Label        Label
+	ProvenanceID string
+}
+
+func TrenLayakTampil(titik []TitikTren) []TitikTren {
+	if len(titik) < MinimalPeriodeTren {
+		return []TitikTren{}
+	}
+	return titik
 }
 
 type SekolahDenganKursi struct {

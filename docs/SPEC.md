@@ -381,6 +381,8 @@ API: `GET /sekolah/terdekat?lat=&lng=&radius_m=`.
 
 Grafik garis rasio per kecamatan antar tahun ajaran, tampil hanya bila data minimal dua tahun tersedia.
 
+API: field `tren` (`[{periode, rasio: Angka}]`, urut periode) pada `GET /tema/pendidikan/kecamatan/{kode}`, dari baris `indikator_kecamatan` yang rasionya terdefinisi; kosong bila kurang dari `MinimalPeriodeTren` (2) periode. Grafik di halaman detail Pendidikan punya tabel alternatif dan garis acuan satu lulusan per kursi.
+
 ## 7. Wakilku
 
 ### WAK-01 Kecamatan ke dapil ke anggota

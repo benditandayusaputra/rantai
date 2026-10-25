@@ -143,6 +143,12 @@ export interface DetailPendidikan {
 	kesenjangan_dengan_spmb_bersama: Angka | null;
 	rasio: Angka | null;
 	keterbatasan: Keterbatasan[];
+	tren: TitikTren[];
+}
+
+export interface TitikTren {
+	periode: string;
+	rasio: Angka;
 }
 
 export interface Sekolah {

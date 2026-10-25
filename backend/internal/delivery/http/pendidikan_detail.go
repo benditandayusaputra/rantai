@@ -23,6 +23,12 @@ type detailPendidikanJSON struct {
 	KesenjanganDenganSPMBBersama *Angka                    `json:"kesenjangan_dengan_spmb_bersama"`
 	Rasio                        *Angka                    `json:"rasio"`
 	Keterbatasan                 []string                  `json:"keterbatasan"`
+	Tren                         []titikTrenJSON           `json:"tren"`
+}
+
+type titikTrenJSON struct {
+	Periode string `json:"periode"`
+	Rasio   Angka  `json:"rasio"`
 }
 
 type sekolahJSON struct {
@@ -57,7 +63,17 @@ func keDetailPendidikanJSON(d domain.DetailPendidikanKecamatan) detailPendidikan
 		KesenjanganDenganSPMBBersama: indikator.berlabel(r.KesenjanganDenganSwasta, satuanSiswa),
 		Rasio:                        indikator.opsional(d.Rasio, satuanRasio),
 		Keterbatasan:                 d.Keterbatasan(),
+		Tren:                         keTrenJSON(d.Tren),
 	}
+}
+
+func keTrenJSON(tren []domain.TitikTren) []titikTrenJSON {
+	hasil := make([]titikTrenJSON, len(tren))
+	for i, titik := range tren {
+		rasio := Angka{Nilai: titik.Rasio, Satuan: satuanRasio, Label: titik.Label, ProvenanceID: titik.ProvenanceID}
+		hasil[i] = titikTrenJSON{Periode: titik.Periode, Rasio: rasio}
+	}
+	return hasil
 }
 
 func rujukan(provenanceID, cadangan string) pembuatAngka {

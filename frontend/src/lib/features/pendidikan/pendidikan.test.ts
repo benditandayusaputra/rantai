@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import type { Angka, DetailPendidikan, Sekolah } from '$lib/api/tipe';
-import { kunciJenisSekolah, persenLebar, susunBarisGrafik } from './pendidikan';
+import {
+	kunciJenisSekolah,
+	persenLebar,
+	skalaTren,
+	susunBarisGrafik,
+	ukuranGrafikTren
+} from './pendidikan';
 
 const angka = (nilai: number, label: Angka['label'] = 'resmi'): Angka => ({
 	nilai,
@@ -44,5 +50,24 @@ describe('kunciJenisSekolah', () => {
 		[{ ...dasar, bentuk: 'MTs', status: 'negeri', jalur: null }, 'pen.school.madrasah']
 	] as [Sekolah, string][])('%o menjadi %s', (sekolah, harapan) => {
 		expect(kunciJenisSekolah(sekolah)).toBe(harapan);
+	});
+});
+
+describe('skalaTren', () => {
+	it('merentangkan titik dari tepi kiri ke tepi kanan', () => {
+		const { titik } = skalaTren([1.2, 1.5, 1.1], (nilai) => nilai);
+		expect(titik.at(0)?.x).toBe(ukuranGrafikTren.kiri);
+		expect(titik.at(-1)?.x).toBe(ukuranGrafikTren.lebar - ukuranGrafikTren.kanan);
+	});
+
+	it('menaruh rasio lebih besar lebih tinggi di grafik', () => {
+		const [rendah, tinggi] = skalaTren([1.2, 1.8], (nilai) => nilai).titik;
+		expect(tinggi?.y).toBeLessThan(rendah?.y ?? 0);
+	});
+
+	it('selalu memuat garis satu lulusan per kursi walau semua rasio di bawahnya', () => {
+		const { titik, ySeimbang } = skalaTren([0.4, 0.6], (nilai) => nilai);
+		expect(ySeimbang).toBeGreaterThan(ukuranGrafikTren.atas);
+		expect(titik.every((p) => p.y > ySeimbang)).toBe(true);
 	});
 });
