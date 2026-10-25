@@ -215,8 +215,9 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
 
 ### Titik FDS (1 November 2026)
 
-- [ ] **T-650** Siap FDS
+- [x] **T-650** Siap FDS
   - Deploy pratinjau, README lengkap (judul, deskripsi, tech stack, cara menjalankan, progres pengerjaan dengan centang fitur), tangkapan layar beranda dan halaman kecamatan di `docs/screenshots/`.
+  - Pratinjau di `https://rantai-civic.vercel.app`. Tangkapan layar beranda, kecamatan (desktop dan ponsel), paket simulasi, dan peta dari data penuh hasil `seed-demo`. `.env.example` kini memakai `db:5432` untuk `DATABASE_URL_MIGRASI` karena `migrate` dan `klien-pg` berjalan di dalam jaringan Compose; `make up`, `make migrate`, `make seed-demo` dicoba dari basis data kosong.
   - Commit: `📝 Lengkapi README dan tangkapan layar untuk FDS`
   - Selesai bila: repo publik bisa dijalankan orang lain dari README dengan `make up`, `make migrate`, `make seed-demo`.
 

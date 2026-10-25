@@ -58,6 +58,14 @@ flowchart LR
 | Pengujian | go test, Vitest, Playwright, axe |
 | Orkestrasi | Docker Compose, Caddy, Vercel |
 
+## Tangkapan layar
+
+| Beranda | Halaman kecamatan |
+| --- | --- |
+| ![Beranda Rantai](docs/screenshots/beranda-desktop.png) | ![Halaman Kecamatan Kelapa Gading](docs/screenshots/kecamatan-desktop.png) |
+
+Tangkapan layar lain (ponsel, halaman paket, peta) ada di `docs/screenshots/`.
+
 ## Cara menjalankan
 
 Prasyarat: Docker dengan Docker Compose, Go 1.26 ke atas, Node 22 ke atas, GNU Make.
@@ -89,9 +97,25 @@ Buka `http://localhost:5173`. `make impor-sekolah` mengambil sekitar 4.000 sekol
 
 ### Mode demo
 
-`make snapshot-demo` menyimpan seluruh data ke `data/snapshot/rantai.sql.gz` di mesin yang datanya sudah lengkap. Di mesin lain, `make up`, `make migrate`, lalu `make seed-demo` memuat snapshot itu dan skenario `data/snapshot/skenario_demo.yaml`: satu paket simulasi, dua laporan simulasi, dan akun contoh warga, petugas instansi, anggota, serta moderator. Semua data simulasi berlabel "Data simulasi" dan tidak tertaut ke penyedia, instansi, atau anggota sungguhan.
+Snapshot data lengkap ada di `data/snapshot/rantai.sql.gz` (dibuat dengan `make snapshot-demo`, tanpa tabel akun, sesi, langganan, laporan, dan hak jawab). Untuk menjalankan demo dari repo bersih:
 
-Dengan `RANTAI_MODE=demo` di `.env`, worker menolak job yang mengambil data dari internet, Tanya Rantai menjawab pertanyaan demo dari `data/snapshot/tanya_demo.json` (`make tanya-demo`), dan tanpa `SMTP_HOST` kode masuk ditulis ke log API.
+```bash
+cp .env.example .env
+```
+
+Di `.env`, isi `RANTAI_MODE=demo` dan `AUTH_RAHASIA` dengan teks acak, lalu:
+
+```bash
+make up
+make migrate
+make seed-demo
+cd backend && go run ./cmd/api
+cd frontend && npm install && npm run dev
+```
+
+`make seed-demo` memuat snapshot lalu skenario `data/snapshot/skenario_demo.yaml`: kecamatan demo Kelapa Gading (`31.72.06`), satu paket simulasi, dua laporan simulasi, dan akun contoh `warga@`, `petugas@`, `anggota@`, `moderator@demo.rantai.test`. Semua data simulasi berlabel "Data simulasi" dan tidak tertaut ke penyedia, instansi, atau anggota sungguhan. Tanpa `SMTP_HOST`, kode masuk akun contoh ditulis ke log API.
+
+Dengan `RANTAI_MODE=demo`, worker menolak job yang mengambil data dari internet dan Tanya Rantai menjawab pertanyaan demo dari `data/snapshot/tanya_demo.json` (`make tanya-demo` terhadap API live yang punya `ANTHROPIC_API_KEY`). Peta dasar memakai ubin PMTiles wilayah DKI di `frontend/static/peta/dki.pmtiles` (Protomaps, © OpenStreetMap contributors), sehingga demo tidak butuh internet; isi `PUBLIC_PETA_DASAR_URL` hanya bila ingin memakai sumber ubin lain.
 
 ### Basis data
 
@@ -132,7 +156,7 @@ Di Vercel, root directory adalah `frontend`, dengan env berikut:
 | `PUBLIC_API_URL` | `https://rantai-civic.vercel.app/api/v1` |
 | `API_HULU` | `https://<API_DOMAIN>` |
 | `PROXY_RAHASIA` | sama dengan server |
-| `PUBLIC_PETA_DASAR_URL` | `https://tiles.openfreemap.org/planet` |
+| `PUBLIC_PETA_DASAR_URL` | kosong (memakai `peta/dki.pmtiles` bawaan) |
 
 API memakai IP pengunjung dari header `X-Klien-Asli` untuk batas laju hanya bila header `X-Rantai-Proxy` cocok dengan `PROXY_RAHASIA`.
 
