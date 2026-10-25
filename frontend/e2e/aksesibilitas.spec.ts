@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
+import { alamatAPI } from './lingkungan';
 
 const kecamatanUji = '31.72.06';
 const tagWCAG = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'];
@@ -52,15 +53,11 @@ test('tanpa pelanggaran serius atau kritis: profil anggota dan paket', async ({
 	page,
 	request
 }) => {
-	const wakil = await (
-		await request.get(`http://localhost:18090/api/v1/kecamatan/${kecamatanUji}/wakil`)
-	).json();
+	const wakil = await (await request.get(`${alamatAPI}/kecamatan/${kecamatanUji}/wakil`)).json();
 	const anggota = wakil.data?.dapil?.anggota?.[0]?.id;
 	test.skip(!anggota, 'data wakil belum ada');
 	await bukaDanAudit(page, `/id/anggota/${anggota}`);
-	const paket = await (
-		await request.get(`http://localhost:18090/api/v1/kecamatan/${kecamatanUji}/paket`)
-	).json();
+	const paket = await (await request.get(`${alamatAPI}/kecamatan/${kecamatanUji}/paket`)).json();
 	const kode = paket.data?.[0]?.kode;
 	if (kode) await bukaDanAudit(page, `/id/paket/${kode}`);
 });

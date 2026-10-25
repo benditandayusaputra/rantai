@@ -1,4 +1,6 @@
+import { randomBytes } from 'node:crypto';
 import { defineConfig } from '@playwright/test';
+import { logAPI, portAPI } from './e2e/lingkungan';
 
 try {
 	process.loadEnvFile('../.env');
@@ -6,7 +8,14 @@ try {
 	process.env.RANTAI_MODE ??= 'demo';
 }
 
-const portAPI = 18090;
+const isModeDemo = process.env.RANTAI_MODE === 'demo';
+const panjangRahasiaUji = 32;
+const lingkunganAPIDemo = isModeDemo
+	? {
+			SMTP_HOST: '',
+			AUTH_RAHASIA: process.env.AUTH_RAHASIA || randomBytes(panjangRahasiaUji).toString('hex')
+		}
+	: {};
 const portWeb = 4174;
 const alamatWeb = `http://localhost:${portWeb}`;
 
@@ -25,15 +34,17 @@ export default defineConfig({
 	],
 	webServer: [
 		{
-			command: 'go run ./cmd/api',
+			command: `mkdir -p ../frontend/test-logs && go run ./cmd/api > ../frontend/${logAPI} 2>&1`,
 			cwd: '../backend',
 			url: `http://localhost:${portAPI}/api/v1/kesehatan`,
 			timeout: 180_000,
 			reuseExistingServer: !process.env.CI,
-			env: { ...process.env, API_PORT: String(portAPI), CORS_ORIGIN: alamatWeb } as Record<
-				string,
-				string
-			>
+			env: {
+				...process.env,
+				...lingkunganAPIDemo,
+				API_PORT: String(portAPI),
+				CORS_ORIGIN: alamatWeb
+			} as Record<string, string>
 		},
 		{
 			command: `npm run dev -- --port ${portWeb} --strictPort`,

@@ -324,8 +324,10 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - Kelas komponen bersama di `app.css` (`.btn`, `.field`, `.card`, `.icon-tile`, `.chip`), ikon Lucide di setiap tombol dan tautan aksi, header berikon, footer dengan tautan per kelompok, beranda dengan kartu fitur, ilustrasi kota di beranda dan ilustrasi tokoh di halaman Masuk (token `--illu-*`, DESIGN 1.8).
   - Commit: `💄 Rapikan tampilan semua halaman dengan ikon dan ilustrasi`
   - Selesai bila: tidak ada geser horizontal di 360 sampai 1440 px; audit aksesibilitas tetap tanpa pelanggaran serius atau kritis.
-- [ ] **T-1001** Tes alur demo
+- [x] **T-1001** Tes alur demo
   - `e2e/alur-demo.spec.ts` untuk delapan langkah Alur Demo PRD pada 390 px dan 1440 px dalam mode demo.
+  - `RANTAI_MODE=demo make e2e`; tanpa paket simulasi seluruh langkah dilewati dengan pesan `make seed-demo`. API uji menulis log ke `frontend/test-logs/api.log`, tempat tes membaca kode masuk petugas; Panel Instansi hanya untuk layar lebar, jadi di 390 px langkah 7 memeriksa bagian hak jawab di halaman paket.
+  - Diuji pada salinan basis data lokal dengan `skenario_demo`: langkah 1, 3, 4, 6, 7, dan 8 lulus. Langkah 2 (data Dapodik) dan 5 (`tanya_demo.json`) menunggu T-1005.
   - Commit: `✅ Tambah tes end-to-end alur demo utama`
 - [x] **T-1002** Aksesibilitas
   - Audit axe pada semua halaman utama, perbaiki temuan.
