@@ -360,7 +360,9 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
 - [x] **T-1102** Unduh CSV paket (ANG-09) · `✨ Tambah unduhan CSV paket per wilayah`
 - [x] **T-1103** Bagikan sebagai gambar (AKS-05) · `✨ Buat kartu ringkasan kecamatan untuk dibagikan`
 - [x] **T-1104** Bahasa Inggris dan pengalih bahasa (DSR-04) · `🌐 Tambah terjemahan Inggris dan pengalih bahasa`
-- [ ] **T-1105** Pengalih tema terang dan gelap (DSR-04) · `💄 Tambah pengalih tema terang dan gelap`
+- [x] **T-1105** Pengalih tema terang dan gelap (DSR-04) · `💄 Tambah pengalih tema terang dan gelap`
+  - Tombol ikon di kepala halaman (768 px ke atas) dan tombol berlabel di kaki halaman (semua lebar); pilihan disimpan di `localStorage` `rantai-theme` yang dibaca skrip awal `app.html`. Menyimpang dari DESIGN 5.1: pilihan "ikuti sistem" belum ada karena halaman Akun belum dibangun; tanpa pilihan tersimpan, tema tetap mengikuti sistem.
+  - Ruang bilah navigasi bawah dipindah dari `<main>` ke pembungkus halaman agar baris terakhir kaki halaman tidak tertutup di ponsel.
 - [ ] **T-1106** Ringkasan mingguan via email (WIL-06) · `✨ Kirim ringkasan mingguan Pantau lewat email`
 
 ## Keluaran lomba di luar kode

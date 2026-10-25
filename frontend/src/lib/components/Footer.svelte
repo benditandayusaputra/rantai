@@ -2,6 +2,7 @@
 	import { kelompokKaki } from '$lib/features/navigasi/navigasi';
 	import { bahasaAktif, t } from '$lib/i18n';
 	import Logo from './Logo.svelte';
+	import PengalihTema from './PengalihTema.svelte';
 </script>
 
 <footer class="mt-16 border-t border-line bg-surface">
@@ -32,6 +33,9 @@
 		{/each}
 	</div>
 	<div class="border-t border-line">
-		<p class="wrap py-5 text-caption text-muted">{t('footer.event')}</p>
+		<div class="wrap flex flex-wrap items-center justify-between gap-3 py-4">
+			<p class="text-caption text-muted">{t('footer.event')}</p>
+			<PengalihTema denganLabel />
+		</div>
 	</div>
 </footer>

@@ -726,7 +726,7 @@ API: `GET /panel/antrean`, `POST /hak-jawab`, `PATCH /panel/paket/{kode}/serah-t
 ### DSR-04 Bahasa dan tema tampilan
 
 - Rute berawalan bahasa `/id/...` dan `/en/...`; nama wilayah, instansi, paket, dan judul berita tidak diterjemahkan. Seluruh teks antarmuka lewat `src/lib/i18n` (`id.json`, `en.json` dengan kunci dan parameter yang sama, dites). Bahasa aktif diambil dari segmen pertama URL di layout akar; berganti bahasa merender ulang halaman. Pengalih ID/EN di kepala halaman mempertahankan path dan kueri, `<html lang>` diisi oleh `hooks.server.ts`. Format angka, tanggal, dan skala rupiah mengikuti bahasa; satuan dari API diterjemahkan lewat kunci `satuan.*`. Kosakata terlarang mencakup padanan Inggrisnya.
-- Tema terang dan gelap mengikuti token `docs/DESIGN.md`; bawaan mengikuti sistem; pengalih menyusul sebagai P2.
+- Tema terang dan gelap mengikuti token `docs/DESIGN.md`; bawaan mengikuti sistem. Pengalih di kepala dan kaki halaman menyimpan pilihan di `localStorage` (`rantai-theme`), yang dibaca skrip awal `app.html` sebelum halaman tampil.
 - Aksesibilitas WCAG 2.1 AA tidak termasuk P2: fokus terlihat, kontras 4,5:1, peta dan grafik punya ringkasan teks dan tabel.
 
 ## 11. Ringkasan endpoint

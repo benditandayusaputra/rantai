@@ -6,6 +6,7 @@
 	import Footer from '$lib/components/Footer.svelte';
 	import Logo from '$lib/components/Logo.svelte';
 	import PengalihBahasa from '$lib/components/PengalihBahasa.svelte';
+	import PengalihTema from '$lib/components/PengalihTema.svelte';
 	import { inisial, keluar, pulihkanSesi, sesiAktif } from '$lib/features/akun/sesi.svelte';
 	import { isAkunPanel } from '$lib/features/panel/panel';
 	import { tujuanAktif, tujuanPonsel, tujuanUtama } from '$lib/features/navigasi/navigasi';
@@ -41,7 +42,9 @@
 	>{t('nav.skip')}</a
 >
 
-<div class="flex min-h-dvh flex-col">
+<div
+	class="flex min-h-dvh flex-col max-lg:pb-[calc(theme(spacing.16)+env(safe-area-inset-bottom))]"
+>
 	<header class="glass sticky top-0 z-sticky border-b border-line">
 		<div class="wrap flex h-16 items-center justify-between gap-4 lg:h-18">
 			<Logo />
@@ -63,6 +66,7 @@
 				</ul>
 			</nav>
 			<div class="flex items-center gap-2">
+				<PengalihTema class="max-md:hidden" />
 				<PengalihBahasa />
 				{#if sesi}
 					{#if isAkunPanel(sesi.pengguna.peran)}
@@ -97,7 +101,7 @@
 		</div>
 	</header>
 
-	<main id="konten" tabindex="-1" class="flex-1 pb-24 outline-none lg:pb-0">
+	<main id="konten" tabindex="-1" class="flex-1 outline-none">
 		{@render children()}
 	</main>
 
