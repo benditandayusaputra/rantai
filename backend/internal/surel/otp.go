@@ -5,18 +5,21 @@ import (
 	"crypto/tls"
 	"fmt"
 	"log"
+	"mime"
 	"net"
 	"net/smtp"
+	"os"
+	"strings"
 	"time"
 )
 
 const (
-	batasWaktuSMTP  = 15 * time.Second
-	ekstensiTLS     = "STARTTLS"
-	subjekOTP       = "Kode masuk Rantai"
-	templatPesanOTP = "From: Rantai <%s>\r\nTo: %s\r\nSubject: %s\r\nDate: %s\r\nMIME-Version: 1.0\r\n" +
-		"Content-Type: text/plain; charset=UTF-8\r\n\r\n" +
-		"Kode masuk Rantai: %s\r\n\r\nKode berlaku %d menit. Abaikan email ini bila Anda tidak meminta kode.\r\n"
+	batasWaktuSMTP = 15 * time.Second
+	ekstensiTLS    = "STARTTLS"
+	subjekOTP      = "Kode masuk Rantai"
+	templatPesan   = "From: Rantai <%s>\r\nTo: %s\r\nSubject: %s\r\nDate: %s\r\nMIME-Version: 1.0\r\n" +
+		"Content-Type: text/plain; charset=UTF-8\r\n\r\n%s"
+	templatIsiOTP = "Kode masuk Rantai: %s\r\n\r\nKode berlaku %d menit. Abaikan email ini bila Anda tidak meminta kode.\r\n"
 )
 
 type SMTP struct {
@@ -35,7 +38,28 @@ func (PengirimLog) KirimOTP(_ context.Context, _, kode string) error {
 	return nil
 }
 
+func (PengirimLog) Kirim(_ context.Context, _, subjek, _ string) error {
+	log.Printf("email mode demo: %s", subjek)
+	return nil
+}
+
+func DariEnv(umurKode time.Duration) (SMTP, bool) {
+	host := os.Getenv("SMTP_HOST")
+	return SMTP{
+		Host: host, Port: os.Getenv("SMTP_PORT"), Pengguna: os.Getenv("SMTP_PENGGUNA"),
+		Sandi: os.Getenv("SMTP_SANDI"), Dari: os.Getenv("SMTP_DARI"), UmurKode: umurKode,
+	}, host != ""
+}
+
 func (s SMTP) KirimOTP(ctx context.Context, email, kode string) error {
+	return s.Kirim(ctx, email, subjekOTP, s.isiOTP(kode))
+}
+
+func (s SMTP) isiOTP(kode string) string {
+	return fmt.Sprintf(templatIsiOTP, kode, int(s.UmurKode.Minutes()))
+}
+
+func (s SMTP) Kirim(ctx context.Context, email, subjek, isi string) error {
 	koneksi, err := (&net.Dialer{Timeout: batasWaktuSMTP}).DialContext(ctx, "tcp", net.JoinHostPort(s.Host, s.Port))
 	if err != nil {
 		return fmt.Errorf("sambung SMTP: %w", err)
@@ -51,7 +75,7 @@ func (s SMTP) KirimOTP(ctx context.Context, email, kode string) error {
 	if err := s.amankan(klien); err != nil {
 		return err
 	}
-	return s.kirim(klien, email, s.susunPesan(email, kode))
+	return s.kirim(klien, email, s.susunPesan(email, subjek, isi))
 }
 
 func (s SMTP) amankan(klien *smtp.Client) error {
@@ -89,6 +113,7 @@ func (s SMTP) kirim(klien *smtp.Client, email string, pesan []byte) error {
 	return klien.Quit()
 }
 
-func (s SMTP) susunPesan(email, kode string) []byte {
-	return fmt.Appendf(nil, templatPesanOTP, s.Dari, email, subjekOTP, time.Now().Format(time.RFC1123Z), kode, int(s.UmurKode.Minutes()))
+func (s SMTP) susunPesan(email, subjek, isi string) []byte {
+	baris := strings.ReplaceAll(strings.ReplaceAll(isi, "\r\n", "\n"), "\n", "\r\n")
+	return fmt.Appendf(nil, templatPesan, s.Dari, email, mime.QEncoding.Encode("utf-8", subjek), time.Now().Format(time.RFC1123Z), baris)
 }

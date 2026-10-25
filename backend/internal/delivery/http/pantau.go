@@ -23,6 +23,52 @@ type LayananWebPush interface {
 	Matikan(ctx context.Context, penggunaID int64, endpoint string) error
 }
 
+type LayananRingkasanEmail interface {
+	IsAktif(ctx context.Context, penggunaID int64) (bool, error)
+	Aktifkan(ctx context.Context, penggunaID int64) error
+	Matikan(ctx context.Context, penggunaID int64) error
+}
+
+type handlerRingkasanEmail struct {
+	layanan LayananRingkasanEmail
+}
+
+type statusRingkasanJSON struct {
+	Aktif bool `json:"aktif"`
+}
+
+func daftarkanRingkasanEmail(api fiber.Router, layanan Layanan, masuk fiber.Handler) {
+	if layanan.RingkasanEmail == nil {
+		return
+	}
+	h := handlerRingkasanEmail{layanan: layanan.RingkasanEmail}
+	api.Get("/ringkasan-email", masuk, h.status)
+	api.Put("/ringkasan-email", masuk, h.aktifkan)
+	api.Delete("/ringkasan-email", masuk, h.matikan)
+}
+
+func (h handlerRingkasanEmail) status(c fiber.Ctx) error {
+	aktif, err := h.layanan.IsAktif(c.Context(), klaimAkses(c).PenggunaID)
+	if err != nil {
+		return err
+	}
+	return kirimData(c, statusRingkasanJSON{Aktif: aktif})
+}
+
+func (h handlerRingkasanEmail) aktifkan(c fiber.Ctx) error {
+	if err := h.layanan.Aktifkan(c.Context(), klaimAkses(c).PenggunaID); err != nil {
+		return err
+	}
+	return kirimData(c, statusRingkasanJSON{Aktif: true})
+}
+
+func (h handlerRingkasanEmail) matikan(c fiber.Ctx) error {
+	if err := h.layanan.Matikan(c.Context(), klaimAkses(c).PenggunaID); err != nil {
+		return err
+	}
+	return kirimData(c, statusRingkasanJSON{Aktif: false})
+}
+
 type handlerWebPush struct {
 	layanan LayananWebPush
 }
@@ -106,6 +152,7 @@ func daftarkanPantau(api fiber.Router, layanan Layanan) {
 	api.Delete("/langganan/:id", masuk, h.berhenti)
 	api.Get("/notifikasi", masuk, h.notifikasi)
 	api.Patch("/notifikasi/:id/dibaca", masuk, h.dibaca)
+	daftarkanRingkasanEmail(api, layanan, masuk)
 }
 
 func keLanggananJSON(l domain.Langganan) langgananJSON {

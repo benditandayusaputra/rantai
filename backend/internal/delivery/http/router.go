@@ -35,6 +35,7 @@ type Layanan struct {
 	KonfirmasiLaporan LayananKonfirmasiLaporan
 	Moderasi          LayananModerasi
 	Pantau            LayananPantau
+	RingkasanEmail    LayananRingkasanEmail
 	WebPush           LayananWebPush
 	Panel             LayananPanel
 }

@@ -33,6 +33,7 @@ func denganAuth(layanan deliveryhttp.Layanan, pool *pgxpool.Pool, cfg config.Ser
 	akun := repository.PenggunaRepository{DB: pool}
 	layanan.Akses = akses
 	layanan.Pantau = usecase.Pantau{Repo: repository.PantauRepository{DB: pool}}
+	layanan.RingkasanEmail = usecase.RingkasanEmail{Repo: repository.PantauRepository{DB: pool}}
 	if pengirim, ada := webpush.DariEnv(nil); ada {
 		layanan.WebPush = usecase.LayananPush{Repo: repository.PantauRepository{DB: pool}, KunciPublik: pengirim.KunciPublik}
 	}
@@ -46,11 +47,8 @@ func denganAuth(layanan deliveryhttp.Layanan, pool *pgxpool.Pool, cfg config.Ser
 }
 
 func pengirimOTP(cfg config.ServerAuth) (usecase.PengirimOTP, bool) {
-	if host := os.Getenv("SMTP_HOST"); host != "" {
-		return surel.SMTP{
-			Host: host, Port: os.Getenv("SMTP_PORT"), Pengguna: os.Getenv("SMTP_PENGGUNA"),
-			Sandi: os.Getenv("SMTP_SANDI"), Dari: os.Getenv("SMTP_DARI"), UmurKode: cfg.OTP.Umur,
-		}, true
+	if smtp, ada := surel.DariEnv(cfg.OTP.Umur); ada {
+		return smtp, true
 	}
 	if os.Getenv("RANTAI_MODE") == usecase.ModeDemo {
 		return surel.PengirimLog{}, true

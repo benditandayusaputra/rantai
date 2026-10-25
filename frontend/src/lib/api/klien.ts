@@ -98,7 +98,7 @@ export async function kirimBerwenang<T>(
 	path: string,
 	token: string,
 	badan: FormData | object,
-	metode: 'POST' | 'PATCH' = 'POST'
+	metode: 'POST' | 'PATCH' | 'PUT' = 'POST'
 ): Promise<T> {
 	const isFormulir = badan instanceof FormData;
 	const respons = await fetchFn(susunURL(path, {}), {

@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"path/filepath"
 
@@ -24,7 +23,7 @@ func pilihJobDemo(nama string, pool *pgxpool.Pool) (job, error) {
 	case usecase.JobParipurna:
 		return buatImporParipurna(pool)
 	default:
-		return nil, fmt.Errorf("job tidak dikenal: %s", nama)
+		return pilihJobPantau(nama, pool)
 	}
 }
 

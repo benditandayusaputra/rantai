@@ -16,6 +16,7 @@ func konfigurasiUji(t *testing.T) Konfigurasi {
 	if err := config.BacaYAML("../../config/kartu.yaml", &k); err != nil {
 		t.Fatal(err)
 	}
+	k.AlamatSitus = "https://rantai-civic.vercel.app"
 	return k
 }
 

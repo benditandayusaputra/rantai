@@ -20,3 +20,25 @@ export function ambilNotifikasi(fetchFn: Fetch, token: string): Promise<HalamanN
 export function tandaiDibaca(fetchFn: Fetch, token: string, id: number): Promise<null> {
 	return kirimBerwenang<null>(fetchFn, `/notifikasi/${id}/dibaca`, token, {}, 'PATCH');
 }
+
+export interface StatusRingkasanEmail {
+	aktif: boolean;
+}
+
+export function ambilRingkasanEmail(fetchFn: Fetch, token: string): Promise<StatusRingkasanEmail> {
+	return ambilBerwenang<StatusRingkasanEmail>(fetchFn, '/ringkasan-email', token);
+}
+
+export function aktifkanRingkasanEmail(
+	fetchFn: Fetch,
+	token: string
+): Promise<StatusRingkasanEmail> {
+	return kirimBerwenang<StatusRingkasanEmail>(fetchFn, '/ringkasan-email', token, {}, 'PUT');
+}
+
+export function matikanRingkasanEmail(
+	fetchFn: Fetch,
+	token: string
+): Promise<StatusRingkasanEmail> {
+	return ambilBerwenang<StatusRingkasanEmail>(fetchFn, '/ringkasan-email', token, 'DELETE');
+}

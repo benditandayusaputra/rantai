@@ -38,7 +38,8 @@ func appUjiPantau(t *testing.T) (*fiber.App, pgx.Tx) {
 		}
 		akses.pengguna[token] = id
 	}
-	return NewApp(config.Server{}, Layanan{Pantau: usecase.Pantau{Repo: repository.PantauRepository{DB: tx}}, Akses: akses}), tx
+	repo := repository.PantauRepository{DB: tx}
+	return NewApp(config.Server{}, Layanan{Pantau: usecase.Pantau{Repo: repo}, RingkasanEmail: usecase.RingkasanEmail{Repo: repo}, Akses: akses}), tx
 }
 
 func mintaPantau(t *testing.T, app *fiber.App, metode, path, body, token string) hasilPanggilan {
@@ -155,4 +156,52 @@ func idPengguna(t *testing.T, tx pgx.Tx, token string) int64 {
 		t.Fatal(err)
 	}
 	return id
+}
+
+func TestRingkasanEmail_AktifkanLaluMatikan_StatusIkut(t *testing.T) {
+	app, _ := appUjiPantau(t)
+
+	mintaPantau(t, app, fiber.MethodPut, "/api/v1/ringkasan-email", "", "token-pemantau")
+	aktif := mintaPantau(t, app, fiber.MethodGet, "/api/v1/ringkasan-email", "", "token-pemantau")
+	lain := mintaPantau(t, app, fiber.MethodGet, "/api/v1/ringkasan-email", "", "token-lain")
+	mintaPantau(t, app, fiber.MethodDelete, "/api/v1/ringkasan-email", "", "token-pemantau")
+	mati := mintaPantau(t, app, fiber.MethodGet, "/api/v1/ringkasan-email", "", "token-pemantau")
+
+	status := func(h hasilPanggilan) any { data, _ := h.respons.Data.(map[string]any); return data["aktif"] }
+	if status(aktif) != true || status(lain) != false || status(mati) != false {
+		t.Errorf("aktif %v, lain %v, mati %v", status(aktif), status(lain), status(mati))
+	}
+}
+
+type pengirimRingkasanUji struct{ subjek []string }
+
+func (p *pengirimRingkasanUji) Kirim(_ context.Context, _, subjek, _ string) error {
+	p.subjek = append(p.subjek, subjek)
+	return nil
+}
+
+func TestRingkasanMingguan_PaketBaruDiKecamatanDipantau_TerkirimSekaliSepekan(t *testing.T) {
+	app, tx := appUjiPantau(t)
+	if _, err := tx.Exec(t.Context(), sqlPaketPantauUji); err != nil {
+		t.Fatal(err)
+	}
+	mintaPantau(t, app, fiber.MethodPost, "/api/v1/langganan", `{"kode_wilayah":"31.72.06"}`, "token-pemantau")
+	mintaPantau(t, app, fiber.MethodPut, "/api/v1/ringkasan-email", "", "token-pemantau")
+	buatKejadianUji(t, tx)
+	pengirim := &pengirimRingkasanUji{}
+	kirim := usecase.KirimRingkasanMingguan{
+		Repo: repository.PantauRepository{DB: tx}, Pengirim: pengirim, AlamatSitus: "https://rantai.uji", Sekarang: time.Now,
+	}
+
+	pertama, err := kirim.Jalankan(t.Context())
+	if err != nil {
+		t.Fatal(err)
+	}
+	kedua, err := kirim.Jalankan(t.Context())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if pertama != 1 || kedua != 0 || len(pengirim.subjek) != 1 {
+		t.Errorf("pertama %d, kedua %d, subjek %v", pertama, kedua, pengirim.subjek)
+	}
 }

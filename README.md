@@ -119,6 +119,8 @@ docker compose -f docker-compose.prod.yml --profile caddy up -d --build
 docker compose -f docker-compose.prod.yml run --rm --entrypoint worker api <job>
 ```
 
+Jadwalkan `docker compose -f docker-compose.prod.yml run --rm --entrypoint worker api ringkasan_mingguan` sepekan sekali (misalnya cron Senin pagi) untuk mengirim ringkasan Pantau via email; alamat situs di tautan email dan kartu bagikan diatur di `backend/config/situs.yaml`.
+
 Profile `caddy` menyalakan Caddy milik Rantai dengan TLS otomatis untuk `API_DOMAIN` (misalnya `rantai.130-162-198-219.sslip.io`). Bila server sudah punya reverse proxy bersama, lewati profile itu dan tambahkan `-f deploy/compose.proxy-bersama.yml` agar API bergabung ke jaringan proxy (`JARINGAN_PROXY`, bawaan `deploy_default`) dengan alias `rantai-api`. Layanan `cadangan` menyimpan `pg_dump` harian dari Neon ke `cadangan/` selama tujuh hari.
 
 Isi `.env` server dengan URL Neon, `AUTH_RAHASIA`, `PROXY_RAHASIA` acak, kredensial MinIO, dan `CORS_ORIGIN=https://rantai-civic.vercel.app`. Tanpa `SMTP_HOST`, masuk dengan OTP hanya aktif bila `RANTAI_MODE=demo`.
@@ -148,8 +150,7 @@ API memakai IP pengunjung dari header `X-Klien-Asli` untuk batas laju hanya bila
 - [x] Fitur P1: isu yang disuarakan, sikap fraksi, aspirasi reses, Lapor Bukti, moderasi, profil penyedia, Cek Sekolahku, Pantau dan Web Push
 - [x] Redesain antarmuka, tes alur demo, aksesibilitas WCAG 2.1 AA, performa, deploy produksi
 - [ ] Snapshot luring final dari data lengkap untuk demo tanpa internet
-- [x] Cadangan P2: tren antartahun, unduh CSV paket, kartu ringkasan untuk dibagikan, bahasa Inggris
-- [ ] Cadangan P2: pengalih tema, ringkasan mingguan via email
+- [x] Cadangan P2: tren antartahun, unduh CSV paket, kartu ringkasan untuk dibagikan, bahasa Inggris, pengalih tema, ringkasan mingguan via email
 
 Rincian setiap tugas ada di `docs/PLAN.md`.
 

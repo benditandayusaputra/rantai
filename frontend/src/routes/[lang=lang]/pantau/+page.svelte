@@ -16,6 +16,7 @@
 	import { pulihkanSesi, sesiAktif } from '$lib/features/akun/sesi.svelte';
 	import { kelompokkanPerHari, tampilanKejadian } from '$lib/features/pantau/pantau';
 	import SakelarPush from '$lib/features/pantau/SakelarPush.svelte';
+	import SakelarRingkasanEmail from '$lib/features/pantau/SakelarRingkasanEmail.svelte';
 	import { formatJam } from '$lib/format';
 	import { bahasaAktif, t } from '$lib/i18n';
 
@@ -189,6 +190,7 @@
 			</div>
 			<aside class="flex flex-col gap-4 lg:col-span-4">
 				<SakelarPush token={sesi.token_akses} />
+				<SakelarRingkasanEmail token={sesi.token_akses} />
 				<section class="flex flex-col gap-2 rounded-lg border border-line bg-info-bg p-5">
 					<h2 class="flex items-center gap-2 font-bold">
 						<Info size={18} strokeWidth={1.75} class="text-info" aria-hidden="true" />

@@ -27,6 +27,7 @@ const (
 	pathKonfigurasiOpentender   = "config/opentender.yaml"
 	pathKonfigurasiMedia        = "config/media.yaml"
 	pathKonfigurasiKartu        = "config/kartu.yaml"
+	pathKonfigurasiSitus        = "config/situs.yaml"
 )
 
 func main() {
@@ -137,9 +138,14 @@ func denganSumberDanKartu(layanan deliveryhttp.Layanan, pool *pgxpool.Pool) (del
 
 func buatPembuatKartu() (kartu.Pembuat, error) {
 	var k kartu.Konfigurasi
+	var situs domain.Situs
 	if err := config.BacaYAML(pathKonfigurasiKartu, &k); err != nil {
 		return kartu.Pembuat{}, err
 	}
+	if err := config.BacaYAML(pathKonfigurasiSitus, &situs); err != nil {
+		return kartu.Pembuat{}, err
+	}
+	k.AlamatSitus = situs.Alamat
 	return kartu.Baru(k)
 }
 

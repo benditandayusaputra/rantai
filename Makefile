@@ -12,7 +12,7 @@ COMPOSE := docker compose
 MIGRATE := $(COMPOSE) run --rm --build migrate
 KLIEN_PG := $(COMPOSE) run --rm -T klien-pg sh -c
 
-.PHONY: up down migrate siapkan-uji e2e migrate-down lint test impor-wilayah impor-tema impor-kpu-dprd impor-lpse impor-sirup impor-opentender turunan laporan-geocode snapshot-paket muat-snapshot-paket impor-umpan-dprd impor-umpan-media ringkas-umpan impor-sekolah impor-daya-tampung hitung-calon-lulusan hitung-indikator impor-paripurna kunci-vapid snapshot-demo seed-demo tanya-demo
+.PHONY: up down migrate siapkan-uji e2e migrate-down lint test impor-wilayah impor-tema impor-kpu-dprd impor-lpse impor-sirup impor-opentender turunan laporan-geocode snapshot-paket muat-snapshot-paket impor-umpan-dprd impor-umpan-media ringkas-umpan impor-sekolah impor-daya-tampung hitung-calon-lulusan hitung-indikator impor-paripurna kunci-vapid ringkasan-mingguan snapshot-demo seed-demo tanya-demo
 
 up:
 	$(COMPOSE) up -d --wait db minio
@@ -97,6 +97,9 @@ impor-paripurna:
 
 kunci-vapid:
 	cd backend && go run ./tools/kuncivapid
+
+ringkasan-mingguan:
+	cd backend && go run ./cmd/worker ringkasan_mingguan
 
 SNAPSHOT_DEMO := data/snapshot/rantai.sql.gz
 

@@ -40,7 +40,7 @@ type Teks struct {
 }
 
 type Konfigurasi struct {
-	AlamatSitus string          `yaml:"alamat_situs"`
+	AlamatSitus string          `yaml:"-"`
 	Teks        map[string]Teks `yaml:"teks"`
 }
 
