@@ -10,6 +10,11 @@ services:
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
     volumes:
       - minio-data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-fs", "http://localhost:9000/minio/health/live"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
 
   api:
     image: rantai-api:latest
@@ -25,7 +30,8 @@ services:
     volumes:
       - ./data/raw:/app/data/raw
     depends_on:
-      - minio
+      minio:
+        condition: service_healthy
 
   migrate:
     build:
