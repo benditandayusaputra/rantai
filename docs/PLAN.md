@@ -335,21 +335,23 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - Commit: `♿️ Perbaiki temuan audit aksesibilitas halaman utama`
   - Selesai bila: tidak ada pelanggaran serius atau kritis.
 - [x] **T-1003** Performa
-  - Halaman kecamatan menunggu ringkasan saat `load` sehingga konten ada di HTML SSR dan hidrasi tidak merender ulang (CLS 0,23 ke 0); panel Tanya dimuat saat pertama dibuka; ikon Lucide disatukan dalam satu potongan JS (78 ke 12 permintaan JS kecil). MapLibre sudah dimuat dinamis sejak T-606.
+  - Halaman kecamatan menunggu ringkasan saat `load` sehingga konten ada di HTML SSR dan hidrasi tidak merender ulang (CLS 0,23 ke 0); panel Tanya dimuat saat pertama dibuka; ikon Lucide disatukan dalam satu potongan JS (permintaan JS halaman kecamatan 78 ke 36). MapLibre sudah dimuat dinamis sejak T-606.
   - Lighthouse 12.6 mobile (simulasi bawaan) atas build produksi di balik kompresi gzip seperti Vercel: beranda 97, kecamatan 96, LCP 2,5 dan 2,7 s, CLS 0.
   - p95 API lokal dengan data parsial (tanpa Dapodik, paket belum berlokasi): ringkasan kecamatan 27 ms, wakil 7 ms, peta tema 3 ms, paket kecamatan 10 ms, cari wilayah 77 ms. Diukur ulang pada data penuh di T-1005.
   - Commit: `⚡️ Percepat muat halaman kecamatan dan peta`
   - Selesai bila: Lighthouse mobile 90 ke atas untuk beranda dan halaman kecamatan; API p95 di bawah 300 ms pada data penuh.
-- [ ] **T-1004** Deploy
+- [x] **T-1004** Deploy
   - Compose produksi dengan Caddy, cadangan basis data harian; server di Indonesia untuk job LPSE dan SiRUP.
   - Atur proxy tepercaya di Fiber (`TrustProxy`) agar batas laju per IP dan HSTS bekerja di belakang Caddy.
+  - Dikerjakan dalam tiga commit: compose produksi, Caddy, dan cadangan harian; rahasia proxy antara frontend Vercel dan API; image API lintas arsitektur. Frontend di `https://rantai-civic.vercel.app`. Bila server API di luar Indonesia, job LPSE dan SiRUP dijalankan dari mesin di Indonesia lalu hasilnya dibawa dengan `make snapshot-paket` dan `make muat-snapshot-paket`.
   - Commit: `🔧 Siapkan deploy produksi dengan Caddy`
 - [ ] **T-1005** Snapshot luring final (DSR-01)
   - Snapshot data (`make snapshot-demo` di mesin dengan data lengkap), kunci `kecamatan_demo` di `skenario_demo.yaml`, rekam ulang `data/snapshot/tanya_demo.json` dengan `make tanya-demo` terhadap API live berdata lengkap, PMTiles wilayah DKI, uji jalan tanpa internet.
   - Commit: `🗃️ Perbarui snapshot data dan tile peta untuk demo luring`
   - Ukur ulang p95 API halaman wilayah pada data penuh (sasaran di bawah 300 ms, T-1003).
   - Selesai bila: alur demo lulus dengan jaringan dimatikan.
-- [ ] **T-1006** README final
+- [x] **T-1006** README final
+  - Fitur per modul, diagram arsitektur, cara menjalankan dan menguji, env Vercel untuk domain `rantai-civic.vercel.app`, dan progres akhir. Butir snapshot luring tetap terbuka sampai T-1005.
   - Commit: `📝 Perbarui README dengan fitur, arsitektur, dan progres akhir`
 
 ## Cadangan P2 (setelah semua di atas)
