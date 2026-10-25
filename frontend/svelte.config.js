@@ -12,7 +12,9 @@ export default {
 		warningFilter: (peringatan) => !regionGulirBisaDifokus(peringatan)
 	},
 	kit: {
-		adapter: process.env.VERCEL ? adapterVercel({ runtime: 'nodejs22.x' }) : adapterNode(),
+		adapter: process.env.VERCEL
+			? adapterVercel({ runtime: 'nodejs22.x', regions: ['syd1'] })
+			: adapterNode(),
 		env: { dir: '..' }
 	}
 };
