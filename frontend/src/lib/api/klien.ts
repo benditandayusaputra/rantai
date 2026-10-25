@@ -45,12 +45,22 @@ export class GalatAPI extends Error {
 	}
 }
 
+const asalRelatif = 'http://relatif.invalid';
+
+function alamatDasar(): string {
+	return env.PUBLIC_API_URL || alamatBawaan;
+}
+
+function keTeks(url: URL): string {
+	return url.origin === asalRelatif ? url.pathname + url.search : url.toString();
+}
+
 export function susunURL(path: string, kueri: Kueri): string {
-	const url = new URL((env.PUBLIC_API_URL || alamatBawaan) + path);
+	const url = new URL(alamatDasar() + path, asalRelatif);
 	for (const [nama, nilai] of Object.entries(kueri)) {
 		if (nilai !== undefined && nilai !== '') url.searchParams.set(nama, String(nilai));
 	}
-	return url.toString();
+	return keTeks(url);
 }
 
 async function bacaAmplop<T>(respons: Response): Promise<Amplop<T> | null> {
@@ -125,7 +135,7 @@ export function alamatKartuKecamatan(kode: string, bahasa: string): string {
 }
 
 export function urlServer(path: string): string {
-	return new URL(path, env.PUBLIC_API_URL || alamatBawaan).toString();
+	return keTeks(new URL(path, new URL(alamatDasar(), asalRelatif)));
 }
 
 export async function ambilBerwenang<T>(
