@@ -85,6 +85,7 @@ export interface Wakil {
 	fraksi: string;
 	komisi: Komisi | null;
 	duduk_di_komisi_pengawas: boolean;
+	foto_url?: string;
 }
 
 export interface Dapil {
@@ -151,6 +152,13 @@ export interface TitikTren {
 	rasio: Angka;
 }
 
+export interface FotoSekolah {
+	url: string;
+	sumber: 'sekolah_kita' | 'wikimedia';
+	halaman: string;
+	kredit: string;
+}
+
 export interface Sekolah {
 	npsn: string;
 	nama: string;
@@ -159,6 +167,7 @@ export interface Sekolah {
 	lokasi: Titik | null;
 	jalur: 'negeri' | 'spmb_bersama' | null;
 	daya_tampung: Angka | null;
+	foto?: FotoSekolah | null;
 }
 
 export interface FiturPeta<G, P> {

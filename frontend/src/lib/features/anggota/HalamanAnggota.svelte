@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Building2, ExternalLink, Info, Landmark, MapPin, Users } from '@lucide/svelte';
 	import type { ProfilAnggota } from '$lib/api/tipe';
-	import { inisial } from '$lib/features/kecamatan/kecamatan';
+	import FotoWakil from '$lib/components/FotoWakil.svelte';
 	import { bahasaAktif, t } from '$lib/i18n';
 	import IsuDisuarakan from './IsuDisuarakan.svelte';
 	import JejakKegiatan from './JejakKegiatan.svelte';
@@ -28,14 +28,18 @@
 			class="card flex flex-col gap-5 p-5 md:p-6 lg:flex-row lg:items-center lg:justify-between lg:p-8"
 		>
 			<div class="flex items-start gap-4 md:items-center">
-				<span
-					class="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-pill border border-line-strong bg-sunken font-heading text-h3 font-bold text-fg md:h-18 md:w-18 md:text-h2"
-					aria-hidden="true">{inisial(anggota.nama)}</span
-				>
+				<FotoWakil
+					nama={anggota.nama}
+					foto={anggota.foto_url}
+					class="h-20 w-20 font-heading text-h3 md:h-24 md:w-24 md:text-h2"
+				/>
 				<div class="flex min-w-0 flex-col gap-2">
 					<p class="t-over">{t('member.overline')}</p>
 					<h1 class="t-h1">{anggota.nama}</h1>
 					<p class="text-muted">{anggota.fraksi} · {anggota.partai}</p>
+					{#if anggota.foto_url}
+						<p class="text-caption text-muted">{t('photo.dprdShort')}</p>
+					{/if}
 					<p
 						class="inline-flex items-center gap-2 self-start rounded-xs bg-secondary px-3 py-1 text-small font-bold text-secondary-on"
 					>

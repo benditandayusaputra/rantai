@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { MapPin, School } from '@lucide/svelte';
 	import type { SekolahTerdekat } from '$lib/api/tipe';
+	import FotoSekolah from '$lib/components/FotoSekolah.svelte';
+	import KreditFoto from '$lib/components/KreditFoto.svelte';
 	import ProvenanceBadge from '$lib/components/ProvenanceBadge.svelte';
 	import { tampilkanAngka } from '$lib/features/kecamatan/kecamatan';
 	import { kunciJenisSekolah } from '$lib/features/pendidikan/pendidikan';
@@ -34,5 +36,7 @@
 				<span class="text-muted">{t('pen.school.noSeats')}</span>
 			{/if}
 		</span>
+		{#if sekolah.foto}<KreditFoto foto={sekolah.foto} />{/if}
 	</span>
+	<FotoSekolah foto={sekolah.foto} class="h-16 w-20 self-start md:h-20 md:w-28" />
 </li>

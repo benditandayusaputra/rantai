@@ -44,6 +44,7 @@
 			<Users size={20} strokeWidth={1.75} aria-hidden="true" class="text-muted" />
 			{t('acc.reps', { dapil: dapil.nomor })}
 		</h3>
+		<p class="text-caption text-muted">{t('photo.dprd')}</p>
 		<ul class="grid gap-3 md:grid-cols-2 md:gap-4 xl:grid-cols-3">
 			{#each dapil.anggota as wakil (wakil.id)}
 				<li><RepresentativeCard {wakil} /></li>

@@ -18,6 +18,7 @@
 	import type { WilayahDitemukan } from '$lib/api/tipe';
 	import CertaintyBadge from '$lib/components/CertaintyBadge.svelte';
 	import ErrorState from '$lib/components/ErrorState.svelte';
+	import FotoWakil from '$lib/components/FotoWakil.svelte';
 	import GapClassChip from '$lib/components/GapClassChip.svelte';
 	import ProvenanceBadge from '$lib/components/ProvenanceBadge.svelte';
 	import RegionSearch from '$lib/components/RegionSearch.svelte';
@@ -38,7 +39,7 @@
 		urutanKelas,
 		type IsiArea
 	} from '$lib/features/dasbor/dasbor';
-	import { inisial, kunciKelas, tampilkanAngka } from '$lib/features/kecamatan/kecamatan';
+	import { kunciKelas, tampilkanAngka } from '$lib/features/kecamatan/kecamatan';
 	import { cariLokasiku, type StatusLokasi } from '$lib/features/wilayah/lokasi';
 	import { tujuanWilayah } from '$lib/features/wilayah/wilayah';
 	import { formatAngka } from '$lib/format';
@@ -443,10 +444,11 @@
 										href="/{bahasaAktif}/anggota/{wakil.id}"
 										class="group flex min-h-14 items-center gap-3 py-2"
 									>
-										<span
-											class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-pill border border-line-strong bg-sunken text-caption font-semibold"
-											aria-hidden="true">{inisial(wakil.nama)}</span
-										>
+										<FotoWakil
+											nama={wakil.nama}
+											foto={wakil.foto_url}
+											class="h-10 w-10 text-caption"
+										/>
 										<span class="flex min-w-0 flex-1 flex-col">
 											<span
 												class="truncate text-small font-semibold underline-offset-4 group-hover:underline"
@@ -460,7 +462,10 @@
 						</ul>
 					{/if}
 					<div class="mt-3 flex flex-wrap items-start justify-between gap-x-6 gap-y-2">
-						<p class="text-caption text-muted">{t('home.reps.noScore')}</p>
+						<p class="text-caption text-muted">
+							{t('home.reps.noScore')}
+							{t('photo.dprd')}
+						</p>
 						<a
 							href="{halamanWilayah}?bagian=wakilku"
 							class="inline-flex min-h-touch items-center text-small font-semibold underline-offset-4 hover:underline"

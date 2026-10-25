@@ -931,5 +931,11 @@
 	"satuan.sebutan": "sebutan",
 	"dash.money.budgetYear": "tahun anggaran {tahun}",
 	"dash.acc.perMonth": "rata-rata {n} per bulan tercatat",
-	"dash.acc.agency.note": "Paket yang di LPSE hanya mencatat Pemerintah Provinsi DKI Jakarta tanpa satuan kerja tidak ditampilkan di grafik ini."
+	"dash.acc.agency.note": "Paket yang di LPSE hanya mencatat Pemerintah Provinsi DKI Jakarta tanpa satuan kerja tidak ditampilkan di grafik ini.",
+	"photo.credit": "Foto: {sumber}",
+	"photo.creditBy": "Foto: {kredit}, {sumber}",
+	"photo.source.sekolah_kita": "Sekolah Kita Kemendikdasmen",
+	"photo.source.wikimedia": "Wikimedia Commons",
+	"photo.dprd": "Foto anggota dari situs resmi DPRD DKI Jakarta.",
+	"photo.dprdShort": "Foto: situs resmi DPRD DKI Jakarta"
 }

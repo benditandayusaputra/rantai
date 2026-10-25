@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { ChevronRight, Landmark } from '@lucide/svelte';
 	import type { Wakil } from '$lib/api/tipe';
-	import { inisial } from '$lib/features/kecamatan/kecamatan';
+	import FotoWakil from './FotoWakil.svelte';
 	import { bahasaAktif, t } from '$lib/i18n';
 
 	let { wakil }: { wakil: Wakil } = $props();
@@ -11,10 +11,7 @@
 	href="/{bahasaAktif}/anggota/{wakil.id}"
 	class="card-link group flex h-full items-start gap-3 p-4"
 >
-	<span
-		class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-pill border border-line-strong bg-sunken font-semibold text-fg"
-		aria-hidden="true">{inisial(wakil.nama)}</span
-	>
+	<FotoWakil nama={wakil.nama} foto={wakil.foto_url} class="h-12 w-12 text-small" />
 	<span class="flex min-w-0 flex-1 flex-col gap-1">
 		<span class="font-bold">{wakil.nama}</span>
 		<span class="text-small text-muted">

@@ -370,6 +370,8 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
 - [x] **T-1108** Redesain mengikuti DESIGN.md 1.0 · `💄 Redesain antarmuka mengikuti sistem desain baru dan logo rantai`
   - Token baru (kertas, tinta, merah Rantai), Plus Jakarta Sans untuk judul dan Inter untuk teks, logo rantai hasil vektorisasi `logo-rantai.png`, kepala halaman bergaris bawah merah, dan beranda baru berisi sorotan satu kecamatan dengan data asli (peta kesenjangan, kursi SMP, paket LPSE, komisi pengawas).
   - Menggantikan catatan T-1105: tema terang menjadi bawaan dan tidak lagi mengikuti sistem; tema gelap tetap lewat tombol.
+- [x] **T-1109** Foto anggota DPRD dan foto sekolah · `✨ Tampilkan foto anggota DPRD dan sekolah beserta sumbernya`
+  - Foto anggota dari situs DPRD DKI (106/106), foto sampul sekolah dari Sekolah Kita (2.689 sekolah), dan cadangan Wikimedia Commons lewat NPSN di Wikidata (20 sekolah) dengan penulis dan lisensi. Rincian di data-sources GD-16.
 
 ## Keluaran lomba di luar kode
 

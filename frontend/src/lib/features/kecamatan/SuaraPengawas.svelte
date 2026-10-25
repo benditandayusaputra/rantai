@@ -4,7 +4,7 @@
 	import type { WakilDenganUmpan } from '$lib/api/tipe';
 	import KartuUmpan from '$lib/features/anggota/KartuUmpan.svelte';
 	import { bahasaAktif, t } from '$lib/i18n';
-	import { inisial } from './kecamatan';
+	import FotoWakil from '$lib/components/FotoWakil.svelte';
 
 	let { kodeKecamatan, kodeTema }: { kodeKecamatan: string; kodeTema: string } = $props();
 
@@ -38,10 +38,7 @@
 						href="/{bahasaAktif}/anggota/{wakil.id}"
 						class="group flex items-center gap-3 font-bold underline-offset-4 hover:underline"
 					>
-						<span
-							class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-pill bg-secondary text-small text-secondary-on"
-							aria-hidden="true">{inisial(wakil.nama)}</span
-						>
+						<FotoWakil nama={wakil.nama} foto={wakil.foto_url} class="h-10 w-10 text-small" />
 						<span class="min-w-0 flex-1">{wakil.nama}</span>
 						<ChevronRight
 							size={18}

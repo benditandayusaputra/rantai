@@ -931,5 +931,11 @@
 	"satuan.sebutan": "mentions",
 	"dash.money.budgetYear": "budget year {tahun}",
 	"dash.acc.perMonth": "average {n} per recorded month",
-	"dash.acc.agency.note": "Packages that LPSE records only under the Jakarta provincial government, without a working unit, are left out of this chart."
+	"dash.acc.agency.note": "Packages that LPSE records only under the Jakarta provincial government, without a working unit, are left out of this chart.",
+	"photo.credit": "Photo: {sumber}",
+	"photo.creditBy": "Photo: {kredit}, {sumber}",
+	"photo.source.sekolah_kita": "Sekolah Kita, Ministry of Primary and Secondary Education",
+	"photo.source.wikimedia": "Wikimedia Commons",
+	"photo.dprd": "Member photos from the official Jakarta DPRD website.",
+	"photo.dprdShort": "Photo: official Jakarta DPRD website"
 }
