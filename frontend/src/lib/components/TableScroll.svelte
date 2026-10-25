@@ -10,11 +10,6 @@
 	let { label, class: kelas = '', children }: Props = $props();
 </script>
 
-<div
-	role="region"
-	aria-label={label}
-	tabindex="0"
-	class="overflow-x-auto rounded-lg border border-line bg-surface {kelas}"
->
+<div role="region" aria-label={label} tabindex="0" class="card overflow-x-auto {kelas}">
 	{@render children()}
 </div>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Info, Wallet } from '@lucide/svelte';
 	import type { Anggaran, TemaKecamatan } from '$lib/api/tipe';
 	import EmptyState from '$lib/components/EmptyState.svelte';
 	import KeyNumberCard from '$lib/components/KeyNumberCard.svelte';
@@ -16,9 +17,12 @@
 </script>
 
 {#if anggaran}
-	<section aria-labelledby="judul-anggaran" class="flex flex-col gap-4">
-		<h3 id="judul-anggaran" class="t-h3">{t('money.yearTitle', { year: anggaran.tahun })}</h3>
-		<div class="grid grid-cols-2 gap-3 lg:gap-5">
+	<section aria-labelledby="judul-anggaran" class="card flex flex-col gap-5 p-4 md:p-6">
+		<div class="flex items-center gap-3">
+			<span class="icon-tile"><Wallet size={20} strokeWidth={1.75} aria-hidden="true" /></span>
+			<h3 id="judul-anggaran" class="t-h3">{t('money.yearTitle', { year: anggaran.tahun })}</h3>
+		</div>
+		<div class="grid grid-cols-2 gap-3 lg:gap-4">
 			<KeyNumberCard label={t('money.count')} angka={anggaran.jumlah_paket} size="lg" />
 			<KeyNumberCard
 				label={t('money.total', { year: anggaran.tahun })}
@@ -26,7 +30,10 @@
 				size="lg"
 			/>
 		</div>
-		<p class="text-small text-muted">{t('money.locationNote')}</p>
+		<p class="flex gap-2 text-small text-muted">
+			<Info size={18} strokeWidth={1.75} aria-hidden="true" class="mt-px shrink-0" />
+			{t('money.locationNote')}
+		</p>
 	</section>
 {:else}
 	<EmptyState title={t('money.empty')} />

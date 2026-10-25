@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ArrowLeft, X } from '@lucide/svelte';
+	import { ArrowLeft, Camera, X } from '@lucide/svelte';
 	import { t } from '$lib/i18n';
 
 	interface Props {
@@ -15,11 +15,11 @@
 	const teksLangkah = $derived(t('report.step', { n: step, total }));
 </script>
 
-<header class="sticky top-0 z-sticky border-b border-line bg-surface">
+<header class="glass sticky top-0 z-sticky border-b border-line">
 	<div class="mx-auto flex max-w-form items-center gap-3 px-4 pt-3">
 		<button
 			type="button"
-			class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md hover:bg-sunken"
+			class="btn btn-ghost btn-icon"
 			aria-label={step === 1 ? t('action.close') : t('action.back')}
 			onclick={step === 1 ? onclose : onback}
 		>
@@ -29,10 +29,12 @@
 				<ArrowLeft size={20} strokeWidth={1.75} aria-hidden="true" />
 			{/if}
 		</button>
-		<div class="flex flex-col">
+		<div class="flex min-w-0 flex-1 flex-col">
 			<span class="font-bold">{t('report.flowTitle')}</span>
-			<span class="text-small text-muted">{teksLangkah}</span>
+			<span class="truncate text-small text-muted">{teksLangkah} · {stepLabel}</span>
 		</div>
+		<span class="icon-tile h-9 w-9" aria-hidden="true"><Camera size={18} strokeWidth={1.75} /></span
+		>
 	</div>
 	<div
 		role="progressbar"
@@ -44,7 +46,8 @@
 	>
 		{#each Array.from({ length: total }, (_, i) => i + 1) as urutan (urutan)}
 			<span
-				class="h-1.5 flex-1 rounded-pill {urutan < step
+				class="h-1.5 flex-1 rounded-pill transition-colors duration-base ease-standard {urutan <
+				step
 					? 'bg-primary'
 					: urutan === step
 						? 'border-ctrl border-primary bg-secondary'

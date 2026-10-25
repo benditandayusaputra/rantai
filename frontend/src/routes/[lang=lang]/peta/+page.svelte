@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { ArrowRight, ChevronDown, Layers, Map, MousePointerClick } from '@lucide/svelte';
 	import { replaceState } from '$app/navigation';
 	import { page } from '$app/state';
 	import type { FiturLaporan, PetaPaket, SekolahTerdekat } from '$lib/api/tipe';
@@ -32,6 +33,7 @@
 
 	let lapisan = $state(isAdaTitik ? { ...lapisanAwal, sekolah: true } : lapisanAwal);
 	let isTabel = $state(kueri.get('tampilan') === 'tabel');
+	let isKontrolTerbuka = $state(false);
 	let terpilih = $state<string | null>(null);
 	let paket = $state<PetaPaket['features']>([]);
 	let sekolah = $state<SekolahTerdekat[]>([]);
@@ -103,17 +105,45 @@
 	</div>
 
 	<div
-		class="glass z-map-ui flex flex-col gap-4 rounded-lg p-4 shadow-2 {isTabel
-			? 'wrap mt-6 bg-surface'
-			: 'absolute left-4 top-4 w-66 lg:left-8 lg:top-8'}"
+		class="z-map-ui flex flex-col gap-2 {isTabel
+			? 'wrap mt-6'
+			: 'absolute left-3 top-3 lg:glass lg:left-8 lg:top-8 lg:w-66 lg:gap-3 lg:rounded-lg lg:border lg:border-line lg:p-4 lg:shadow-2'}"
 	>
-		<KontrolLapisan bind:lapisan onchange={simpanKeURL} />
-		{#if lapisan.tema}<LegendaKelas />{/if}
-		<TableToggle
-			bind:pressed={() => isTabel, gantiTampilan}
-			controls="isi-peta"
-			labelKembali={t('action.viewAsMap')}
-		/>
+		<div class="flex flex-col items-start gap-2 md:flex-row {isTabel ? '' : 'lg:order-last'}">
+			<button
+				type="button"
+				class="btn btn-outline text-small shadow-2 lg:hidden"
+				aria-expanded={isKontrolTerbuka}
+				aria-controls="kontrol-lapisan"
+				onclick={() => (isKontrolTerbuka = !isKontrolTerbuka)}
+			>
+				<Layers size={18} strokeWidth={1.75} aria-hidden="true" />
+				{t('map.layers')}
+				<ChevronDown
+					size={16}
+					strokeWidth={1.75}
+					aria-hidden="true"
+					class="transition-transform duration-fast ease-standard {isKontrolTerbuka
+						? 'rotate-180'
+						: ''}"
+				/>
+			</button>
+			<TableToggle
+				bind:pressed={() => isTabel, gantiTampilan}
+				controls="isi-peta"
+				labelKembali={t('action.viewAsMap')}
+				ikonKembali={Map}
+			/>
+		</div>
+		<div
+			id="kontrol-lapisan"
+			class="flex-col gap-4 lg:flex {isKontrolTerbuka ? 'flex' : 'hidden'} {isTabel
+				? 'card p-4 md:flex-row md:gap-10'
+				: 'glass rounded-lg border border-line p-3 shadow-2 lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none lg:backdrop-blur-none'}"
+		>
+			<KontrolLapisan bind:lapisan onchange={simpanKeURL} />
+			{#if lapisan.tema}<LegendaKelas />{/if}
+		</div>
 	</div>
 </div>
 
@@ -138,13 +168,15 @@
 					<KeyNumberCard label={t('tema.ratio')} angka={detailTerpilih.rasio} />
 				{/if}
 			</div>
-			<a
-				href="/{bahasaBawaan}/kecamatan/{detailTerpilih.kode}"
-				class="inline-flex min-h-touch items-center self-start rounded-md bg-primary px-4 font-bold text-primary-on hover:bg-primary-hover"
-				>{t('map.openArea')}</a
-			>
+			<a href="/{bahasaBawaan}/kecamatan/{detailTerpilih.kode}" class="btn btn-primary self-start">
+				{t('map.openArea')}
+				<ArrowRight size={18} strokeWidth={1.75} aria-hidden="true" />
+			</a>
 		{:else}
-			<p class="text-small text-muted">{t('map.select')}</p>
+			<p class="flex items-center gap-2 text-small text-muted">
+				<MousePointerClick size={18} strokeWidth={1.75} aria-hidden="true" class="shrink-0" />
+				{t('map.select')}
+			</p>
 		{/if}
 		<p class="text-caption text-muted">{t('map.basemapNote')}</p>
 	</section>

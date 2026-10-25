@@ -35,7 +35,7 @@
 			aria-hidden="true"
 			data-aktif={(isFokus && !locked && i === indeksAktif) || undefined}
 			data-error={error ? true : undefined}
-			class="flex h-14 w-11 items-center justify-center rounded-md border-ctrl border-line-strong bg-raised font-mono text-h2 sm:w-14 data-[aktif]:border-focus data-[error]:border-danger data-[aktif]:shadow-ring"
+			class="flex h-14 w-11 items-center justify-center rounded-md border-ctrl border-line-strong bg-raised font-mono text-h2 transition-colors duration-fast ease-standard md:w-14 data-[aktif]:border-focus data-[error]:border-danger data-[aktif]:shadow-ring"
 			class:bg-dis-bg={locked}
 			class:text-dis-fg={locked}>{value[i] ?? ''}</span
 		>

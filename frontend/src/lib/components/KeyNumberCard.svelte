@@ -15,9 +15,9 @@
 </script>
 
 <div
-	class="flex flex-col gap-2 rounded-lg border p-4 md:p-5 {angka.label === 'simulasi'
+	class="card flex flex-col gap-2 p-3 md:p-5 {angka.label === 'simulasi'
 		? 'border-cert-sim bg-cert-sim-bg'
-		: 'border-line bg-surface'}"
+		: ''}"
 >
 	<p class="text-caption text-muted">{label}</p>
 	<p class={size === 'lg' ? 'n-lg' : 'n-md'}>

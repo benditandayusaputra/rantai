@@ -1,5 +1,20 @@
 <script lang="ts">
-	import { CircleHelp, FileWarning, Hammer, Newspaper, Building2 } from '@lucide/svelte';
+	import {
+		ArrowLeft,
+		Building2,
+		CircleCheck,
+		CircleHelp,
+		Eye,
+		FileWarning,
+		Hammer,
+		Handshake,
+		House,
+		LoaderCircle,
+		LogIn,
+		Monitor,
+		Newspaper,
+		Scale
+	} from '@lucide/svelte';
 	import { onMount } from 'svelte';
 	import { tangkap } from '$lib/api/klien';
 	import {
@@ -121,13 +136,6 @@
 			t('panel.handover.done')
 		);
 	}
-
-	const kelasTombolUtama =
-		'inline-flex min-h-13 items-center justify-center rounded-md bg-primary px-4 font-semibold text-primary-on hover:bg-primary-hover disabled:bg-dis-bg disabled:text-dis-fg';
-	const kelasTombolGaris =
-		'inline-flex min-h-touch items-center justify-center rounded-md border-ctrl border-line-strong px-4 font-semibold hover:bg-sunken disabled:text-dis-fg';
-	const kelasIsian =
-		'min-h-touch rounded-md border-ctrl border-line-strong bg-surface px-3 hover:border-fg';
 </script>
 
 <svelte:head>
@@ -137,26 +145,52 @@
 {#if !isSesiDiperiksa}
 	<p class="p-8 text-muted" aria-live="polite">{t('state.loading')}</p>
 {:else if !sesi || !isAkunPanel(sesi.pengguna.peran)}
-	<main id="konten" class="mx-auto flex min-h-dvh max-w-form flex-col justify-center gap-4 px-4">
-		<Building2 size={32} strokeWidth={1.75} class="text-primary" aria-hidden="true" />
-		<h1 class="t-h1">{t('panel.title')}</h1>
-		<p class="text-muted">{t('panel.forbidden')}</p>
-		{#if !sesi}
-			<a
-				href="/{bahasaBawaan}/masuk?lanjut={encodeURIComponent(`/${bahasaBawaan}/panel`)}"
-				class={kelasTombolUtama}>{t('action.signIn')}</a
-			>
-		{/if}
-	</main>
+	<div class="flex min-h-dvh flex-col bg-page">
+		<header class="wrap flex h-16 items-center justify-between gap-4 lg:h-18">
+			<Logo />
+			<a href="/{bahasaBawaan}" class="btn btn-ghost btn-sm">
+				<ArrowLeft size={18} strokeWidth={1.75} aria-hidden="true" />
+				{t('nav.home')}
+			</a>
+		</header>
+		<main
+			id="konten"
+			tabindex="-1"
+			class="wrap flex flex-1 items-center justify-center pb-16 outline-none"
+		>
+			<div class="card flex w-full max-w-form flex-col items-start gap-4 p-6 shadow-2 md:p-8">
+				<span class="icon-tile h-14 w-14"
+					><Building2 size={28} strokeWidth={1.75} aria-hidden="true" /></span
+				>
+				<h1 class="t-h1">{t('panel.title')}</h1>
+				<p class="text-muted">{t('panel.forbidden')}</p>
+				{#if !sesi}
+					<a
+						href="/{bahasaBawaan}/masuk?lanjut={encodeURIComponent(`/${bahasaBawaan}/panel`)}"
+						class="btn btn-primary btn-lg btn-block"
+					>
+						<LogIn size={20} strokeWidth={1.75} aria-hidden="true" />
+						{t('action.signIn')}
+					</a>
+				{/if}
+			</div>
+		</main>
+	</div>
 {:else}
-	<div class="flex flex-col gap-3 p-8 lg:hidden">
-		<p>{t('panel.desktopOnly')}</p>
-		<a href="/{bahasaBawaan}" class="font-semibold underline">{t('panel.readOnly')}</a>
+	<div class="flex min-h-dvh items-center justify-center p-4 lg:hidden">
+		<div class="card flex w-full max-w-form flex-col items-start gap-4 p-6">
+			<span class="icon-tile"><Monitor size={20} strokeWidth={1.75} aria-hidden="true" /></span>
+			<p>{t('panel.desktopOnly')}</p>
+			<a href="/{bahasaBawaan}" class="btn btn-outline">
+				<House size={18} strokeWidth={1.75} aria-hidden="true" />
+				{t('panel.readOnly')}
+			</a>
+		</div>
 	</div>
 	<div class="hidden min-h-dvh lg:flex">
 		<nav
 			aria-label={t('panel.title')}
-			class="sticky top-0 flex h-dvh w-60 shrink-0 flex-col gap-6 border-r border-line bg-surface p-5"
+			class="sticky top-0 flex h-dvh w-66 shrink-0 flex-col gap-6 border-r border-line bg-surface p-5"
 		>
 			<Logo />
 			{#if antrean}
@@ -167,34 +201,39 @@
 							<button
 								type="button"
 								aria-current={bagian === kunci ? 'page' : undefined}
-								class="flex min-h-touch w-full items-center gap-3 rounded-md px-3 text-left font-semibold hover:bg-sunken aria-[current=page]:bg-secondary"
+								class="group flex min-h-touch w-full items-center gap-3 rounded-md px-3 text-left text-small font-semibold text-muted transition-colors duration-fast ease-standard hover:bg-sunken hover:text-fg aria-[current=page]:bg-secondary aria-[current=page]:text-secondary-on"
 								onclick={() => pilih(kunci, 0)}
 							>
 								<Ikon size={20} strokeWidth={1.75} aria-hidden="true" />
 								<span class="flex-1">{t(`panel.queue.${kunci}`)}</span>
-								<span class="num text-small">{antrean[kunci].length}</span>
+								<span
+									class="num inline-flex h-6 min-w-6 items-center justify-center rounded-pill bg-sunken px-2 text-caption group-aria-[current=page]:bg-raised"
+									>{antrean[kunci].length}</span
+								>
 							</button>
 						</li>
 					{/each}
 				</ul>
 			{/if}
-			<p class="mt-auto flex items-center gap-2 text-small">
+			<p class="mt-auto flex items-center gap-3 border-t border-line pt-4 text-small">
 				<span
-					class="inline-flex h-8 w-8 items-center justify-center rounded-pill bg-secondary font-bold"
+					class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-pill bg-primary font-bold text-primary-on"
 					>{inisial(sesi.pengguna)}</span
 				>
-				{sesi.pengguna.nama_tampilan || sesi.pengguna.email}
+				<span class="min-w-0 truncate font-semibold"
+					>{sesi.pengguna.nama_tampilan || sesi.pengguna.email}</span
+				>
 			</p>
 		</nav>
 
-		<main id="konten" class="flex flex-1 flex-col gap-6 p-8">
+		<main id="konten" class="flex min-w-0 flex-1 flex-col gap-6 bg-page p-8 xl:p-10">
 			<header class="flex flex-col gap-2">
 				<h1 class="t-h1">
 					{isAnggota ? t('panel.memberTitle') : antrean?.nama_instansi || t('panel.title')}
 				</h1>
 				<p class="max-w-prose text-muted">{isAnggota ? t('panel.memberLead') : t('panel.lead')}</p>
 			</header>
-			{#if pesan}<p role="status" class="text-small">{pesan}</p>{/if}
+			{#if pesan}<p role="status" class="card px-4 py-3 text-small font-semibold">{pesan}</p>{/if}
 
 			{#if !antrean}
 				<p class="text-muted">{t('state.loading')}</p>
@@ -202,7 +241,7 @@
 				{#if !isAnggota}
 					<dl class="grid max-w-content grid-cols-3 gap-4">
 						{#each [{ label: t('panel.queue.sinyal'), n: antrean.sinyal.length }, { label: t('panel.queue.laporan'), n: antrean.laporan.length }, { label: t('panel.kpi.soon'), n: jumlahSegeraBerakhir(antrean) }] as angka (angka.label)}
-							<div class="rounded-lg border border-line bg-surface p-4">
+							<div class="card p-4 lg:p-5">
 								<dt class="text-small text-muted">{angka.label}</dt>
 								<dd class="n-md">{angka.n}</dd>
 							</div>
@@ -225,10 +264,10 @@
 									<li role="option" aria-selected={i === indeks}>
 										<button
 											type="button"
-											class="flex w-full flex-col gap-1 rounded-lg border-ctrl border-line bg-surface p-3 text-left hover:border-fg aria-selected:bg-secondary {i ===
+											class="flex w-full flex-col gap-1 rounded-lg border-ctrl p-4 text-left shadow-1 transition-colors duration-fast ease-standard hover:border-line-strong {i ===
 											indeks
-												? 'border-secondary-on bg-secondary'
-												: ''}"
+												? 'border-primary bg-secondary'
+												: 'border-line bg-surface'}"
 											onclick={() => pilih(bagian, i)}
 										>
 											<span class="font-semibold">{item.judul}</span>
@@ -251,15 +290,25 @@
 					<section aria-labelledby="judul-formulir" class="flex flex-col gap-6">
 						{#if !terpilih}
 							<h2 id="judul-formulir" class="sr-only">{t('panel.reply.title')}</h2>
-							<p class="text-muted">{t('panel.choose')}</p>
+							<div class="card flex flex-col items-center gap-3 px-5 py-10 text-center">
+								<span class="icon-tile"
+									><Scale size={20} strokeWidth={1.75} aria-hidden="true" /></span
+								>
+								<p class="text-muted">{t('panel.choose')}</p>
+							</div>
 						{:else}
 							{#if paketTerpilih}
 								<MaintenanceCounter pemeliharaan={paketTerpilih.pemeliharaan} />
-								<form
-									class="flex flex-col gap-3 rounded-lg border border-line bg-surface p-5"
-									onsubmit={simpanSerahTerima}
-								>
-									<h2 class="t-h3">{t('panel.handover.title')}</h2>
+								<form class="card flex flex-col gap-3 p-5" onsubmit={simpanSerahTerima}>
+									<h2 class="t-h3 flex items-center gap-2">
+										<Handshake
+											size={20}
+											strokeWidth={1.75}
+											aria-hidden="true"
+											class="text-primary"
+										/>
+										{t('panel.handover.title')}
+									</h2>
 									{#if paketTerpilih.tanggal_serah_terima}
 										<p class="text-small text-muted">
 											{t('panel.handover.current', {
@@ -277,7 +326,7 @@
 											required
 											max={hariIni}
 											bind:value={tanggalSerahTerima}
-											class="{kelasIsian} font-normal"
+											class="field font-normal"
 										/>
 									</label>
 									<label class="flex flex-col gap-1 font-semibold">
@@ -285,20 +334,21 @@
 										<input
 											maxlength={100}
 											bind:value={nomorBeritaAcara}
-											class="{kelasIsian} font-normal"
+											class="field font-normal"
 										/>
 									</label>
-									<button type="submit" class={kelasTombolUtama} disabled={isSibuk}
-										>{t('panel.handover.submit')}</button
-									>
+									<button type="submit" class="btn btn-primary self-start" disabled={isSibuk}>
+										<Handshake size={18} strokeWidth={1.75} aria-hidden="true" />
+										{t('panel.handover.submit')}
+									</button>
 								</form>
 							{/if}
 
-							<form
-								class="flex flex-col gap-4 rounded-lg border border-line bg-surface p-5"
-								onsubmit={terbitkan}
-							>
-								<h2 id="judul-formulir" class="t-h3">{t('panel.reply.title')}</h2>
+							<form class="card flex flex-col gap-4 p-5" onsubmit={terbitkan}>
+								<h2 id="judul-formulir" class="t-h3 flex items-center gap-2">
+									<Scale size={20} strokeWidth={1.75} aria-hidden="true" class="text-primary" />
+									{t('panel.reply.title')}
+								</h2>
 								<p class="font-semibold">{terpilih.judul}</p>
 								{#if bagian === 'sinyal'}
 									<p class="rounded-md border-ctrl border-attn-fill bg-attn-bg p-3 text-small">
@@ -319,15 +369,14 @@
 								/>
 								<label class="flex flex-col gap-1 font-semibold">
 									{t('panel.reply.link')}
-									<input
-										type="url"
-										inputmode="url"
-										bind:value={tautan}
-										class="{kelasIsian} font-normal"
-									/>
+									<input type="url" inputmode="url" bind:value={tautan} class="field font-normal" />
 								</label>
 								<label class="flex items-start gap-3">
-									<input type="checkbox" bind:checked={isBerwenang} class="mt-1 h-5 w-5" />
+									<input
+										type="checkbox"
+										bind:checked={isBerwenang}
+										class="mt-0.5 h-5 w-5 shrink-0 accent-primary"
+									/>
 									<span
 										>{isAnggota
 											? t('panel.reply.authorityMember')
@@ -336,10 +385,22 @@
 								</label>
 								<button
 									type="submit"
-									class={kelasTombolUtama}
+									class="btn btn-primary btn-lg"
 									disabled={isSibuk || !isSiapTerbit(isi, isBerwenang)}
+									aria-busy={isSibuk}
 								>
-									{isSibuk ? t('panel.reply.sending') : t('panel.reply.submit')}
+									{#if isSibuk}
+										<LoaderCircle
+											size={20}
+											strokeWidth={1.75}
+											aria-hidden="true"
+											class="animate-spin"
+										/>
+										{t('panel.reply.sending')}
+									{:else}
+										<Scale size={20} strokeWidth={1.75} aria-hidden="true" />
+										{t('panel.reply.submit')}
+									{/if}
 								</button>
 							</form>
 
@@ -348,24 +409,28 @@
 								<div class="flex flex-wrap items-center gap-3">
 									<button
 										type="button"
-										class={kelasTombolGaris}
+										class="btn btn-outline"
 										disabled={isSibuk || terpilih.status !== 'DITANGGAPI'}
 										aria-describedby="petunjuk-selesai"
 										onclick={() =>
 											jalankan(
 												(token) => tandaiLaporanSelesai(fetch, token, idLaporan),
 												t('panel.report.marked')
-											)}>{t('panel.report.done')}</button
+											)}
 									>
+										<CircleCheck size={18} strokeWidth={1.75} aria-hidden="true" />
+										{t('panel.report.done')}
+									</button>
 									<span id="petunjuk-selesai" class="text-small text-muted"
 										>{t('panel.report.doneHint')}</span
 									>
 								</div>
 							{/if}
 
-							<a href={terpilih.tautanPublik} class="self-start font-semibold underline"
-								>{t('panel.openPublic')}</a
-							>
+							<a href={terpilih.tautanPublik} class="btn btn-text self-start">
+								<Eye size={18} strokeWidth={1.75} aria-hidden="true" />
+								{t('panel.openPublic')}
+							</a>
 						{/if}
 					</section>
 				</div>

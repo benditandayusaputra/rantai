@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ExternalLink } from '@lucide/svelte';
+	import { Building2, ExternalLink, Info, Landmark, MapPin, Users } from '@lucide/svelte';
 	import type { ProfilAnggota } from '$lib/api/tipe';
 	import { inisial } from '$lib/features/kecamatan/kecamatan';
 	import { bahasaBawaan, t } from '$lib/i18n';
@@ -9,8 +9,6 @@
 
 	let { anggota }: { anggota: ProfilAnggota } = $props();
 
-	const kelasTautan =
-		'inline-flex min-h-touch items-center gap-2 rounded-md border-ctrl border-line-strong px-4 font-semibold hover:border-fg hover:bg-sunken';
 	const keteranganKomisi = $derived(
 		anggota.komisi
 			? `${anggota.komisi.nama}`
@@ -24,76 +22,104 @@
 	<title>{anggota.nama} · {t('brand.name')}</title>
 </svelte:head>
 
-<article class="wrap flex flex-col gap-8 py-6 lg:py-10">
+<article class="wrap flex flex-col gap-10 py-8 lg:py-12">
 	<header class="flex flex-col gap-4">
-		<p class="t-over">{t('member.overline')}</p>
-		<div class="flex items-center gap-4">
-			<span
-				class="inline-flex h-18 w-18 shrink-0 items-center justify-center rounded-pill bg-secondary text-h2 font-bold text-secondary-on"
-				aria-hidden="true">{inisial(anggota.nama)}</span
-			>
-			<div class="flex flex-col gap-1">
-				<h1 class="t-h1">{anggota.nama}</h1>
-				<p class="text-muted">{anggota.fraksi} · {anggota.partai}</p>
+		<div
+			class="card flex flex-col gap-5 p-5 md:p-6 lg:flex-row lg:items-center lg:justify-between lg:p-8"
+		>
+			<div class="flex items-start gap-4 md:items-center">
+				<span
+					class="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-pill bg-primary text-h3 font-bold text-primary-on md:h-18 md:w-18 md:text-h2"
+					aria-hidden="true">{inisial(anggota.nama)}</span
+				>
+				<div class="flex min-w-0 flex-col gap-2">
+					<p class="t-over">{t('member.overline')}</p>
+					<h1 class="t-h1">{anggota.nama}</h1>
+					<p class="text-muted">{anggota.fraksi} · {anggota.partai}</p>
+					<p
+						class="inline-flex items-center gap-2 self-start rounded-pill bg-secondary px-3 py-1 text-small font-bold text-secondary-on"
+					>
+						<Landmark size={16} strokeWidth={1.75} aria-hidden="true" />{keteranganKomisi}
+					</p>
+				</div>
+			</div>
+			<div class="flex flex-col gap-2 md:flex-row md:flex-wrap lg:flex-col lg:items-stretch">
+				{#each [{ href: anggota.lhkpn_url, label: t('member.lhkpn') }, { href: anggota.url_profil, label: t('member.official') }] as tautan (tautan.label)}
+					{#if tautan.href}
+						<a href={tautan.href} target="_blank" rel="noopener" class="btn btn-outline">
+							{tautan.label}<ExternalLink size={18} strokeWidth={1.75} aria-hidden="true" /><span
+								class="sr-only">{t('a11y.opensNewTab')}</span
+							>
+						</a>
+					{/if}
+				{/each}
 			</div>
 		</div>
-		<p
-			class="self-start rounded-pill bg-secondary px-3 py-1 text-small font-bold text-secondary-on"
-		>
-			{keteranganKomisi}
+		<p class="flex max-w-prose items-start gap-2 text-small text-muted">
+			<Info size={16} strokeWidth={1.75} aria-hidden="true" class="mt-0.5 shrink-0" />
+			{t('member.noScore')}
 		</p>
-		<div class="flex flex-wrap gap-3">
-			{#each [{ href: anggota.lhkpn_url, label: t('member.lhkpn') }, { href: anggota.url_profil, label: t('member.official') }] as tautan (tautan.label)}
-				{#if tautan.href}
-					<a href={tautan.href} target="_blank" rel="noopener" class={kelasTautan}>
-						{tautan.label}<ExternalLink size={16} strokeWidth={1.75} aria-hidden="true" /><span
-							class="sr-only">{t('a11y.opensNewTab')}</span
-						>
-					</a>
-				{/if}
-			{/each}
-		</div>
-		<p class="max-w-prose text-small text-muted">{t('member.noScore')}</p>
 	</header>
 
-	<div class="grid gap-8 lg:grid-cols-12">
-		<div class="flex flex-col gap-10 lg:col-span-8">
+	<div class="grid gap-10 lg:grid-cols-12 lg:gap-8">
+		<div class="flex flex-col gap-12 lg:col-span-8">
 			<IsuDisuarakan idAnggota={anggota.id} />
 			<JejakKegiatan idAnggota={anggota.id} />
 			<SikapFraksi fraksi={anggota.fraksi} />
 		</div>
-		<aside class="flex flex-col gap-4 lg:col-span-4">
-			<section class="flex flex-col gap-3 rounded-lg border border-line bg-surface p-4">
-				<h2 class="t-h3">
+		<aside class="flex flex-col gap-4 lg:sticky lg:top-24 lg:col-span-4 lg:self-start">
+			<section class="card flex flex-col gap-4 p-5">
+				<h2 class="flex items-center gap-3 text-h3">
+					<span class="icon-tile h-9 w-9"
+						><MapPin size={18} strokeWidth={1.75} aria-hidden="true" /></span
+					>
 					{t('member.dapil', { nomor: anggota.dapil.nomor, nama: anggota.dapil.nama })}
 				</h2>
 				<ul class="flex flex-wrap gap-2">
 					{#each anggota.dapil.kecamatan as kec (kec.kode)}
 						<li>
-							<a
-								href="/{bahasaBawaan}/kecamatan/{kec.kode}"
-								class="inline-flex min-h-touch items-center rounded-pill bg-sunken px-3 text-small font-semibold hover:bg-secondary"
-								>{kec.nama}</a
-							>
+							<a href="/{bahasaBawaan}/kecamatan/{kec.kode}" class="chip">{kec.nama}</a>
 						</li>
 					{/each}
 				</ul>
 			</section>
 			{#if anggota.komisi?.bidang?.length}
-				<section class="flex flex-col gap-2 rounded-lg border border-line bg-surface p-4">
-					<h2 class="t-h3">{t('member.commission')}</h2>
+				<section class="card flex flex-col gap-3 p-5">
+					<h2 class="flex items-center gap-3 text-h3">
+						<span class="icon-tile h-9 w-9"
+							><Landmark size={18} strokeWidth={1.75} aria-hidden="true" /></span
+						>
+						{t('member.commission')}
+					</h2>
 					<p class="font-semibold">{anggota.komisi.nama}</p>
-					<ul class="list-disc pl-5 text-small">
-						{#each anggota.komisi.bidang as bidang (bidang)}<li>{bidang}</li>{/each}
+					<ul class="flex flex-col gap-2 text-small">
+						{#each anggota.komisi.bidang as bidang (bidang)}
+							<li class="flex items-start gap-2">
+								<Building2
+									size={16}
+									strokeWidth={1.75}
+									aria-hidden="true"
+									class="mt-0.5 shrink-0 text-muted"
+								/>{bidang}
+							</li>
+						{/each}
 					</ul>
 				</section>
 			{/if}
 			{#if anggota.alat_kelengkapan.length}
-				<section class="flex flex-col gap-2 rounded-lg border border-line bg-surface p-4">
-					<h2 class="t-h3">{t('member.bodies')}</h2>
-					<ul class="flex flex-col gap-1 text-small">
+				<section class="card flex flex-col gap-3 p-5">
+					<h2 class="flex items-center gap-3 text-h3">
+						<span class="icon-tile h-9 w-9"
+							><Users size={18} strokeWidth={1.75} aria-hidden="true" /></span
+						>
+						{t('member.bodies')}
+					</h2>
+					<ul class="flex flex-col divide-y divide-line text-small">
 						{#each anggota.alat_kelengkapan as akd (akd.alat_kelengkapan)}
-							<li><span class="font-semibold">{akd.alat_kelengkapan}</span> · {akd.jabatan}</li>
+							<li class="flex flex-col py-2 first:pt-0 last:pb-0">
+								<span class="font-semibold">{akd.alat_kelengkapan}</span>
+								<span class="text-muted">{akd.jabatan}</span>
+							</li>
 						{/each}
 					</ul>
 				</section>

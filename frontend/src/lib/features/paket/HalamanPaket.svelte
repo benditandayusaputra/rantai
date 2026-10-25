@@ -1,16 +1,28 @@
 <script lang="ts">
-	import RightOfReply from '$lib/components/RightOfReply.svelte';
-	import { CircleHelp, ExternalLink } from '@lucide/svelte';
+	import {
+		Building2,
+		Calendar,
+		CircleCheck,
+		CircleHelp,
+		CircleX,
+		ExternalLink,
+		FileText,
+		Link2,
+		MapPin,
+		Scale
+	} from '@lucide/svelte';
 	import type { DetailPaket } from '$lib/api/tipe';
 	import ChainStepper from '$lib/components/ChainStepper.svelte';
 	import KeyNumberCard from '$lib/components/KeyNumberCard.svelte';
 	import MaintenanceCounter from '$lib/components/MaintenanceCounter.svelte';
+	import RightOfReply from '$lib/components/RightOfReply.svelte';
 	import SimRibbon from '$lib/components/SimRibbon.svelte';
 	import { bahasaBawaan, t } from '$lib/i18n';
-	import { kodeKecamatanDari, kunciSektor } from './paket';
+	import { ikonSektor, kodeKecamatanDari, kunciSektor } from './paket';
 
 	let { paket }: { paket: DetailPaket } = $props();
 
+	const IkonSektor = $derived(ikonSektor[paket.sektor]);
 	const angkaKunci = $derived(
 		[
 			{ label: t('pkg.budget'), angka: paket.pagu ?? paket.rup?.pagu ?? null },
@@ -32,88 +44,144 @@
 		},
 		{ label: t('pkg.location'), isi: paket.lokasi.nama_wilayah }
 	]);
-	const kelasTautan =
-		'inline-flex min-h-touch items-center gap-2 font-semibold text-secondary-on underline';
+	const tautanLuar = $derived(
+		[
+			{ href: paket.url_sumber, label: t('pkg.openSource') },
+			{ href: paket.rup?.url ?? '', label: t('pkg.openRup') }
+		].filter((tautan) => tautan.href)
+	);
+	const kelasPil =
+		'inline-flex items-center gap-1.5 rounded-pill border border-line bg-raised px-3 py-1';
 </script>
 
-<article class="wrap flex flex-col gap-8 pt-6 lg:pt-10">
+<article class="wrap flex flex-col gap-6 pt-6 lg:gap-8 lg:pt-10">
 	<header
-		class="flex flex-col overflow-hidden rounded-lg {paket.is_simulation
+		class="card flex flex-col overflow-hidden {paket.is_simulation
 			? 'border-ctrl border-cert-sim'
 			: ''}"
 	>
 		{#if paket.is_simulation}<SimRibbon />{/if}
-		<div class="flex flex-col gap-3 {paket.is_simulation ? 'p-4 md:p-5' : ''}">
-			<p class="text-small text-muted">
-				{t(kunciSektor[paket.sektor])} · {t('pkg.rup')}
-				<span class="font-mono text-mono">{paket.rup?.kode ?? '-'}</span>
+		<div class="flex flex-col gap-4 p-5 md:p-6 lg:p-8">
+			<div class="flex flex-wrap items-center gap-2 text-small text-muted">
+				<span
+					class="inline-flex items-center gap-1.5 rounded-pill bg-secondary px-3 py-1 font-semibold text-secondary-on"
+				>
+					<IkonSektor size={16} strokeWidth={1.75} aria-hidden="true" />
+					{t(kunciSektor[paket.sektor])}
+				</span>
+				<span class={kelasPil}>
+					<Calendar size={16} strokeWidth={1.75} aria-hidden="true" />
+					<span class="num">{paket.tahun_anggaran}</span>
+				</span>
+				<span class={kelasPil}>
+					<FileText size={16} strokeWidth={1.75} aria-hidden="true" />
+					{t('pkg.rup')}
+					<span class="font-mono text-mono">{paket.rup?.kode ?? '-'}</span>
+				</span>
+			</div>
+			<h1 class="t-h1 break-words">{paket.nama}</h1>
+			<p class="flex items-start gap-2 text-muted">
+				<Building2 size={20} strokeWidth={1.75} aria-hidden="true" class="mt-0.5 shrink-0" />
+				{paket.instansi}
 			</p>
-			<h1 class="t-h1">{paket.nama}</h1>
-			<p class="text-muted">{paket.instansi}</p>
-			{#if paket.is_batal}<p class="font-semibold text-attn">{t('pkg.cancelled')}</p>{/if}
+			{#if paket.is_batal}
+				<p
+					class="inline-flex items-center gap-2 self-start rounded-md bg-attn-bg px-3 py-2 font-semibold text-attn"
+				>
+					<CircleX size={20} strokeWidth={1.75} aria-hidden="true" />
+					{t('pkg.cancelled')}
+				</p>
+			{/if}
 		</div>
 	</header>
 
 	{#if angkaKunci.length}
-		<div class="grid grid-cols-2 gap-3 md:grid-cols-4 lg:gap-5">
+		<div class="grid gap-3 md:grid-cols-4 lg:gap-5">
 			{#each angkaKunci as item (item.label)}
 				<KeyNumberCard label={item.label} angka={item.angka} />
 			{/each}
 		</div>
 	{/if}
 
-	<section
-		aria-labelledby="judul-rantai"
-		class="rounded-lg border border-line bg-surface p-4 md:p-6"
-	>
-		<h2 id="judul-rantai" class="t-h2 mb-6">{t('chain.title')}</h2>
+	<section aria-labelledby="judul-rantai" class="card p-5 md:p-6 lg:p-8">
+		<h2 id="judul-rantai" class="t-h2 mb-6 flex items-center gap-3">
+			<span class="icon-tile"><Link2 size={20} strokeWidth={1.75} aria-hidden="true" /></span>
+			{t('chain.title')}
+		</h2>
 		<ChainStepper rantai={paket.rantai} />
 	</section>
 
-	<div class="grid gap-8 lg:grid-cols-12 lg:gap-5">
-		<section aria-labelledby="judul-sinyal" class="flex flex-col gap-4 lg:col-span-8">
-			<h2 id="judul-sinyal" class="t-h2">{t('signal.sectionTitle')}</h2>
-			{#if paket.sinyal.length}
-				<ul class="flex flex-col gap-3">
-					{#each paket.sinyal as sinyal (sinyal.jenis)}
-						<li class="flex flex-col gap-2 rounded-lg border-ctrl border-attn-fill bg-attn-bg p-4">
-							<span class="flex items-center gap-2 font-bold text-attn">
-								<CircleHelp size={20} strokeWidth={1.75} aria-hidden="true" />
-								{t(`signal.${sinyal.jenis}`)}
-							</span>
-							<span class="text-small">{sinyal.alasan}</span>
-							{#each sinyal.hak_jawab as hakJawab (hakJawab.id)}
-								<RightOfReply {hakJawab} />
-							{/each}
-						</li>
-					{/each}
-				</ul>
-				<p class="font-serif italic text-muted">{t('signal.disclaimer')}</p>
-			{:else}
-				<p class="text-small text-muted">{t('signal.none')}</p>
-			{/if}
-			<h2 id="judul-hak-jawab" class="t-h2 mt-4">{t('reply.title')}</h2>
-			{#each paket.hak_jawab as hakJawab (hakJawab.id)}
-				<RightOfReply {hakJawab} />
-			{:else}
-				<p class="text-small text-muted">{t('reply.none')}</p>
-			{/each}
-		</section>
+	<div class="grid gap-8 lg:grid-cols-12 lg:gap-6">
+		<div class="flex flex-col gap-8 lg:col-span-8">
+			<section aria-labelledby="judul-sinyal" class="flex flex-col gap-4">
+				<h2 id="judul-sinyal" class="t-h2 flex items-center gap-3">
+					<span class="icon-tile bg-attn-bg text-attn"
+						><CircleHelp size={20} strokeWidth={1.75} aria-hidden="true" /></span
+					>
+					{t('signal.sectionTitle')}
+				</h2>
+				{#if paket.sinyal.length}
+					<ul class="flex flex-col gap-3">
+						{#each paket.sinyal as sinyal (sinyal.jenis)}
+							<li
+								class="flex flex-col gap-2 rounded-lg border-ctrl border-attn-fill bg-attn-bg p-4 md:p-5"
+							>
+								<span class="flex items-center gap-2 font-bold text-attn">
+									<CircleHelp size={20} strokeWidth={1.75} aria-hidden="true" />
+									{t(`signal.${sinyal.jenis}`)}
+								</span>
+								<span class="text-small">{sinyal.alasan}</span>
+								{#each sinyal.hak_jawab as hakJawab (hakJawab.id)}
+									<RightOfReply {hakJawab} />
+								{/each}
+							</li>
+						{/each}
+					</ul>
+					<p class="font-serif italic text-muted">{t('signal.disclaimer')}</p>
+				{:else}
+					<p
+						class="flex items-center gap-2 rounded-lg border border-dashed border-line-strong p-4 text-small text-muted"
+					>
+						<CircleCheck size={18} strokeWidth={1.75} aria-hidden="true" class="shrink-0" />
+						{t('signal.none')}
+					</p>
+				{/if}
+			</section>
+
+			<section aria-labelledby="judul-hak-jawab" class="flex flex-col gap-4">
+				<h2 id="judul-hak-jawab" class="t-h2 flex items-center gap-3">
+					<span class="icon-tile bg-info-bg text-info"
+						><Scale size={20} strokeWidth={1.75} aria-hidden="true" /></span
+					>
+					{t('reply.title')}
+				</h2>
+				{#each paket.hak_jawab as hakJawab (hakJawab.id)}
+					<RightOfReply {hakJawab} />
+				{:else}
+					<p
+						class="flex items-center gap-2 rounded-lg border border-dashed border-line-strong p-4 text-small text-muted"
+					>
+						<Scale size={18} strokeWidth={1.75} aria-hidden="true" class="shrink-0" />
+						{t('reply.none')}
+					</p>
+				{/each}
+			</section>
+		</div>
 
 		<aside class="flex flex-col gap-4 lg:col-span-4">
 			<MaintenanceCounter pemeliharaan={paket.pemeliharaan} />
-			<section
-				aria-labelledby="judul-detail"
-				class="rounded-lg border border-line bg-surface p-4 md:p-5"
-			>
-				<h2 id="judul-detail" class="font-bold">{t('pkg.details')}</h2>
-				<dl class="mt-3 flex flex-col gap-3 text-small">
+			<section aria-labelledby="judul-detail" class="card p-5">
+				<h2 id="judul-detail" class="flex items-center gap-2 font-bold">
+					<FileText size={20} strokeWidth={1.75} aria-hidden="true" />
+					{t('pkg.details')}
+				</h2>
+				<dl class="mt-3 flex flex-col divide-y divide-line text-small">
 					{#each rincian as item (item.label)}
-						<div>
+						<div class="flex flex-col gap-0.5 py-2.5">
 							<dt class="text-caption text-muted">{item.label}</dt>
-							<dd>
+							<dd class="break-words font-semibold">
 								{#if 'href' in item && item.href}
-									<a href={item.href} class="font-semibold underline">{item.isi}</a>
+									<a href={item.href} class="link">{item.isi}</a>
 								{:else}
 									{item.isi || '-'}
 								{/if}
@@ -121,26 +189,22 @@
 						</div>
 					{/each}
 				</dl>
-				<div class="mt-3 flex flex-col">
-					{#if paket.url_sumber}
-						<a href={paket.url_sumber} target="_blank" rel="noopener" class={kelasTautan}>
-							{t('pkg.openSource')}
-							<ExternalLink size={16} strokeWidth={1.75} aria-hidden="true" />
+				<div class="mt-4 flex flex-col gap-2">
+					{#each tautanLuar as tautan (tautan.label)}
+						<a href={tautan.href} target="_blank" rel="noopener" class="btn btn-outline btn-block">
+							<ExternalLink size={18} strokeWidth={1.75} aria-hidden="true" />
+							{tautan.label}
 							<span class="sr-only">{t('a11y.opensNewTab')}</span>
 						</a>
-					{/if}
-					{#if paket.rup?.url}
-						<a href={paket.rup.url} target="_blank" rel="noopener" class={kelasTautan}>
-							{t('pkg.openRup')}
-							<ExternalLink size={16} strokeWidth={1.75} aria-hidden="true" />
-							<span class="sr-only">{t('a11y.opensNewTab')}</span>
-						</a>
-					{/if}
+					{/each}
 					{#if paket.lokasi.tingkat === 'kecamatan' || paket.lokasi.tingkat === 'kelurahan'}
 						<a
 							href="/{bahasaBawaan}/kecamatan/{kodeKecamatanDari(paket.lokasi.kode_wilayah)}"
-							class={kelasTautan}>{t('map.openArea')}</a
+							class="btn btn-secondary btn-block"
 						>
+							<MapPin size={18} strokeWidth={1.75} aria-hidden="true" />
+							{t('map.openArea')}
+						</a>
 					{/if}
 				</div>
 			</section>

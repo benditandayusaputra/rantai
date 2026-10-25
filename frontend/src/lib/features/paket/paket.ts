@@ -1,3 +1,4 @@
+import { Droplet, GraduationCap, Package, Route } from '@lucide/svelte';
 import type { KodeMata, MataRantai, Sektor, StatusPemeliharaan } from '$lib/api/tipe';
 import { t, type KunciPesan } from '$lib/i18n';
 
@@ -17,6 +18,13 @@ export const kunciSektor: Record<Sektor, KunciPesan> = {
 	air: 'sector.air',
 	jalan: 'sector.jalan',
 	'': 'sector.lain'
+};
+
+export const ikonSektor: Record<Sektor, typeof Package> = {
+	pendidikan: GraduationCap,
+	air: Droplet,
+	jalan: Route,
+	'': Package
 };
 
 export const kunciPemeliharaan: Record<StatusPemeliharaan, KunciPesan> = {

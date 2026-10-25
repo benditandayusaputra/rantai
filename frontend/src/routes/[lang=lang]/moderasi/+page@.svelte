@@ -1,5 +1,15 @@
 <script lang="ts">
-	import { FileWarning, Newspaper, ShieldCheck } from '@lucide/svelte';
+	import {
+		ArrowLeft,
+		ExternalLink,
+		EyeOff,
+		FileWarning,
+		Keyboard,
+		LogIn,
+		Monitor,
+		Newspaper,
+		ShieldCheck
+	} from '@lucide/svelte';
 	import { onMount } from 'svelte';
 	import { tangkap } from '$lib/api/klien';
 	import { ambilAntreanModerasi, moderasiLaporan, sembunyikanUmpan } from '$lib/api/moderasi';
@@ -104,24 +114,48 @@
 {#if !isSesiDiperiksa}
 	<p class="p-8 text-muted" aria-live="polite">{t('state.loading')}</p>
 {:else if !sesi || !isModerator}
-	<main id="konten" class="mx-auto flex min-h-dvh max-w-form flex-col justify-center gap-4 px-4">
-		<ShieldCheck size={32} strokeWidth={1.75} class="text-primary" aria-hidden="true" />
-		<h1 class="t-h1">{t('mod.title')}</h1>
-		<p class="text-muted">{t('mod.forbidden')}</p>
-		{#if !sesi}
-			<a
-				href="/{bahasaBawaan}/masuk?lanjut={encodeURIComponent(`/${bahasaBawaan}/moderasi`)}"
-				class="inline-flex min-h-13 items-center justify-center rounded-md bg-primary px-4 font-semibold text-primary-on"
-				>{t('action.signIn')}</a
-			>
-		{/if}
-	</main>
+	<div class="flex min-h-dvh flex-col bg-page">
+		<header class="wrap flex h-16 items-center justify-between gap-4 lg:h-18">
+			<Logo />
+			<a href="/{bahasaBawaan}" class="btn btn-ghost btn-sm">
+				<ArrowLeft size={18} strokeWidth={1.75} aria-hidden="true" />
+				{t('nav.home')}
+			</a>
+		</header>
+		<main
+			id="konten"
+			tabindex="-1"
+			class="wrap flex flex-1 items-center justify-center pb-16 outline-none"
+		>
+			<div class="card flex w-full max-w-form flex-col items-start gap-4 p-6 shadow-2 md:p-8">
+				<span class="icon-tile h-14 w-14"
+					><ShieldCheck size={28} strokeWidth={1.75} aria-hidden="true" /></span
+				>
+				<h1 class="t-h1">{t('mod.title')}</h1>
+				<p class="text-muted">{t('mod.forbidden')}</p>
+				{#if !sesi}
+					<a
+						href="/{bahasaBawaan}/masuk?lanjut={encodeURIComponent(`/${bahasaBawaan}/moderasi`)}"
+						class="btn btn-primary btn-lg btn-block"
+					>
+						<LogIn size={20} strokeWidth={1.75} aria-hidden="true" />
+						{t('action.signIn')}
+					</a>
+				{/if}
+			</div>
+		</main>
+	</div>
 {:else}
-	<p class="p-8 lg:hidden">{t('mod.desktopOnly')}</p>
+	<div class="flex min-h-dvh items-center justify-center p-4 lg:hidden">
+		<div class="card flex w-full max-w-form flex-col items-start gap-4 p-6">
+			<span class="icon-tile"><Monitor size={20} strokeWidth={1.75} aria-hidden="true" /></span>
+			<p>{t('mod.desktopOnly')}</p>
+		</div>
+	</div>
 	<div class="hidden min-h-dvh lg:flex">
 		<nav
 			aria-label={t('mod.title')}
-			class="flex w-60 shrink-0 flex-col gap-6 border-r border-line bg-surface p-5"
+			class="sticky top-0 flex h-dvh w-66 shrink-0 flex-col gap-6 border-r border-line bg-surface p-5"
 		>
 			<Logo />
 			<ul class="flex flex-col gap-1">
@@ -131,30 +165,40 @@
 						<button
 							type="button"
 							aria-current={bagian === item.kunci ? 'page' : undefined}
-							class="flex min-h-touch w-full items-center gap-3 rounded-md px-3 text-left font-semibold hover:bg-sunken aria-[current=page]:bg-secondary"
+							class="group flex min-h-touch w-full items-center gap-3 rounded-md px-3 text-left text-small font-semibold text-muted transition-colors duration-fast ease-standard hover:bg-sunken hover:text-fg aria-[current=page]:bg-secondary aria-[current=page]:text-secondary-on"
 							onclick={() => (bagian = item.kunci)}
 						>
 							<Ikon size={20} strokeWidth={1.75} aria-hidden="true" />
 							<span class="flex-1">{item.label}</span>
-							{#if item.jumlah !== undefined}<span class="num text-small">{item.jumlah}</span>{/if}
+							{#if item.jumlah !== undefined}<span
+									class="num inline-flex h-6 min-w-6 items-center justify-center rounded-pill bg-sunken px-2 text-caption group-aria-[current=page]:bg-raised"
+									>{item.jumlah}</span
+								>{/if}
 						</button>
 					</li>
 				{/each}
 			</ul>
-			<p class="mt-auto flex items-center gap-2 text-small">
+			<p class="mt-auto flex items-center gap-3 border-t border-line pt-4 text-small">
 				<span
-					class="inline-flex h-8 w-8 items-center justify-center rounded-pill bg-secondary font-bold"
+					class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-pill bg-primary font-bold text-primary-on"
 					>{inisial(sesi.pengguna)}</span
 				>
-				{sesi.pengguna.nama_tampilan || sesi.pengguna.email}
+				<span class="min-w-0 truncate font-semibold"
+					>{sesi.pengguna.nama_tampilan || sesi.pengguna.email}</span
+				>
 			</p>
 		</nav>
-		<main id="konten" class="flex flex-1 flex-col gap-4 p-8">
-			<header class="flex items-end justify-between gap-4">
+		<main id="konten" class="flex min-w-0 flex-1 flex-col gap-5 bg-page p-8 xl:p-10">
+			<header class="flex flex-wrap items-end justify-between gap-4">
 				<h1 class="t-h1">{bagian === 'laporan' ? t('mod.queue.reports') : t('mod.queue.feed')}</h1>
-				{#if bagian === 'laporan'}<p class="text-small text-muted">{t('mod.shortcuts')}</p>{/if}
+				{#if bagian === 'laporan'}
+					<p class="flex items-center gap-2 text-small text-muted">
+						<Keyboard size={18} strokeWidth={1.75} aria-hidden="true" />
+						{t('mod.shortcuts')}
+					</p>
+				{/if}
 			</header>
-			{#if pesan}<p role="status" class="text-small">{pesan}</p>{/if}
+			{#if pesan}<p role="status" class="card px-4 py-3 text-small font-semibold">{pesan}</p>{/if}
 			{#if !antrean}
 				<p class="text-muted">{t('state.loading')}</p>
 			{:else if bagian === 'laporan'}
@@ -171,10 +215,10 @@
 								<li role="option" aria-selected={i === indeks}>
 									<button
 										type="button"
-										class="flex w-full gap-3 rounded-lg border-ctrl border-line bg-surface p-3 text-left hover:border-fg {i ===
+										class="flex w-full gap-3 rounded-lg border-ctrl p-3 text-left shadow-1 transition-colors duration-fast ease-standard hover:border-line-strong {i ===
 										indeks
-											? 'border-secondary-on bg-secondary'
-											: ''}"
+											? 'border-primary bg-secondary'
+											: 'border-line bg-surface'}"
 										onclick={() => (indeks = i)}
 									>
 										{#if item.foto[0]}
@@ -224,20 +268,22 @@
 			{:else}
 				<label class="flex max-w-form flex-col gap-1 text-small font-semibold">
 					{t('mod.hideReason')}
-					<input
-						bind:value={alasanUmpan}
-						class="min-h-touch rounded-md border-ctrl border-line-strong bg-surface px-3 font-normal"
-					/>
+					<input bind:value={alasanUmpan} class="field font-normal" />
 				</label>
 				{#if antrean.umpan.length === 0}
 					<EmptyState title={t('mod.queue.empty')} />
 				{/if}
 				<ul class="flex max-w-prose flex-col gap-3">
 					{#each antrean.umpan as item (item.id)}
-						<li class="flex items-start gap-4 rounded-lg border-ctrl border-line bg-surface p-4">
-							<div class="flex flex-1 flex-col gap-1">
-								<a href={item.url} class="font-semibold underline" target="_blank" rel="noopener"
-									>{item.judul}</a
+						<li class="card flex flex-wrap items-start gap-4 p-4">
+							<div class="flex min-w-0 flex-1 flex-col gap-1">
+								<a href={item.url} class="link inline-flex gap-1" target="_blank" rel="noopener"
+									>{item.judul}<ExternalLink
+										size={16}
+										strokeWidth={1.75}
+										aria-hidden="true"
+										class="mt-1 shrink-0"
+									/><span class="sr-only">{t('a11y.opensNewTab')}</span></a
 								>
 								<p class="text-small text-muted">
 									{item.media_nama} · {formatTanggal(new Date(item.terbit_pada), bahasaBawaan)}
@@ -246,10 +292,13 @@
 							</div>
 							<button
 								type="button"
-								class="inline-flex min-h-touch items-center rounded-md border-ctrl border-line-strong px-4 font-semibold hover:bg-sunken disabled:text-dis-fg"
+								class="btn btn-outline"
 								disabled={isSibuk || !alasanUmpan.trim()}
-								onclick={() => sembunyikan(item.id)}>{t('mod.hideFeed')}</button
+								onclick={() => sembunyikan(item.id)}
 							>
+								<EyeOff size={18} strokeWidth={1.75} aria-hidden="true" />
+								{t('mod.hideFeed')}
+							</button>
 						</li>
 					{/each}
 				</ul>

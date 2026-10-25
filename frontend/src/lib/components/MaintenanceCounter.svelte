@@ -14,12 +14,11 @@
 	);
 </script>
 
-<section
-	aria-labelledby="judul-pemeliharaan"
-	class="flex flex-col gap-3 rounded-lg border border-line bg-surface p-4 md:p-5"
->
-	<h2 id="judul-pemeliharaan" class="flex items-center gap-2 font-bold">
-		<Hourglass size={20} strokeWidth={1.75} aria-hidden="true" />
+<section aria-labelledby="judul-pemeliharaan" class="card flex flex-col gap-3 p-5">
+	<h2 id="judul-pemeliharaan" class="flex items-center gap-3 font-bold">
+		<span class="icon-tile h-9 w-9"
+			><Hourglass size={18} strokeWidth={1.75} aria-hidden="true" /></span
+		>
 		{t('maint.title')}
 	</h2>
 	{#if pemeliharaan.berlaku}

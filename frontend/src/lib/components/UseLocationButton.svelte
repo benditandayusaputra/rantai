@@ -31,10 +31,9 @@
 <div class="flex flex-col gap-2">
 	<button
 		type="button"
-		class="inline-flex min-h-touch items-center justify-center gap-2 self-start rounded-md border-ctrl px-4 font-semibold transition-colors duration-fast ease-standard disabled:border-dis-bg disabled:bg-dis-bg disabled:text-dis-fg {state ===
-		'found'
+		class="btn self-start {state === 'found'
 			? 'border-success bg-success-bg text-success'
-			: 'border-line-strong hover:border-fg hover:bg-sunken'}"
+			: 'btn-outline'}"
 		disabled={state === 'denied' || state === 'locating'}
 		aria-busy={state === 'locating'}
 		aria-describedby={pesan ? `${id}-status` : undefined}

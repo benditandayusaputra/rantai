@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ChevronRight } from '@lucide/svelte';
+	import { ChevronRight, FileText, Globe, Info, ListChecks } from '@lucide/svelte';
 	import { invalidateAll } from '$app/navigation';
 	import { page } from '$app/state';
 	import ChoiceChips from '$lib/components/ChoiceChips.svelte';
@@ -17,7 +17,7 @@
 	<title>{t('packet.title')} · {t('brand.name')}</title>
 </svelte:head>
 
-<div class="wrap pt-6 lg:pt-10">
+<div class="wrap pt-8 lg:pt-12">
 	{#await data.halaman}
 		<div class="flex flex-col gap-4" aria-busy="true">
 			<p class="text-muted">{t('packet.composingPlain')}</p>
@@ -37,22 +37,33 @@
 			<nav aria-label={t('nav.breadcrumb')}>
 				<ol class="flex flex-wrap items-center gap-1 text-small text-muted">
 					<li>
-						<a href="/{bahasaBawaan}/kecamatan/{wilayah.kode}?bagian=wakilku" class="underline"
-							>{wilayah.nama}</a
+						<a
+							href="/{bahasaBawaan}/kecamatan/{wilayah.kode}?bagian=wakilku"
+							class="underline underline-offset-4 hover:text-fg">{wilayah.nama}</a
 						>
 					</li>
 					<li aria-hidden="true"><ChevronRight size={16} strokeWidth={1.75} /></li>
 					<li aria-current="page">{t('packet.title')}</li>
 				</ol>
 			</nav>
-			<p class="t-over mt-4">{tema.nama.id}</p>
-			<h1 class="t-h1 mt-1">{t('packet.title')}</h1>
-			<p class="mt-2 text-muted">{t('packet.forArea', { name: wilayah.nama })}</p>
+			<header class="mt-4 flex items-start gap-4">
+				<span class="icon-tile h-12 w-12"
+					><FileText size={24} strokeWidth={1.75} aria-hidden="true" /></span
+				>
+				<div>
+					<p class="t-over">{tema.nama.id}</p>
+					<h1 class="t-h1 mt-1">{t('packet.title')}</h1>
+					<p class="mt-2 text-muted">{t('packet.forArea', { name: wilayah.nama })}</p>
+				</div>
+			</header>
 
 			<div class="mt-8 grid gap-8 lg:grid-cols-12">
-				<div class="flex flex-col gap-6 lg:col-span-4">
+				<div class="card flex flex-col gap-6 self-start p-5 lg:sticky lg:top-24 lg:col-span-4">
 					<div class="flex flex-col gap-3">
-						<h2 id="judul-masalah" class="t-h3">{t('acc.issueTitle')}</h2>
+						<h2 id="judul-masalah" class="t-h3 flex items-center gap-2">
+							<ListChecks size={20} strokeWidth={1.75} aria-hidden="true" class="text-primary" />
+							{t('acc.issueTitle')}
+						</h2>
 						<ChoiceChips
 							labelledby="judul-masalah"
 							items={tema.tanggung_jawab.map((tj) => ({
@@ -64,7 +75,10 @@
 						/>
 					</div>
 					<div class="flex flex-col gap-3">
-						<h2 id="judul-bahasa" class="t-h3">{t('packet.docLang')}</h2>
+						<h2 id="judul-bahasa" class="t-h3 flex items-center gap-2">
+							<Globe size={20} strokeWidth={1.75} aria-hidden="true" class="text-primary" />
+							{t('packet.docLang')}
+						</h2>
 						<ChoiceChips
 							labelledby="judul-bahasa"
 							items={bahasaDokumen.map((bahasa) => ({
@@ -75,7 +89,10 @@
 							}))}
 						/>
 					</div>
-					<p class="text-small text-muted">{t('packet.selfDeliver')}</p>
+					<p class="flex items-start gap-2 border-t border-line pt-4 text-small text-muted">
+						<Info size={16} strokeWidth={1.75} aria-hidden="true" class="mt-0.5 shrink-0" />
+						{t('packet.selfDeliver')}
+					</p>
 				</div>
 
 				<section aria-labelledby="judul-pratinjau" class="lg:col-span-8">

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import TableScroll from '$lib/components/TableScroll.svelte';
-	import { Info } from '@lucide/svelte';
+	import { Building2, ChartColumn, FileText, History, Info, Package, Tags } from '@lucide/svelte';
 	import type { ProfilPenyedia } from '$lib/api/tipe';
 	import EmptyState from '$lib/components/EmptyState.svelte';
 	import KeyNumberCard from '$lib/components/KeyNumberCard.svelte';
@@ -24,21 +24,23 @@
 </svelte:head>
 
 <article class="wrap flex flex-col gap-8 py-6 lg:py-10">
-	<header class="flex flex-col gap-3">
-		<p class="t-over">{t('vendor.overline')}</p>
+	<header class="card flex flex-col gap-4 p-5 md:p-6 lg:p-8">
 		<div class="flex items-center gap-4">
 			<span
-				class="inline-flex h-16 w-16 shrink-0 items-center justify-center rounded-md bg-secondary text-h3 font-bold text-secondary-on"
+				class="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-lg bg-primary text-h3 font-bold text-primary-on lg:h-16 lg:w-16"
 				aria-hidden="true">{inisialPenyedia(penyedia.nama)}</span
 			>
-			<h1 class="t-h1">{penyedia.nama}</h1>
+			<div class="flex min-w-0 flex-col gap-1">
+				<p class="t-over">{t('vendor.overline')}</p>
+				<h1 class="t-h1 break-words">{penyedia.nama}</h1>
+			</div>
 		</div>
 		{#if penyedia.alias.length > 1}
 			<p class="text-small text-muted">
 				{t('vendor.alias', { nama: penyedia.alias.filter((a) => a !== penyedia.nama).join(', ') })}
 			</p>
 		{/if}
-		<p class="flex max-w-prose gap-2 text-small text-muted">
+		<p class="flex max-w-prose gap-2 rounded-md bg-info-bg p-3 text-small text-info">
 			<Info size={18} strokeWidth={1.75} class="mt-0.5 shrink-0" aria-hidden="true" />
 			{t('vendor.noScore')}
 		</p>
@@ -61,7 +63,11 @@
 		<div class="flex flex-col gap-8 lg:col-span-8">
 			{#if urutTahun.length}
 				<section aria-labelledby="judul-per-tahun" class="flex flex-col gap-3">
-					<h2 id="judul-per-tahun" class="t-h2">{t('vendor.perYear')}</h2>
+					<h2 id="judul-per-tahun" class="t-h2 flex items-center gap-3">
+						<span class="icon-tile"
+							><ChartColumn size={20} strokeWidth={1.75} aria-hidden="true" /></span
+						>{t('vendor.perYear')}
+					</h2>
 					<p class="text-small text-muted">{t('vendor.perYearNote')}</p>
 					<TableToggle bind:pressed={isTabel} controls="isi-per-tahun" />
 					<div id="isi-per-tahun">
@@ -96,7 +102,7 @@
 							</TableScroll>
 						{:else}
 							<ol
-								class="flex h-56 items-end gap-2 overflow-x-auto rounded-lg border border-line bg-surface p-4"
+								class="card flex h-56 items-end gap-2 overflow-x-auto p-4"
 								role="img"
 								aria-label={t('vendor.perYearNote')}
 							>
@@ -117,7 +123,10 @@
 			{/if}
 
 			<section aria-labelledby="judul-paket-penyedia" class="flex flex-col gap-3">
-				<h2 id="judul-paket-penyedia" class="t-h2">{t('vendor.packages')}</h2>
+				<h2 id="judul-paket-penyedia" class="t-h2 flex items-center gap-3">
+					<span class="icon-tile"><Package size={20} strokeWidth={1.75} aria-hidden="true" /></span
+					>{t('vendor.packages')}
+				</h2>
 				{#if penyedia.paket.length}
 					<div class="grid gap-3 md:grid-cols-2">
 						{#each penyedia.paket as paket (paket.kode)}
@@ -131,8 +140,12 @@
 
 			{#if penyedia.riwayat_opentender.length}
 				<section aria-labelledby="judul-riwayat" class="flex flex-col gap-3">
-					<h2 id="judul-riwayat" class="t-h2">{t('vendor.history')}</h2>
-					<ul class="flex flex-col divide-y divide-line rounded-lg border border-line bg-surface">
+					<h2 id="judul-riwayat" class="t-h2 flex items-center gap-3">
+						<span class="icon-tile"
+							><History size={20} strokeWidth={1.75} aria-hidden="true" /></span
+						>{t('vendor.history')}
+					</h2>
+					<ul class="card flex flex-col divide-y divide-line">
 						{#each penyedia.riwayat_opentender as r, i (`${r.tahun}-${i}`)}
 							<li class="flex flex-col gap-1 p-4">
 								<span class="font-semibold">{r.nama_paket}</span>
@@ -148,18 +161,25 @@
 		</div>
 
 		<aside class="flex flex-col gap-6 lg:col-span-4">
-			{#each [{ judul: t('vendor.categories'), isi: penyedia.kategori_utama }, { judul: t('vendor.agencies'), isi: penyedia.instansi_pemberi }] as blok (blok.judul)}
+			{#each [{ judul: t('vendor.categories'), isi: penyedia.kategori_utama, ikon: Tags }, { judul: t('vendor.agencies'), isi: penyedia.instansi_pemberi, ikon: Building2 }] as blok (blok.judul)}
 				{#if blok.isi.length}
-					<section class="flex flex-col gap-2 rounded-lg border border-line bg-surface p-4">
-						<h2 class="t-h3">{blok.judul}</h2>
-						<ul class="flex flex-col gap-1 text-small">
-							{#each blok.isi as item (item)}<li>{item}</li>{/each}
+					{@const Ikon = blok.ikon}
+					<section class="card flex flex-col gap-3 p-5">
+						<h2 class="t-h3 flex items-center gap-2">
+							<Ikon size={20} strokeWidth={1.75} aria-hidden="true" />{blok.judul}
+						</h2>
+						<ul class="flex flex-wrap gap-2 text-small">
+							{#each blok.isi as item (item)}
+								<li class="rounded-pill bg-sunken px-3 py-1">{item}</li>
+							{/each}
 						</ul>
 					</section>
 				{/if}
 			{/each}
-			<section class="flex flex-col gap-2 rounded-lg border border-line bg-surface p-4">
-				<h2 class="t-h3">{t('vendor.attribution')}</h2>
+			<section class="card flex flex-col gap-2 p-5">
+				<h2 class="t-h3 flex items-center gap-2">
+					<FileText size={20} strokeWidth={1.75} aria-hidden="true" />{t('vendor.attribution')}
+				</h2>
 				<p class="text-small text-muted">{penyedia.atribusi}</p>
 			</section>
 		</aside>

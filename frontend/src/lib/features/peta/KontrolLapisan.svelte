@@ -9,12 +9,14 @@
 
 <fieldset>
 	<legend class="flex items-center gap-2 text-small font-bold">
-		<Layers size={16} strokeWidth={1.75} aria-hidden="true" />
+		<Layers size={16} strokeWidth={1.75} aria-hidden="true" class="text-primary" />
 		{t('map.layers')}
 	</legend>
 	<div class="mt-2 flex flex-col">
 		{#each daftarLapisan as nama (nama)}
-			<label class="flex min-h-touch cursor-pointer items-center gap-3 text-small">
+			<label
+				class="-mx-2 flex min-h-touch cursor-pointer items-center gap-3 rounded-md px-2 text-small hover:bg-sunken"
+			>
 				<input
 					type="checkbox"
 					bind:checked={lapisan[nama]}

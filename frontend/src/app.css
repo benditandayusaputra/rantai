@@ -73,4 +73,62 @@
 		background-size: 640px 100%;
 		@apply animate-shimmer motion-reduce:animate-none;
 	}
+
+	.btn {
+		@apply inline-flex min-h-touch select-none items-center justify-center gap-2 rounded-md border-ctrl border-transparent px-4 text-center font-semibold transition duration-fast ease-standard active:translate-y-px disabled:pointer-events-none disabled:border-transparent disabled:bg-dis-bg disabled:text-dis-fg aria-disabled:pointer-events-none aria-disabled:bg-dis-bg aria-disabled:text-dis-fg;
+	}
+	.btn-sm {
+		@apply min-h-9 px-3 text-small;
+	}
+	.btn-lg {
+		@apply min-h-13 px-5 text-body-lg;
+	}
+	.btn-block {
+		@apply w-full;
+	}
+	.btn-primary {
+		@apply bg-primary text-primary-on shadow-1 hover:bg-primary-hover active:bg-primary-press;
+	}
+	.btn-secondary {
+		@apply bg-secondary text-secondary-on hover:bg-secondary-hover;
+	}
+	.btn-outline {
+		@apply border-line-strong bg-raised hover:border-fg hover:bg-sunken;
+	}
+	.btn-ghost {
+		@apply hover:bg-sunken;
+	}
+	.btn-text {
+		@apply px-2 text-secondary-on underline-offset-4 hover:underline disabled:bg-transparent;
+	}
+	.btn-icon {
+		@apply h-11 w-11 shrink-0 px-0;
+	}
+
+	.field {
+		@apply h-12 w-full rounded-md border-ctrl border-line-strong bg-raised px-4 text-body transition-colors duration-fast ease-standard placeholder:text-muted hover:border-fg focus-visible:border-focus aria-[invalid=true]:border-danger;
+	}
+
+	.card {
+		@apply rounded-lg border border-line bg-surface shadow-1;
+	}
+	.card-link {
+		@apply card transition duration-base ease-standard hover:-translate-y-0.5 hover:border-line-strong hover:shadow-2 motion-reduce:hover:translate-y-0;
+	}
+
+	.icon-tile {
+		@apply inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-secondary text-primary;
+	}
+
+	.chip {
+		@apply inline-flex min-h-touch items-center gap-2 rounded-pill border-ctrl border-line-strong bg-raised px-4 text-small font-semibold transition-colors duration-fast ease-standard hover:border-fg hover:bg-sunken aria-pressed:border-primary aria-pressed:bg-secondary aria-pressed:text-secondary-on;
+	}
+
+	.link {
+		@apply font-semibold text-secondary-on underline decoration-1 underline-offset-4 hover:decoration-2;
+	}
+
+	.page-head {
+		@apply flex flex-col gap-3 pt-8 lg:pt-12;
+	}
 }

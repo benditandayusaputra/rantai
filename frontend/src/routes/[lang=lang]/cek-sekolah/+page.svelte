@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Info, ShieldCheck } from '@lucide/svelte';
+	import { Info, MapPin, School, Search, ShieldCheck, Sparkles } from '@lucide/svelte';
 	import { ambilDetailWilayah, ambilSekolahTerdekat, cariWilayah, tangkap } from '$lib/api/klien';
 	import type { SekitarTitik, Titik, WilayahDitemukan } from '$lib/api/tipe';
 	import EmptyState from '$lib/components/EmptyState.svelte';
@@ -62,37 +62,57 @@
 	<title>{t('check.title')} · {t('brand.name')}</title>
 </svelte:head>
 
-<div class="wrap flex flex-col gap-8 py-6 lg:py-10">
-	<header class="flex max-w-prose flex-col gap-4">
-		<h1 class="t-h1">{t('check.title')}</h1>
-		<p class="t-lead">{t('check.lead')}</p>
-		<div class="flex flex-col gap-3 md:flex-row md:items-start">
-			<div class="flex-1">
-				<RegionSearch
-					bind:value={kata}
-					cari={(q) => cariWilayah(fetch, q)}
-					onselect={pilihWilayah}
-				/>
-			</div>
+<div class="border-b border-line bg-surface">
+	<div
+		class="wrap grid gap-6 pb-8 pt-8 lg:grid-cols-[1fr_1.1fr] lg:items-center lg:gap-12 lg:pb-12 lg:pt-12"
+	>
+		<header class="flex flex-col gap-3">
+			<span class="icon-tile h-12 w-12">
+				<School size={24} strokeWidth={1.75} aria-hidden="true" />
+			</span>
+			<h1 class="t-h1">{t('check.title')}</h1>
+			<p class="t-lead max-w-prose">{t('check.lead')}</p>
+		</header>
+		<div class="card flex flex-col gap-4 p-4 shadow-2 md:p-5">
+			<RegionSearch bind:value={kata} cari={(q) => cariWilayah(fetch, q)} onselect={pilihWilayah} />
 			<UseLocationButton state={statusLokasi} {akurasiM} onclick={pakaiLokasiku} />
+			<p class="flex gap-2 border-t border-line pt-4 text-small text-muted">
+				<ShieldCheck size={18} strokeWidth={1.75} class="mt-0.5 shrink-0" aria-hidden="true" />
+				{t('check.privacy')}
+			</p>
 		</div>
-		<p class="flex gap-2 text-small text-muted">
-			<ShieldCheck size={18} strokeWidth={1.75} class="mt-0.5 shrink-0" aria-hidden="true" />
-			{t('check.privacy')}
-		</p>
-	</header>
+	</div>
+</div>
 
+<div class="wrap flex flex-col gap-8 pt-8 lg:pt-10">
 	{#if status === 'awal'}
-		<p class="text-muted">{t('check.start')}</p>
+		<div
+			class="flex flex-col items-center gap-3 rounded-lg border-ctrl border-dashed border-line-strong px-6 py-12 text-center"
+		>
+			<span class="icon-tile h-12 w-12"
+				><Search size={24} strokeWidth={1.75} aria-hidden="true" /></span
+			>
+			<p class="max-w-prose text-muted">{t('check.start')}</p>
+		</div>
 	{:else if status === 'memuat'}
-		<p class="text-muted" aria-live="polite">{t('check.loading', { km })}</p>
+		<div class="grid gap-6 lg:grid-cols-12" aria-busy="true">
+			<p class="sr-only" aria-live="polite">{t('check.loading', { km })}</p>
+			<div class="skel h-64 rounded-lg lg:col-span-7"></div>
+			<div class="flex flex-col gap-3 lg:col-span-5">
+				<div class="skel h-24 rounded-lg"></div>
+				<div class="skel h-24 rounded-lg"></div>
+				<div class="skel h-24 rounded-lg"></div>
+			</div>
+		</div>
 	{:else if status === 'gagal' || !sekitar}
 		<ErrorState title={t('check.failed')} />
 	{:else}
 		<div class="grid gap-8 lg:grid-cols-12" aria-live="polite">
 			<section class="flex flex-col gap-4 lg:col-span-7" aria-labelledby="judul-tekanan">
-				<div class="flex flex-col gap-3 rounded-lg border border-line bg-surface p-5">
-					<p class="t-over">{pusat?.label}</p>
+				<div class="card flex flex-col gap-4 p-5 md:p-6 lg:sticky lg:top-24">
+					<p class="t-over flex items-center gap-2">
+						<MapPin size={14} strokeWidth={2} aria-hidden="true" />{pusat?.label}
+					</p>
 					<h2 id="judul-tekanan" class="t-h3">{t('check.pressure', { km })}</h2>
 					{#if rasio}
 						{@const pecahan = pecahanTekanan(rasio.nilai)}
@@ -112,16 +132,19 @@
 						/>
 						{t('services.zoningNote')}
 					</p>
+					{#if sekitar.keterbatasan.length}
+						<ul class="list-disc space-y-1 pl-5 text-small text-muted">
+							{#each sekitar.keterbatasan as kunci (kunci)}<li>{t(`pen.limit.${kunci}`)}</li>{/each}
+						</ul>
+					{/if}
 				</div>
-				{#if sekitar.keterbatasan.length}
-					<ul class="list-disc space-y-1 pl-5 text-small text-muted">
-						{#each sekitar.keterbatasan as kunci (kunci)}<li>{t(`pen.limit.${kunci}`)}</li>{/each}
-					</ul>
-				{/if}
 			</section>
-			<div class="flex flex-col gap-6 lg:col-span-5">
+			<div class="flex flex-col gap-8 lg:col-span-5">
 				<section class="flex flex-col gap-3" aria-labelledby="judul-negeri">
-					<h2 id="judul-negeri" class="t-h3">{t('check.nearest')}</h2>
+					<h2 id="judul-negeri" class="flex items-center gap-2 text-h3 font-bold">
+						<School size={20} strokeWidth={1.75} aria-hidden="true" class="text-primary" />
+						{t('check.nearest')}
+					</h2>
 					{#if sekitar.smp_negeri.length}
 						<ol class="flex flex-col gap-2">
 							{#each terdekatDulu(sekitar.smp_negeri, batasDaftarNegeri) as sekolah, i (sekolah.npsn)}
@@ -134,7 +157,10 @@
 				</section>
 				{#if alternatif.length}
 					<section class="flex flex-col gap-3" aria-labelledby="judul-alternatif">
-						<h2 id="judul-alternatif" class="t-h3">{t('check.alternatives')}</h2>
+						<h2 id="judul-alternatif" class="flex items-center gap-2 text-h3 font-bold">
+							<Sparkles size={20} strokeWidth={1.75} aria-hidden="true" class="text-primary" />
+							{t('check.alternatives')}
+						</h2>
 						<ul class="flex flex-col gap-2">
 							{#each terdekatDulu(alternatif, alternatif.length) as sekolah (sekolah.npsn)}
 								<KartuSekolah {sekolah} />

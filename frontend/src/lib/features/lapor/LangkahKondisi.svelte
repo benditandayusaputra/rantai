@@ -6,7 +6,7 @@
 </script>
 
 <fieldset class="flex flex-col gap-3">
-	<legend class="t-h1 mb-2">{t('report.s4.title')}</legend>
+	<legend class="mb-2 text-balance font-serif text-h1">{t('report.s4.title')}</legend>
 	{#each daftarKondisi as kondisi (kondisi)}
 		<RadioCard
 			name="kondisi"

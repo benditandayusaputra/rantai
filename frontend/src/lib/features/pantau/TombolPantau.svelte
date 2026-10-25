@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Bell, BellRing } from '@lucide/svelte';
+	import { Bell, BellRing, LoaderCircle } from '@lucide/svelte';
 	import { tangkap } from '$lib/api/klien';
 	import { daftarLangganan, langgani } from '$lib/api/pantau';
 	import { sesiAktif } from '$lib/features/akun/sesi.svelte';
@@ -10,8 +10,7 @@
 	let isDipantau = $state(false);
 	let isSibuk = $state(false);
 	const sesi = $derived(sesiAktif());
-	const kelas =
-		'inline-flex min-h-touch items-center gap-2 rounded-md border-ctrl px-4 font-semibold hover:bg-sunken';
+	const kelas = 'btn max-md:px-3 max-md:text-small';
 
 	$effect(() => {
 		if (!sesi) return;
@@ -32,22 +31,30 @@
 {#if !sesi}
 	<a
 		href="/{bahasaBawaan}/masuk?lanjut={encodeURIComponent(`/${bahasaBawaan}/pantau`)}"
-		class="{kelas} border-line-strong"
+		class="{kelas} btn-outline"
 	>
-		<Bell size={20} strokeWidth={1.75} aria-hidden="true" />{t('action.watch')}
+		<Bell size={18} strokeWidth={1.75} aria-hidden="true" />{t('action.watch')}
 	</a>
 {:else if isDipantau}
-	<a href="/{bahasaBawaan}/pantau" class="{kelas} border-primary bg-secondary text-secondary-on">
-		<BellRing size={20} strokeWidth={1.75} aria-hidden="true" />{t('action.watching')}
+	<a
+		href="/{bahasaBawaan}/pantau"
+		class="{kelas} border-primary bg-secondary text-secondary-on hover:bg-secondary-hover"
+	>
+		<BellRing size={18} strokeWidth={1.75} aria-hidden="true" />{t('action.watching')}
 	</a>
 {:else}
 	<button
 		type="button"
-		class="{kelas} border-line-strong hover:border-fg"
+		class="{kelas} btn-outline"
 		disabled={isSibuk}
 		aria-busy={isSibuk}
 		onclick={pantau}
 	>
-		<Bell size={20} strokeWidth={1.75} aria-hidden="true" />{t('action.watch')}
+		{#if isSibuk}
+			<LoaderCircle size={18} strokeWidth={1.75} aria-hidden="true" class="animate-spin" />
+		{:else}
+			<Bell size={18} strokeWidth={1.75} aria-hidden="true" />
+		{/if}
+		{t('action.watch')}
 	</button>
 {/if}

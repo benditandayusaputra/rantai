@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Info } from '@lucide/svelte';
+	import { ChartScatter, Info } from '@lucide/svelte';
 	import { ambilBelanjaTema, tangkap } from '$lib/api/klien';
 	import type { BelanjaTema } from '$lib/api/tipe';
 	import ErrorState from '$lib/components/ErrorState.svelte';
@@ -51,18 +51,22 @@
 	const tinggiPlot = $derived(tinggi - atas - bawah);
 </script>
 
-<section
-	aria-labelledby="{id}-judul"
-	class="flex flex-col gap-4 rounded-lg border border-line bg-surface p-4 md:p-5"
->
+<section aria-labelledby="{id}-judul" class="card flex flex-col gap-4 p-4 md:p-6">
 	<div class="flex flex-wrap items-start justify-between gap-3">
-		<h3 id="{id}-judul" class="t-h3">{t('spend.title')}</h3>
+		<div class="flex items-center gap-3">
+			<span class="icon-tile"><ChartScatter size={20} strokeWidth={1.75} aria-hidden="true" /></span
+			>
+			<h3 id="{id}-judul" class="t-h3">{t('spend.title')}</h3>
+		</div>
 		{#if data}<TableToggle bind:pressed={isTabel} controls={id} />{/if}
 	</div>
 	{#if isGagal}
 		<ErrorState title={t('spend.failed')} />
 	{:else if !data}
-		<p class="text-muted" aria-live="polite">{t('state.loading')}</p>
+		<div aria-busy="true">
+			<p class="sr-only" aria-live="polite">{t('state.loading')}</p>
+			<div class="skel h-64 rounded-md"></div>
+		</div>
 	{:else}
 		<p class="text-small text-muted">{t('spend.lead', { tahun: data.tahun })}</p>
 		<div {id}>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { ChartColumn } from '@lucide/svelte';
 	import type { DetailPendidikan } from '$lib/api/tipe';
 	import ProvenanceBadge from '$lib/components/ProvenanceBadge.svelte';
 	import TableToggle from '$lib/components/TableToggle.svelte';
@@ -17,12 +18,15 @@
 	const maksimum = $derived(Math.max(0, ...baris.map((b) => b.angka.nilai)));
 </script>
 
-<section aria-labelledby="{id}-judul" class="rounded-lg border border-line bg-surface p-4 md:p-5">
+<section aria-labelledby="{id}-judul" class="card p-4 md:p-6">
 	<div class="flex flex-wrap items-start justify-between gap-3">
-		<h2 id="{id}-judul" class="t-h3">{t('pen.chartTitle')}</h2>
+		<div class="flex items-center gap-3">
+			<span class="icon-tile"><ChartColumn size={20} strokeWidth={1.75} aria-hidden="true" /></span>
+			<h2 id="{id}-judul" class="t-h3">{t('pen.chartTitle')}</h2>
+		</div>
 		<TableToggle bind:pressed={isTabel} controls={id} />
 	</div>
-	<div {id} class="mt-4">
+	<div {id} class="mt-6">
 		{#if isTabel}
 			<table class="w-full text-small">
 				<caption class="sr-only">{t('pen.chartTitle')}</caption>

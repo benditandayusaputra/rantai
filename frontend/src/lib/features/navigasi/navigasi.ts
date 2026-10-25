@@ -1,4 +1,4 @@
-import { Bell, Camera, House, Info, Map, MessageCircle } from '@lucide/svelte';
+import { Bell, Camera, FileLock, House, Info, Map, MessageCircle, School } from '@lucide/svelte';
 import type { KunciPesan } from '$lib/i18n';
 
 export type Tujuan = 'beranda' | 'peta' | 'tanya' | 'lapor' | 'pantau' | 'tentang';
@@ -7,8 +7,15 @@ interface TujuanNavigasi {
 	kunci: Tujuan;
 	path: string;
 	label: KunciPesan;
+	labelPonsel?: KunciPesan;
 	ikon: typeof House;
 	isHanyaLayarLebar?: boolean;
+}
+
+interface TautanKaki {
+	path: string;
+	label: KunciPesan;
+	ikon: typeof House;
 }
 
 export const tujuanUtama: TujuanNavigasi[] = [
@@ -17,7 +24,38 @@ export const tujuanUtama: TujuanNavigasi[] = [
 	{ kunci: 'tanya', path: '/tanya', label: 'nav.ask', ikon: MessageCircle },
 	{ kunci: 'lapor', path: '/lapor', label: 'nav.report', ikon: Camera },
 	{ kunci: 'pantau', path: '/pantau', label: 'nav.watch', ikon: Bell, isHanyaLayarLebar: true },
-	{ kunci: 'tentang', path: '/tentang-data', label: 'nav.about', ikon: Info }
+	{
+		kunci: 'tentang',
+		path: '/tentang-data',
+		label: 'nav.about',
+		labelPonsel: 'nav.aboutShort',
+		ikon: Info
+	}
+];
+
+export const kelompokKaki: { judul: KunciPesan; tautan: TautanKaki[] }[] = [
+	{
+		judul: 'nav.explore',
+		tautan: [
+			{ path: '/peta', label: 'nav.map', ikon: Map },
+			{ path: '/tanya', label: 'ask.title', ikon: MessageCircle },
+			{ path: '/cek-sekolah', label: 'check.title', ikon: School }
+		]
+	},
+	{
+		judul: 'nav.act',
+		tautan: [
+			{ path: '/lapor', label: 'report.flowTitle', ikon: Camera },
+			{ path: '/pantau', label: 'watch.title', ikon: Bell }
+		]
+	},
+	{
+		judul: 'nav.openness',
+		tautan: [
+			{ path: '/tentang-data', label: 'nav.about', ikon: Info },
+			{ path: '/data-belum-dibuka', label: 'unopened.title', ikon: FileLock }
+		]
+	}
 ];
 
 export function tujuanAktif(pathname: string, bahasa: string): Tujuan | null {

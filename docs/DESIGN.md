@@ -313,6 +313,19 @@ Rasio = calon lulusan jenjang bawah ÷ kursi kelas awal negeri di wilayah yang s
 
 Aturan: makin kontras dengan peta dasar, makin kurang kursinya. Di tema gelap urutan terang dan gelap dibalik agar aturan ini tetap berlaku. Setiap area diberi garis tepi 2px warna `--map` agar kelas bersebelahan tetap terpisah.
 
+### 1.8 Ilustrasi
+
+Ilustrasi beranda (`IlustrasiKota`) dan halaman masuk (`IlustrasiMasuk`) adalah SVG inline. Bidang memakai token yang sudah ada (`--secondary`, `--secondary-hover`, `--raised`, `--line`, `--primary`, `--attn-fill`, `--gap-*`), sehingga ikut berganti tema. Hanya warna tokoh yang punya token sendiri:
+
+| Token | Terang | Gelap | Kelas Tailwind |
+|---|---|---|---|
+| `--illu-skin` | #E9B48E | #D9A27C | `fill-illu-skin` |
+| `--illu-skin-shade` | #C98B64 | #B07A56 | `fill-illu-shade` |
+| `--illu-hair` | #2A211D | #120D0B | `fill-illu-hair`, `stroke-illu-hair` |
+| `--illu-pants` | #2F3D45 | #46575F | `fill-illu-pants` |
+
+Ilustrasi selalu `aria-hidden="true"`, tidak memuat teks, dan tidak menggambarkan angka yang bisa dikira data sungguhan.
+
 ---
 
 ## 2. Token tipografi, jarak, radius, bayangan, garis, animasi, z-index
@@ -672,6 +685,17 @@ Kelas komposit di `src/app.css` agar skala tipografi responsif tidak diulang di 
   .skel { background: linear-gradient(90deg, var(--skel) 0, var(--skel-hi) 40%, var(--skel) 80%); background-size: 640px 100%; @apply animate-shimmer motion-reduce:animate-none; }
 }
 ```
+
+Kelas komponen bersama di `app.css`, dipakai alih-alih merangkai ulang kelas utilitas di setiap halaman:
+
+| Kelas | Isi |
+|---|---|
+| `.btn` + `.btn-primary` / `.btn-secondary` / `.btn-outline` / `.btn-ghost` / `.btn-text` | Varian `Button` (5.2). Ukuran `.btn-sm` (36), bawaan (44), `.btn-lg` (52); `.btn-block` untuk lebar penuh; `.btn-icon` untuk tombol ikon 44 × 44. Ikon Lucide 18 sampai 20 diletakkan di dalam tombol sebelum label, atau sesudahnya untuk panah lanjut. |
+| `.field` | Isian teks 48 px (`TextField`). |
+| `.card`, `.card-link` | Kartu `--surface` bergaris `--line` dengan `--sh-1`; `.card-link` menambah naik 2 px dan `--sh-2` saat hover. |
+| `.icon-tile` | Kotak ikon 44 × 44 `--secondary` dengan ikon `--primary`, untuk judul bagian dan kartu fitur. |
+| `.chip` | Kapsul pilihan 44 px; `aria-pressed="true"` memberi isi `--secondary`. |
+| `.link` | Tautan dalam teks bergaris bawah. |
 
 Catatan untuk Tailwind v4: pindahkan nilai `theme.extend` ke blok `@theme` di CSS (misalnya `--color-page: var(--bg);`) dan pakai `@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));`. Nama kelas yang dihasilkan sama.
 

@@ -60,7 +60,13 @@ export default {
 					4: { DEFAULT: v('gap-4'), on: v('gap-4-on') }
 				},
 				map: { DEFAULT: v('map'), road: v('map-road'), water: v('map-water'), park: v('map-park') },
-				skel: { DEFAULT: v('skel'), hi: v('skel-hi') }
+				skel: { DEFAULT: v('skel'), hi: v('skel-hi') },
+				illu: {
+					skin: v('illu-skin'),
+					shade: v('illu-skin-shade'),
+					hair: v('illu-hair'),
+					pants: v('illu-pants')
+				}
 			},
 			fontFamily: {
 				sans: [v('font-sans')],

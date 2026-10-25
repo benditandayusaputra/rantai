@@ -25,8 +25,7 @@
 		{maxlength}
 		bind:value
 		aria-describedby={help ? `${id}-bantuan` : undefined}
-		class="w-full rounded-md border-ctrl border-line-strong bg-surface p-3 text-body hover:border-fg focus:border-focus"
-	></textarea>
+		class="field h-auto min-h-32 resize-y py-3"></textarea>
 	<p
 		class="self-end text-small text-muted num"
 		aria-live={sisa <= ambangPeringatan ? 'polite' : 'off'}

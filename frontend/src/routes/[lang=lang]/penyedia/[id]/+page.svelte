@@ -8,7 +8,15 @@
 </script>
 
 {#await data.penyedia}
-	<p class="wrap py-10 text-muted" aria-live="polite">{t('state.loading')}</p>
+	<div class="wrap flex flex-col gap-4 py-6 lg:py-10" aria-busy="true">
+		<p class="sr-only" aria-live="polite">{t('state.loading')}</p>
+		<div class="skel h-16 w-2/3 rounded-md"></div>
+		<div class="grid grid-cols-2 gap-3 lg:max-w-prose">
+			<div class="skel h-28 rounded-lg"></div>
+			<div class="skel h-28 rounded-lg"></div>
+		</div>
+		<div class="skel h-64 rounded-lg"></div>
+	</div>
 {:then hasil}
 	{#if hasil.ok}
 		<HalamanPenyedia penyedia={hasil.data} />

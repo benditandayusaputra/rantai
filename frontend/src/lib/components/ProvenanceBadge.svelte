@@ -54,6 +54,6 @@
 				>{/if}
 		</span>
 	{/if}
-	<ChevronDown size={16} strokeWidth={1.75} aria-hidden="true" class="mr-1 shrink-0" />
+	<ChevronDown size={14} strokeWidth={1.75} aria-hidden="true" class="mr-0.5 shrink-0" />
 </button>
 <SourcePanel bind:open {angka} {nilai} {provenance} {isGagal} />

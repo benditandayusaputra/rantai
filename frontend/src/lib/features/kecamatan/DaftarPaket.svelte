@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Calendar, ChevronDown, Layers, ListFilter } from '@lucide/svelte';
 	import { untrack } from 'svelte';
 	import { replaceState } from '$app/navigation';
 	import { page } from '$app/state';
@@ -58,31 +59,37 @@
 		url.searchParams.set('tahun', String(filterTahun));
 		replaceState(url, {});
 	}
-
-	const kelasPilihan =
-		'min-h-touch rounded-md border-ctrl border-line-strong bg-raised px-3 text-body hover:border-fg';
 </script>
 
 <section aria-labelledby="judul-daftar-paket" class="flex flex-col gap-4">
-	<h3 id="judul-daftar-paket" class="t-h3">{t('money.listTitle')}</h3>
-	<div class="flex flex-wrap gap-4">
-		<label class="flex flex-col gap-1 text-small font-semibold">
-			{t('money.filterYear')}
-			<select bind:value={filterTahun} onchange={simpanFilter} class={kelasPilihan}>
-				{#each daftarTahun(tahunAwal, jumlahPilihanTahun) as tahun (tahun)}
-					<option value={tahun}>{tahun}</option>
-				{/each}
-			</select>
-		</label>
-		<label class="flex flex-col gap-1 text-small font-semibold">
-			{t('money.filterTheme')}
-			<select bind:value={filterTema} onchange={simpanFilter} class={kelasPilihan}>
-				<option value="">{t('money.allThemes')}</option>
-				{#each tema as item (item.kode)}
-					<option value={item.kode}>{item.nama[bahasaBawaan]}</option>
-				{/each}
-			</select>
-		</label>
+	<div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+		<h3 id="judul-daftar-paket" class="flex items-center gap-2 text-h3 font-bold">
+			<ListFilter size={20} strokeWidth={1.75} aria-hidden="true" class="text-primary" />
+			{t('money.listTitle')}
+		</h3>
+		<div class="grid grid-cols-2 gap-3 md:flex md:w-auto">
+			<label class="flex flex-col gap-1 text-small font-semibold">
+				<span class="inline-flex items-center gap-1">
+					<Calendar size={14} strokeWidth={1.75} aria-hidden="true" />{t('money.filterYear')}
+				</span>
+				<select bind:value={filterTahun} onchange={simpanFilter} class="field md:w-36">
+					{#each daftarTahun(tahunAwal, jumlahPilihanTahun) as tahun (tahun)}
+						<option value={tahun}>{tahun}</option>
+					{/each}
+				</select>
+			</label>
+			<label class="flex flex-col gap-1 text-small font-semibold">
+				<span class="inline-flex items-center gap-1">
+					<Layers size={14} strokeWidth={1.75} aria-hidden="true" />{t('money.filterTheme')}
+				</span>
+				<select bind:value={filterTema} onchange={simpanFilter} class="field md:w-48">
+					<option value="">{t('money.allThemes')}</option>
+					{#each tema as item (item.kode)}
+						<option value={item.kode}>{item.nama[bahasaBawaan]}</option>
+					{/each}
+				</select>
+			</label>
+		</div>
 	</div>
 	{#if status === 'gagal'}
 		<ErrorState
@@ -105,10 +112,12 @@
 		{:else if halaman < jumlahHalaman}
 			<button
 				type="button"
-				class="inline-flex min-h-touch items-center self-start rounded-md bg-secondary px-4 font-bold text-secondary-on hover:bg-secondary-hover"
+				class="btn btn-secondary self-center max-md:btn-block"
 				onclick={() => muat({ ...filterAktif, halaman: halaman + 1 }, true)}
-				>{t('money.loadMore')}</button
 			>
+				<ChevronDown size={18} strokeWidth={1.75} aria-hidden="true" />
+				{t('money.loadMore')}
+			</button>
 		{/if}
 	{/if}
 </section>

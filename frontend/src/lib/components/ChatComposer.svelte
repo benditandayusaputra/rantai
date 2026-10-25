@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { MapPin, SendHorizontal, X } from '@lucide/svelte';
+	import { MapPin, MessageCircle, SendHorizontal, X } from '@lucide/svelte';
 	import { t } from '$lib/i18n';
 
 	interface Props {
@@ -38,21 +38,31 @@
 
 <div class="flex flex-col gap-3">
 	{#if suggestions.length}
-		<ul aria-label={t('ask.suggestions')} class="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
+		<ul
+			aria-label={t('ask.suggestions')}
+			class="grid grid-cols-[repeat(auto-fill,minmax(min(100%,theme(spacing.80)),1fr))] gap-2"
+		>
 			{#each suggestions as saran (saran)}
-				<li class="shrink-0">
+				<li>
 					<button
 						type="button"
 						{disabled}
-						class="min-h-touch max-w-66 rounded-lg border-ctrl border-line-strong px-4 py-2 text-left text-small hover:bg-sunken disabled:opacity-50"
-						onclick={() => onsubmit(saran)}>{saran}</button
+						class="card-link flex h-full min-h-touch w-full items-start gap-3 px-4 py-3 text-left text-small font-semibold disabled:opacity-50"
+						onclick={() => onsubmit(saran)}
+					>
+						<MessageCircle
+							size={18}
+							strokeWidth={1.75}
+							aria-hidden="true"
+							class="mt-0.5 shrink-0 text-primary"
+						/>{saran}</button
 					>
 				</li>
 			{/each}
 		</ul>
 	{/if}
 	<form
-		class="rounded-lg border-ctrl border-line-strong bg-surface focus-within:border-primary"
+		class="rounded-lg border-ctrl border-line-strong bg-raised shadow-1 transition-colors duration-fast ease-standard focus-within:border-focus hover:border-fg"
 		onsubmit={kirim}
 	>
 		{#if context}
@@ -88,7 +98,7 @@
 			<button
 				type="submit"
 				disabled={disabled || isKosong}
-				class="inline-flex min-h-touch min-w-touch items-center justify-center rounded-md bg-primary text-primary-on disabled:opacity-50"
+				class="btn btn-primary btn-icon"
 				aria-label={t('ask.send')}
 			>
 				<SendHorizontal size={20} strokeWidth={1.75} aria-hidden="true" />

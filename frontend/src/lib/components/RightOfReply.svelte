@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { FileText, Scale } from '@lucide/svelte';
+	import { ExternalLink, FileText, Scale } from '@lucide/svelte';
 	import type { HakJawab } from '$lib/api/tipe';
 	import { formatTanggal } from '$lib/format';
 	import { bahasaBawaan, t } from '$lib/i18n';
@@ -11,9 +11,11 @@
 	const isAnggota = $derived(hakJawab.target_jenis === 'umpan');
 </script>
 
-<article aria-labelledby={idJudul} class="overflow-hidden rounded-lg border border-line bg-surface">
+<article aria-labelledby={idJudul} class="card overflow-hidden">
 	{#if hakJawab.is_simulation}<SimRibbon />{/if}
-	<p class="flex items-center gap-2 bg-info-bg px-4 py-2 text-small font-semibold text-info">
+	<p
+		class="flex flex-wrap items-center gap-2 bg-info-bg px-4 py-2 text-small font-semibold text-info"
+	>
 		<Scale size={16} strokeWidth={1.75} aria-hidden="true" />
 		{isAnggota ? t('reply.memberTitle') : t('reply.title')}
 		<span class="font-normal">·</span>
@@ -36,9 +38,10 @@
 				href={hakJawab.tautan_dokumen}
 				target="_blank"
 				rel="noopener noreferrer"
-				class="inline-flex min-h-touch items-center gap-2 self-start font-semibold underline"
+				class="btn btn-outline self-start"
 			>
-				<FileText size={16} strokeWidth={1.75} aria-hidden="true" />{t('reply.attachment')}
+				<FileText size={18} strokeWidth={1.75} aria-hidden="true" />{t('reply.attachment')}
+				<ExternalLink size={16} strokeWidth={1.75} aria-hidden="true" />
 				<span class="sr-only">{t('a11y.opensNewTab')}</span>
 			</a>
 		{/if}

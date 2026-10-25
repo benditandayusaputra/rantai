@@ -9,7 +9,7 @@
 	let { item }: { item: ItemUmpan } = $props();
 </script>
 
-<li class="flex flex-col gap-2 rounded-lg border border-line bg-surface p-4">
+<li class="card flex flex-col gap-2 p-4 md:p-5">
 	<div class="flex flex-wrap items-center gap-2">
 		<LencanaSumber {item} />
 		<span class="text-small text-muted num"
@@ -20,7 +20,7 @@
 		href={item.url}
 		target="_blank"
 		rel="noopener"
-		class="inline-flex items-start gap-1 font-semibold underline"
+		class="inline-flex items-start gap-1 font-semibold underline decoration-1 underline-offset-4 hover:decoration-2"
 	>
 		{item.judul}<ExternalLink
 			size={16}

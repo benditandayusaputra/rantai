@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { LoaderCircle, LocateFixed, ShieldCheck } from '@lucide/svelte';
+	import { LoaderCircle, LocateFixed, RefreshCw, ShieldCheck } from '@lucide/svelte';
 	import ActionBar from '$lib/components/ActionBar.svelte';
 	import { t } from '$lib/i18n';
 	import { draf } from './draf.svelte';
-	import { kelasTombolUtama } from './gaya';
 	import { cariPosisi, type HasilPosisi } from './lapor';
 
 	let { onlanjut }: { onlanjut: () => void } = $props();
@@ -51,18 +50,13 @@
 			<p>{t('report.s1.poorBody', { m: Math.round(hasil.akurasiM) })}</p>
 		</div>
 	{:else}
-		<h1 class="t-h1">{t('report.s1.title')}</h1>
+		<h1 class="text-balance font-serif text-h1">{t('report.s1.title')}</h1>
 	{/if}
 
-	<ul class="flex flex-col gap-3">
+	<ul class="flex flex-col gap-3 rounded-lg bg-secondary p-4 text-secondary-on">
 		{#each ['report.s1.radius', 'report.s1.rounded'] as const as kunci (kunci)}
 			<li class="flex gap-3">
-				<ShieldCheck
-					size={20}
-					strokeWidth={1.75}
-					class="mt-0.5 shrink-0 text-primary"
-					aria-hidden="true"
-				/>
+				<ShieldCheck size={20} strokeWidth={1.75} class="mt-0.5 shrink-0" aria-hidden="true" />
 				<span>{t(kunci)}</span>
 			</li>
 		{/each}
@@ -75,19 +69,25 @@
 	{/if}
 </div>
 
-<ActionBar>
-	<button
-		type="button"
-		class={kelasTombolUtama}
-		disabled={isMencari}
-		aria-busy={isMencari}
-		onclick={izinkan}
-	>
-		{#if isMencari}
-			<LoaderCircle size={20} strokeWidth={1.75} class="animate-spin" aria-hidden="true" />
-			{t('report.s1.locating')}
-		{:else}
-			{hasil ? t('action.retry') : t('report.s1.allow')}
-		{/if}
-	</button>
-</ActionBar>
+<div class="-mx-4 -mb-6 mt-auto pt-5 md:m-0">
+	<ActionBar>
+		<button
+			type="button"
+			class="btn btn-primary btn-lg btn-block"
+			disabled={isMencari}
+			aria-busy={isMencari}
+			onclick={izinkan}
+		>
+			{#if isMencari}
+				<LoaderCircle size={20} strokeWidth={1.75} class="animate-spin" aria-hidden="true" />
+				{t('report.s1.locating')}
+			{:else if hasil}
+				<RefreshCw size={20} strokeWidth={1.75} aria-hidden="true" />
+				{t('action.retry')}
+			{:else}
+				<LocateFixed size={20} strokeWidth={1.75} aria-hidden="true" />
+				{t('report.s1.allow')}
+			{/if}
+		</button>
+	</ActionBar>
+</div>

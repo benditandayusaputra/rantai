@@ -16,17 +16,20 @@
 {#if role === 'user'}
 	<div class="flex justify-end">
 		<p class="sr-only">{t('ask.you')}</p>
-		<div class="ml-12 rounded-lg rounded-br-xs bg-secondary px-4 py-3 text-secondary-on">
+		<div class="ml-12 rounded-lg rounded-br-xs bg-primary px-4 py-3 text-primary-on shadow-1">
 			{@render children()}
 		</div>
 	</div>
 {:else}
 	<div class="flex items-start gap-3" aria-busy={state === 'streaming'}>
-		<span class="mt-1 shrink-0"><LogoMark class="h-6 w-6" /></span>
+		<span
+			class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-pill border border-line bg-raised"
+			><LogoMark class="h-5 w-5" /></span
+		>
 		<div
-			class="min-w-0 flex-1 rounded-lg border px-4 py-3 {state === 'no-data'
+			class="min-w-0 flex-1 rounded-lg rounded-tl-xs border px-4 py-3 {state === 'no-data'
 				? 'border-dashed border-line-strong bg-sunken'
-				: 'border-line bg-raised'}"
+				: 'border-line bg-raised shadow-1'}"
 		>
 			{#if state === 'no-data'}
 				<p class="mb-2 flex items-center gap-2 font-bold">

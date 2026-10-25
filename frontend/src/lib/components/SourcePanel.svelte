@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ExternalLink, X } from '@lucide/svelte';
+	import { ExternalLink, LoaderCircle, X } from '@lucide/svelte';
 	import type { Angka, Provenance } from '$lib/api/tipe';
 	import { namaSumber, pemilikSumber } from '$lib/features/provenance/provenance';
 	import { formatJam, formatTanggal } from '$lib/format';
@@ -42,11 +42,11 @@
 	aria-labelledby={idJudul}
 	class="w-full max-w-none rounded-t-xl bg-raised p-5 text-fg shadow-3 backdrop:bg-scrim max-lg:mb-0 max-lg:mt-auto lg:max-w-sm lg:rounded-lg"
 >
-	<div class="flex items-start justify-between gap-3">
+	<div class="flex items-start justify-between gap-3 border-b border-line pb-3">
 		<h2 id={idJudul} bind:this={judul} tabindex="-1" class="t-h3 pt-2">{t('source.title')}</h2>
 		<button
 			type="button"
-			class="inline-flex min-h-touch min-w-touch items-center justify-center rounded-md hover:bg-sunken"
+			class="btn btn-ghost btn-icon"
 			aria-label={t('action.close')}
 			onclick={() => (open = false)}
 		>
@@ -89,16 +89,19 @@
 				href={provenance.url}
 				target="_blank"
 				rel="noopener"
-				class="mt-4 inline-flex min-h-touch items-center gap-2 font-bold text-secondary-on underline"
+				class="btn btn-outline btn-block mt-5"
 			>
 				{t('action.openOriginal')}
-				<ExternalLink size={16} strokeWidth={1.75} aria-hidden="true" />
+				<ExternalLink size={18} strokeWidth={1.75} aria-hidden="true" />
 				<span class="sr-only">{t('a11y.opensNewTab')}</span>
 			</a>
 		{/if}
 	{:else if isGagal}
 		<p role="alert" class="mt-4 text-small text-danger">{t('source.failed')}</p>
 	{:else}
-		<p aria-busy="true" class="mt-4 text-small text-muted">{t('source.loading')}</p>
+		<p aria-busy="true" class="mt-4 flex items-center gap-2 text-small text-muted">
+			<LoaderCircle size={16} strokeWidth={1.75} aria-hidden="true" class="animate-spin" />
+			{t('source.loading')}
+		</p>
 	{/if}
 </dialog>

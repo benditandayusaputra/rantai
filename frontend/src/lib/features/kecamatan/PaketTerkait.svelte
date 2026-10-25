@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { ChevronDown, Link2, Package } from '@lucide/svelte';
 	import { ambilPaketTerkait, tangkap } from '$lib/api/klien';
 	import type { HasilPaketTerkait } from '$lib/api/tipe';
 	import { bahasaBawaan, t } from '$lib/i18n';
@@ -18,10 +19,19 @@
 	}
 </script>
 
-<details class="rounded-md bg-sunken" ontoggle={muat}>
-	<summary class="flex min-h-touch cursor-pointer items-center px-3 text-small font-semibold"
-		>{t('related.toggle')}</summary
+<details class="group rounded-md bg-sunken" ontoggle={muat}>
+	<summary
+		class="flex min-h-touch cursor-pointer list-none items-center gap-2 px-3 text-small font-semibold [&::-webkit-details-marker]:hidden"
 	>
+		<Link2 size={16} strokeWidth={1.75} aria-hidden="true" class="text-primary" />
+		<span class="flex-1">{t('related.toggle')}</span>
+		<ChevronDown
+			size={16}
+			strokeWidth={1.75}
+			aria-hidden="true"
+			class="transition-transform duration-fast ease-standard group-open:rotate-180"
+		/>
+	</summary>
 	<div class="flex flex-col gap-2 px-3 pb-3 text-small" aria-live="polite">
 		{#if isGagal}
 			<p class="text-muted">{t('related.failed')}</p>
@@ -35,9 +45,13 @@
 				<ul class="flex flex-col gap-2">
 					{#each hasil.paket as paket (paket.kode)}
 						<li class="flex flex-col gap-1 rounded-md bg-surface p-3">
-							<a href="/{bahasaBawaan}/paket/{paket.kode}" class="font-semibold underline"
-								>{paket.nama}</a
+							<a
+								href="/{bahasaBawaan}/paket/{paket.kode}"
+								class="link inline-flex items-start gap-2 no-underline hover:underline"
 							>
+								<Package size={16} strokeWidth={1.75} aria-hidden="true" class="mt-0.5 shrink-0" />
+								{paket.nama}
+							</a>
 							<span
 								class="self-start rounded-xs border-ctrl border-dashed border-line-strong px-2 text-caption font-bold"
 								>{t(`related.match.${paket.dasar_cocok}`)}</span

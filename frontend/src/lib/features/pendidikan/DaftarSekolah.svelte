@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { MapPin } from '@lucide/svelte';
 	import TableScroll from '$lib/components/TableScroll.svelte';
 	import type { Sekolah } from '$lib/api/tipe';
 	import EmptyState from '$lib/components/EmptyState.svelte';
@@ -25,7 +26,7 @@
 			<tbody>
 				{#each sekolah as item (item.npsn)}
 					{@const tampil = item.daya_tampung ? tampilkanAngka(item.daya_tampung) : null}
-					<tr class="border-b border-line">
+					<tr class="border-b border-line last:border-b-0 hover:bg-sunken">
 						<th scope="row" class="sticky left-0 bg-surface p-3 text-left font-semibold"
 							>{item.nama}</th
 						>
@@ -44,9 +45,10 @@
 							{#if item.lokasi}
 								<a
 									href="/{bahasaBawaan}/peta?lat={item.lokasi.lat}&lng={item.lokasi.lng}"
-									class="inline-flex min-h-touch items-center font-semibold text-secondary-on underline"
-									>{t('pen.school.onMap')}</a
+									class="link inline-flex min-h-touch items-center gap-1 whitespace-nowrap"
 								>
+									<MapPin size={16} strokeWidth={1.75} aria-hidden="true" />{t('pen.school.onMap')}
+								</a>
 							{/if}
 						</td>
 					</tr>

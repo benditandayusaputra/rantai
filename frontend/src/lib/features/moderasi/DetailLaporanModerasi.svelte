@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { EyeOff } from '@lucide/svelte';
+	import { CircleCheck, CircleX, EyeOff, SkipForward } from '@lucide/svelte';
 	import type { LaporanModerasi } from '$lib/api/tipe';
 	import SimRibbon from '$lib/components/SimRibbon.svelte';
 	import { formatJam, formatTanggal } from '$lib/format';
@@ -25,9 +25,6 @@
 	export function fokusTolak() {
 		document.getElementById('alasan-tolak')?.focus();
 	}
-
-	const kelasGaris =
-		'inline-flex min-h-touch items-center justify-center gap-2 rounded-md border-ctrl border-line-strong px-4 font-semibold hover:border-fg hover:bg-sunken disabled:text-dis-fg';
 </script>
 
 <article class="flex flex-col gap-5" aria-labelledby="judul-laporan-moderasi">
@@ -44,15 +41,12 @@
 	<section aria-label={t('mod.photos')} class="flex flex-col gap-3">
 		<label class="flex flex-col gap-1 text-small font-semibold">
 			{t('mod.hideReason')}
-			<input
-				bind:value={alasanSembunyi}
-				class="min-h-touch rounded-md border-ctrl border-line-strong bg-surface px-3 font-normal"
-			/>
+			<input bind:value={alasanSembunyi} class="field font-normal" />
 		</label>
 		<ul class="grid grid-cols-2 gap-3">
 			{#each laporan.foto as foto, i (foto.id)}
 				<li class="flex flex-col gap-2">
-					<a href={foto.url} class="block overflow-hidden rounded-lg bg-sunken">
+					<a href={foto.url} class="block overflow-hidden rounded-lg border border-line bg-sunken">
 						<img
 							src={foto.url_thumbnail}
 							alt={t('report.s3.alt', { n: i + 1, jam: formatJam(new Date(laporan.dibuat_pada)) })}
@@ -64,7 +58,7 @@
 					{:else}
 						<button
 							type="button"
-							class={kelasGaris}
+							class="btn btn-outline btn-sm"
 							disabled={busy || !alasanSembunyi.trim()}
 							onclick={() => onsembunyikan(foto.id, alasanSembunyi.trim())}
 						>
@@ -77,7 +71,7 @@
 		</ul>
 	</section>
 
-	<section class="flex flex-col gap-2 rounded-lg border-ctrl border-line bg-surface p-4">
+	<section class="card flex flex-col gap-2 p-4">
 		<h3 class="font-bold">{t('mod.context')}</h3>
 		<p>
 			{laporan.paket_nama ? t('mod.project', { nama: laporan.paket_nama }) : t('mod.noProject')}
@@ -90,7 +84,7 @@
 	</section>
 
 	<form
-		class="flex flex-col gap-3 rounded-lg border-ctrl border-line bg-surface p-4"
+		class="card flex flex-col gap-3 p-4"
 		onsubmit={(event) => {
 			event.preventDefault();
 			ontolak(alasan, pesan);
@@ -98,12 +92,7 @@
 	>
 		<label class="flex flex-col gap-1 text-small font-semibold">
 			{t('mod.rejectReason')}
-			<select
-				id="alasan-tolak"
-				bind:value={alasan}
-				required
-				class="min-h-touch rounded-md border-ctrl border-line-strong bg-surface px-3 font-normal"
-			>
+			<select id="alasan-tolak" bind:value={alasan} required class="field font-normal">
 				<option value="" disabled></option>
 				{#each alasanTolak as kunci (kunci)}
 					<option value={kunci}>{t(`mod.reason.${kunci}` as KunciPesan)}</option>
@@ -112,27 +101,22 @@
 		</label>
 		<label class="flex flex-col gap-1 text-small font-semibold">
 			{t('mod.rejectMessage')}
-			<textarea
-				bind:value={pesan}
-				rows="2"
-				maxlength="280"
-				class="rounded-md border-ctrl border-line-strong bg-surface p-3 font-normal"></textarea>
+			<textarea bind:value={pesan} rows="2" maxlength="280" class="field h-auto py-3 font-normal"
+			></textarea>
 		</label>
 		<div class="flex flex-wrap gap-3">
-			<button
-				type="button"
-				class="inline-flex min-h-13 items-center justify-center rounded-md bg-primary px-5 font-semibold text-primary-on hover:bg-primary-hover disabled:bg-dis-bg disabled:text-dis-fg"
-				disabled={busy}
-				onclick={onverifikasi}>{t('mod.verify')}</button
-			>
-			<button type="submit" class="{kelasGaris} min-h-13" disabled={busy || !alasan}
-				>{t('mod.reject')}</button
-			>
-			<button
-				type="button"
-				class="inline-flex min-h-13 items-center px-3 font-semibold text-secondary-on underline-offset-4 hover:underline"
-				onclick={onlewati}>{t('mod.skip')}</button
-			>
+			<button type="button" class="btn btn-primary btn-lg" disabled={busy} onclick={onverifikasi}>
+				<CircleCheck size={20} strokeWidth={1.75} aria-hidden="true" />
+				{t('mod.verify')}
+			</button>
+			<button type="submit" class="btn btn-outline btn-lg" disabled={busy || !alasan}>
+				<CircleX size={20} strokeWidth={1.75} aria-hidden="true" />
+				{t('mod.reject')}
+			</button>
+			<button type="button" class="btn btn-text btn-lg" onclick={onlewati}>
+				<SkipForward size={20} strokeWidth={1.75} aria-hidden="true" />
+				{t('mod.skip')}
+			</button>
 		</div>
 	</form>
 </article>

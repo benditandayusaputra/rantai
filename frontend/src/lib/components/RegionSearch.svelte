@@ -108,7 +108,7 @@
 <div class="relative">
 	<label for={id} class="sr-only">{t('search.label')}</label>
 	<div
-		class="flex items-center gap-3 rounded-md border-ctrl border-line-strong bg-raised px-4 focus-within:border-focus focus-within:shadow-ring hover:border-fg {size ===
+		class="flex items-center gap-3 rounded-md border-ctrl border-line-strong bg-raised px-4 transition-colors duration-fast ease-standard focus-within:border-focus focus-within:shadow-ring hover:border-fg {size ===
 		'lg'
 			? 'h-14 lg:h-15'
 			: 'h-14'}"
@@ -151,7 +151,7 @@
 				<p class="text-small text-danger">{t('search.error')}</p>
 				<button
 					type="button"
-					class="inline-flex min-h-touch items-center gap-2 rounded-md px-3 text-small font-bold text-secondary-on hover:bg-sunken"
+					class="btn btn-ghost btn-sm text-secondary-on"
 					onmousedown={(e) => e.preventDefault()}
 					onclick={() => muat(value.trim())}
 				>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { ShieldCheck } from '@lucide/svelte';
 	import PhotoGrid from '$lib/components/PhotoGrid.svelte';
 	import { t } from '$lib/i18n';
 	import { draf } from './draf.svelte';
@@ -35,7 +36,7 @@
 </script>
 
 <div class="flex flex-col gap-4">
-	<h1 class="t-h1">{t('report.s3.title')}</h1>
+	<h1 class="text-balance font-serif text-h1">{t('report.s3.title')}</h1>
 	<PhotoGrid
 		id="foto-bukti"
 		photos={draf.foto.map((f) => ({ id: f.id, src: f.pratinjau, takenAt: f.diambilPada }))}
@@ -45,5 +46,8 @@
 		onremove={hapus}
 	/>
 	{#if isGagal}<p role="alert" class="text-danger">{t('report.s3.failed')}</p>{/if}
-	<p class="text-small text-muted">{t('report.s3.privacy')}</p>
+	<p class="flex gap-2 text-small text-muted">
+		<ShieldCheck size={18} strokeWidth={1.75} aria-hidden="true" class="mt-0.5 shrink-0" />
+		{t('report.s3.privacy')}
+	</p>
 </div>

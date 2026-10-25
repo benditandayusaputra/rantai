@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { Check } from '@lucide/svelte';
+
 	interface Props {
 		labelledby: string;
 		items: { key: string; href: string; label: string; current: boolean }[];
@@ -15,9 +17,11 @@
 					href={item.href}
 					aria-current={item.current}
 					data-sveltekit-noscroll
-					class="inline-flex min-h-touch items-center rounded-pill border-ctrl border-line-strong px-4 text-small hover:bg-sunken aria-[current=true]:border-primary aria-[current=true]:bg-secondary aria-[current=true]:font-bold aria-[current=true]:text-secondary-on"
-					>{item.label}</a
+					class="chip aria-[current=true]:border-primary aria-[current=true]:bg-secondary aria-[current=true]:text-secondary-on"
 				>
+					{#if item.current}<Check size={16} strokeWidth={2} aria-hidden="true" />{/if}
+					{item.label}
+				</a>
 			</li>
 		{/each}
 	</ul>

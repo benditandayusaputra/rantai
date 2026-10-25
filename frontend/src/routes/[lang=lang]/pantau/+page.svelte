@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Info, X } from '@lucide/svelte';
+	import { Bell, ChevronRight, Info, LogIn, MapPin, Plus, X } from '@lucide/svelte';
 	import { onMount } from 'svelte';
 	import { cariWilayah, tangkap } from '$lib/api/klien';
 	import {
@@ -72,8 +72,10 @@
 	<title>{t('watch.title')} · {t('brand.name')}</title>
 </svelte:head>
 
-<div class="wrap flex flex-col gap-6 py-6 lg:py-10">
-	<header class="flex max-w-prose flex-col gap-3">
+<div class="wrap flex flex-col gap-8 pb-10">
+	<header class="page-head max-w-prose">
+		<span class="icon-tile h-12 w-12"><Bell size={24} strokeWidth={1.75} aria-hidden="true" /></span
+		>
 		<h1 class="t-h1">{t('watch.title')}</h1>
 		<p class="t-lead">{t('watch.lead')}</p>
 	</header>
@@ -85,26 +87,34 @@
 			{#snippet actions()}
 				<a
 					href="/{bahasaBawaan}/masuk?lanjut={encodeURIComponent(`/${bahasaBawaan}/pantau`)}"
-					class="inline-flex min-h-touch items-center rounded-md bg-primary px-4 font-semibold text-primary-on hover:bg-primary-hover"
-					>{t('action.signIn')}</a
+					class="btn btn-primary"
 				>
+					<LogIn size={18} strokeWidth={1.75} aria-hidden="true" />
+					{t('action.signIn')}
+				</a>
 			{/snippet}
 		</EmptyState>
 	{:else}
 		<div class="grid gap-8 lg:grid-cols-12">
 			<div class="flex flex-col gap-6 lg:col-span-8">
-				<section aria-labelledby="judul-dipantau" class="flex flex-col gap-3">
-					<h2 id="judul-dipantau" class="t-h3">{t('watch.areas')}</h2>
+				<section aria-labelledby="judul-dipantau" class="card flex flex-col gap-4 p-5">
+					<h2 id="judul-dipantau" class="t-h3 flex items-center gap-2">
+						<MapPin size={20} strokeWidth={1.75} aria-hidden="true" class="text-primary" />
+						{t('watch.areas')}
+					</h2>
 					{#if langganan.length}
 						<ul class="flex flex-wrap gap-2">
 							{#each langganan as l (l.id)}
 								<li
-									class="inline-flex min-h-touch items-center gap-1 rounded-pill bg-secondary pl-4 pr-1 font-semibold text-secondary-on"
+									class="inline-flex min-h-touch items-center gap-1 rounded-pill bg-secondary pl-4 pr-1 text-small font-semibold text-secondary-on"
 								>
-									<a href="/{bahasaBawaan}/kecamatan/{l.kode_wilayah}">{l.nama_wilayah}</a>
+									<a
+										href="/{bahasaBawaan}/kecamatan/{l.kode_wilayah}"
+										class="underline-offset-4 hover:underline">{l.nama_wilayah}</a
+									>
 									<button
 										type="button"
-										class="inline-flex h-11 w-11 items-center justify-center rounded-pill hover:bg-surface"
+										class="inline-flex h-11 w-11 items-center justify-center rounded-pill hover:bg-raised"
 										aria-label={t('watch.remove', { nama: l.nama_wilayah })}
 										onclick={() => hapus(l)}
 									>
@@ -114,8 +124,11 @@
 							{/each}
 						</ul>
 					{/if}
-					<div class="max-w-form">
-						<span class="sr-only">{t('watch.addLabel')}</span>
+					<div class="flex max-w-form flex-col gap-2">
+						<span class="flex items-center gap-2 text-small font-semibold">
+							<Plus size={16} strokeWidth={1.75} aria-hidden="true" />
+							{t('watch.addLabel')}
+						</span>
 						<RegionSearch bind:value={kata} cari={(q) => cariWilayah(fetch, q)} onselect={tambah} />
 					</div>
 				</section>
@@ -145,14 +158,14 @@
 										<a
 											href="/{bahasaBawaan}{n.tautan}"
 											onclick={() => buka(n)}
-											class="flex gap-3 rounded-lg border border-line bg-surface p-4 hover:border-line-strong"
+											class="card-link group flex items-center gap-3 p-4"
 										>
 											<span
-												class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-pill {tampil.kelas}"
+												class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-pill {tampil.kelas}"
 											>
 												<Ikon size={18} strokeWidth={1.75} aria-hidden="true" />
 											</span>
-											<span class="flex flex-1 flex-col gap-0.5">
+											<span class="flex min-w-0 flex-1 flex-col gap-0.5">
 												<span class="text-caption text-muted">
 													{t(tampil.label)} · {formatJam(new Date(n.terjadi_pada))}
 													{#if n.is_simulation}· {t('sim.ribbon')}{/if}
@@ -160,6 +173,12 @@
 												<span class={n.dibaca ? '' : 'font-bold'}>{n.judul}</span>
 												<span class="text-small text-muted">{n.nama_kecamatan}</span>
 											</span>
+											<ChevronRight
+												size={18}
+												strokeWidth={1.75}
+												aria-hidden="true"
+												class="shrink-0 text-muted transition-transform duration-fast ease-standard group-hover:translate-x-1"
+											/>
 										</a>
 									</li>
 								{/each}
@@ -170,7 +189,7 @@
 			</div>
 			<aside class="flex flex-col gap-4 lg:col-span-4">
 				<SakelarPush token={sesi.token_akses} />
-				<section class="flex flex-col gap-2 rounded-lg bg-info-bg p-4">
+				<section class="flex flex-col gap-2 rounded-lg border border-line bg-info-bg p-5">
 					<h2 class="flex items-center gap-2 font-bold">
 						<Info size={18} strokeWidth={1.75} class="text-info" aria-hidden="true" />
 						{t('watch.meaning')}

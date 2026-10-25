@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Sparkles } from '@lucide/svelte';
 	import { tanyaRantai, type JawabanTanya } from '$lib/api/tanya';
 	import type { Provenance } from '$lib/api/tipe';
 	import ChatComposer from '$lib/components/ChatComposer.svelte';
@@ -73,9 +74,12 @@
 
 <div class="flex flex-col gap-6">
 	{#if pesan.length === 0}
-		<div>
-			<p class="t-h3">{t('ask.emptyTitle')}</p>
-			<p class="mt-2 max-w-prose text-muted">{t('ask.emptyLead')}</p>
+		<div class="flex items-start gap-3">
+			<span class="icon-tile"><Sparkles size={20} strokeWidth={1.75} aria-hidden="true" /></span>
+			<div>
+				<p class="t-h3">{t('ask.emptyTitle')}</p>
+				<p class="mt-1 max-w-prose text-muted">{t('ask.emptyLead')}</p>
+			</div>
 		</div>
 	{/if}
 	<div role="log" aria-live="polite" aria-label={t('ask.messages')} class="flex flex-col gap-4">
