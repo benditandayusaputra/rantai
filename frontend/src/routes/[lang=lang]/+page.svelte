@@ -21,7 +21,7 @@
 	import UseLocationButton from '$lib/components/UseLocationButton.svelte';
 	import { cariLokasiku, type StatusLokasi } from '$lib/features/wilayah/lokasi';
 	import { contohWilayah, tujuanWilayah } from '$lib/features/wilayah/wilayah';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 
 	let kata = $state('');
 	let statusLokasi = $state<StatusLokasi>('idle');
@@ -132,7 +132,7 @@
 			{@const Ikon = item.ikon}
 			<li>
 				<a
-					href="/{bahasaBawaan}{item.path}"
+					href="/{bahasaAktif}{item.path}"
 					class="card-link group flex h-full items-start gap-4 p-5"
 				>
 					<span class="icon-tile"><Ikon size={20} strokeWidth={1.75} aria-hidden="true" /></span>
@@ -161,7 +161,7 @@
 		<div>
 			<h2 id="judul-sumber" class="t-h2">{t('home.trustTitle')}</h2>
 			<p class="mt-3 opacity-90">{t('home.trustLead')}</p>
-			<a href="/{bahasaBawaan}/tentang-data" class="btn mt-6 bg-raised text-fg hover:bg-surface">
+			<a href="/{bahasaAktif}/tentang-data" class="btn mt-6 bg-raised text-fg hover:bg-surface">
 				{t('action.readMethod')}
 				<ArrowRight size={18} strokeWidth={1.75} aria-hidden="true" />
 			</a>

@@ -3,7 +3,7 @@
 	import { ambilWakilDenganUmpan, tangkap } from '$lib/api/klien';
 	import type { WakilDenganUmpan } from '$lib/api/tipe';
 	import KartuUmpan from '$lib/features/anggota/KartuUmpan.svelte';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 	import { inisial } from './kecamatan';
 
 	let { kodeKecamatan, kodeTema }: { kodeKecamatan: string; kodeTema: string } = $props();
@@ -35,7 +35,7 @@
 				{@const umpan = data.umpan_isu_pengawas?.[wakil.id] ?? []}
 				<li class="card flex flex-col gap-3 p-4">
 					<a
-						href="/{bahasaBawaan}/anggota/{wakil.id}"
+						href="/{bahasaAktif}/anggota/{wakil.id}"
 						class="group flex items-center gap-3 font-bold underline-offset-4 hover:underline"
 					>
 						<span

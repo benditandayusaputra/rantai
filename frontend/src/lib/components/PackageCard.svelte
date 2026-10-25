@@ -3,7 +3,7 @@
 	import type { PaketRingkas } from '$lib/api/tipe';
 	import { tampilkanAngka } from '$lib/features/kecamatan/kecamatan';
 	import { ikonSektor, kunciSektor } from '$lib/features/paket/paket';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 	import CertaintyBadge from './CertaintyBadge.svelte';
 	import SimRibbon from './SimRibbon.svelte';
 
@@ -15,7 +15,7 @@
 </script>
 
 <a
-	href="/{bahasaBawaan}/paket/{paket.kode}"
+	href="/{bahasaAktif}/paket/{paket.kode}"
 	class="card-link group flex h-full flex-col overflow-hidden {paket.is_simulation
 		? 'border-ctrl border-cert-sim'
 		: ''}"

@@ -4,7 +4,7 @@
 	import type { SikapFraksi } from '$lib/api/tipe';
 	import EmptyState from '$lib/components/EmptyState.svelte';
 	import { formatTanggal } from '$lib/format';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 
 	let { fraksi }: { fraksi: string } = $props();
 
@@ -37,7 +37,7 @@
 						>
 						<span class="font-semibold">{sikap.judul_agenda}</span>
 						<span class="text-muted num"
-							>{formatTanggal(new Date(sikap.tanggal), bahasaBawaan, 'long')}</span
+							>{formatTanggal(new Date(sikap.tanggal), bahasaAktif, 'long')}</span
 						>
 					</p>
 					<p>{sikap.ringkasan}</p>

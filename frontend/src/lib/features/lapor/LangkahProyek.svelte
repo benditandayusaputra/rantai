@@ -6,7 +6,7 @@
 	import EmptyState from '$lib/components/EmptyState.svelte';
 	import RadioCard from '$lib/components/RadioCard.svelte';
 	import { formatJarak } from '$lib/format';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 	import { draf } from './draf.svelte';
 	import { paketTidakTerdaftar, radiusProyekM } from './lapor';
 
@@ -39,7 +39,7 @@
 			value={paket.kode}
 			bind:group={draf.paketKode}
 			title={paket.nama}
-			description={t('report.s2.distance', { jarak: formatJarak(paket.jarak.nilai, bahasaBawaan) })}
+			description={t('report.s2.distance', { jarak: formatJarak(paket.jarak.nilai, bahasaAktif) })}
 		>
 			{#snippet leading()}
 				{#if paket.is_simulation}

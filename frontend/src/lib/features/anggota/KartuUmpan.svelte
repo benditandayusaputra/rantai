@@ -3,7 +3,7 @@
 	import type { ItemUmpan } from '$lib/api/tipe';
 	import RightOfReply from '$lib/components/RightOfReply.svelte';
 	import { formatTanggal } from '$lib/format';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 	import LencanaSumber from './LencanaSumber.svelte';
 
 	let { item }: { item: ItemUmpan } = $props();
@@ -13,7 +13,7 @@
 	<div class="flex flex-wrap items-center gap-2">
 		<LencanaSumber {item} />
 		<span class="text-small text-muted num"
-			>{formatTanggal(new Date(item.terbit_pada), bahasaBawaan, 'long')}</span
+			>{formatTanggal(new Date(item.terbit_pada), bahasaAktif, 'long')}</span
 		>
 	</div>
 	<a

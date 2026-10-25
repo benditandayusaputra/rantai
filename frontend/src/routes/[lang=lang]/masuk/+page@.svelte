@@ -29,7 +29,7 @@
 		type KeadaanKode
 	} from '$lib/features/akun/masuk';
 	import { simpanSesi } from '$lib/features/akun/sesi.svelte';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 
 	const idKode = 'kode-masuk';
 	const idPesanKode = 'pesan-kode';
@@ -85,7 +85,7 @@
 		isMemeriksa = false;
 		if (!hasil.ok) return tanganiGalat(hasil.galat);
 		simpanSesi(hasil.data);
-		await goto(tujuanSetelahMasuk(page.url.searchParams.get('lanjut'), bahasaBawaan));
+		await goto(tujuanSetelahMasuk(page.url.searchParams.get('lanjut'), bahasaAktif));
 	}
 
 	function gantiEmail() {
@@ -139,7 +139,7 @@
 	<div class="flex min-h-dvh flex-col">
 		<header class="wrap flex h-16 items-center justify-between gap-4 lg:h-18">
 			<span class="lg:invisible"><Logo /></span>
-			<a href="/{bahasaBawaan}" class="btn btn-ghost btn-sm">
+			<a href="/{bahasaAktif}" class="btn btn-ghost btn-sm">
 				<ArrowLeft size={18} strokeWidth={1.75} aria-hidden="true" />
 				{t('nav.home')}
 			</a>

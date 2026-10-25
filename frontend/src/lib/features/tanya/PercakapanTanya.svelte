@@ -7,7 +7,7 @@
 	import Citation from '$lib/components/Citation.svelte';
 	import SourcePanel from '$lib/components/SourcePanel.svelte';
 	import { muatProvenance, namaSumber } from '$lib/features/provenance/provenance';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 	import { pecahRujukan, panjangMaksPertanyaan, saranPertanyaan } from './tanya';
 
 	interface Props {
@@ -56,7 +56,7 @@
 		try {
 			const jawaban = await tanyaRantai(
 				fetch,
-				{ pertanyaan, kode_kecamatan_konteks: konteks?.kode ?? '', bahasa: bahasaBawaan },
+				{ pertanyaan, kode_kecamatan_konteks: konteks?.kode ?? '', bahasa: bahasaAktif },
 				() => ubahPesan(id, (p) => ({ jumlahAlat: p.jumlahAlat + 1 }))
 			);
 			const rujukan = await muatRujukan(jawaban);

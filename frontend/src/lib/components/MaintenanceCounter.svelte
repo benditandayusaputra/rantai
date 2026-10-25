@@ -3,7 +3,7 @@
 	import type { Pemeliharaan } from '$lib/api/tipe';
 	import { kunciPemeliharaan } from '$lib/features/paket/paket';
 	import { formatTanggal } from '$lib/format';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 	import CertaintyBadge from './CertaintyBadge.svelte';
 	import ProvenanceBadge from './ProvenanceBadge.svelte';
 
@@ -38,11 +38,11 @@
 		{/if}
 		{#if akhir && pemeliharaan.status !== 'pemeliharaan_berakhir'}
 			<p class="text-small text-muted">
-				{t('maint.until', { date: formatTanggal(akhir, bahasaBawaan, 'long') })}
+				{t('maint.until', { date: formatTanggal(akhir, bahasaAktif, 'long') })}
 			</p>
 		{:else if akhir}
 			<p class="text-small text-muted">
-				{t('maint.ended', { date: formatTanggal(akhir, bahasaBawaan, 'long') })}
+				{t('maint.ended', { date: formatTanggal(akhir, bahasaAktif, 'long') })}
 			</p>
 		{/if}
 	{:else}

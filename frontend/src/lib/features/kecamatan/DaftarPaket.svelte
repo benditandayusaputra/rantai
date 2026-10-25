@@ -9,7 +9,7 @@
 	import ErrorState from '$lib/components/ErrorState.svelte';
 	import PackageCard from '$lib/components/PackageCard.svelte';
 	import { daftarTahun } from '$lib/features/paket/paket';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 
 	interface Props {
 		kodeKecamatan: string;
@@ -85,7 +85,7 @@
 				<select bind:value={filterTema} onchange={simpanFilter} class="field md:w-48">
 					<option value="">{t('money.allThemes')}</option>
 					{#each tema as item (item.kode)}
-						<option value={item.kode}>{item.nama[bahasaBawaan]}</option>
+						<option value={item.kode}>{item.nama[bahasaAktif]}</option>
 					{/each}
 				</select>
 			</label>

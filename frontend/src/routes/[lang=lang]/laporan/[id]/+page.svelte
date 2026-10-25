@@ -22,7 +22,7 @@
 	import { sesiAktif } from '$lib/features/akun/sesi.svelte';
 	import { cariPosisi, susunLinimasa } from '$lib/features/lapor/lapor';
 	import { formatJam, formatTanggal } from '$lib/format';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
@@ -94,7 +94,7 @@
 					<li class="flex items-center gap-1.5">
 						<Calendar size={16} strokeWidth={1.75} aria-hidden="true" />
 						<span class="num"
-							>{formatTanggal(new Date(laporan.dibuat_pada), bahasaBawaan, 'long')} · {formatJam(
+							>{formatTanggal(new Date(laporan.dibuat_pada), bahasaAktif, 'long')} · {formatJam(
 								new Date(laporan.dibuat_pada)
 							)}</span
 						>
@@ -108,7 +108,7 @@
 				</ul>
 				{#if laporan.paket}
 					<a
-						href="/{bahasaBawaan}/paket/{laporan.paket.kode}"
+						href="/{bahasaAktif}/paket/{laporan.paket.kode}"
 						class="card-link group mt-1 flex w-full items-center gap-3 p-3 md:max-w-prose"
 					>
 						<span class="icon-tile h-9 w-9"

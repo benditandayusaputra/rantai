@@ -20,7 +20,7 @@
 	import DetailLaporanModerasi from '$lib/features/moderasi/DetailLaporanModerasi.svelte';
 	import { bacaPintasan, geser, sisihkan } from '$lib/features/moderasi/moderasi';
 	import { formatJam, formatTanggal } from '$lib/format';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 
 	let isSesiDiperiksa = $state(false);
 	let antrean = $state<AntreanModerasi | null>(null);
@@ -117,7 +117,7 @@
 	<div class="flex min-h-dvh flex-col bg-page">
 		<header class="wrap flex h-16 items-center justify-between gap-4 lg:h-18">
 			<Logo />
-			<a href="/{bahasaBawaan}" class="btn btn-ghost btn-sm">
+			<a href="/{bahasaAktif}" class="btn btn-ghost btn-sm">
 				<ArrowLeft size={18} strokeWidth={1.75} aria-hidden="true" />
 				{t('nav.home')}
 			</a>
@@ -135,7 +135,7 @@
 				<p class="text-muted">{t('mod.forbidden')}</p>
 				{#if !sesi}
 					<a
-						href="/{bahasaBawaan}/masuk?lanjut={encodeURIComponent(`/${bahasaBawaan}/moderasi`)}"
+						href="/{bahasaAktif}/masuk?lanjut={encodeURIComponent(`/${bahasaAktif}/moderasi`)}"
 						class="btn btn-primary btn-lg btn-block"
 					>
 						<LogIn size={20} strokeWidth={1.75} aria-hidden="true" />
@@ -233,7 +233,7 @@
 											<span class="text-small text-muted"
 												>{item.nama_wilayah} · {formatTanggal(
 													new Date(item.dibuat_pada),
-													bahasaBawaan
+													bahasaAktif
 												)}
 												{formatJam(new Date(item.dibuat_pada))}</span
 											>
@@ -286,7 +286,7 @@
 									/><span class="sr-only">{t('a11y.opensNewTab')}</span></a
 								>
 								<p class="text-small text-muted">
-									{item.media_nama} · {formatTanggal(new Date(item.terbit_pada), bahasaBawaan)}
+									{item.media_nama} · {formatTanggal(new Date(item.terbit_pada), bahasaAktif)}
 								</p>
 								<p class="text-small">{t('mod.members', { nama: item.anggota.join(', ') })}</p>
 							</div>

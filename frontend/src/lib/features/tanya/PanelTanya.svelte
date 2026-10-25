@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Maximize2, MessageCircle, X } from '@lucide/svelte';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 	import PercakapanTanya from './PercakapanTanya.svelte';
 
 	interface Props {
@@ -33,7 +33,7 @@
 		</h2>
 		<div class="flex items-center">
 			<a
-				href="/{bahasaBawaan}/tanya?w={encodeURIComponent(konteks.kode)}"
+				href="/{bahasaAktif}/tanya?w={encodeURIComponent(konteks.kode)}"
 				class="btn btn-ghost btn-icon"
 				aria-label={t('ask.fullScreen')}
 				title={t('ask.fullScreen')}

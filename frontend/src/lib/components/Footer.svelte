@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { kelompokKaki } from '$lib/features/navigasi/navigasi';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 	import Logo from './Logo.svelte';
 </script>
 
@@ -19,7 +19,7 @@
 						{@const Ikon = tautan.ikon}
 						<li>
 							<a
-								href="/{bahasaBawaan}{tautan.path}"
+								href="/{bahasaAktif}{tautan.path}"
 								class="inline-flex min-h-touch items-center gap-2 text-small font-semibold text-muted hover:text-fg"
 							>
 								<Ikon size={16} strokeWidth={1.75} aria-hidden="true" />

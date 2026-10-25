@@ -20,7 +20,9 @@ const halamanTetap = [
 	'/id/pantau',
 	'/id/lapor',
 	'/id/panel',
-	'/id/moderasi'
+	'/id/moderasi',
+	'/en',
+	`/en/kecamatan/${kecamatanUji}`
 ];
 
 async function pelanggaranBerat(page: Page): Promise<string[]> {

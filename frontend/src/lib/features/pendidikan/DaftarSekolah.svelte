@@ -5,7 +5,7 @@
 	import EmptyState from '$lib/components/EmptyState.svelte';
 	import ProvenanceBadge from '$lib/components/ProvenanceBadge.svelte';
 	import { tampilkanAngka } from '$lib/features/kecamatan/kecamatan';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 	import { kunciJenisSekolah } from './pendidikan';
 
 	let { sekolah }: { sekolah: Sekolah[] } = $props();
@@ -44,7 +44,7 @@
 						<td class="p-3">
 							{#if item.lokasi}
 								<a
-									href="/{bahasaBawaan}/peta?lat={item.lokasi.lat}&lng={item.lokasi.lng}"
+									href="/{bahasaAktif}/peta?lat={item.lokasi.lat}&lng={item.lokasi.lng}"
 									class="link inline-flex min-h-touch items-center gap-1 whitespace-nowrap"
 								>
 									<MapPin size={16} strokeWidth={1.75} aria-hidden="true" />{t('pen.school.onMap')}

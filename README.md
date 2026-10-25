@@ -2,7 +2,7 @@
 
 Web transparansi publik untuk DKI Jakarta: apakah kursi sekolah di wilayahku cukup, ke mana uang kotaku mengalir, dan siapa yang bertanggung jawab. Setiap angka bisa ditelusuri ke sumbernya.
 
-Pratinjau: [rantai-civic.vercel.app](https://rantai-civic.vercel.app)
+Pratinjau: [rantai-civic.vercel.app](https://rantai-civic.vercel.app) (bahasa Indonesia di `/id`, English di `/en`)
 
 ## Deskripsi
 
@@ -148,7 +148,8 @@ API memakai IP pengunjung dari header `X-Klien-Asli` untuk batas laju hanya bila
 - [x] Fitur P1: isu yang disuarakan, sikap fraksi, aspirasi reses, Lapor Bukti, moderasi, profil penyedia, Cek Sekolahku, Pantau dan Web Push
 - [x] Redesain antarmuka, tes alur demo, aksesibilitas WCAG 2.1 AA, performa, deploy produksi
 - [ ] Snapshot luring final dari data lengkap untuk demo tanpa internet
-- [ ] Cadangan P2: tren antartahun, unduh CSV, bagikan sebagai gambar, bahasa Inggris, pengalih tema, ringkasan email
+- [x] Cadangan P2: tren antartahun, unduh CSV paket, kartu ringkasan untuk dibagikan, bahasa Inggris
+- [ ] Cadangan P2: pengalih tema, ringkasan mingguan via email
 
 Rincian setiap tugas ada di `docs/PLAN.md`.
 

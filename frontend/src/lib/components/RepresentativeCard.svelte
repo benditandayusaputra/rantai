@@ -2,13 +2,13 @@
 	import { ChevronRight, Landmark } from '@lucide/svelte';
 	import type { Wakil } from '$lib/api/tipe';
 	import { inisial } from '$lib/features/kecamatan/kecamatan';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 
 	let { wakil }: { wakil: Wakil } = $props();
 </script>
 
 <a
-	href="/{bahasaBawaan}/anggota/{wakil.id}"
+	href="/{bahasaAktif}/anggota/{wakil.id}"
 	class="card-link group flex h-full items-start gap-3 p-4"
 >
 	<span

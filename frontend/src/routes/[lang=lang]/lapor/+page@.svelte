@@ -30,7 +30,7 @@
 	import LangkahLokasi from '$lib/features/lapor/LangkahLokasi.svelte';
 	import LangkahProyek from '$lib/features/lapor/LangkahProyek.svelte';
 	import LangkahRingkasan from '$lib/features/lapor/LangkahRingkasan.svelte';
-	import { bahasaBawaan, t, type KunciPesan } from '$lib/i18n';
+	import { bahasaAktif, t, type KunciPesan } from '$lib/i18n';
 
 	let isSesiDiperiksa = $state(false);
 	let isMengirim = $state(false);
@@ -41,7 +41,7 @@
 		Math.min(bacaLangkah(page.url.searchParams.get('langkah')), langkahTerjauh(draf))
 	);
 	const tautanMasuk = $derived(
-		`/${bahasaBawaan}/masuk?lanjut=${encodeURIComponent(`/${bahasaBawaan}/lapor`)}`
+		`/${bahasaAktif}/masuk?lanjut=${encodeURIComponent(`/${bahasaAktif}/lapor`)}`
 	);
 
 	onMount(async () => {
@@ -56,7 +56,7 @@
 
 	function tutup() {
 		aturUlangDraf();
-		void goto(`/${bahasaBawaan}`);
+		void goto(`/${bahasaAktif}`);
 	}
 
 	function lewatiCatatan() {
@@ -74,7 +74,7 @@
 			return;
 		}
 		aturUlangDraf();
-		await goto(`/${bahasaBawaan}/lapor/terkirim?id=${hasil.data.id}`);
+		await goto(`/${bahasaAktif}/lapor/terkirim?id=${hasil.data.id}`);
 	}
 
 	const labelUtama = $derived(
@@ -107,7 +107,7 @@
 				<LogIn size={20} strokeWidth={1.75} aria-hidden="true" />
 				{t('action.signIn')}
 			</a>
-			<a href="/{bahasaBawaan}" class="btn btn-text btn-block">
+			<a href="/{bahasaAktif}" class="btn btn-text btn-block">
 				<ArrowLeft size={18} strokeWidth={1.75} aria-hidden="true" />
 				{t('action.back')}
 			</a>

@@ -2,7 +2,7 @@
 	import { ChevronDown, Link2, Package } from '@lucide/svelte';
 	import { ambilPaketTerkait, tangkap } from '$lib/api/klien';
 	import type { HasilPaketTerkait } from '$lib/api/tipe';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 
 	let { idAspirasi }: { idAspirasi: number } = $props();
 
@@ -46,7 +46,7 @@
 					{#each hasil.paket as paket (paket.kode)}
 						<li class="flex flex-col gap-1 rounded-md bg-surface p-3">
 							<a
-								href="/{bahasaBawaan}/paket/{paket.kode}"
+								href="/{bahasaAktif}/paket/{paket.kode}"
 								class="link inline-flex items-start gap-2 no-underline hover:underline"
 							>
 								<Package size={16} strokeWidth={1.75} aria-hidden="true" class="mt-0.5 shrink-0" />

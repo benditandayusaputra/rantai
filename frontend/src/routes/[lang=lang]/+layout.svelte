@@ -5,17 +5,18 @@
 	import { page } from '$app/state';
 	import Footer from '$lib/components/Footer.svelte';
 	import Logo from '$lib/components/Logo.svelte';
+	import PengalihBahasa from '$lib/components/PengalihBahasa.svelte';
 	import { inisial, keluar, pulihkanSesi, sesiAktif } from '$lib/features/akun/sesi.svelte';
 	import { isAkunPanel } from '$lib/features/panel/panel';
 	import { tujuanAktif, tujuanPonsel, tujuanUtama } from '$lib/features/navigasi/navigasi';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 
 	let { children } = $props();
 
-	const aktif = $derived(tujuanAktif(page.url.pathname, bahasaBawaan));
+	const aktif = $derived(tujuanAktif(page.url.pathname, bahasaAktif));
 	const sesi = $derived(sesiAktif());
 	const tautanMasuk = $derived(
-		`/${bahasaBawaan}/masuk?lanjut=${encodeURIComponent(page.url.pathname + page.url.search)}`
+		`/${bahasaAktif}/masuk?lanjut=${encodeURIComponent(page.url.pathname + page.url.search)}`
 	);
 
 	onMount(() => {
@@ -50,7 +51,7 @@
 						{@const Ikon = tujuan.ikon}
 						<li>
 							<a
-								href="/{bahasaBawaan}{tujuan.path}"
+								href="/{bahasaAktif}{tujuan.path}"
 								aria-current={aktif === tujuan.kunci ? 'page' : undefined}
 								class="inline-flex min-h-touch items-center gap-2 rounded-pill px-3.5 text-small font-semibold text-muted transition-colors duration-fast ease-standard hover:bg-sunken hover:text-fg aria-[current=page]:bg-secondary aria-[current=page]:text-secondary-on"
 							>
@@ -62,9 +63,10 @@
 				</ul>
 			</nav>
 			<div class="flex items-center gap-2">
+				<PengalihBahasa />
 				{#if sesi}
 					{#if isAkunPanel(sesi.pengguna.peran)}
-						<a href="/{bahasaBawaan}/panel" class="btn btn-ghost btn-sm hidden lg:inline-flex">
+						<a href="/{bahasaAktif}/panel" class="btn btn-ghost btn-sm hidden lg:inline-flex">
 							<LayoutDashboard size={18} strokeWidth={1.75} aria-hidden="true" />
 							{t('nav.panel')}
 						</a>
@@ -111,7 +113,7 @@
 			{@const Ikon = tujuan.ikon}
 			<li class="min-w-0 flex-1">
 				<a
-					href="/{bahasaBawaan}{tujuan.path}"
+					href="/{bahasaAktif}{tujuan.path}"
 					aria-current={aktif === tujuan.kunci ? 'page' : undefined}
 					class="group flex h-full flex-col items-center justify-center gap-1 text-caption text-muted aria-[current=page]:font-bold aria-[current=page]:text-fg"
 				>

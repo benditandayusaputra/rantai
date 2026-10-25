@@ -5,13 +5,13 @@
 	import SimRibbon from '$lib/components/SimRibbon.svelte';
 	import { bagikanTautan } from '$lib/features/lapor/bagikan';
 	import { jumlahSaksiDibutuhkan, susunLinimasa } from '$lib/features/lapor/lapor';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
 
 	let isDisalin = $state(false);
-	const tautanLaporan = $derived(`/${bahasaBawaan}/laporan/${data.id}`);
+	const tautanLaporan = $derived(`/${bahasaAktif}/laporan/${data.id}`);
 
 	async function ajakSaksi() {
 		const hasil = await bagikanTautan(

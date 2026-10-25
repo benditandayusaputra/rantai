@@ -1,4 +1,4 @@
-import { bahasaBawaan } from '$lib/i18n';
+import { bahasaAktif } from '$lib/i18n';
 
 export interface PesanPush {
 	judul: string;
@@ -23,7 +23,7 @@ export function bacaPesanPush(teks: string): PesanPush | null {
 
 export function tujuanKlikPush(tautan: string): string {
 	const isPathLokal = tautan.startsWith('/') && !tautan.startsWith('//');
-	return isPathLokal ? `/${bahasaBawaan}${tautan}` : `/${bahasaBawaan}/pantau`;
+	return isPathLokal ? `/${bahasaAktif}${tautan}` : `/${bahasaAktif}/pantau`;
 }
 
 export function kunciBase64KeBita(kunci: string): Uint8Array<ArrayBuffer> {

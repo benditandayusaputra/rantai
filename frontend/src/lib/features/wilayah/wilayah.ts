@@ -1,5 +1,5 @@
 import type { WilayahDitemukan } from '$lib/api/tipe';
-import { bahasaBawaan } from '$lib/i18n';
+import { bahasaAktif } from '$lib/i18n';
 
 export const panjangKataMinimal = 3;
 export const jedaKetikMs = 200;
@@ -24,7 +24,7 @@ function kodeKecamatan(w: WilayahDitemukan): string {
 }
 
 export function tujuanWilayah(w: WilayahDitemukan): string {
-	const halaman = `/${bahasaBawaan}/kecamatan/${kodeKecamatan(w)}`;
+	const halaman = `/${bahasaAktif}/kecamatan/${kodeKecamatan(w)}`;
 	return w.tingkat === 'kelurahan' ? `${halaman}?kelurahan=${w.kode}` : halaman;
 }
 

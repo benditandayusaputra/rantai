@@ -3,7 +3,7 @@
 	import type { LaporanModerasi } from '$lib/api/tipe';
 	import SimRibbon from '$lib/components/SimRibbon.svelte';
 	import { formatJam, formatTanggal } from '$lib/format';
-	import { bahasaBawaan, t, type KunciPesan } from '$lib/i18n';
+	import { bahasaAktif, t, type KunciPesan } from '$lib/i18n';
 
 	interface Props {
 		laporan: LaporanModerasi;
@@ -32,7 +32,7 @@
 	<header class="flex flex-col gap-1">
 		<h2 id="judul-laporan-moderasi" class="t-h2">{t(`report.cond.${laporan.kondisi}`)}</h2>
 		<p class="text-small text-muted">
-			{formatTanggal(new Date(laporan.dibuat_pada), bahasaBawaan, 'long')} · {formatJam(
+			{formatTanggal(new Date(laporan.dibuat_pada), bahasaAktif, 'long')} · {formatJam(
 				new Date(laporan.dibuat_pada)
 			)} · {laporan.nama_wilayah}
 		</p>

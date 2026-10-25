@@ -8,7 +8,7 @@ import {
 } from '@lucide/svelte';
 import type { JenisKejadian, Notifikasi } from '$lib/api/tipe';
 import { formatTanggal } from '$lib/format';
-import { bahasaBawaan, t, type KunciPesan } from '$lib/i18n';
+import { bahasaAktif, t, type KunciPesan } from '$lib/i18n';
 
 const zonaWaktu = 'Asia/Jakarta';
 const milidetikSehari = 86_400_000;
@@ -58,7 +58,7 @@ export function labelHari(d: Date, sekarang: Date): string {
 	if (hari === kunciHari(sekarang)) return t('watch.today');
 	if (hari === kunciHari(new Date(sekarang.getTime() - milidetikSehari)))
 		return t('watch.yesterday');
-	return formatTanggal(d, bahasaBawaan, 'long');
+	return formatTanggal(d, bahasaAktif, 'long');
 }
 
 export function kelompokkanPerHari(

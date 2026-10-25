@@ -1,6 +1,6 @@
 import type { Angka, KelasRasio } from '$lib/api/tipe';
 import { formatAngka, formatRupiah } from '$lib/format';
-import { bahasaBawaan, t, type KunciPesan } from '$lib/i18n';
+import { bahasaAktif, isKunciPesan, t, type KunciPesan } from '$lib/i18n';
 
 export const daftarBagian = ['tema', 'anggaran', 'wakilku'] as const;
 export type Bagian = (typeof daftarBagian)[number];
@@ -33,14 +33,18 @@ export interface NilaiTampil {
 
 export function tampilkanAngka(angka: Angka): NilaiTampil {
 	if (angka.satuan === 'rupiah')
-		return { nilai: formatRupiah(angka.nilai, bahasaBawaan), satuan: '' };
+		return { nilai: formatRupiah(angka.nilai, bahasaAktif), satuan: '' };
 	if (angka.satuan === 'rasio') {
 		return {
-			nilai: formatAngka(angka.nilai, bahasaBawaan, desimalRasio),
+			nilai: formatAngka(angka.nilai, bahasaAktif, desimalRasio),
 			satuan: t('satuan.rasio')
 		};
 	}
-	return { nilai: formatAngka(angka.nilai, bahasaBawaan), satuan: angka.satuan };
+	const kunciSatuan = `satuan.${angka.satuan}`;
+	return {
+		nilai: formatAngka(angka.nilai, bahasaAktif),
+		satuan: isKunciPesan(kunciSatuan) ? t(kunciSatuan) : angka.satuan
+	};
 }
 
 const polaGelarDepan = /^(?:\S+\.\s+)+/;

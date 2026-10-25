@@ -4,7 +4,7 @@
 	import type { PeristiwaLinimasa } from '$lib/features/lapor/lapor';
 	import { tampilanStatus } from '$lib/features/lapor/status';
 	import { formatJam, formatTanggal } from '$lib/format';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 
 	interface Props {
 		events: PeristiwaLinimasa[];
@@ -45,7 +45,7 @@
 				>
 				{#if peristiwa.pada}
 					<span class="text-small text-muted num"
-						>{formatTanggal(peristiwa.pada, bahasaBawaan, 'long')} · {formatJam(
+						>{formatTanggal(peristiwa.pada, bahasaAktif, 'long')} · {formatJam(
 							peristiwa.pada
 						)}</span
 					>

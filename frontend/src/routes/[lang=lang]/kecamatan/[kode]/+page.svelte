@@ -26,7 +26,7 @@
 		tautanBagian,
 		type Bagian
 	} from '$lib/features/kecamatan/kecamatan';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
@@ -87,7 +87,7 @@
 				<ol class="flex flex-wrap items-center gap-1 text-small text-muted">
 					<li>
 						<a
-							href="/{bahasaBawaan}"
+							href="/{bahasaAktif}"
 							class="inline-flex items-center gap-1 underline-offset-4 hover:text-fg hover:underline"
 						>
 							<House size={14} strokeWidth={1.75} aria-hidden="true" />{t('nav.home')}
@@ -122,7 +122,7 @@
 						{t('action.share')}
 					</button>
 					<a
-						href={alamatKartuKecamatan(ringkasan.kecamatan.kode, bahasaBawaan)}
+						href={alamatKartuKecamatan(ringkasan.kecamatan.kode, bahasaAktif)}
 						download="rantai-{ringkasan.kecamatan.kode}.png"
 						class="btn btn-outline max-md:btn-icon"
 						title={t('action.shareImage')}
@@ -131,7 +131,7 @@
 						<span class="max-md:sr-only">{t('action.shareImage')}</span>
 					</a>
 					<a
-						href="/{bahasaBawaan}/tanya?w={encodeURIComponent(ringkasan.kecamatan.kode)}"
+						href="/{bahasaAktif}/tanya?w={encodeURIComponent(ringkasan.kecamatan.kode)}"
 						class="btn btn-secondary max-md:px-3 max-md:text-small lg:hidden"
 					>
 						<MessageCircle size={18} strokeWidth={1.75} aria-hidden="true" />

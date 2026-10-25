@@ -3,7 +3,7 @@
 	import type { Angka, Provenance } from '$lib/api/tipe';
 	import { namaSumber, pemilikSumber } from '$lib/features/provenance/provenance';
 	import { formatJam, formatTanggal } from '$lib/format';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 	import CertaintyBadge from './CertaintyBadge.svelte';
 
 	interface Props {
@@ -32,7 +32,7 @@
 
 	function waktuAmbil(p: Provenance): string {
 		const d = new Date(p.diambil_pada);
-		return t('source.retrievedAt', { date: formatTanggal(d, bahasaBawaan), time: formatJam(d) });
+		return t('source.retrievedAt', { date: formatTanggal(d, bahasaAktif), time: formatJam(d) });
 	}
 </script>
 

@@ -3,7 +3,7 @@
 	import { tangkap } from '$lib/api/klien';
 	import { daftarLangganan, langgani } from '$lib/api/pantau';
 	import { sesiAktif } from '$lib/features/akun/sesi.svelte';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 
 	let { kodeKecamatan }: { kodeKecamatan: string } = $props();
 
@@ -30,14 +30,14 @@
 
 {#if !sesi}
 	<a
-		href="/{bahasaBawaan}/masuk?lanjut={encodeURIComponent(`/${bahasaBawaan}/pantau`)}"
+		href="/{bahasaAktif}/masuk?lanjut={encodeURIComponent(`/${bahasaAktif}/pantau`)}"
 		class="{kelas} btn-outline"
 	>
 		<Bell size={18} strokeWidth={1.75} aria-hidden="true" />{t('action.watch')}
 	</a>
 {:else if isDipantau}
 	<a
-		href="/{bahasaBawaan}/pantau"
+		href="/{bahasaAktif}/pantau"
 		class="{kelas} border-primary bg-secondary text-secondary-on hover:bg-secondary-hover"
 	>
 		<BellRing size={18} strokeWidth={1.75} aria-hidden="true" />{t('action.watching')}

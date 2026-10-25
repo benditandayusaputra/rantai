@@ -7,7 +7,7 @@
 	import SimRibbon from '$lib/components/SimRibbon.svelte';
 	import { tampilkanAngka } from '$lib/features/kecamatan/kecamatan';
 	import { formatJarak } from '$lib/format';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 	import type { StatusLapisan } from './lapisan';
 
 	interface Props {
@@ -49,7 +49,7 @@
 								{@const p = fitur.properties}
 								<tr class="border-b border-line {terpilih === p.kode ? 'bg-secondary' : ''}">
 									<th scope="row" class="p-3 text-left">
-										<a href="/{bahasaBawaan}/kecamatan/{p.kode}" class="font-semibold underline"
+										<a href="/{bahasaAktif}/kecamatan/{p.kode}" class="font-semibold underline"
 											>{p.nama}</a
 										>
 									</th>
@@ -86,7 +86,7 @@
 								<tr class="border-b border-line">
 									{#if p.jenis_lokasi === 'titik'}
 										<th scope="row" class="p-3 text-left">
-											<a href="/{bahasaBawaan}/paket/{p.kode}" class="font-semibold underline"
+											<a href="/{bahasaAktif}/paket/{p.kode}" class="font-semibold underline"
 												>{p.nama}</a
 											>
 											{#if p.is_simulation}<span class="mt-1 block"><SimRibbon /></span>{/if}
@@ -125,7 +125,7 @@
 								<tr class="border-b border-line">
 									<th scope="row" class="p-3 text-left font-semibold">{item.nama}</th>
 									<td class="num p-3 text-right">{angkaSel(item.daya_tampung)}</td>
-									<td class="num p-3 text-right">{formatJarak(item.jarak_m, bahasaBawaan)}</td>
+									<td class="num p-3 text-right">{formatJarak(item.jarak_m, bahasaAktif)}</td>
 								</tr>
 							{/each}
 						</tbody>
@@ -154,7 +154,7 @@
 								{@const p = fitur.properties}
 								<tr class="border-b border-line">
 									<th scope="row" class="p-3 text-left">
-										<a href="/{bahasaBawaan}/laporan/{p.id}" class="font-semibold underline"
+										<a href="/{bahasaAktif}/laporan/{p.id}" class="font-semibold underline"
 											>{t(`report.cond.${p.kondisi}`)}</a
 										>
 										{#if p.is_simulation}<span class="mt-1 block"><SimRibbon /></span>{/if}

@@ -18,7 +18,7 @@
 	import LegendaKelas from '$lib/features/peta/LegendaKelas.svelte';
 	import PetaInteraktif from '$lib/features/peta/PetaInteraktif.svelte';
 	import TabelPeta from '$lib/features/peta/TabelPeta.svelte';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
@@ -168,7 +168,7 @@
 					<KeyNumberCard label={t('tema.ratio')} angka={detailTerpilih.rasio} />
 				{/if}
 			</div>
-			<a href="/{bahasaBawaan}/kecamatan/{detailTerpilih.kode}" class="btn btn-primary self-start">
+			<a href="/{bahasaAktif}/kecamatan/{detailTerpilih.kode}" class="btn btn-primary self-start">
 				{t('map.openArea')}
 				<ArrowRight size={18} strokeWidth={1.75} aria-hidden="true" />
 			</a>

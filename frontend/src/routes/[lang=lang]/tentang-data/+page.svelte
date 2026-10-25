@@ -19,7 +19,7 @@
 	import ErrorState from '$lib/components/ErrorState.svelte';
 	import { namaJob, pemilikJob } from '$lib/features/tentang/tentang';
 	import { formatJam, formatTanggal } from '$lib/format';
-	import { bahasaBawaan, t, type KunciPesan } from '$lib/i18n';
+	import { bahasaAktif, t, type KunciPesan } from '$lib/i18n';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
@@ -52,7 +52,7 @@
 
 	function waktu(iso: string): string {
 		const d = new Date(iso);
-		return t('source.retrievedAt', { date: formatTanggal(d, bahasaBawaan), time: formatJam(d) });
+		return t('source.retrievedAt', { date: formatTanggal(d, bahasaAktif), time: formatJam(d) });
 	}
 
 	const kelasBagian = 'flex min-w-0 scroll-mt-24 flex-col gap-4';
@@ -216,7 +216,7 @@
 				<ul class="list-disc space-y-2 pl-5 text-small">
 					{#each keterbatasan as kunci (kunci)}<li>{t(kunci)}</li>{/each}
 				</ul>
-				<a href="/{bahasaBawaan}/data-belum-dibuka" class="btn btn-outline mt-auto self-start">
+				<a href="/{bahasaAktif}/data-belum-dibuka" class="btn btn-outline mt-auto self-start">
 					<FileLock size={18} strokeWidth={1.75} aria-hidden="true" />
 					{t('unopened.link')}
 					<ArrowRight size={18} strokeWidth={1.75} aria-hidden="true" />

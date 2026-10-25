@@ -7,7 +7,7 @@
 	import EmptyState from '$lib/components/EmptyState.svelte';
 	import ErrorState from '$lib/components/ErrorState.svelte';
 	import { bahasaDokumen, tautanAspirasi } from '$lib/features/aspirasi/aspirasi';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
@@ -38,7 +38,7 @@
 				<ol class="flex flex-wrap items-center gap-1 text-small text-muted">
 					<li>
 						<a
-							href="/{bahasaBawaan}/kecamatan/{wilayah.kode}?bagian=wakilku"
+							href="/{bahasaAktif}/kecamatan/{wilayah.kode}?bagian=wakilku"
 							class="underline underline-offset-4 hover:text-fg">{wilayah.nama}</a
 						>
 					</li>
@@ -51,7 +51,7 @@
 					><FileText size={24} strokeWidth={1.75} aria-hidden="true" /></span
 				>
 				<div>
-					<p class="t-over">{tema.nama.id}</p>
+					<p class="t-over">{tema.nama[bahasaAktif]}</p>
 					<h1 class="t-h1 mt-1">{t('packet.title')}</h1>
 					<p class="mt-2 text-muted">{t('packet.forArea', { name: wilayah.nama })}</p>
 				</div>
@@ -69,7 +69,7 @@
 							items={tema.tanggung_jawab.map((tj) => ({
 								key: tj.masalah,
 								href: tautanAspirasi(page.url, { masalah: tj.masalah, tema: tema.kode }),
-								label: tj.label.id,
+								label: tj.label[bahasaAktif],
 								current: data.pilihan.masalah === tj.masalah
 							}))}
 						/>

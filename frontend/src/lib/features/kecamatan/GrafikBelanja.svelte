@@ -6,7 +6,7 @@
 	import ProvenanceBadge from '$lib/components/ProvenanceBadge.svelte';
 	import TableToggle from '$lib/components/TableToggle.svelte';
 	import { formatAngka, formatRupiah } from '$lib/format';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 	import {
 		batasSumbu,
 		jumlahTanpaRasio,
@@ -124,7 +124,7 @@
 						class="block max-w-full"
 						role="img"
 						aria-label="{t('spend.title')}. {aktif
-							? `${aktif.nama}: ${formatAngka(aktif.rasio, bahasaBawaan, 2)}, ${formatRupiah(aktif.nilai, bahasaBawaan)}`
+							? `${aktif.nama}: ${formatAngka(aktif.rasio, bahasaAktif, 2)}, ${formatRupiah(aktif.nilai, bahasaAktif)}`
 							: ''}"
 					>
 						{#each garis as g (g)}
@@ -143,7 +143,7 @@
 								dominant-baseline="middle"
 								class="fill-muted text-caption num"
 							>
-								{formatRupiah(sumbu.maksY * g, bahasaBawaan)}
+								{formatRupiah(sumbu.maksY * g, bahasaAktif)}
 							</text>
 							<text
 								x={kiri + lebarPlot * g}
@@ -151,7 +151,7 @@
 								text-anchor="middle"
 								class="fill-muted text-caption num"
 							>
-								{formatAngka(sumbu.maksX * g, bahasaBawaan, 1)}
+								{formatAngka(sumbu.maksX * g, bahasaAktif, 1)}
 							</text>
 						{/each}
 						<text
@@ -200,9 +200,9 @@
 						>
 							<p class="font-bold">{disorot.nama}</p>
 							<p class="num">
-								{t('spend.col.ratio')}: {formatAngka(disorot.rasio, bahasaBawaan, 2)}
+								{t('spend.col.ratio')}: {formatAngka(disorot.rasio, bahasaAktif, 2)}
 							</p>
-							<p class="num">{t('spend.col.value')}: {formatRupiah(disorot.nilai, bahasaBawaan)}</p>
+							<p class="num">{t('spend.col.value')}: {formatRupiah(disorot.nilai, bahasaAktif)}</p>
 						</div>
 					{/if}
 					<figcaption class="mt-2 flex flex-wrap gap-4 text-caption text-muted">

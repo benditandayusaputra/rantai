@@ -16,12 +16,12 @@
 	import DaftarSekolah from '$lib/features/pendidikan/DaftarSekolah.svelte';
 	import GrafikKursi from '$lib/features/pendidikan/GrafikKursi.svelte';
 	import GrafikTren from '$lib/features/pendidikan/GrafikTren.svelte';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
 
-	const halamanKecamatan = $derived(`/${bahasaBawaan}/kecamatan/${data.kode}`);
+	const halamanKecamatan = $derived(`/${bahasaAktif}/kecamatan/${data.kode}`);
 </script>
 
 <svelte:head>

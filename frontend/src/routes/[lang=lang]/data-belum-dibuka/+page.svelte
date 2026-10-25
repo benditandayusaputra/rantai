@@ -16,7 +16,7 @@
 	import ErrorState from '$lib/components/ErrorState.svelte';
 	import { bahasaDokumen } from '$lib/features/aspirasi/aspirasi';
 	import { tautanPermohonan } from '$lib/features/keterbukaan/keterbukaan';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
@@ -62,12 +62,12 @@
 							? 'border-primary shadow-2'
 							: ''}"
 					>
-						<h2 class="t-h3">{item.nama[bahasaBawaan]}</h2>
+						<h2 class="t-h3">{item.nama[bahasaAktif]}</h2>
 						<div class="flex flex-col gap-1">
 							<p class="t-over flex items-center gap-2">
 								<Lock size={16} strokeWidth={1.75} aria-hidden="true" />{t('unopened.why')}
 							</p>
-							<p class="text-small">{item.alasan[bahasaBawaan]}</p>
+							<p class="text-small">{item.alasan[bahasaAktif]}</p>
 						</div>
 						<div class="flex flex-col gap-1 rounded-md bg-sunken p-3">
 							<p class="t-over flex items-center gap-2">
@@ -75,7 +75,7 @@
 									'unopened.substitute'
 								)}
 							</p>
-							<p class="text-small font-semibold">{item.pengganti[bahasaBawaan]}</p>
+							<p class="text-small font-semibold">{item.pengganti[bahasaAktif]}</p>
 						</div>
 						<a
 							href={tautanPermohonan(page.url, { kode: item.kode })}
@@ -137,7 +137,7 @@
 					<div class="lg:col-span-8">
 						<DocumentPreview
 							id="judul-surat"
-							title={t('unopened.letterTitle', { name: terpilih.nama[bahasaBawaan] })}
+							title={t('unopened.letterTitle', { name: terpilih.nama[bahasaAktif] })}
 							{dokumen}
 						/>
 					</div>

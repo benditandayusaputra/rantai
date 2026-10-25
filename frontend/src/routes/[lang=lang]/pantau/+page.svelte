@@ -17,7 +17,7 @@
 	import { kelompokkanPerHari, tampilanKejadian } from '$lib/features/pantau/pantau';
 	import SakelarPush from '$lib/features/pantau/SakelarPush.svelte';
 	import { formatJam } from '$lib/format';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 
 	let isSesiDiperiksa = $state(false);
 	let langganan = $state<Langganan[]>([]);
@@ -86,7 +86,7 @@
 		<EmptyState title={t('watch.signIn')} description={t('watch.signInBody')}>
 			{#snippet actions()}
 				<a
-					href="/{bahasaBawaan}/masuk?lanjut={encodeURIComponent(`/${bahasaBawaan}/pantau`)}"
+					href="/{bahasaAktif}/masuk?lanjut={encodeURIComponent(`/${bahasaAktif}/pantau`)}"
 					class="btn btn-primary"
 				>
 					<LogIn size={18} strokeWidth={1.75} aria-hidden="true" />
@@ -109,7 +109,7 @@
 									class="inline-flex min-h-touch items-center gap-1 rounded-pill bg-secondary pl-4 pr-1 text-small font-semibold text-secondary-on"
 								>
 									<a
-										href="/{bahasaBawaan}/kecamatan/{l.kode_wilayah}"
+										href="/{bahasaAktif}/kecamatan/{l.kode_wilayah}"
 										class="underline-offset-4 hover:underline">{l.nama_wilayah}</a
 									>
 									<button
@@ -156,7 +156,7 @@
 									{@const Ikon = tampil.ikon}
 									<li>
 										<a
-											href="/{bahasaBawaan}{n.tautan}"
+											href="/{bahasaAktif}{n.tautan}"
 											onclick={() => buka(n)}
 											class="card-link group flex items-center gap-3 p-4"
 										>

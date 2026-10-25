@@ -1,6 +1,6 @@
 import type { Bahasa } from '$lib/i18n';
 
-const tagBahasa: Record<Bahasa, string> = { id: 'id-ID' };
+const tagBahasa: Record<Bahasa, string> = { id: 'id-ID', en: 'en-GB' };
 const zonaWaktu = 'Asia/Jakarta';
 
 export function formatAngka(n: number, bahasa: Bahasa, desimal = 0): string {
@@ -40,14 +40,14 @@ export function formatJarak(meter: number, bahasa: Bahasa): string {
 }
 
 const skalaRupiah = [
-	{ nilai: 1e12, kata: 'triliun' },
-	{ nilai: 1e9, kata: 'miliar' },
-	{ nilai: 1e6, kata: 'juta' }
+	{ nilai: 1e12, kata: { id: 'triliun', en: 'trillion' } },
+	{ nilai: 1e9, kata: { id: 'miliar', en: 'billion' } },
+	{ nilai: 1e6, kata: { id: 'juta', en: 'million' } }
 ] as const;
 
 export function formatRupiah(n: number, bahasa: Bahasa, gaya: 'kata' | 'penuh' = 'kata'): string {
 	const skala = skalaRupiah.find((s) => n >= s.nilai);
 	if (gaya === 'penuh' || !skala) return `Rp${formatAngka(n, bahasa)}`;
 	const hasilBagi = n / skala.nilai;
-	return `Rp${formatAngka(hasilBagi, bahasa, Number.isInteger(hasilBagi) ? 0 : 1)} ${skala.kata}`;
+	return `Rp${formatAngka(hasilBagi, bahasa, Number.isInteger(hasilBagi) ? 0 : 1)} ${skala.kata[bahasa]}`;
 }

@@ -2,7 +2,7 @@
 	import { LoaderCircle, LocateFixed } from '@lucide/svelte';
 	import type { StatusLokasi } from '$lib/features/wilayah/lokasi';
 	import { formatJarak } from '$lib/format';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 
 	interface Props {
 		state: StatusLokasi;
@@ -18,7 +18,7 @@
 			idle: '',
 			locating: t('location.locating'),
 			found: t('location.found', { m: Math.round(akurasiM) }),
-			coarse: t('location.coarse', { dist: formatJarak(akurasiM, bahasaBawaan) }),
+			coarse: t('location.coarse', { dist: formatJarak(akurasiM, bahasaAktif) }),
 			denied: `${t('location.denied')}. ${t('location.deniedHint')}`,
 			failed: t('location.failed')
 		}[state]

@@ -2,7 +2,7 @@
 	import { ExternalLink, FileText, Scale } from '@lucide/svelte';
 	import type { HakJawab } from '$lib/api/tipe';
 	import { formatTanggal } from '$lib/format';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 	import SimRibbon from './SimRibbon.svelte';
 
 	let { hakJawab }: { hakJawab: HakJawab } = $props();
@@ -20,7 +20,7 @@
 		{isAnggota ? t('reply.memberTitle') : t('reply.title')}
 		<span class="font-normal">·</span>
 		<time datetime={hakJawab.dibuat_pada} class="font-normal"
-			>{formatTanggal(new Date(hakJawab.dibuat_pada), bahasaBawaan, 'long')}</time
+			>{formatTanggal(new Date(hakJawab.dibuat_pada), bahasaAktif, 'long')}</time
 		>
 	</p>
 	<div class="flex flex-col gap-3 p-4">

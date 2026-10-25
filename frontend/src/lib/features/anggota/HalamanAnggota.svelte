@@ -2,7 +2,7 @@
 	import { Building2, ExternalLink, Info, Landmark, MapPin, Users } from '@lucide/svelte';
 	import type { ProfilAnggota } from '$lib/api/tipe';
 	import { inisial } from '$lib/features/kecamatan/kecamatan';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 	import IsuDisuarakan from './IsuDisuarakan.svelte';
 	import JejakKegiatan from './JejakKegiatan.svelte';
 	import SikapFraksi from './SikapFraksi.svelte';
@@ -78,7 +78,7 @@
 				<ul class="flex flex-wrap gap-2">
 					{#each anggota.dapil.kecamatan as kec (kec.kode)}
 						<li>
-							<a href="/{bahasaBawaan}/kecamatan/{kec.kode}" class="chip">{kec.nama}</a>
+							<a href="/{bahasaAktif}/kecamatan/{kec.kode}" class="chip">{kec.nama}</a>
 						</li>
 					{/each}
 				</ul>

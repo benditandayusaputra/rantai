@@ -4,7 +4,7 @@
 	import RepresentativeCard from '$lib/components/RepresentativeCard.svelte';
 	import AspirasiReses from './AspirasiReses.svelte';
 	import { ArrowRight, FileLock, FileText, Landmark, Users } from '@lucide/svelte';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 
 	let { wakilku }: { wakilku: WakilKecamatan } = $props();
 
@@ -24,14 +24,14 @@
 		<p class="text-small text-muted">
 			{t('reps.noScore')}
 			<a
-				href="/{bahasaBawaan}/data-belum-dibuka"
+				href="/{bahasaAktif}/data-belum-dibuka"
 				class="link inline-flex items-center gap-1 align-bottom"
 			>
 				<FileLock size={14} strokeWidth={1.75} aria-hidden="true" />{t('unopened.link')}</a
 			>
 		</p>
 		<a
-			href="/{bahasaBawaan}/aspirasi?w={encodeURIComponent(wakilku.kecamatan.kode)}"
+			href="/{bahasaAktif}/aspirasi?w={encodeURIComponent(wakilku.kecamatan.kode)}"
 			class="btn btn-primary self-start max-md:btn-block"
 		>
 			<FileText size={18} strokeWidth={1.75} aria-hidden="true" />

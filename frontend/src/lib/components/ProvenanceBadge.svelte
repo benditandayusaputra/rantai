@@ -3,7 +3,7 @@
 	import type { Angka, Provenance } from '$lib/api/tipe';
 	import { muatProvenance, namaSumber } from '$lib/features/provenance/provenance';
 	import { formatTanggal } from '$lib/format';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 	import CertaintyBadge from './CertaintyBadge.svelte';
 	import SourcePanel from './SourcePanel.svelte';
 
@@ -32,7 +32,7 @@
 			? t('source.label', {
 					name: namaSumber(provenance.sumber),
 					level: tingkat,
-					date: formatTanggal(tanggal, bahasaBawaan, 'long')
+					date: formatTanggal(tanggal, bahasaAktif, 'long')
 				})
 			: t('source.labelShort', { level: tingkat })
 	);
@@ -50,7 +50,7 @@
 	{#if provenance && tanggal}
 		<span class="truncate px-1.5">
 			{namaSumber(provenance.sumber)}{#if !compact}<span class="num text-muted">
-					· {formatTanggal(tanggal, bahasaBawaan)}</span
+					· {formatTanggal(tanggal, bahasaAktif)}</span
 				>{/if}
 		</span>
 	{/if}

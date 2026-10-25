@@ -17,7 +17,7 @@
 	import MaintenanceCounter from '$lib/components/MaintenanceCounter.svelte';
 	import RightOfReply from '$lib/components/RightOfReply.svelte';
 	import SimRibbon from '$lib/components/SimRibbon.svelte';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 	import { ikonSektor, kodeKecamatanDari, kunciSektor } from './paket';
 
 	let { paket }: { paket: DetailPaket } = $props();
@@ -40,7 +40,7 @@
 		{
 			label: t('pkg.vendor'),
 			isi: paket.penyedia?.nama ?? t('pkg.noVendor'),
-			href: paket.penyedia ? `/${bahasaBawaan}/penyedia/${paket.penyedia.id}` : undefined
+			href: paket.penyedia ? `/${bahasaAktif}/penyedia/${paket.penyedia.id}` : undefined
 		},
 		{ label: t('pkg.location'), isi: paket.lokasi.nama_wilayah }
 	]);
@@ -199,7 +199,7 @@
 					{/each}
 					{#if paket.lokasi.tingkat === 'kecamatan' || paket.lokasi.tingkat === 'kelurahan'}
 						<a
-							href="/{bahasaBawaan}/kecamatan/{kodeKecamatanDari(paket.lokasi.kode_wilayah)}"
+							href="/{bahasaAktif}/kecamatan/{kodeKecamatanDari(paket.lokasi.kode_wilayah)}"
 							class="btn btn-secondary btn-block"
 						>
 							<MapPin size={18} strokeWidth={1.75} aria-hidden="true" />

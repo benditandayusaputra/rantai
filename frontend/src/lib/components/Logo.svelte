@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 	import LogoMark from './LogoMark.svelte';
 </script>
 
 <a
-	href="/{bahasaBawaan}"
+	href="/{bahasaAktif}"
 	class="inline-flex min-h-touch items-center gap-2 rounded-md"
 	aria-label={t('brand.home')}
 >

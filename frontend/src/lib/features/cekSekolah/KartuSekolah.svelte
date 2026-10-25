@@ -5,7 +5,7 @@
 	import { tampilkanAngka } from '$lib/features/kecamatan/kecamatan';
 	import { kunciJenisSekolah } from '$lib/features/pendidikan/pendidikan';
 	import { formatJarak } from '$lib/format';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 
 	let { sekolah, urutan }: { sekolah: SekolahTerdekat; urutan?: number } = $props();
 
@@ -22,7 +22,7 @@
 			{t(kunciJenisSekolah(sekolah))}
 			<span class="inline-flex items-center gap-1">
 				<MapPin size={14} strokeWidth={1.75} aria-hidden="true" />
-				{t('check.distance', { jarak: formatJarak(sekolah.jarak_m, bahasaBawaan) })}
+				{t('check.distance', { jarak: formatJarak(sekolah.jarak_m, bahasaAktif) })}
 			</span>
 		</span>
 		<span class="flex flex-wrap items-center gap-2 text-small">

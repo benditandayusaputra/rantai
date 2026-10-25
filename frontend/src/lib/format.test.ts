@@ -38,4 +38,9 @@ describe('formatRupiah', () => {
 	it('menulis nilai lengkap untuk panel sumber', () => {
 		expect(formatRupiah(2_408_700_000, 'id', 'penuh')).toBe('Rp2.408.700.000');
 	});
+
+	it('memakai format dan kata skala Inggris untuk bahasa en', () => {
+		expect(formatAngka(2.14, 'en', 1)).toBe('2.1');
+		expect(formatRupiah(4_250_000_000, 'en')).toBe('Rp4.3 billion');
+	});
 });

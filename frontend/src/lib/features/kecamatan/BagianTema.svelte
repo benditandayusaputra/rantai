@@ -4,7 +4,7 @@
 	import EmptyState from '$lib/components/EmptyState.svelte';
 	import GapClassChip from '$lib/components/GapClassChip.svelte';
 	import KeyNumberCard from '$lib/components/KeyNumberCard.svelte';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 	import SuaraPengawas from './SuaraPengawas.svelte';
 
 	let { tema, kodeKecamatan }: { tema: TemaKecamatan[]; kodeKecamatan: string } = $props();
@@ -19,8 +19,8 @@
 						<GraduationCap size={20} strokeWidth={1.75} aria-hidden="true" />
 					</span>
 					<div class="flex min-w-0 flex-col gap-1">
-						<p class="t-over">{item.nama[bahasaBawaan]}</p>
-						<h3 id="tema-{item.kode}" class="t-h3">{item.judul[bahasaBawaan]}</h3>
+						<p class="t-over">{item.nama[bahasaAktif]}</p>
+						<h3 id="tema-{item.kode}" class="t-h3">{item.judul[bahasaAktif]}</h3>
 					</div>
 				</div>
 				{#if item.indikator}
@@ -49,13 +49,13 @@
 					</p>
 					<div class="flex flex-col gap-2 md:flex-row md:flex-wrap">
 						<a
-							href="/{bahasaBawaan}/kecamatan/{kodeKecamatan}/pendidikan"
+							href="/{bahasaAktif}/kecamatan/{kodeKecamatan}/pendidikan"
 							class="btn btn-primary max-md:btn-block"
 						>
 							{t('tema.detail')}
 							<ArrowRight size={18} strokeWidth={1.75} aria-hidden="true" />
 						</a>
-						<a href="/{bahasaBawaan}/cek-sekolah" class="btn btn-outline max-md:btn-block">
+						<a href="/{bahasaAktif}/cek-sekolah" class="btn btn-outline max-md:btn-block">
 							<LocateFixed size={18} strokeWidth={1.75} aria-hidden="true" />
 							{t('services.checkMySchool')}
 						</a>

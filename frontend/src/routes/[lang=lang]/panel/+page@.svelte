@@ -42,7 +42,7 @@
 		type BagianPanel
 	} from '$lib/features/panel/panel';
 	import { formatTanggal } from '$lib/format';
-	import { bahasaBawaan, t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 
 	const ikonBagian = { sinyal: CircleHelp, laporan: FileWarning, paket: Hammer, umpan: Newspaper };
 
@@ -60,7 +60,7 @@
 
 	const sesi = $derived(sesiAktif());
 	const isAnggota = $derived(sesi?.pengguna.peran === 'anggota');
-	const sorotan = $derived(antrean ? daftarSorotan(antrean, bagian, bahasaBawaan) : []);
+	const sorotan = $derived(antrean ? daftarSorotan(antrean, bagian, bahasaAktif) : []);
 	const terpilih = $derived(sorotan[indeks] ?? null);
 	const paketTerpilih = $derived(
 		bagian === 'paket' ? (antrean?.paket.find((p) => p.kode === terpilih?.id) ?? null) : null
@@ -148,7 +148,7 @@
 	<div class="flex min-h-dvh flex-col bg-page">
 		<header class="wrap flex h-16 items-center justify-between gap-4 lg:h-18">
 			<Logo />
-			<a href="/{bahasaBawaan}" class="btn btn-ghost btn-sm">
+			<a href="/{bahasaAktif}" class="btn btn-ghost btn-sm">
 				<ArrowLeft size={18} strokeWidth={1.75} aria-hidden="true" />
 				{t('nav.home')}
 			</a>
@@ -166,7 +166,7 @@
 				<p class="text-muted">{t('panel.forbidden')}</p>
 				{#if !sesi}
 					<a
-						href="/{bahasaBawaan}/masuk?lanjut={encodeURIComponent(`/${bahasaBawaan}/panel`)}"
+						href="/{bahasaAktif}/masuk?lanjut={encodeURIComponent(`/${bahasaAktif}/panel`)}"
 						class="btn btn-primary btn-lg btn-block"
 					>
 						<LogIn size={20} strokeWidth={1.75} aria-hidden="true" />
@@ -181,7 +181,7 @@
 		<div class="card flex w-full max-w-form flex-col items-start gap-4 p-6">
 			<span class="icon-tile"><Monitor size={20} strokeWidth={1.75} aria-hidden="true" /></span>
 			<p>{t('panel.desktopOnly')}</p>
-			<a href="/{bahasaBawaan}" class="btn btn-outline">
+			<a href="/{bahasaAktif}" class="btn btn-outline">
 				<House size={18} strokeWidth={1.75} aria-hidden="true" />
 				{t('panel.readOnly')}
 			</a>
@@ -314,7 +314,7 @@
 											{t('panel.handover.current', {
 												date: formatTanggal(
 													new Date(paketTerpilih.tanggal_serah_terima),
-													bahasaBawaan
+													bahasaAktif
 												)
 											})}
 										</p>
