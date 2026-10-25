@@ -1,8 +1,43 @@
-import type { StyleSpecification } from 'maplibre-gl';
+import type { FilterSpecification, StyleSpecification } from 'maplibre-gl';
 import type { KelasRasio } from '$lib/api/tipe';
 
-export const sumberDasarBawaan = 'https://tiles.openfreemap.org/planet';
-export const atribusiDasar = '© OpenStreetMap contributors, OpenFreeMap';
+export const awalanPMTiles = 'pmtiles://';
+export const sumberDasarBawaan = `${awalanPMTiles}/peta/dki.pmtiles`;
+
+interface SkemaUbin {
+	atribusi: string;
+	taman: string;
+	filterTaman?: FilterSpecification;
+	air: string;
+	jalan: string;
+}
+
+const skemaProtomaps: SkemaUbin = {
+	atribusi: '© OpenStreetMap contributors, Protomaps',
+	taman: 'landuse',
+	filterTaman: ['in', ['get', 'kind'], ['literal', ['park', 'forest', 'grass', 'nature_reserve']]],
+	air: 'water',
+	jalan: 'roads'
+};
+
+const skemaOpenMapTiles: SkemaUbin = {
+	atribusi: '© OpenStreetMap contributors, OpenFreeMap',
+	taman: 'park',
+	air: 'water',
+	jalan: 'transportation'
+};
+
+export function skemaUbin(urlSumber: string): SkemaUbin {
+	return urlSumber.startsWith(awalanPMTiles) ? skemaProtomaps : skemaOpenMapTiles;
+}
+
+export function atribusiDasar(urlSumber: string): string {
+	return skemaUbin(urlSumber).atribusi;
+}
+
+export function urlSumberDasar(dariEnv: string | undefined): string {
+	return dariEnv || sumberDasarBawaan;
+}
 
 export type BacaToken = (nama: string) => string;
 
@@ -11,10 +46,11 @@ export function bacaTokenDokumen(nama: string): string {
 }
 
 export function buatGayaDasar(urlSumber: string, token: BacaToken): StyleSpecification {
+	const skema = skemaUbin(urlSumber);
 	return {
 		version: 8,
 		sources: {
-			dasar: { type: 'vector', url: urlSumber, attribution: atribusiDasar }
+			dasar: { type: 'vector', url: urlSumber, attribution: skema.atribusi }
 		},
 		layers: [
 			{ id: 'latar', type: 'background', paint: { 'background-color': token('map') } },
@@ -22,21 +58,22 @@ export function buatGayaDasar(urlSumber: string, token: BacaToken): StyleSpecifi
 				id: 'taman',
 				type: 'fill',
 				source: 'dasar',
-				'source-layer': 'park',
+				'source-layer': skema.taman,
+				...(skema.filterTaman ? { filter: skema.filterTaman } : {}),
 				paint: { 'fill-color': token('map-park') }
 			},
 			{
 				id: 'air',
 				type: 'fill',
 				source: 'dasar',
-				'source-layer': 'water',
+				'source-layer': skema.air,
 				paint: { 'fill-color': token('map-water') }
 			},
 			{
 				id: 'jalan',
 				type: 'line',
 				source: 'dasar',
-				'source-layer': 'transportation',
+				'source-layer': skema.jalan,
 				paint: { 'line-color': token('map-road'), 'line-width': 1 }
 			}
 		]

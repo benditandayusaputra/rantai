@@ -40,6 +40,7 @@ func muatSkenarioDemo(t *testing.T, tx pgx.Tx, terpilih *string) error {
 	if err := config.BacaYAML(pathSkenarioDemoUji, &skenario); err != nil {
 		t.Fatal(err)
 	}
+	skenario.KecamatanDemo = ""
 	muat := usecase.MuatSkenarioDemo{
 		Skenario:       skenario,
 		Penyimpan:      repository.SkenarioDemoRepository{DB: tx},

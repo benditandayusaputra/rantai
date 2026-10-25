@@ -451,7 +451,7 @@
 	"map.areaPackages": "{n} packages located at district level",
 	"map.select": "Select a district on the map or in the table to see its details.",
 	"map.empty": "This layer has no data in the visible area yet.",
-	"map.basemapNote": "Base map: © OpenStreetMap contributors, OpenFreeMap.",
+	"map.basemapNote": "Base map: {sumber}.",
 	"maint.status.pelaksanaan": "Still under way",
 	"maint.status.pemeliharaan": "In the maintenance period",
 	"maint.status.berakhir": "Maintenance period ended",

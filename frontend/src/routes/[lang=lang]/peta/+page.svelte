@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { env } from '$env/dynamic/public';
+	import { atribusiDasar, urlSumberDasar } from '$lib/features/peta/gaya';
 	import { ArrowRight, ChevronDown, Layers, Map, MousePointerClick } from '@lucide/svelte';
 	import { replaceState } from '$app/navigation';
 	import { page } from '$app/state';
@@ -178,6 +180,8 @@
 				{t('map.select')}
 			</p>
 		{/if}
-		<p class="text-caption text-muted">{t('map.basemapNote')}</p>
+		<p class="text-caption text-muted">
+			{t('map.basemapNote', { sumber: atribusiDasar(urlSumberDasar(env.PUBLIC_PETA_DASAR_URL)) })}
+		</p>
 	</section>
 </div>

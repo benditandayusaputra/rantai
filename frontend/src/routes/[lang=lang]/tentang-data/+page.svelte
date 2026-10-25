@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { env } from '$env/dynamic/public';
+	import { atribusiDasar, urlSumberDasar } from '$lib/features/peta/gaya';
 	import TableScroll from '$lib/components/TableScroll.svelte';
 	import {
 		ArrowRight,
@@ -231,7 +233,11 @@
 				{/await}
 				<p class="text-small">{t('about.license.code')}</p>
 				<p class="text-small">{t('about.license.csv')}</p>
-				<p class="text-small">{t('map.basemapNote')}</p>
+				<p class="text-small">
+					{t('map.basemapNote', {
+						sumber: atribusiDasar(urlSumberDasar(env.PUBLIC_PETA_DASAR_URL))
+					})}
+				</p>
 				<p class="text-small text-muted">{t('about.demo')}</p>
 			</section>
 		</div>

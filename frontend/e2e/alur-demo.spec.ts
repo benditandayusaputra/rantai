@@ -19,6 +19,13 @@ let kecamatan: Kecamatan | null = null;
 
 test.describe.configure({ mode: 'serial' });
 
+test.beforeEach(async ({ context }) => {
+	await context.route(
+		(url) => url.hostname !== 'localhost',
+		(rute) => rute.abort('internetdisconnected')
+	);
+});
+
 test.beforeAll(async ({ request }) => {
 	test.skip(process.env.RANTAI_MODE !== 'demo', 'alur demo hanya berjalan dengan RANTAI_MODE=demo');
 	const paket = await request.get(`${alamatAPI}/paket/${kodePaketSimulasi}`);

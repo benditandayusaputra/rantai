@@ -102,16 +102,19 @@ ringkasan-mingguan:
 	cd backend && go run ./cmd/worker ringkasan_mingguan
 
 SNAPSHOT_DEMO := data/snapshot/rantai.sql.gz
+TABEL_AKUN_DAN_WARGA := -T pengguna -T otp -T sesi_refresh -T langganan -T notifikasi -T ringkasan_email -T moderasi_log \
+	-T laporan -T laporan_foto -T laporan_konfirmasi -T laporan_riwayat -T hak_jawab
 
 snapshot-demo:
-	$(KLIEN_PG) 'pg_dump "$$DATABASE_URL_MIGRASI" --data-only --inserts --on-conflict-do-nothing -n public -T schema_migrations -T spatial_ref_sys' | gzip > $(SNAPSHOT_DEMO)
+	$(KLIEN_PG) 'pg_dump "$$DATABASE_URL_MIGRASI" --data-only --inserts --on-conflict-do-nothing -n public -T schema_migrations -T spatial_ref_sys $(TABEL_AKUN_DAN_WARGA)' | gzip > $(SNAPSHOT_DEMO)
 
 tanya-demo:
 	cd backend && go run ./tools/rekamtanya
 
 seed-demo:
 	@test -f $(SNAPSHOT_DEMO) || { echo "$(SNAPSHOT_DEMO) belum ada; buat dengan make snapshot-demo di mesin yang datanya lengkap"; exit 1; }
-	gunzip -c $(SNAPSHOT_DEMO) | $(KLIEN_PG) 'psql "$$DATABASE_URL_MIGRASI" -q -v ON_ERROR_STOP=1'
+	{ echo 'SET session_replication_role = replica;'; gunzip -c $(SNAPSHOT_DEMO) | sed '/^SET transaction_timeout/d'; } | \
+		$(KLIEN_PG) 'psql "$$DATABASE_URL_MIGRASI" -q -v ON_ERROR_STOP=1'
 	cd backend && go run ./cmd/worker skenario_demo
 
 e2e:

@@ -451,7 +451,7 @@
 	"map.areaPackages": "{n} paket berlokasi tingkat kecamatan",
 	"map.select": "Pilih kecamatan di peta atau di tabel untuk melihat rinciannya.",
 	"map.empty": "Lapisan ini belum punya data di area yang tampil.",
-	"map.basemapNote": "Peta dasar: © OpenStreetMap contributors, OpenFreeMap.",
+	"map.basemapNote": "Peta dasar: {sumber}.",
 	"maint.status.pelaksanaan": "Masih dalam pelaksanaan",
 	"maint.status.pemeliharaan": "Dalam masa pemeliharaan",
 	"maint.status.berakhir": "Masa pemeliharaan berakhir",

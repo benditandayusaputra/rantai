@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buatGayaDasar, warnaKelas, warnaSektor } from './gaya';
+import { buatGayaDasar, sumberDasarBawaan, warnaKelas, warnaSektor } from './gaya';
 
 const token = (nama: string) => `var-${nama}`;
 
@@ -10,6 +10,14 @@ describe('gaya peta', () => {
 		expect(warna.join()).toContain('var-map-water');
 		expect(warna.join()).toContain('var-map-road');
 		expect(gaya.layers.some((l) => l.type === 'symbol')).toBe(false);
+	});
+
+	it('memakai layer skema Protomaps untuk ubin PMTiles bawaan', () => {
+		const gaya = buatGayaDasar(sumberDasarBawaan, token);
+		const layerSumber = gaya.layers.flatMap((l) =>
+			'source-layer' in l ? [l['source-layer']] : []
+		);
+		expect(layerSumber).toEqual(['landuse', 'water', 'roads']);
 	});
 
 	it('memetakan kelas rasio ke skala kesenjangan', () => {

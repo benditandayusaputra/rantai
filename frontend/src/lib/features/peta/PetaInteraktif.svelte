@@ -10,7 +10,7 @@
 	import {
 		bacaTokenDokumen,
 		buatGayaDasar,
-		sumberDasarBawaan,
+		urlSumberDasar,
 		warnaKelas,
 		warnaLaporan,
 		warnaSektor
@@ -166,12 +166,16 @@
 	}
 
 	async function buatPeta(): Promise<PetaMaplibre> {
-		const maplibre = await import('maplibre-gl');
-		await import('maplibre-gl/dist/maplibre-gl.css');
+		const [maplibre, { Protocol }] = await Promise.all([
+			import('maplibre-gl'),
+			import('pmtiles'),
+			import('maplibre-gl/dist/maplibre-gl.css')
+		]);
+		maplibre.addProtocol('pmtiles', new Protocol().tile);
 		const awal = untrack(() => ({ pusat, zoom }));
 		const m = new maplibre.Map({
 			container: wadah,
-			style: buatGayaDasar(env.PUBLIC_PETA_DASAR_URL || sumberDasarBawaan, bacaTokenDokumen),
+			style: buatGayaDasar(urlSumberDasar(env.PUBLIC_PETA_DASAR_URL), bacaTokenDokumen),
 			center: [awal.pusat.lng, awal.pusat.lat],
 			zoom: awal.zoom,
 			attributionControl: { compact: true }

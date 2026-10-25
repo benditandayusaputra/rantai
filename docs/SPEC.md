@@ -700,7 +700,8 @@ API: `GET /kecamatan/{kode}/kartu.png?bahasa=id|en` menggambar PNG langsung deng
 - `make snapshot-demo` menulis seluruh data skema `public` ke `data/snapshot/rantai.sql.gz` (data saja, idempoten). `make seed-demo` memuat dump itu ke database yang sudah dimigrasi, lalu menjalankan job `skenario_demo` yang memasang data simulasi dari `skenario_demo.yaml`.
 - Job pengambilan yang ditolak saat `RANTAI_MODE=demo`: `wilayah`, `kpu_dprd`, `lpse_daftar`, `lpse_detail`, `sirup`, `opentender`, `umpan_dprd`, `umpan_media`, `ringkas_umpan`, `dapodik`. Job yang hanya membaca berkas lokal atau database tetap berjalan.
 - `RANTAI_MODE=demo` mematikan job pengambilan data, menampilkan pita "Mode demo, data per {tanggal snapshot}", dan memakai cache jawaban Tanya Rantai serta ringkasan umpan yang sudah tersimpan.
-- Tile peta untuk wilayah DKI ikut di-bundle (PMTiles) agar peta tetap tampil tanpa internet.
+- Tile peta untuk wilayah DKI ikut di-bundle (PMTiles) agar peta tetap tampil tanpa internet: `frontend/static/peta/dki.pmtiles`, ekstrak build harian Protomaps (bbox 106,25 sampai 107,15 BT, 6,50 sampai 5,15 LS, zoom 0 sampai 14), dibaca lewat protokol `pmtiles://` dan menjadi peta dasar bawaan bila `PUBLIC_PETA_DASAR_URL` kosong.
+- Snapshot tidak memuat tabel akun, sesi, OTP, langganan, notifikasi, laporan, dan hak jawab; `make seed-demo` membuat ulang akun contoh dan laporan simulasi dari skenario.
 
 ### DSR-02 Akun dan peran
 

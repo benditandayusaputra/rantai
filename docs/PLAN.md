@@ -337,7 +337,7 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
 - [x] **T-1003** Performa
   - Halaman kecamatan menunggu ringkasan saat `load` sehingga konten ada di HTML SSR dan hidrasi tidak merender ulang (CLS 0,23 ke 0); panel Tanya dimuat saat pertama dibuka; ikon Lucide disatukan dalam satu potongan JS (permintaan JS halaman kecamatan 78 ke 36). MapLibre sudah dimuat dinamis sejak T-606.
   - Lighthouse 12.6 mobile (simulasi bawaan) atas build produksi di balik kompresi gzip seperti Vercel: beranda 97, kecamatan 96, LCP 2,5 dan 2,7 s, CLS 0.
-  - p95 API lokal dengan data parsial (tanpa Dapodik, paket belum berlokasi): ringkasan kecamatan 27 ms, wakil 7 ms, peta tema 3 ms, paket kecamatan 10 ms, cari wilayah 77 ms. Diukur ulang pada data penuh di T-1005.
+  - p95 API lokal dengan data parsial (tanpa Dapodik, paket belum berlokasi): ringkasan kecamatan 27 ms, wakil 7 ms, peta tema 3 ms, paket kecamatan 10 ms, cari wilayah 77 ms. Pada data penuh (T-1005): ringkasan 4 ms, wakil 3 ms, peta tema 4 ms, paket kecamatan 3 ms, cari wilayah 8 ms.
   - Commit: `⚡️ Percepat muat halaman kecamatan dan peta`
   - Selesai bila: Lighthouse mobile 90 ke atas untuk beranda dan halaman kecamatan; API p95 di bawah 300 ms pada data penuh.
 - [x] **T-1004** Deploy
@@ -350,6 +350,7 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - Commit: `🗃️ Perbarui snapshot data dan tile peta untuk demo luring`
   - Ukur ulang p95 API halaman wilayah pada data penuh (sasaran di bawah 300 ms, T-1003).
   - Selesai bila: alur demo lulus dengan jaringan dimatikan.
+  - Progres 25 Oktober 2026: `kecamatan_demo` dikunci `31.72.06` (pilihan job `skenario_demo` di Neon); `rantai.sql.gz` 2,7 MB dari Neon tanpa tabel akun dan warga; `seed-demo` menyaring `SET transaction_timeout` (pg_dump 18 ke PostGIS 16) dan memuat dengan `session_replication_role = replica` karena urutan baris `wilayah` yang merujuk dirinya; PMTiles DKI 32 MB menjadi peta dasar bawaan. Pada basis data hasil `seed-demo` dengan seluruh host selain localhost diblokir, alur demo langkah 1 sampai 4 dan 6 sampai 8 lulus di 390 px dan 1440 px. p95 lima endpoint halaman wilayah pada data penuh paling tinggi 8 ms (lokal). Tersisa: rekam `tanya_demo.json` (langkah 5), lihat catatan blokir.
 - [x] **T-1006** README final
   - Fitur per modul, diagram arsitektur, cara menjalankan dan menguji, env Vercel untuk domain `rantai-civic.vercel.app`, dan progres akhir. Butir snapshot luring tetap terbuka sampai T-1005.
   - Commit: `📝 Perbarui README dengan fitur, arsitektur, dan progres akhir`
@@ -383,3 +384,4 @@ Dikerjakan tim, bukan tugas commit. Dicatat di sini agar urutannya terlihat.
 Format: `- T-xxx · tanggal · alasan · tugas yang dikerjakan sebagai gantinya`
 
 - T-301 · 23 Oktober 2026 · halaman detail dan evaluasi tender SPSE DKI tertutup untuk publik (403, "Akses Ditolak"); detail tender butuh token API Gateway Inaproc (peran Data Integrator, surat ke LKPP) · paket tender disimpan dari kolom daftar, non-tender memakai halaman pengumuman lengkap
+- T-1005 · 25 Oktober 2026 · `ANTHROPIC_API_KEY` kosong di `.env` lokal dan Tanya Rantai di API produksi belum menjawab, sehingga `tanya_demo.json` belum bisa direkam (`RANTAI_API_URL=<api live> make tanya-demo`); langkah lain T-1005 sudah dikerjakan · T-650
