@@ -1,7 +1,10 @@
 package http
 
 import (
+	"encoding/csv"
+	"net/http/httptest"
 	"strconv"
+	"strings"
 	"testing"
 	"time"
 
@@ -149,4 +152,39 @@ func TestPaketTerdekat_DalamRadius_BerjarakEstimasi(t *testing.T) {
 func fmtAngka(nilai any) string {
 	angka, _ := nilai.(float64)
 	return strconv.FormatFloat(angka, 'f', -1, 64)
+}
+
+func TestUnduhPaketCSV_Kecamatan_BarisDenganSumber(t *testing.T) {
+	permintaan := httptest.NewRequestWithContext(t.Context(), fiber.MethodGet, "/api/v1/unduh/paket.csv?kode_wilayah=31.72.06&tahun=2026", nil)
+	resp, err := appUjiPaket(t).Test(permintaan)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer func() { _ = resp.Body.Close() }()
+	baris, err := csv.NewReader(resp.Body).ReadAll()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if resp.StatusCode != fiber.StatusOK || !strings.HasPrefix(resp.Header.Get(fiber.HeaderContentType), "text/csv") ||
+		!strings.Contains(resp.Header.Get(fiber.HeaderContentDisposition), "rantai-paket-31.72.06-2026.csv") {
+		t.Fatalf("kode %d, header %v", resp.StatusCode, resp.Header)
+	}
+	if len(baris) != 3 || baris[0][0] != "kode" {
+		t.Fatalf("baris = %v", baris)
+	}
+	kolom := map[string]int{}
+	for i, nama := range baris[0] {
+		kolom[nama] = i
+	}
+	tender := baris[1]
+	if tender[kolom["kode"]] != "tender-api" || !strings.HasSuffix(tender[kolom["url_sumber"]], "/pengumumanlelang") ||
+		tender[kolom["label"]] != "resmi" || tender[kolom["diambil_pada"]] == "" || tender[kolom["data_simulasi"]] != "false" {
+		t.Errorf("baris tender = %v", tender)
+	}
+}
+
+func TestUnduhPaketCSV_KodeWilayahTidakValid_400(t *testing.T) {
+	if hasil := panggil(t, appUjiPaket(t), "/api/v1/unduh/paket.csv?kode_wilayah=jakarta"); hasil.kode != fiber.StatusBadRequest {
+		t.Errorf("kode %d", hasil.kode)
+	}
 }

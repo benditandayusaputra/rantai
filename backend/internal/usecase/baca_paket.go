@@ -17,6 +17,12 @@ type FilterPaketKecamatan struct {
 	PerHalaman    int
 }
 
+type FilterUnduhPaket struct {
+	KodeWilayah string
+	Tahun       int
+	Batas       int
+}
+
 type FilterPetaPaket struct {
 	Kotak     domain.Kotak
 	Tema      string
@@ -29,6 +35,7 @@ type PembacaPaket interface {
 	DaftarPaketKecamatan(ctx context.Context, f FilterPaketKecamatan) ([]domain.PaketRingkas, int, error)
 	PetaPaket(ctx context.Context, f FilterPetaPaket) ([]domain.TitikPaket, []domain.AreaPaket, error)
 	PaketTerdekat(ctx context.Context, titik domain.Titik, radiusMeter float64, batas int) ([]domain.TitikPaket, error)
+	BarisUnduhPaket(ctx context.Context, f FilterUnduhPaket) ([]domain.BarisUnduhPaket, error)
 }
 
 type AturanBacaPaket struct {
@@ -41,6 +48,7 @@ type AturanBacaPaket struct {
 	URLSPSE             string  `yaml:"url_spse"`
 	URLSIRUP            string  `yaml:"url_sirup"`
 	BatasDaftarPenyedia int     `yaml:"batas_daftar_penyedia"`
+	BatasUnduh          int     `yaml:"batas_unduh"`
 }
 
 type BacaPaket struct {
@@ -89,13 +97,17 @@ func (u BacaPaket) Ambil(ctx context.Context, kode string) (DetailPaket, error) 
 }
 
 func (u BacaPaket) urlSumber(p domain.PaketLengkap) string {
-	if p.IsSimulation {
+	return u.urlPengumuman(p.IsSimulation, p.IsTender, p.KodeSPSE)
+}
+
+func (u BacaPaket) urlPengumuman(isSimulation, isTender bool, kodeSPSE string) string {
+	if isSimulation {
 		return ""
 	}
-	if p.IsTender {
-		return u.Aturan.URLSPSE + "/lelang/" + p.KodeSPSE + "/pengumumanlelang"
+	if isTender {
+		return u.Aturan.URLSPSE + "/lelang/" + kodeSPSE + "/pengumumanlelang"
 	}
-	return u.Aturan.URLSPSE + "/nontender/" + p.KodeSPSE + "/pengumumanpl"
+	return u.Aturan.URLSPSE + "/nontender/" + kodeSPSE + "/pengumumanpl"
 }
 
 func (u BacaPaket) urlRUP(p domain.PaketLengkap) string {
@@ -124,6 +136,21 @@ func (u BacaPaket) DaftarKecamatan(ctx context.Context, f FilterPaketKecamatan) 
 		return HalamanPaket{}, err
 	}
 	return HalamanPaket{Paket: daftar, Halaman: f.Halaman, PerHalaman: f.PerHalaman, Total: total}, nil
+}
+
+func (u BacaPaket) Unduh(ctx context.Context, f FilterUnduhPaket) ([]domain.BarisUnduhPaket, error) {
+	if _, err := domain.TingkatDariKode(f.KodeWilayah); err != nil {
+		return nil, err
+	}
+	f.Batas = u.Aturan.BatasUnduh
+	baris, err := u.Pembaca.BarisUnduhPaket(ctx, f)
+	if err != nil {
+		return nil, fmt.Errorf("unduh paket %s: %w", f.KodeWilayah, err)
+	}
+	for i := range baris {
+		baris[i].URLSumber = u.urlPengumuman(baris[i].IsSimulation, baris[i].IsTender, baris[i].KodeSPSE)
+	}
+	return baris, nil
 }
 
 func (u BacaPaket) Peta(ctx context.Context, f FilterPetaPaket) (PetaPaket, error) {

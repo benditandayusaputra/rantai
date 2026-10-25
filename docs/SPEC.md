@@ -604,6 +604,8 @@ API: `POST /laporan` (multipart: `lat`, `lng`, `akurasi`, `kondisi`, `catatan`, 
 
 `GET /unduh/paket.csv?kode_wilayah=&tahun=`: kolom paket utama dan kolom provenance (URL sumber, tanggal ambil). Keterangan lisensi dan atribusi dicantumkan di halaman unduh dan Tentang Data.
 
+`kode_wilayah` wajib berupa kode wilayah yang sah (paket di wilayah itu dan turunannya), baris dibatasi `batas_unduh` di `config/arus_anggaran.yaml`. Kolom `data_simulasi` menandai paket simulasi. Tombol "Unduh CSV" ada di daftar paket bagian Arus Anggaran dan mengikuti filter tahun.
+
 ## 9. Aksi
 
 ### AKS-01 Tanya Rantai

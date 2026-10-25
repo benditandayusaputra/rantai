@@ -116,6 +116,10 @@ export async function kirimBerwenang<T>(
 	return amplop.data;
 }
 
+export function alamatUnduhPaket(kodeWilayah: string, tahun: number): string {
+	return susunURL('/unduh/paket.csv', { kode_wilayah: kodeWilayah, tahun });
+}
+
 export function urlServer(path: string): string {
 	return new URL(path, env.PUBLIC_API_URL || alamatBawaan).toString();
 }

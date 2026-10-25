@@ -45,6 +45,18 @@ ORDER BY p.tahun_anggaran DESC, p.hps DESC NULLS LAST, p.kode
 LIMIT $4 OFFSET $5`
 )
 
+const sqlUnduhPaket = `SELECT p.kode, p.nama, p.tahap, p.jenis_pengadaan, p.metode, p.tahun_anggaran, p.hps, p.nilai_kontrak,
+    coalesce(p.sektor, ''), p.tema_kode, p.lokasi_tingkat::text, p.kode_wilayah, w.nama, p.is_simulation, p.provenance_id,
+    coalesce(s.nama, ''), p.kode_spse, p.is_tender, p.pagu, i.nama, coalesce(p.kode_rup, ''), v.label, v.diambil_pada
+FROM paket p
+JOIN wilayah w ON w.kode = p.kode_wilayah
+JOIN instansi i ON i.id = p.instansi_id
+JOIN provenance v ON v.id = p.provenance_id
+LEFT JOIN penyedia s ON s.id = p.penyedia_id
+WHERE (p.kode_wilayah = $1 OR p.kode_wilayah LIKE $1 || '.%') AND ($2 = 0 OR p.tahun_anggaran = $2)
+ORDER BY p.tahun_anggaran DESC, p.hps DESC NULLS LAST, p.kode
+LIMIT $3`
+
 type rupBaca struct {
 	kode, nama, sumberDana *string
 	pagu                   *float64
@@ -128,6 +140,20 @@ func (r PaketRepository) sinyalPaket(ctx context.Context, kode string) ([]domain
 			return s, err
 		}
 		return s, json.Unmarshal(pembanding, &s.Pembanding)
+	})
+}
+
+func (r PaketRepository) BarisUnduhPaket(ctx context.Context, f usecase.FilterUnduhPaket) ([]domain.BarisUnduhPaket, error) {
+	baris, err := r.DB.Query(ctx, sqlUnduhPaket, f.KodeWilayah, f.Tahun, f.Batas)
+	if err != nil {
+		return nil, fmt.Errorf("baris unduh paket %s: %w", f.KodeWilayah, err)
+	}
+	return pgx.CollectRows(baris, func(b pgx.CollectableRow) (domain.BarisUnduhPaket, error) {
+		var p domain.BarisUnduhPaket
+		err := b.Scan(&p.Kode, &p.Nama, &p.Tahap, &p.JenisPengadaan, &p.Metode, &p.TahunAnggaran, &p.HPS, &p.NilaiKontrak,
+			&p.Sektor, &p.TemaKode, &p.Lokasi.Tingkat, &p.Lokasi.KodeWilayah, &p.Lokasi.NamaWilayah, &p.IsSimulation,
+			&p.ProvenanceID, &p.NamaPenyedia, &p.KodeSPSE, &p.IsTender, &p.Pagu, &p.Instansi, &p.KodeRUP, &p.Label, &p.DiambilPada)
+		return p, err
 	})
 }
 

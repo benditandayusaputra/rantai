@@ -23,6 +23,7 @@ type LayananPaket interface {
 	DaftarKecamatan(ctx context.Context, f usecase.FilterPaketKecamatan) (usecase.HalamanPaket, error)
 	Peta(ctx context.Context, f usecase.FilterPetaPaket) (usecase.PetaPaket, error)
 	Terdekat(ctx context.Context, titik domain.Titik, radiusMeter float64) ([]domain.TitikPaket, error)
+	Unduh(ctx context.Context, f usecase.FilterUnduhPaket) ([]domain.BarisUnduhPaket, error)
 }
 
 type handlerPaket struct {
@@ -34,6 +35,7 @@ func daftarkanPaket(api fiber.Router, h handlerPaket) {
 	api.Get("/paket/:kode", h.ambil)
 	api.Get("/kecamatan/:kode/paket", h.daftarKecamatan)
 	api.Get("/peta/paket", h.peta)
+	api.Get("/unduh/paket.csv", h.unduhCSV)
 }
 
 func (h handlerPaket) ambil(c fiber.Ctx) error {

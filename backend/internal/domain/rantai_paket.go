@@ -113,6 +113,18 @@ type PaketRingkas struct {
 	ProvenanceID   string
 }
 
+type BarisUnduhPaket struct {
+	PaketRingkas
+	KodeSPSE    string
+	IsTender    bool
+	Pagu        *float64
+	Instansi    string
+	KodeRUP     string
+	URLSumber   string
+	Label       Label
+	DiambilPada time.Time
+}
+
 type MataRantai struct {
 	Kode   string
 	Status StatusMata

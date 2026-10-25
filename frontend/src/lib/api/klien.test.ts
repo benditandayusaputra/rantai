@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { ambilData, GalatAPI, tangkap } from './klien';
+import { alamatUnduhPaket, ambilData, GalatAPI, tangkap } from './klien';
 
 vi.mock('$env/dynamic/public', () => ({ env: { PUBLIC_API_URL: 'http://api.uji/api/v1' } }));
 
@@ -31,5 +31,13 @@ describe('tangkap', () => {
 			galat: new GalatAPI(404, 'x')
 		});
 		await expect(tangkap(Promise.resolve(1))).resolves.toEqual({ ok: true, data: 1 });
+	});
+});
+
+describe('alamatUnduhPaket', () => {
+	it('menyusun alamat CSV dengan kode wilayah dan tahun', () => {
+		expect(alamatUnduhPaket('31.72.06', 2026)).toBe(
+			'http://api.uji/api/v1/unduh/paket.csv?kode_wilayah=31.72.06&tahun=2026'
+		);
 	});
 });

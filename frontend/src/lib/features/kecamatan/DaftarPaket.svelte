@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { Calendar, ChevronDown, Layers, ListFilter } from '@lucide/svelte';
+	import { Calendar, ChevronDown, Download, Layers, ListFilter } from '@lucide/svelte';
 	import { untrack } from 'svelte';
 	import { replaceState } from '$app/navigation';
 	import { page } from '$app/state';
-	import { ambilPaketKecamatan, tangkap, type FilterPaket } from '$lib/api/klien';
+	import { alamatUnduhPaket, ambilPaketKecamatan, tangkap, type FilterPaket } from '$lib/api/klien';
 	import type { PaketRingkas, TemaKecamatan } from '$lib/api/tipe';
 	import EmptyState from '$lib/components/EmptyState.svelte';
 	import ErrorState from '$lib/components/ErrorState.svelte';
@@ -99,8 +99,22 @@
 	{:else if status === 'siap' && !daftar.length}
 		<EmptyState title={t('money.listEmpty')} />
 	{:else}
-		<p class="text-small text-muted" aria-live="polite">
-			{status === 'siap' ? t('money.count.total', { n: total }) : ''}
+		<div class="flex flex-wrap items-center justify-between gap-2">
+			<p class="text-small text-muted" aria-live="polite">
+				{status === 'siap' ? t('money.count.total', { n: total }) : ''}
+			</p>
+			<a
+				href={alamatUnduhPaket(kodeKecamatan, filterTahun)}
+				download
+				class="btn btn-outline btn-sm"
+				aria-describedby="catatan-unduh-paket"
+			>
+				<Download size={18} strokeWidth={1.75} aria-hidden="true" />
+				{t('action.downloadCsv')}
+			</a>
+		</div>
+		<p id="catatan-unduh-paket" class="text-caption text-muted">
+			{t('money.csvNote', { year: filterTahun })}
 		</p>
 		<ul class="grid gap-3 md:grid-cols-2 md:gap-4" aria-busy={status === 'memuat'}>
 			{#each daftar as paket (paket.kode)}

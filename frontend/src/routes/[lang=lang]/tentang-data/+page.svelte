@@ -230,6 +230,7 @@
 					{/if}
 				{/await}
 				<p class="text-small">{t('about.license.code')}</p>
+				<p class="text-small">{t('about.license.csv')}</p>
 				<p class="text-small">{t('map.basemapNote')}</p>
 				<p class="text-small text-muted">{t('about.demo')}</p>
 			</section>

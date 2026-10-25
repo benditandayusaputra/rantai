@@ -29,6 +29,10 @@ func (p *pembacaPaketKosong) PaketTerdekat(_ context.Context, _ domain.Titik, ra
 	return []domain.TitikPaket{}, nil
 }
 
+func (p *pembacaPaketKosong) BarisUnduhPaket(context.Context, FilterUnduhPaket) ([]domain.BarisUnduhPaket, error) {
+	return []domain.BarisUnduhPaket{}, nil
+}
+
 func bacaPaketUji(pembaca *pembacaPaketKosong) BacaPaket {
 	return BacaPaket{Pembaca: pembaca, Aturan: AturanBacaPaket{RadiusBawaanM: 500, RadiusMaksM: 3000, LuasKotakMaks: 1}}
 }
