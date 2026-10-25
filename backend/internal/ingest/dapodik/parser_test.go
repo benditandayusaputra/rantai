@@ -57,6 +57,10 @@ func TestUraiDetail_SDNegeri_IdentitasDanKoordinat(t *testing.T) {
 	if s.NamaKecamatanSumber != "Kec. Kelapa Gading" || detail.SemesterID != "20261" {
 		t.Errorf("kecamatan %q, semester %q", s.NamaKecamatanSumber, detail.SemesterID)
 	}
+	if detail.FotoURL != "https://file.data.kemendikdasmen.go.id/sekolahkita/20/2010/20104886-1.jpg" ||
+		detail.SekolahID != "002BB794-2BF5-E011-9477-67A74022F833" {
+		t.Errorf("foto sampul %q, sekolah_id %q", detail.FotoURL, detail.SekolahID)
+	}
 }
 
 func TestUraiDetail_TanpaKoordinat_LokasiKosongTidakDitebak(t *testing.T) {
@@ -64,6 +68,9 @@ func TestUraiDetail_TanpaKoordinat_LokasiKosongTidakDitebak(t *testing.T) {
 
 	if err != nil || detail.Sekolah.Lokasi != nil {
 		t.Errorf("lokasi harus kosong, dapat %+v, %v", detail.Sekolah.Lokasi, err)
+	}
+	if detail.FotoURL != "" {
+		t.Errorf("tanpa foto_sekolah, foto harus kosong, dapat %q", detail.FotoURL)
 	}
 }
 

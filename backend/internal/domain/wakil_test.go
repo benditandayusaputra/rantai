@@ -99,6 +99,18 @@ func TestGabungkanAnggota_SlugUnik_DicocokkanWalauNamaBerbeda(t *testing.T) {
 	}
 }
 
+func TestGabungkanAnggota_FotoHalamanFraksi_DibawaKeAnggota(t *testing.T) {
+	foto := "https://dprd-dkijakartaprov.go.id/wp-content/uploads/2024/10/Matnoor-Tindoan-330x450.jpg"
+	dapil := []BarisDapil{{NomorDapil: 6, Nama: "H. Matnoor Tindoan, SH", Slug: "h-matnoor-tindoan-sh"}}
+	fraksi := []AnggotaFraksi{{Fraksi: "F", BarisStruktur: BarisStruktur{Nama: "Matnoor Tindoan", Slug: "h-matnoor-tindoan-sh", Foto: foto}}}
+
+	anggota, err := GabungkanAnggota(dapil, fraksi)
+
+	if err != nil || len(anggota) != 1 || anggota[0].FotoURL != foto {
+		t.Fatalf("harap foto dari halaman fraksi, dapat %+v, %v", anggota, err)
+	}
+}
+
 func TestGabungkanAnggota_SlugGandaDiHalamanDapil_DicocokkanLewatNama(t *testing.T) {
 	dapil := []BarisDapil{
 		{NomorDapil: 3, Nama: "Hj. Ida Mahmudah", Slug: "ima-mahdiah"},

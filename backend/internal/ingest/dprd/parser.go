@@ -51,10 +51,12 @@ func UraiHalamanStruktur(isi []byte) ([]domain.BarisStruktur, error) {
 		if n.DataAtom != atom.H3 || jabatan == nil || jabatan.DataAtom != atom.H4 {
 			continue
 		}
+		kartu := saudaraSebelum(n)
 		daftar = append(daftar, domain.BarisStruktur{
 			Nama:    teks(n),
 			Jabatan: teks(jabatan),
-			Slug:    slugDalam(saudaraSebelum(n)),
+			Slug:    slugDalam(kartu),
+			Foto:    fotoDalam(kartu),
 		})
 	}
 	return daftar, nil
@@ -79,6 +81,27 @@ func slugDalam(n *html.Node) string {
 	for keturunan := range n.Descendants() {
 		if slug := slugProfil(keturunan); slug != "" {
 			return slug
+		}
+	}
+	return ""
+}
+
+func fotoDalam(n *html.Node) string {
+	if n == nil {
+		return ""
+	}
+	for keturunan := range n.Descendants() {
+		if keturunan.DataAtom == atom.Img {
+			return atribut(keturunan, "src")
+		}
+	}
+	return ""
+}
+
+func atribut(n *html.Node, kunci string) string {
+	for _, a := range n.Attr {
+		if a.Key == kunci {
+			return strings.TrimSpace(a.Val)
 		}
 	}
 	return ""

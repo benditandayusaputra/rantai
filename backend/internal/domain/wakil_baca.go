@@ -22,6 +22,7 @@ type Wakil struct {
 	Fraksi                 string
 	KodeKomisi             string
 	NamaKomisi             string
+	FotoURL                string
 	IsDiKomisiPengawasTema bool
 }
 

@@ -29,6 +29,7 @@ const (
 type Konfigurasi struct {
 	URLAPI             string                 `yaml:"url_api"`
 	URLRujukan         string                 `yaml:"url_rujukan"`
+	PolaHalamanProfil  string                 `yaml:"pola_halaman_profil"`
 	Catatan            string                 `yaml:"catatan"`
 	Pengunduh          klien.Konfigurasi      `yaml:"pengunduh"`
 	UkuranHalaman      int                    `yaml:"ukuran_halaman"`
@@ -138,11 +139,23 @@ func (p pengambilan) ambilSekolah(ctx context.Context, b ButirCari) (domain.Data
 		return domain.DataSekolah{}, err
 	}
 	data := domain.DataSekolah{Sekolah: detail.Sekolah, TahunAjaran: tahunAjaran, Rombel: []domain.RombelTingkat{}}
+	data.Foto = p.fotoSekolah(detail)
 	if !slices.Contains(p.cfg.BentukDenganRombel, detail.Sekolah.Bentuk) {
 		return data, nil
 	}
 	data.Rombel, err = p.ambilRombel(ctx, b.SekolahID, detail.Sekolah.Bentuk)
 	return data, err
+}
+
+func (p pengambilan) fotoSekolah(detail DetailSekolah) *domain.Foto {
+	if detail.FotoURL == "" {
+		return nil
+	}
+	return &domain.Foto{
+		URL:     detail.FotoURL,
+		Sumber:  domain.SumberFotoSekolahKita,
+		Halaman: fmt.Sprintf(p.cfg.PolaHalamanProfil, detail.SekolahID),
+	}
 }
 
 func (p pengambilan) ambilRombel(ctx context.Context, sekolahID string, bentuk domain.BentukSekolah) ([]domain.RombelTingkat, error) {

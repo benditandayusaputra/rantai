@@ -34,15 +34,15 @@ ON CONFLICT (kode) DO UPDATE SET
 WHERE (komisi.nama, komisi.bidang) IS DISTINCT FROM (EXCLUDED.nama, EXCLUDED.bidang)
 RETURNING (xmax = 0) AS baru`
 
-	sqlSimpanAnggota = `INSERT INTO anggota (id, nama, nama_lain, partai, fraksi, dapil_id, url_profil, lhkpn_url, provenance_id, komisi_kode)
-SELECT $1, $2, $3, $4, $5, d.id, $8, $9, $10, NULLIF($11, '')
+	sqlSimpanAnggota = `INSERT INTO anggota (id, nama, nama_lain, partai, fraksi, dapil_id, url_profil, lhkpn_url, provenance_id, komisi_kode, foto_url)
+SELECT $1, $2, $3, $4, $5, d.id, $8, $9, $10, NULLIF($11, ''), NULLIF($12, '')
 FROM dapil d WHERE d.tahun_pemilu = $6 AND d.nomor = $7
 ON CONFLICT (id) DO UPDATE SET
     nama = EXCLUDED.nama, nama_lain = EXCLUDED.nama_lain, partai = EXCLUDED.partai, fraksi = EXCLUDED.fraksi,
     dapil_id = EXCLUDED.dapil_id, url_profil = EXCLUDED.url_profil, lhkpn_url = EXCLUDED.lhkpn_url,
-    komisi_kode = EXCLUDED.komisi_kode, provenance_id = EXCLUDED.provenance_id, diubah_pada = now()
-WHERE (anggota.nama, anggota.nama_lain, anggota.partai, anggota.fraksi, anggota.dapil_id, anggota.url_profil, anggota.lhkpn_url, anggota.komisi_kode)
-    IS DISTINCT FROM (EXCLUDED.nama, EXCLUDED.nama_lain, EXCLUDED.partai, EXCLUDED.fraksi, EXCLUDED.dapil_id, EXCLUDED.url_profil, EXCLUDED.lhkpn_url, EXCLUDED.komisi_kode)
+    komisi_kode = EXCLUDED.komisi_kode, foto_url = EXCLUDED.foto_url, provenance_id = EXCLUDED.provenance_id, diubah_pada = now()
+WHERE (anggota.nama, anggota.nama_lain, anggota.partai, anggota.fraksi, anggota.dapil_id, anggota.url_profil, anggota.lhkpn_url, anggota.komisi_kode, anggota.foto_url)
+    IS DISTINCT FROM (EXCLUDED.nama, EXCLUDED.nama_lain, EXCLUDED.partai, EXCLUDED.fraksi, EXCLUDED.dapil_id, EXCLUDED.url_profil, EXCLUDED.lhkpn_url, EXCLUDED.komisi_kode, EXCLUDED.foto_url)
 RETURNING (xmax = 0) AS baru`
 
 	sqlHapusJabatan = `DELETE FROM anggota_akd`
@@ -180,7 +180,7 @@ func simpanAnggota(ctx context.Context, tx pgx.Tx, data usecase.DataSimpanWakil)
 func simpanSatuAnggota(ctx context.Context, tx pgx.Tx, a domain.Anggota, data usecase.DataSimpanWakil) (baru, berubah bool, err error) {
 	return tulisBaris(tx.QueryRow(ctx, sqlSimpanAnggota,
 		a.ID, a.Nama, a.NamaLain, a.Partai, a.Fraksi, data.TahunPemilu, a.NomorDapil,
-		a.URLProfil, data.URLLHKPN, data.ProvenanceAnggota.ID, a.KodeKomisi))
+		a.URLProfil, data.URLLHKPN, data.ProvenanceAnggota.ID, a.KodeKomisi, a.FotoURL))
 }
 
 func tulisBaris(baris pgx.Row) (baru, berubah bool, err error) {

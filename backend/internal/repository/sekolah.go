@@ -36,6 +36,15 @@ ON CONFLICT (npsn, tahun_ajaran, tingkat) DO UPDATE SET
     provenance_id = EXCLUDED.provenance_id, diubah_pada = now()
 WHERE (sekolah_rombel.jumlah_rombel, sekolah_rombel.jumlah_siswa) IS DISTINCT FROM (EXCLUDED.jumlah_rombel, EXCLUDED.jumlah_siswa)`
 
+	sqlSimpanFotoResmi = `INSERT INTO foto_sekolah (npsn, url, sumber, halaman, kredit)
+VALUES ($1, $2, $3, $4, $5)
+ON CONFLICT (npsn) DO UPDATE SET
+    url = EXCLUDED.url, sumber = EXCLUDED.sumber, halaman = EXCLUDED.halaman, kredit = EXCLUDED.kredit, diubah_pada = now()
+WHERE (foto_sekolah.url, foto_sekolah.sumber, foto_sekolah.halaman, foto_sekolah.kredit)
+    IS DISTINCT FROM (EXCLUDED.url, EXCLUDED.sumber, EXCLUDED.halaman, EXCLUDED.kredit)`
+
+	sqlHapusFotoResmi = `DELETE FROM foto_sekolah WHERE npsn = $1 AND sumber = $2`
+
 	sqlKecamatanTanpaSekolah = `SELECT w.kode || ' ' || w.nama FROM wilayah w
 WHERE w.tingkat = 'kecamatan' AND NOT EXISTS (SELECT 1 FROM sekolah s WHERE s.kode_kecamatan = w.kode)
 ORDER BY w.kode`
@@ -85,12 +94,28 @@ func simpanSatuSekolah(ctx context.Context, tx pgx.Tx, s usecase.SekolahTerpetak
 	if err != nil {
 		return false, false, fmt.Errorf("simpan sekolah %s: %w", s.NPSN, err)
 	}
+	if err := simpanFotoResmi(ctx, tx, s.NPSN, s.Foto); err != nil {
+		return false, false, err
+	}
 	for _, r := range s.Rombel {
 		if _, err := tx.Exec(ctx, sqlSimpanRombel, s.NPSN, s.TahunAjaran, r.Tingkat, r.JumlahRombel, r.JumlahSiswa, provenanceID); err != nil {
 			return false, false, fmt.Errorf("simpan rombel %s tingkat %d: %w", s.NPSN, r.Tingkat, err)
 		}
 	}
 	return ada && baru, ada && !baru, nil
+}
+
+func simpanFotoResmi(ctx context.Context, tx pgx.Tx, npsn string, foto *domain.Foto) error {
+	var err error
+	if foto == nil {
+		_, err = tx.Exec(ctx, sqlHapusFotoResmi, npsn, domain.SumberFotoSekolahKita)
+	} else {
+		_, err = tx.Exec(ctx, sqlSimpanFotoResmi, npsn, foto.URL, foto.Sumber, foto.Halaman, foto.Kredit)
+	}
+	if err != nil {
+		return fmt.Errorf("simpan foto sekolah %s: %w", npsn, err)
+	}
+	return nil
 }
 
 func (r SekolahRepository) KecamatanTanpaSekolah(ctx context.Context) ([]string, error) {

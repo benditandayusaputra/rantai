@@ -1,5 +1,6 @@
 url_api: https://sekolah.data.kemendikdasmen.go.id/v1/sekolah-service/sekolah
 url_rujukan: https://sekolah.data.kemendikdasmen.go.id
+pola_halaman_profil: https://sekolah.data.kemendikdasmen.go.id/profil-sekolah/%s
 catatan: Data Dapodik melalui layanan Sekolah Kita Kemendikdasmen; rombel dan peserta didik per tingkat semester berjalan
 pengunduh:
   user_agent: RantaiBot/1.0 (+https://github.com/benditandayusaputra/rantai)

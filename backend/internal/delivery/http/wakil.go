@@ -33,6 +33,7 @@ type wakilJSON struct {
 	Fraksi                string      `json:"fraksi"`
 	Komisi                *komisiJSON `json:"komisi"`
 	DudukDiKomisiPengawas bool        `json:"duduk_di_komisi_pengawas"`
+	FotoURL               string      `json:"foto_url,omitempty"`
 }
 
 type dapilJSON struct {
@@ -165,7 +166,10 @@ func keDapilJSON(d domain.DetailDapil) dapilJSON {
 }
 
 func keWakilJSON(w domain.Wakil) wakilJSON {
-	hasil := wakilJSON{ID: w.ID, Nama: w.Nama, Partai: w.Partai, Fraksi: w.Fraksi, DudukDiKomisiPengawas: w.IsDiKomisiPengawasTema}
+	hasil := wakilJSON{
+		ID: w.ID, Nama: w.Nama, Partai: w.Partai, Fraksi: w.Fraksi,
+		DudukDiKomisiPengawas: w.IsDiKomisiPengawasTema, FotoURL: w.FotoURL,
+	}
 	if w.KodeKomisi != "" {
 		hasil.Komisi = &komisiJSON{Kode: w.KodeKomisi, Nama: w.NamaKomisi}
 	}

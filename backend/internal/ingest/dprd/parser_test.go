@@ -44,7 +44,10 @@ func TestUraiHalamanStruktur_FraksiNasDem_MemuatAnggotaPPP(t *testing.T) {
 	if len(daftar) != 11 {
 		t.Fatalf("harap 11 anggota fraksi, dapat %d", len(daftar))
 	}
-	harap := domain.BarisStruktur{Nama: "Matnoor Tindoan", Jabatan: "Anggota", Slug: "h-matnoor-tindoan-sh"}
+	harap := domain.BarisStruktur{
+		Nama: "Matnoor Tindoan", Jabatan: "Anggota", Slug: "h-matnoor-tindoan-sh",
+		Foto: "https://dprd-dkijakartaprov.go.id/wp-content/uploads/2024/10/Matnoor-Tindoan-330x450.jpg",
+	}
 	if !slices.Contains(daftar, harap) {
 		t.Errorf("harap %+v ada di daftar fraksi", harap)
 	}

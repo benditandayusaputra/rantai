@@ -31,6 +31,13 @@ type titikTrenJSON struct {
 	Rasio   Angka  `json:"rasio"`
 }
 
+type fotoJSON struct {
+	URL     string `json:"url"`
+	Sumber  string `json:"sumber"`
+	Halaman string `json:"halaman"`
+	Kredit  string `json:"kredit"`
+}
+
 type sekolahJSON struct {
 	NPSN        string     `json:"npsn"`
 	Nama        string     `json:"nama"`
@@ -39,6 +46,7 @@ type sekolahJSON struct {
 	Lokasi      *titikJSON `json:"lokasi"`
 	Jalur       *string    `json:"jalur"`
 	DayaTampung *Angka     `json:"daya_tampung"`
+	Foto        *fotoJSON  `json:"foto"`
 }
 
 func (h handlerPendidikan) detailKecamatan(c fiber.Ctx) error {
@@ -106,5 +114,13 @@ func keSekolahJSON(s domain.SekolahDenganKursi) sekolahJSON {
 		hasil.Jalur = &jalur
 		hasil.DayaTampung = &Angka{Nilai: float64(*s.Kursi), Satuan: satuanKursi, Label: domain.LabelResmi, ProvenanceID: s.ProvenanceKursi}
 	}
+	hasil.Foto = keFotoJSON(s.Foto)
 	return hasil
+}
+
+func keFotoJSON(f domain.Foto) *fotoJSON {
+	if f.URL == "" {
+		return nil
+	}
+	return &fotoJSON{URL: f.URL, Sumber: string(f.Sumber), Halaman: f.Halaman, Kredit: f.Kredit}
 }

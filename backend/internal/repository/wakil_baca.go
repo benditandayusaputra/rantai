@@ -25,11 +25,11 @@ FROM dapil_wilayah dw JOIN wilayah w ON w.kode = dw.kode_kecamatan
 WHERE dw.dapil_id = $1
 ORDER BY w.nama`
 
-	sqlAnggotaDapil = `SELECT a.id, a.nama, a.partai, a.fraksi, coalesce(a.komisi_kode, ''), coalesce(k.nama, '')
+	sqlAnggotaDapil = `SELECT a.id, a.nama, a.partai, a.fraksi, coalesce(a.komisi_kode, ''), coalesce(k.nama, ''), coalesce(a.foto_url, '')
 FROM anggota a LEFT JOIN komisi k ON k.kode = a.komisi_kode
 WHERE a.dapil_id = $1`
 
-	sqlAmbilAnggota = `SELECT a.id, a.nama, a.partai, a.fraksi, coalesce(a.komisi_kode, ''), coalesce(k.nama, ''),
+	sqlAmbilAnggota = `SELECT a.id, a.nama, a.partai, a.fraksi, coalesce(a.komisi_kode, ''), coalesce(k.nama, ''), coalesce(a.foto_url, ''),
     coalesce(k.bidang, '{}'), a.url_profil, a.lhkpn_url, a.provenance_id, ` + sqlKolomDapil + `
 FROM anggota a
 JOIN dapil d ON d.id = a.dapil_id
@@ -96,5 +96,5 @@ func kolomDapil(d *domain.RingkasanDapil) []any {
 }
 
 func kolomWakil(w *domain.Wakil) []any {
-	return []any{&w.ID, &w.Nama, &w.Partai, &w.Fraksi, &w.KodeKomisi, &w.NamaKomisi}
+	return []any{&w.ID, &w.Nama, &w.Partai, &w.Fraksi, &w.KodeKomisi, &w.NamaKomisi, &w.FotoURL}
 }

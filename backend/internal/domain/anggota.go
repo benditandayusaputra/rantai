@@ -76,6 +76,7 @@ func buatAnggota(id string, b BarisDapil, f AnggotaFraksi) Anggota {
 		Partai:     b.Partai,
 		Fraksi:     f.Fraksi,
 		NomorDapil: b.NomorDapil,
+		FotoURL:    f.Foto,
 	}
 }
 

@@ -44,6 +44,7 @@ type SekolahDenganKursi struct {
 	Jalur           JalurDayaTampung
 	Kursi           *int
 	ProvenanceKursi string
+	Foto            Foto
 }
 
 const (

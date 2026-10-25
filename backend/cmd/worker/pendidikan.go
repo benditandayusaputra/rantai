@@ -9,6 +9,7 @@ import (
 	"github.com/benditandayusaputra/rantai/backend/internal/ingest/dapodik"
 	"github.com/benditandayusaputra/rantai/backend/internal/ingest/dayatampung"
 	"github.com/benditandayusaputra/rantai/backend/internal/ingest/klien"
+	"github.com/benditandayusaputra/rantai/backend/internal/ingest/wikimedia"
 	"github.com/benditandayusaputra/rantai/backend/internal/provenance"
 	"github.com/benditandayusaputra/rantai/backend/internal/repository"
 	"github.com/benditandayusaputra/rantai/backend/internal/usecase"
@@ -19,6 +20,7 @@ const (
 	pathKonfigurasiDapodik = "config/dapodik.yaml"
 	pathDayaTampung        = "config/daya_tampung.yaml"
 	pathPendidikan         = "config/pendidikan.yaml"
+	pathFotoWikimedia      = "config/foto_wikimedia.yaml"
 )
 
 func pilihJobPendidikan(nama string, pool *pgxpool.Pool) (job, error) {
@@ -31,6 +33,8 @@ func pilihJobPendidikan(nama string, pool *pgxpool.Pool) (job, error) {
 		return buatHitungCalonLulusan(pool)
 	case usecase.JobIndikator:
 		return buatHitungIndikator(pool)
+	case usecase.JobFotoWikimedia:
+		return buatImporFotoWikimedia(pool)
 	default:
 		return pilihJobDemo(nama, pool)
 	}
@@ -67,6 +71,19 @@ func buatImporDayaTampung(pool *pgxpool.Pool) (job, error) {
 		Penyimpan: repository.DayaTampungRepository{DB: pool},
 		Pencatat:  repository.IngestRunRepository{DB: pool},
 		Pelapor:   pelaporLog{},
+	}
+	return impor.Jalankan, nil
+}
+
+func buatImporFotoWikimedia(pool *pgxpool.Pool) (job, error) {
+	var cfg wikimedia.Konfigurasi
+	if err := config.BacaYAML(pathFotoWikimedia, &cfg); err != nil {
+		return nil, err
+	}
+	impor := usecase.ImporFotoWikimedia{
+		Pengambil: wikimedia.Sumber{Konfigurasi: cfg},
+		Penyimpan: repository.FotoSekolahRepository{DB: pool},
+		Pencatat:  repository.IngestRunRepository{DB: pool},
 	}
 	return impor.Jalankan, nil
 }

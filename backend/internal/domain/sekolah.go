@@ -55,6 +55,7 @@ type Sekolah struct {
 	Status              StatusSekolah
 	NamaKecamatanSumber string
 	Lokasi              *Titik
+	Foto                *Foto
 }
 
 type RombelTingkat struct {

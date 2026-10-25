@@ -33,10 +33,11 @@ ORDER BY periode`
 
 	sqlSekolahMenengahPertama = `WITH tahun_kursi AS (SELECT max(tahun_ajaran) AS t FROM daya_tampung)
 SELECT s.npsn, s.nama, s.bentuk, s.status, ST_Y(s.lokasi), ST_X(s.lokasi),
-    coalesce(d.jalur, ''), d.kursi, coalesce(d.provenance_id, '')
+    coalesce(d.jalur, ''), d.kursi, coalesce(d.provenance_id, ''), coalesce(f.url, ''), coalesce(f.sumber, ''), coalesce(f.halaman, ''), coalesce(f.kredit, '')
 FROM sekolah s
 CROSS JOIN tahun_kursi
 LEFT JOIN daya_tampung d ON d.npsn = s.npsn AND d.tahun_ajaran = tahun_kursi.t
+LEFT JOIN foto_sekolah f ON f.npsn = s.npsn
 WHERE s.kode_kecamatan = $1 AND s.jenjang = 'menengah_pertama'
 ORDER BY d.kursi IS NULL, s.status, s.nama`
 )
@@ -85,12 +86,17 @@ func (r IndikatorBacaRepository) SekolahMenengahPertama(ctx context.Context, kod
 	return pgx.CollectRows(baris, func(b pgx.CollectableRow) (domain.SekolahDenganKursi, error) {
 		var s domain.SekolahDenganKursi
 		var lat, lng *float64
-		err := b.Scan(&s.NPSN, &s.Nama, &s.Bentuk, &s.Status, &lat, &lng, &s.Jalur, &s.Kursi, &s.ProvenanceKursi)
+		err := b.Scan(append([]any{&s.NPSN, &s.Nama, &s.Bentuk, &s.Status, &lat, &lng, &s.Jalur, &s.Kursi, &s.ProvenanceKursi},
+			tujuanFoto(&s.Foto)...)...)
 		if lat != nil && lng != nil {
 			s.Lokasi = &domain.Titik{Lat: *lat, Lng: *lng}
 		}
 		return s, err
 	})
+}
+
+func tujuanFoto(f *domain.Foto) []any {
+	return []any{&f.URL, &f.Sumber, &f.Halaman, &f.Kredit}
 }
 
 func tujuanIndikator(i *domain.IndikatorTersimpan) []any {

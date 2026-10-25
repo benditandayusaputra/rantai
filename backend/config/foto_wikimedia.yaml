@@ -1,0 +1,106 @@
+sumber: Wikimedia Commons, berkas gambar (P18) pada butir Wikidata yang mencantumkan NPSN (P4128)
+dihimpun: 2026-10-25
+pola_halaman: https://commons.wikimedia.org/wiki/File:%s
+pola_thumbnail: https://upload.wikimedia.org/wikipedia/commons/thumb/%s/%s/%s/%dpx-%s
+lebar_thumbnail: 330
+foto:
+  - npsn: "20100379"
+    wikidata: Q123816923
+    berkas: "SDN Bendungan Hilir 09 Pg - panoramio.jpg"
+    pembuat: "Bonco @ Warnet Satun…"
+    lisensi: "CC BY 3.0"
+  - npsn: "20100838"
+    wikidata: Q125034402
+    berkas: "Sekolah Don Bosco I Kelapa Gading (2025) 01.jpg"
+    pembuat: "Medelam"
+    lisensi: "CC BY-SA 4.0"
+  - npsn: "20101557"
+    wikidata: Q123787282
+    berkas: "SMP Negeri 101 Jakarta 2013-08-16.jpg"
+    pembuat: "Pradana Aumars"
+    lisensi: "CC BY-SA 4.0"
+  - npsn: "20102263"
+    wikidata: Q123817157
+    berkas: "SDN Tebet Barat 05 Dan 06 - panoramio.jpg"
+    pembuat: "Akhmad Fauzi"
+    lisensi: "CC BY 3.0"
+  - npsn: "20104119"
+    wikidata: Q12509546
+    berkas: "SD Negeri Kayu Putih 9 Pagi.jpg"
+    pembuat: "Medelam"
+    lisensi: "CC BY-SA 4.0"
+  - npsn: "20104400"
+    wikidata: Q12509386
+    berkas: "Gedung SDN Cibubur 04 Pagi.jpg"
+    pembuat: "Dodi hudanjaya"
+    lisensi: "CC BY-SA 4.0"
+  - npsn: "20104481"
+    wikidata: Q123817347
+    berkas: "SD Negeri Bendungan Hilir 12 Pagi (2025).jpg"
+    pembuat: "Medelam"
+    lisensi: "CC BY-SA 4.0"
+  - npsn: "20106147"
+    wikidata: Q104720661
+    berkas: "SDN Pondok Labu 04 Pg - panoramio.jpg"
+    pembuat: "Bonco @ Warnet Satun…"
+    lisensi: "CC BY 3.0"
+  - npsn: "20106454"
+    wikidata: Q125034416
+    berkas: "Yayasan Al Azhar Kelapa Gading.jpg"
+    pembuat: "Medelam"
+    lisensi: "CC BY-SA 4.0"
+  - npsn: "20106691"
+    wikidata: Q125034524
+    berkas: "Sekolah Tunas Gading di Kelapa Gading (2025).jpg"
+    pembuat: "Medelam"
+    lisensi: "CC BY-SA 4.0"
+  - npsn: "20108640"
+    wikidata: Q12509625
+    berkas: "SDNPondokKelapa0304Pagi08Petang.jpg"
+    pembuat: "NaidNdeso"
+    lisensi: "CC BY-SA 3.0"
+  - npsn: "20108644"
+    wikidata: Q7603192
+    berkas: "SDNPdkKel09Pg12Pt07Pg11Pt-1.jpg"
+    pembuat: "NaidNdeso"
+    lisensi: "CC BY-SA 3.0"
+  - npsn: "20108646"
+    wikidata: Q7603197
+    berkas: "SDNPdkKel09Pg12Pt07Pg11Pt-1.jpg"
+    pembuat: "NaidNdeso"
+    lisensi: "CC BY-SA 3.0"
+  - npsn: "20108851"
+    wikidata: Q125034197
+    berkas: "Sekolah Don Bosco II.jpg"
+    pembuat: "Medelam"
+    lisensi: "CC BY-SA 4.0"
+  - npsn: "20109016"
+    wikidata: Q12509288
+    berkas: "SD Islam At Taubah Pulo Mas (2025).jpg"
+    pembuat: "Medelam"
+    lisensi: "CC BY-SA 4.0"
+  - npsn: "20109066"
+    wikidata: Q125034489
+    berkas: "Saint Peter's School.jpg"
+    pembuat: "Medelam"
+    lisensi: "CC BY-SA 4.0"
+  - npsn: "20109209"
+    wikidata: Q12702794
+    berkas: "Sds-al-akhyar.jpg"
+    pembuat: "96stambul"
+    lisensi: "CC BY-SA 4.0"
+  - npsn: "20109271"
+    wikidata: Q125034493
+    berkas: "Foto Gedung Yayasan Santo Yakobus.jpg"
+    pembuat: "Dimas Agni Satria"
+    lisensi: "CC BY-SA 4.0"
+  - npsn: "20109350"
+    wikidata: Q125034525
+    berkas: "SMP Tunas Karya.jpg"
+    pembuat: "Medelam"
+    lisensi: "CC BY-SA 3.0"
+  - npsn: "69786211"
+    wikidata: Q125034219
+    berkas: "SMP Islam At Taubah Pulo Mas (2025).jpg"
+    pembuat: "Medelam"
+    lisensi: "CC BY-SA 4.0"

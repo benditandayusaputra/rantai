@@ -12,11 +12,12 @@ const (
 	sqlSekolahSekitar = `WITH titik AS (SELECT ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography AS g),
 tahun_kursi AS (SELECT max(tahun_ajaran) AS t FROM daya_tampung)
 SELECT s.npsn, s.nama, s.bentuk, s.status, ST_Y(s.lokasi), ST_X(s.lokasi), ST_Distance(s.lokasi::geography, titik.g),
-    coalesce(d.jalur, ''), d.kursi, coalesce(d.provenance_id, '')
+    coalesce(d.jalur, ''), d.kursi, coalesce(d.provenance_id, ''), coalesce(f.url, ''), coalesce(f.sumber, ''), coalesce(f.halaman, ''), coalesce(f.kredit, '')
 FROM sekolah s
 CROSS JOIN titik
 CROSS JOIN tahun_kursi
 LEFT JOIN daya_tampung d ON d.npsn = s.npsn AND d.tahun_ajaran = tahun_kursi.t
+LEFT JOIN foto_sekolah f ON f.npsn = s.npsn
 WHERE s.jenjang = 'menengah_pertama' AND s.lokasi IS NOT NULL AND ST_DWithin(s.lokasi::geography, titik.g, $3)
 ORDER BY 7, s.npsn`
 
@@ -54,7 +55,8 @@ func (r SekolahTerdekatRepository) sekolahSekitar(ctx context.Context, titik dom
 	return pgx.CollectRows(baris, func(b pgx.CollectableRow) (domain.SekolahTerdekat, error) {
 		var s domain.SekolahTerdekat
 		var lat, lng float64
-		err := b.Scan(&s.NPSN, &s.Nama, &s.Bentuk, &s.Status, &lat, &lng, &s.JarakMeter, &s.Jalur, &s.Kursi, &s.ProvenanceKursi)
+		err := b.Scan(append([]any{&s.NPSN, &s.Nama, &s.Bentuk, &s.Status, &lat, &lng, &s.JarakMeter, &s.Jalur, &s.Kursi, &s.ProvenanceKursi},
+			tujuanFoto(&s.Foto)...)...)
 		s.Lokasi = &domain.Titik{Lat: lat, Lng: lng}
 		return s, err
 	})

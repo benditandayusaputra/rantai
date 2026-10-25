@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/benditandayusaputra/rantai/backend/internal/domain"
 )
@@ -29,6 +30,8 @@ type HalamanCari struct {
 type DetailSekolah struct {
 	Sekolah    domain.Sekolah
 	SemesterID string
+	SekolahID  string
+	FotoURL    string
 }
 
 type amplopSumber[T any] struct {
@@ -36,7 +39,12 @@ type amplopSumber[T any] struct {
 	Data       T   `json:"data"`
 }
 
+type fotoSumber struct {
+	PathFile string `json:"path_file"`
+}
+
 type detailSumber struct {
+	SekolahID  string   `json:"sekolah_id"`
 	NPSN       string   `json:"npsn"`
 	Nama       string   `json:"nama"`
 	Bentuk     string   `json:"bentuk_pendidikan"`
@@ -67,6 +75,7 @@ func UraiCari(isi []byte) (HalamanCari, error) {
 func UraiDetail(isi []byte) (DetailSekolah, error) {
 	amplop, err := uraiAmplop[struct {
 		Sekolah []detailSumber `json:"sekolah"`
+		Foto    []fotoSumber   `json:"foto_sekolah"`
 	}](isi)
 	if err != nil {
 		return DetailSekolah{}, err
@@ -74,7 +83,18 @@ func UraiDetail(isi []byte) (DetailSekolah, error) {
 	if len(amplop.Sekolah) == 0 {
 		return DetailSekolah{}, ErrDetailKosong
 	}
-	return keDetailSekolah(amplop.Sekolah[0])
+	detail, err := keDetailSekolah(amplop.Sekolah[0])
+	detail.FotoURL = fotoSampul(amplop.Foto)
+	return detail, err
+}
+
+func fotoSampul(daftar []fotoSumber) string {
+	for _, f := range daftar {
+		if url := strings.TrimSpace(f.PathFile); url != "" {
+			return url
+		}
+	}
+	return ""
 }
 
 func keDetailSekolah(d detailSumber) (DetailSekolah, error) {
@@ -92,6 +112,7 @@ func keDetailSekolah(d detailSumber) (DetailSekolah, error) {
 			NamaKecamatanSumber: d.Kecamatan, Lokasi: titikSah(d.Lintang, d.Bujur),
 		},
 		SemesterID: d.SemesterID,
+		SekolahID:  d.SekolahID,
 	}, nil
 }
 

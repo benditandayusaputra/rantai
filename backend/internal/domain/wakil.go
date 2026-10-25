@@ -48,6 +48,7 @@ type BarisStruktur struct {
 	Nama    string
 	Jabatan string
 	Slug    string
+	Foto    string
 }
 
 type AnggotaFraksi struct {
@@ -64,6 +65,7 @@ type Anggota struct {
 	NomorDapil int
 	URLProfil  string
 	KodeKomisi string
+	FotoURL    string
 }
 
 func ValidasiCakupanDapil(daftar []Dapil, kecamatanDKI map[string]string) error {
