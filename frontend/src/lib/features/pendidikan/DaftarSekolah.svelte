@@ -1,4 +1,5 @@
 <script lang="ts">
+	import TableScroll from '$lib/components/TableScroll.svelte';
 	import type { Sekolah } from '$lib/api/tipe';
 	import EmptyState from '$lib/components/EmptyState.svelte';
 	import ProvenanceBadge from '$lib/components/ProvenanceBadge.svelte';
@@ -10,7 +11,7 @@
 </script>
 
 {#if sekolah.length}
-	<div class="overflow-x-auto rounded-lg border border-line bg-surface">
+	<TableScroll label={t('pen.schoolsHeading')}>
 		<table class="w-full min-w-max text-small">
 			<caption class="sr-only">{t('pen.schoolsHeading')}</caption>
 			<thead class="bg-sunken text-caption uppercase">
@@ -52,7 +53,7 @@
 				{/each}
 			</tbody>
 		</table>
-	</div>
+	</TableScroll>
 {:else}
 	<EmptyState title={t('pen.schoolsEmpty')} />
 {/if}

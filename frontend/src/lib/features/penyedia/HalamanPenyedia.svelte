@@ -1,4 +1,5 @@
 <script lang="ts">
+	import TableScroll from '$lib/components/TableScroll.svelte';
 	import { Info } from '@lucide/svelte';
 	import type { ProfilPenyedia } from '$lib/api/tipe';
 	import EmptyState from '$lib/components/EmptyState.svelte';
@@ -65,7 +66,7 @@
 					<TableToggle bind:pressed={isTabel} controls="isi-per-tahun" />
 					<div id="isi-per-tahun">
 						{#if isTabel}
-							<div class="overflow-x-auto rounded-lg border border-line bg-surface">
+							<TableScroll label={t('vendor.perYear')}>
 								<table class="w-full text-small">
 									<caption class="sr-only">{t('vendor.perYear')}</caption>
 									<thead class="bg-sunken text-caption uppercase">
@@ -92,7 +93,7 @@
 										{/each}
 									</tbody>
 								</table>
-							</div>
+							</TableScroll>
 						{:else}
 							<ol
 								class="flex h-56 items-end gap-2 overflow-x-auto rounded-lg border border-line bg-surface p-4"

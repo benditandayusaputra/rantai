@@ -10,9 +10,14 @@
 </script>
 
 <svelte:head>
-	{#await data.paket then hasil}
-		{#if hasil.ok}<title>{t('pkg.title', { name: hasil.data.nama })} · {t('brand.name')}</title
-			>{/if}
+	{#await data.paket}
+		<title>{t('brand.name')}</title>
+	{:then hasil}
+		<title
+			>{hasil.ok
+				? `${t('pkg.title', { name: hasil.data.nama })} · ${t('brand.name')}`
+				: t('brand.name')}</title
+		>
 	{/await}
 </svelte:head>
 

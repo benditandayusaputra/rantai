@@ -323,8 +323,9 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
 - [ ] **T-1001** Tes alur demo
   - `e2e/alur-demo.spec.ts` untuk delapan langkah Alur Demo PRD pada 390 px dan 1440 px dalam mode demo.
   - Commit: `✅ Tambah tes end-to-end alur demo utama`
-- [ ] **T-1002** Aksesibilitas
+- [x] **T-1002** Aksesibilitas
   - Audit axe pada semua halaman utama, perbaiki temuan.
+  - `make e2e` menjalankan `e2e/aksesibilitas.spec.ts` (15 halaman, 390 px dan 1440 px, WCAG 2.1 A dan AA). Audit pertama memakai data parsial (Dapodik belum masuk); spec tetap di suite sehingga keadaan berdata ikut terperiksa.
   - Commit: `♿️ Perbaiki temuan audit aksesibilitas halaman utama`
   - Selesai bila: tidak ada pelanggaran serius atau kritis.
 - [ ] **T-1003** Performa

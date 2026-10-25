@@ -1,4 +1,5 @@
 <script lang="ts">
+	import TableScroll from '$lib/components/TableScroll.svelte';
 	import { CircleHelp } from '@lucide/svelte';
 	import { invalidateAll } from '$app/navigation';
 	import type { JenisSinyal, Label } from '$lib/api/tipe';
@@ -79,7 +80,7 @@
 			{:else if !hasil.data.pengambilan.length}
 				<EmptyState title={t('about.sourcesEmpty')} />
 			{:else}
-				<div class="overflow-x-auto rounded-lg border border-line bg-surface">
+				<TableScroll label={t('about.sources')}>
 					<table class="w-full min-w-max text-small">
 						<caption class="sr-only">{t('about.sources')}</caption>
 						<thead class="bg-sunken text-caption uppercase">
@@ -107,7 +108,7 @@
 							{/each}
 						</tbody>
 					</table>
-				</div>
+				</TableScroll>
 			{/if}
 		{/await}
 	</section>

@@ -16,10 +16,14 @@
 </script>
 
 <svelte:head>
-	{#await data.detail then hasil}
-		{#if hasil.ok}
-			<title>{t('pen.title', { name: hasil.data.nama })} · {t('brand.name')}</title>
-		{/if}
+	{#await data.detail}
+		<title>{t('brand.name')}</title>
+	{:then hasil}
+		<title
+			>{hasil.ok
+				? `${t('pen.title', { name: hasil.data.nama })} · ${t('brand.name')}`
+				: t('brand.name')}</title
+		>
 	{/await}
 </svelte:head>
 

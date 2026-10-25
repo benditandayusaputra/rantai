@@ -12,7 +12,7 @@ COMPOSE := docker compose
 MIGRATE := $(COMPOSE) run --rm --build migrate
 KLIEN_PG := $(COMPOSE) run --rm -T klien-pg sh -c
 
-.PHONY: up down migrate siapkan-uji migrate-down lint test impor-wilayah impor-tema impor-kpu-dprd impor-lpse impor-sirup impor-opentender turunan laporan-geocode snapshot-paket muat-snapshot-paket impor-umpan-dprd impor-umpan-media ringkas-umpan impor-sekolah impor-daya-tampung hitung-calon-lulusan hitung-indikator impor-paripurna kunci-vapid snapshot-demo seed-demo tanya-demo
+.PHONY: up down migrate siapkan-uji e2e migrate-down lint test impor-wilayah impor-tema impor-kpu-dprd impor-lpse impor-sirup impor-opentender turunan laporan-geocode snapshot-paket muat-snapshot-paket impor-umpan-dprd impor-umpan-media ringkas-umpan impor-sekolah impor-daya-tampung hitung-calon-lulusan hitung-indikator impor-paripurna kunci-vapid snapshot-demo seed-demo tanya-demo
 
 up:
 	$(COMPOSE) up -d --wait db minio
@@ -110,3 +110,6 @@ seed-demo:
 	@test -f $(SNAPSHOT_DEMO) || { echo "$(SNAPSHOT_DEMO) belum ada; buat dengan make snapshot-demo di mesin yang datanya lengkap"; exit 1; }
 	gunzip -c $(SNAPSHOT_DEMO) | $(KLIEN_PG) 'psql "$$DATABASE_URL_MIGRASI" -q -v ON_ERROR_STOP=1'
 	cd backend && go run ./cmd/worker skenario_demo
+
+e2e:
+	cd frontend && npm run e2e

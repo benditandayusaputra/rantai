@@ -1,4 +1,5 @@
 <script lang="ts">
+	import TableScroll from '$lib/components/TableScroll.svelte';
 	import type { FiturLaporan, PetaPaket, PetaTema, SekolahTerdekat } from '$lib/api/tipe';
 	import EmptyState from '$lib/components/EmptyState.svelte';
 	import GapClassChip from '$lib/components/GapClassChip.svelte';
@@ -31,7 +32,7 @@
 		<section aria-labelledby="tabel-tema">
 			<h2 id="tabel-tema" class="t-h3">{t('map.table.kecamatan')}</h2>
 			{#if tema?.features.length}
-				<div class="mt-3 overflow-x-auto rounded-lg border border-line bg-surface">
+				<TableScroll label={t('map.table.kecamatan')} class="mt-3">
 					<table class={kelasTabel}>
 						<caption class="sr-only">{t('map.table.kecamatan')}</caption>
 						<thead class={kelasKepala}>
@@ -60,7 +61,7 @@
 							{/each}
 						</tbody>
 					</table>
-				</div>
+				</TableScroll>
 			{:else}
 				<div class="mt-3"><EmptyState title={t('map.empty')} /></div>
 			{/if}
@@ -70,7 +71,7 @@
 		<section aria-labelledby="tabel-proyek">
 			<h2 id="tabel-proyek" class="t-h3">{t('map.table.proyek')}</h2>
 			{#if paket.length}
-				<div class="mt-3 overflow-x-auto rounded-lg border border-line bg-surface">
+				<TableScroll label={t('map.table.proyek')} class="mt-3">
 					<table class={kelasTabel}>
 						<caption class="sr-only">{t('map.table.proyek')}</caption>
 						<thead class={kelasKepala}>
@@ -99,7 +100,7 @@
 							{/each}
 						</tbody>
 					</table>
-				</div>
+				</TableScroll>
 			{:else}
 				<div class="mt-3"><EmptyState title={t('map.empty')} /></div>
 			{/if}
@@ -109,7 +110,7 @@
 		<section aria-labelledby="tabel-sekolah">
 			<h2 id="tabel-sekolah" class="t-h3">{t('map.table.sekolah')}</h2>
 			{#if sekolah.length}
-				<div class="mt-3 overflow-x-auto rounded-lg border border-line bg-surface">
+				<TableScroll label={t('map.table.sekolah')} class="mt-3">
 					<table class={kelasTabel}>
 						<caption class="sr-only">{t('map.table.sekolah')}</caption>
 						<thead class={kelasKepala}>
@@ -129,7 +130,7 @@
 							{/each}
 						</tbody>
 					</table>
-				</div>
+				</TableScroll>
 			{:else}
 				<div class="mt-3"><EmptyState title={t('map.empty')} /></div>
 			{/if}
@@ -139,7 +140,7 @@
 		<section aria-labelledby="tabel-laporan">
 			<h2 id="tabel-laporan" class="t-h3">{t('map.table.laporan')}</h2>
 			{#if laporan.length}
-				<div class="mt-3 overflow-x-auto rounded-lg border border-line bg-surface">
+				<TableScroll label={t('map.table.laporan')} class="mt-3">
 					<table class={kelasTabel}>
 						<caption class="sr-only">{t('map.table.laporan')}</caption>
 						<thead class={kelasKepala}>
@@ -163,7 +164,7 @@
 							{/each}
 						</tbody>
 					</table>
-				</div>
+				</TableScroll>
 			{:else}
 				<div class="mt-3"><EmptyState title={t('map.emptyReports')} /></div>
 			{/if}

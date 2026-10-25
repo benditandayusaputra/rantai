@@ -48,10 +48,14 @@
 </script>
 
 <svelte:head>
-	{#await data.ringkasan then hasil}
-		{#if hasil.ok}
-			<title>{t('area.title', { name: hasil.data.kecamatan.nama })} · {t('brand.name')}</title>
-		{/if}
+	{#await data.ringkasan}
+		<title>{t('brand.name')}</title>
+	{:then hasil}
+		<title
+			>{hasil.ok
+				? `${t('area.title', { name: hasil.data.kecamatan.nama })} · ${t('brand.name')}`
+				: t('brand.name')}</title
+		>
 	{/await}
 </svelte:head>
 
