@@ -3,6 +3,7 @@ package lpse
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"net/url"
 	"os"
@@ -82,13 +83,16 @@ func (s Sumber) AmbilDetailPaket(ctx context.Context, kodeSPSE string) (usecase.
 	return usecase.DetailPaketSumber{Detail: detail, Provenance: s.provenance(alamat, catatanDetail, perekam.gabungan(), diambilPada)}, nil
 }
 
-func (s Sumber) lengkapiPemenang(ctx context.Context, klien Pengirim, detail *domain.DetailPaket) error {
-	pemenang, err := s.ambilPemenang(ctx, klien, detail.KodeSPSE)
+func (s Sumber) lengkapiPemenang(ctx context.Context, pengirim Pengirim, detail *domain.DetailPaket) error {
+	pemenang, err := s.ambilPemenang(ctx, pengirim, detail.KodeSPSE)
 	if err != nil || pemenang == nil {
 		return err
 	}
 	detail.Pemenang = pemenang
-	isi, err := klien.Ambil(ctx, s.alamatNonTender("/nontender/", detail.KodeSPSE, "/jadwal"))
+	isi, err := pengirim.Ambil(ctx, s.alamatNonTender("/nontender/", detail.KodeSPSE, "/jadwal"))
+	if errors.Is(err, klien.ErrTidakDitemukan) {
+		return nil
+	}
 	if err != nil {
 		return err
 	}

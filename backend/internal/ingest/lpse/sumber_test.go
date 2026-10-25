@@ -2,11 +2,14 @@ package lpse
 
 import (
 	"context"
+	"fmt"
 	"net/url"
 	"os"
 	"path/filepath"
 	"testing"
 	"time"
+
+	"github.com/benditandayusaputra/rantai/backend/internal/ingest/klien"
 )
 
 type pengirimFixture struct {
@@ -111,5 +114,37 @@ func TestAmbilDetailPaket_TanpaPemenang_JadwalTidakDiambil(t *testing.T) {
 
 	if err != nil || data.Detail.Pemenang != nil || len(pengirim.alamat) != 3 {
 		t.Errorf("pemenang = %v, permintaan = %v, err = %v", data.Detail.Pemenang, pengirim.alamat, err)
+	}
+}
+
+type pengirimJadwalHilang struct {
+	t *testing.T
+}
+
+func (p pengirimJadwalHilang) Ambil(_ context.Context, alamat string) ([]byte, error) {
+	switch filepath.Base(alamat) {
+	case "pengumumanpl":
+		return bacaFixture(p.t, "pengumuman_berkontrak.html"), nil
+	case "pemenangberkontrak":
+		return bacaFixture(p.t, "kontrak_ada.html"), nil
+	case "jadwal":
+		return nil, fmt.Errorf("%s: %w", alamat, klien.ErrTidakDitemukan)
+	default:
+		return bacaFixture(p.t, "halaman_nontender.html"), nil
+	}
+}
+
+func (p pengirimJadwalHilang) KirimForm(context.Context, string, url.Values) ([]byte, error) {
+	return nil, nil
+}
+
+func TestAmbilDetailPaket_JadwalTidakAda_DetailTetapTanpaTanggalKontrak(t *testing.T) {
+	s := sumberUji(t)
+	s.Klien = pengirimJadwalHilang{t: t}
+
+	data, err := s.AmbilDetailPaket(t.Context(), "11047442000")
+
+	if err != nil || data.Detail.Pemenang == nil || data.Detail.TanggalKontrak != nil {
+		t.Errorf("pemenang %+v, tanggal kontrak %v, err %v", data.Detail.Pemenang, data.Detail.TanggalKontrak, err)
 	}
 }

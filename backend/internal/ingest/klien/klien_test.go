@@ -65,6 +65,16 @@ func TestAmbil_Status403Atau429_ErrDitolakServer(t *testing.T) {
 	}
 }
 
+func TestAmbil_Status404_ErrTidakDitemukanTetapStatusTidakOK(t *testing.T) {
+	server, _ := serverUji(t, "", http.StatusNotFound)
+
+	_, err := klienUji(server, 0).Ambil(t.Context(), server.URL+"/a")
+
+	if !errors.Is(err, ErrTidakDitemukan) || !errors.Is(err, ErrStatusTidakOK) || errors.Is(err, ErrDitolakServer) {
+		t.Errorf("err = %v", err)
+	}
+}
+
 func TestAmbil_PathDilarangRobots_TidakMengirimPermintaan(t *testing.T) {
 	server, waktu := serverUji(t, "User-agent: *\nDisallow: /rahasia\n", http.StatusOK)
 
