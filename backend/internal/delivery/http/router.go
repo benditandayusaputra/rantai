@@ -56,11 +56,11 @@ func NewApp(cfg config.Server, layanan Layanan) *fiber.App {
 	daftarkanPendidikan(api, handlerPendidikan{layanan: layanan.Indikator})
 	api.Get("/sumber-data", handlerSumberData{layanan: layanan.SumberData}.baca)
 	api.Get("/sekolah/terdekat", handlerSekolahTerdekat{layanan: layanan.Sekolah}.cari)
-	daftarkanTanya(api, layanan.Tanya, cfg.Tanya)
+	daftarkanTanya(api, layanan.Tanya, cfg.Tanya, cfg.ProxyRahasia)
 	daftarkanAspirasi(api, layanan.Aspirasi)
 	api.Get("/jalur-aspirasi", handlerJalurAspirasi{layanan: layanan.Jalur}.untuk)
 	daftarkanDataBelumDibuka(api, layanan.BelumBuka)
-	daftarkanAuth(api, layanan, cfg.Auth)
+	daftarkanAuth(api, layanan, cfg.Auth, cfg.ProxyRahasia)
 	daftarkanParipurna(api, handlerParipurna{layanan: layanan.Paripurna})
 	daftarkanAksiWarga(api, layanan)
 	return app

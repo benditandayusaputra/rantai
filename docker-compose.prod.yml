@@ -12,6 +12,7 @@ services:
       - minio-data:/data
 
   api:
+    image: rantai-api:latest
     build:
       context: .
       dockerfile: backend/Dockerfile
@@ -40,13 +41,13 @@ services:
 
   caddy:
     image: caddy:2.10-alpine
+    profiles: ["caddy"]
     restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
     environment:
       API_DOMAIN: ${API_DOMAIN}
-      PROXY_RAHASIA: ${PROXY_RAHASIA}
     volumes:
       - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy-data:/data

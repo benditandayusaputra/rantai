@@ -60,18 +60,20 @@ Tes integrasi selalu memakai basis data lokal terpisah `rantai_uji` agar tidak m
 
 ## Deploy
 
-API, worker, MinIO, dan Caddy berjalan di satu server dengan `docker-compose.prod.yml`; frontend di Vercel.
+API, worker, dan MinIO berjalan di server dengan `docker-compose.prod.yml`; frontend di Vercel.
 
 ```bash
 cp .env.example .env
 docker compose -f docker-compose.prod.yml --profile alat run --rm migrate up
-docker compose -f docker-compose.prod.yml up -d --build
+docker compose -f docker-compose.prod.yml --profile caddy up -d --build
 docker compose -f docker-compose.prod.yml run --rm --entrypoint worker api <job>
 ```
 
-Isi `.env` server dengan `API_DOMAIN` (misalnya `130-162-198-219.sslip.io`, Caddy mengambil sertifikat TLS otomatis), `PROXY_RAHASIA` acak, `AUTH_RAHASIA`, kredensial MinIO, `CORS_ORIGIN` domain Vercel, serta URL Neon. Port 80 dan 443 harus terbuka. Layanan `cadangan` menyimpan `pg_dump` harian ke `cadangan/` dan menyimpan tujuh hari terakhir.
+Profile `caddy` menyalakan Caddy milik Rantai dengan TLS otomatis untuk `API_DOMAIN` (misalnya `rantai.130-162-198-219.sslip.io`). Bila server sudah punya reverse proxy bersama, lewati profile itu dan tambahkan `-f deploy/compose.proxy-bersama.yml` agar API bergabung ke jaringan proxy (`JARINGAN_PROXY`, bawaan `deploy_default`) dengan alias `rantai-api`. Layanan `cadangan` menyimpan `pg_dump` harian dari Neon ke `cadangan/` selama tujuh hari.
 
-Di Vercel, set root directory ke `frontend` dan isi `PUBLIC_API_URL=https://<domain-vercel>/api/v1`, `API_HULU=https://<API_DOMAIN>`, `PROXY_RAHASIA` yang sama dengan server, dan `PUBLIC_PETA_DASAR_URL`. Frontend meneruskan `/api/v1/*` ke API sehingga cookie sesi tetap satu situs, dan meneruskan IP pengunjung lewat header yang hanya dipercaya Caddy bila `PROXY_RAHASIA` cocok.
+Isi `.env` server dengan URL Neon, `AUTH_RAHASIA`, `PROXY_RAHASIA` acak, kredensial MinIO, dan `CORS_ORIGIN` domain Vercel. Tanpa `SMTP_HOST`, masuk dengan OTP hanya aktif bila `RANTAI_MODE=demo` (kode ditulis ke log API).
+
+Di Vercel, root directory adalah `frontend`, dengan env `PUBLIC_API_URL=https://<domain-vercel>/api/v1`, `API_HULU=https://<API_DOMAIN>`, `PROXY_RAHASIA` yang sama dengan server, dan `PUBLIC_PETA_DASAR_URL`. Frontend meneruskan `/api/v1/*` ke API sehingga cookie sesi tetap satu situs. API memakai IP pengunjung dari header `X-Klien-Asli` untuk batas laju hanya bila header `X-Rantai-Proxy` cocok dengan `PROXY_RAHASIA`.
 
 ## Progres pengerjaan
 

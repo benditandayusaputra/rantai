@@ -12,7 +12,6 @@ import (
 	"github.com/benditandayusaputra/rantai/backend/internal/domain"
 	"github.com/benditandayusaputra/rantai/backend/internal/usecase"
 	"github.com/gofiber/fiber/v3"
-	"github.com/gofiber/fiber/v3/middleware/limiter"
 )
 
 const (
@@ -59,16 +58,12 @@ type handlerAuth struct {
 	jendelaOTP time.Duration
 }
 
-func daftarkanAuth(api fiber.Router, layanan Layanan, cfg config.ServerAuth) {
+func daftarkanAuth(api fiber.Router, layanan Layanan, cfg config.ServerAuth, rahasiaProxy string) {
 	if layanan.Masuk == nil || layanan.Akses == nil {
 		return
 	}
 	h := handlerAuth{layanan: layanan.Masuk, jendelaOTP: cfg.OTP.JendelaPermintaan}
-	batas := limiter.New(limiter.Config{
-		Max:          cfg.BatasLaju.MaksPermintaan,
-		Expiration:   cfg.BatasLaju.Jendela,
-		LimitReached: func(fiber.Ctx) error { return fiber.ErrTooManyRequests },
-	})
+	batas := pembatasLaju(cfg.BatasLaju, rahasiaProxy)
 	auth := api.Group("/auth")
 	auth.Post("/otp/kirim", batas, h.kirimOTP)
 	auth.Post("/otp/verifikasi", batas, h.verifikasi)

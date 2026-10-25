@@ -1,0 +1,12 @@
+services:
+  api:
+    networks:
+      default:
+      proxy-bersama:
+        aliases:
+          - rantai-api
+
+networks:
+  proxy-bersama:
+    external: true
+    name: ${JARINGAN_PROXY:-deploy_default}

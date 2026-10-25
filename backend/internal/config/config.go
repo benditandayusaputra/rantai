@@ -37,6 +37,7 @@ type Server struct {
 	Tanya           ServerTanya   `yaml:"tanya"`
 	Auth            ServerAuth    `yaml:"auth"`
 	ProxyTepercaya  []string      `yaml:"proxy_tepercaya"`
+	ProxyRahasia    string        `yaml:"-"`
 }
 
 type ServerAuth struct {
@@ -89,6 +90,7 @@ func terapkanEnv(cfg Config) Config {
 	if proxy, ada := os.LookupEnv("PROXY_TEPERCAYA"); ada {
 		cfg.Server.ProxyTepercaya = strings.Split(proxy, ",")
 	}
+	cfg.Server.ProxyRahasia = os.Getenv("PROXY_RAHASIA")
 	cfg.DatabaseURL = os.Getenv("DATABASE_URL")
 	return cfg
 }

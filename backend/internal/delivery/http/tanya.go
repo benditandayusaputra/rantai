@@ -13,7 +13,6 @@ import (
 	"github.com/benditandayusaputra/rantai/backend/internal/domain"
 	"github.com/benditandayusaputra/rantai/backend/internal/tanya"
 	"github.com/gofiber/fiber/v3"
-	"github.com/gofiber/fiber/v3/middleware/limiter"
 )
 
 const (
@@ -60,15 +59,11 @@ type handlerTanya struct {
 	batasWaktu time.Duration
 }
 
-func daftarkanTanya(api fiber.Router, layanan LayananTanya, cfg config.ServerTanya) {
+func daftarkanTanya(api fiber.Router, layanan LayananTanya, cfg config.ServerTanya, rahasiaProxy string) {
 	if layanan == nil {
 		return
 	}
-	batas := limiter.New(limiter.Config{
-		Max:          cfg.BatasLaju.MaksPermintaan,
-		Expiration:   cfg.BatasLaju.Jendela,
-		LimitReached: func(fiber.Ctx) error { return fiber.ErrTooManyRequests },
-	})
+	batas := pembatasLaju(cfg.BatasLaju, rahasiaProxy)
 	api.Post("/tanya", batas, handlerTanya{layanan: layanan, batasWaktu: cfg.BatasWaktu}.tanya)
 }
 
