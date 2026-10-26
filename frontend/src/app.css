@@ -96,6 +96,23 @@
 			var(--cert-sim-stripe) 4px 8px
 		);
 	}
+	.latar-titik {
+		background-image: radial-gradient(var(--line-strong) 1px, transparent 1.5px);
+		background-size: 22px 22px;
+		mask-image: radial-gradient(ellipse 75% 65% at 50% 45%, black 15%, transparent 85%);
+		-webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 45%, black 15%, transparent 85%);
+		opacity: 0.55;
+	}
+	.cahaya-primer {
+		background: radial-gradient(
+			circle,
+			color-mix(in srgb, var(--primary) 16%, transparent),
+			transparent 70%
+		);
+	}
+	.cahaya-sekunder {
+		background: radial-gradient(circle, var(--secondary-hover), transparent 70%);
+	}
 	.skel {
 		background: linear-gradient(90deg, var(--skel) 0, var(--skel-hi) 40%, var(--skel) 80%);
 		background-size: 640px 100%;

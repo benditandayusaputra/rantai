@@ -2,7 +2,10 @@
 	import {
 		ArrowLeft,
 		ArrowRight,
+		Camera,
 		LoaderCircle,
+		MapPin,
+		Users,
 		Lock,
 		LogIn,
 		Send,
@@ -14,6 +17,9 @@
 	import { tangkap } from '$lib/api/klien';
 	import { kirimLaporan } from '$lib/api/laporan';
 	import ActionBar from '$lib/components/ActionBar.svelte';
+	import IlustrasiLapor from '$lib/components/IlustrasiLapor.svelte';
+	import LatarHias from '$lib/components/LatarHias.svelte';
+	import Logo from '$lib/components/Logo.svelte';
 	import StepHeader from '$lib/components/StepHeader.svelte';
 	import { pulihkanSesi, sesiAktif } from '$lib/features/akun/sesi.svelte';
 	import { aturUlangDraf, draf } from '$lib/features/lapor/draf.svelte';
@@ -43,6 +49,12 @@
 	const tautanMasuk = $derived(
 		`/${bahasaAktif}/masuk?lanjut=${encodeURIComponent(`/${bahasaAktif}/lapor`)}`
 	);
+
+	const langkahLapor = [
+		{ ikon: MapPin, teks: t('report.signIn.step.locate') },
+		{ ikon: Camera, teks: t('report.signIn.step.photo') },
+		{ ikon: Users, teks: t('report.signIn.step.witness') }
+	];
 
 	onMount(async () => {
 		await pulihkanSesi(fetch);
@@ -96,25 +108,56 @@
 		<span class="sr-only">{t('state.loading')}</span>
 	</p>
 {:else if !sesi}
-	<main id="konten" class="flex min-h-dvh items-center justify-center bg-page px-4 py-10">
-		<div class="card flex w-full max-w-form flex-col gap-4 p-6 shadow-2 md:p-8">
-			<span class="icon-tile h-14 w-14"
-				><Lock size={28} strokeWidth={1.75} aria-hidden="true" /></span
-			>
-			<h1 class="t-h1">{t('report.signIn.title')}</h1>
-			<p class="text-muted">{t('report.signIn.body')}</p>
-			<a href={tautanMasuk} class="btn btn-primary btn-lg btn-block">
-				<LogIn size={20} strokeWidth={1.75} aria-hidden="true" />
-				{t('action.signIn')}
-			</a>
-			<a href="/{bahasaAktif}" class="btn btn-text btn-block">
+	<div class="relative isolate flex min-h-dvh flex-col bg-page">
+		<LatarHias />
+		<header class="wrap flex h-16 items-center justify-between gap-4 lg:h-18">
+			<Logo />
+			<a href="/{bahasaAktif}" class="btn btn-ghost btn-sm">
 				<ArrowLeft size={18} strokeWidth={1.75} aria-hidden="true" />
-				{t('action.back')}
+				{t('nav.home')}
 			</a>
-		</div>
-	</main>
+		</header>
+		<main
+			id="konten"
+			class="wrap flex flex-1 flex-col items-center justify-center gap-6 pb-12 lg:flex-row lg:gap-14"
+		>
+			<IlustrasiLapor class="w-60 max-w-full md:w-80 lg:w-full lg:max-w-lg lg:flex-1" />
+			<div class="card w-full max-w-form p-6 shadow-3 md:p-8">
+				<p class="t-over flex items-center gap-2 text-primary">
+					<Camera size={16} strokeWidth={1.75} aria-hidden="true" />
+					{t('report.flowTitle')}
+				</p>
+				<h1 class="t-h1 mt-2">{t('report.signIn.title')}</h1>
+				<p class="mt-2 text-muted">{t('report.signIn.body')}</p>
+				<ol class="mt-5 flex flex-col gap-3">
+					{#each langkahLapor as item, i (item.teks)}
+						{@const Ikon = item.ikon}
+						<li class="flex items-center gap-3 text-small font-semibold">
+							<span class="icon-tile relative h-10 w-10">
+								<Ikon size={18} strokeWidth={1.75} aria-hidden="true" />
+								<span
+									class="num absolute -right-1.5 -top-1.5 inline-flex h-5 w-5 items-center justify-center rounded-pill bg-primary text-caption text-primary-on"
+									aria-hidden="true">{i + 1}</span
+								>
+							</span>
+							{item.teks}
+						</li>
+					{/each}
+				</ol>
+				<a href={tautanMasuk} class="btn btn-primary btn-lg btn-block mt-6">
+					<LogIn size={20} strokeWidth={1.75} aria-hidden="true" />
+					{t('action.signIn')}
+				</a>
+				<p class="mt-5 flex items-start gap-2 border-t border-line pt-4 text-caption text-muted">
+					<Lock size={16} strokeWidth={1.75} aria-hidden="true" class="shrink-0" />
+					{t('auth.privacy')}
+				</p>
+			</div>
+		</main>
+	</div>
 {:else}
-	<div class="flex min-h-dvh flex-col bg-page">
+	<div class="relative isolate flex min-h-dvh flex-col bg-page">
+		<LatarHias class="max-md:hidden" />
 		<StepHeader
 			step={langkah}
 			total={totalLangkah}

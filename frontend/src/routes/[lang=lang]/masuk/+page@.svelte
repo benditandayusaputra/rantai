@@ -19,6 +19,7 @@
 	import { tangkap, type GalatAPI } from '$lib/api/klien';
 	import Logo from '$lib/components/Logo.svelte';
 	import IlustrasiMasuk from '$lib/components/IlustrasiMasuk.svelte';
+	import LatarHias from '$lib/components/LatarHias.svelte';
 	import OtpInput from '$lib/components/OtpInput.svelte';
 	import {
 		detikKirimUlang,
@@ -112,9 +113,10 @@
 
 <div class="min-h-dvh bg-page lg:grid lg:grid-cols-[1.05fr_1fr]">
 	<aside
-		class="relative hidden flex-col justify-between gap-10 overflow-hidden border-r border-line bg-surface p-10 lg:flex xl:p-14"
+		class="relative isolate hidden flex-col justify-between gap-10 overflow-hidden border-r border-line bg-surface p-10 lg:flex xl:p-14"
 	>
-		<Logo />
+		<LatarHias />
+		<Logo ukuran="besar" />
 		<div class="flex flex-col gap-8">
 			<IlustrasiMasuk class="mx-auto w-full max-w-md" />
 			<div>
@@ -136,7 +138,8 @@
 		<p class="text-small text-muted">{t('footer.independent')}</p>
 	</aside>
 
-	<div class="flex min-h-dvh flex-col">
+	<div class="relative isolate flex min-h-dvh flex-col">
+		<LatarHias class="lg:opacity-60" />
 		<header class="wrap flex h-16 items-center justify-between gap-4 lg:h-18">
 			<span class="lg:invisible"><Logo /></span>
 			<a href="/{bahasaAktif}" class="btn btn-ghost btn-sm">
@@ -151,7 +154,7 @@
 			class="wrap flex flex-1 flex-col items-center justify-center pb-16 outline-none"
 		>
 			<IlustrasiMasuk class="mb-2 w-56 max-w-full md:w-64 lg:hidden" />
-			<div class="card w-full max-w-form p-6 shadow-2 md:p-8">
+			<div class="card w-full max-w-form p-6 shadow-3 md:p-8">
 				{#if tahap === 'email'}
 					<span class="icon-tile"><Mail size={20} strokeWidth={1.75} aria-hidden="true" /></span>
 					<h1 class="t-h1 mt-4">{t('auth.title')}</h1>
