@@ -733,6 +733,8 @@
 	"check.distance": "{jarak} in a straight line",
 	"check.loading": "Counting schools within a {km} km radius...",
 	"check.failed": "Nearby school data could not be loaded.",
+	"check.filter": "Search school names in this list",
+	"check.filterEmpty": "No school named \"{q}\" in this list.",
 	"watch.lead": "The latest updates from the districts you watch: new packages, verified citizen reports, and updated data.",
 	"watch.unread": "{n} unread updates",
 	"watch.ev.indicator": "Indicator data updated",

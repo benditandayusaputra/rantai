@@ -733,6 +733,8 @@
 	"check.distance": "{jarak} garis lurus",
 	"check.loading": "Menghitung sekolah dalam radius {km} km...",
 	"check.failed": "Data sekolah sekitar gagal dimuat.",
+	"check.filter": "Cari nama sekolah di daftar ini",
+	"check.filterEmpty": "Tidak ada sekolah bernama \"{q}\" di daftar ini.",
 	"watch.lead": "Kabar terbaru dari kecamatan yang kamu pantau: paket baru, laporan warga terverifikasi, dan data yang diperbarui.",
 	"watch.unread": "{n} kabar belum dibaca",
 	"watch.ev.indicator": "Data indikator diperbarui",

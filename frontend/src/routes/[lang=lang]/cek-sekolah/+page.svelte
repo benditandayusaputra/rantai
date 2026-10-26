@@ -3,7 +3,7 @@
 	import { untrack } from 'svelte';
 	import { page } from '$app/state';
 	import { ambilDetailWilayah, ambilSekolahTerdekat, cariWilayah, tangkap } from '$lib/api/klien';
-	import type { SekitarTitik, Titik, WilayahDitemukan } from '$lib/api/tipe';
+	import type { SekitarTitik, SekolahTerdekat, Titik, WilayahDitemukan } from '$lib/api/tipe';
 	import ChoiceChips from '$lib/components/ChoiceChips.svelte';
 	import EmptyState from '$lib/components/EmptyState.svelte';
 	import ErrorState from '$lib/components/ErrorState.svelte';
@@ -40,7 +40,21 @@
 	const radiusM = $derived(radiusCekSekolahM[jenjang]);
 	const km = $derived(radiusKm(radiusM));
 	const rasio = $derived(sekitar?.tekanan_radius.rasio ?? null);
-	const alternatif = $derived(sekitar ? [...sekitar.spmb_bersama, ...sekitar.madrasah] : []);
+	let saring = $state('');
+	const kunciSaring = $derived(saring.trim().toLocaleLowerCase());
+	const cocok = (s: SekolahTerdekat) => s.nama.toLocaleLowerCase().includes(kunciSaring);
+	const negeri = $derived(
+		sekitar
+			? terdekatDulu(sekitar.negeri, batasDaftarNegeri)
+					.map((sekolah, i) => ({ sekolah, urutan: i + 1 }))
+					.filter(({ sekolah }) => cocok(sekolah))
+			: []
+	);
+	const alternatif = $derived(
+		sekitar
+			? terdekatDulu([...sekitar.spmb_bersama, ...sekitar.madrasah], Infinity).filter(cocok)
+			: []
+	);
 
 	async function muat(label: string, titik: Titik) {
 		pusat = { label, titik };
@@ -127,9 +141,9 @@
 	{:else if status === 'gagal' || !sekitar}
 		<ErrorState title={t('check.failed')} />
 	{:else}
-		<div class="grid gap-8 lg:grid-cols-12" aria-live="polite">
-			<section class="flex flex-col gap-4 lg:col-span-7" aria-labelledby="judul-tekanan">
-				<div class="card flex flex-col gap-4 p-5 md:p-6 lg:sticky lg:top-24">
+		<div class="flex flex-col gap-8" aria-live="polite">
+			<section aria-labelledby="judul-tekanan">
+				<div class="card flex flex-col gap-4 p-5 md:p-6">
 					<p class="t-over flex items-center gap-2">
 						<MapPin size={14} strokeWidth={2} aria-hidden="true" />{pusat?.label}
 					</p>
@@ -159,36 +173,51 @@
 					{/if}
 				</div>
 			</section>
-			<div class="flex flex-col gap-8 lg:col-span-5">
+			<label
+				class="flex h-12 items-center gap-3 rounded-md border-ctrl border-line-strong bg-raised px-4 transition-colors duration-fast ease-standard focus-within:border-focus focus-within:shadow-ring hover:border-fg md:max-w-md"
+			>
+				<span class="sr-only">{t('check.filter')}</span>
+				<Search size={20} strokeWidth={1.75} aria-hidden="true" class="shrink-0 text-muted" />
+				<input
+					type="search"
+					bind:value={saring}
+					placeholder={t('check.filter')}
+					class="h-full w-full bg-transparent text-body outline-none placeholder:text-muted focus-visible:shadow-none"
+				/>
+			</label>
+			{#if kunciSaring && !negeri.length && !alternatif.length}
+				<EmptyState title={t('check.filterEmpty', { q: saring.trim() })} />
+			{/if}
+			{#if !sekitar.negeri.length || negeri.length}
 				<section class="flex flex-col gap-3" aria-labelledby="judul-negeri">
 					<h2 id="judul-negeri" class="flex items-center gap-2 text-h3 font-bold">
 						<School size={20} strokeWidth={1.75} aria-hidden="true" class="text-muted" />
 						{t(teks.cekTerdekat)}
 					</h2>
-					{#if sekitar.negeri.length}
-						<ol class="flex flex-col gap-2">
-							{#each terdekatDulu(sekitar.negeri, batasDaftarNegeri) as sekolah, i (sekolah.npsn)}
-								<KartuSekolah {sekolah} urutan={i + 1} tema={jenjang} />
+					{#if negeri.length}
+						<ol class="grid gap-3 md:grid-cols-2">
+							{#each negeri as { sekolah, urutan } (sekolah.npsn)}
+								<KartuSekolah {sekolah} {urutan} tema={jenjang} />
 							{/each}
 						</ol>
 					{:else}
 						<EmptyState title={t(teks.cekKosong, { km })} />
 					{/if}
 				</section>
-				{#if alternatif.length}
-					<section class="flex flex-col gap-3" aria-labelledby="judul-alternatif">
-						<h2 id="judul-alternatif" class="flex items-center gap-2 text-h3 font-bold">
-							<Sparkles size={20} strokeWidth={1.75} aria-hidden="true" class="text-muted" />
-							{t('check.alternatives')}
-						</h2>
-						<ul class="flex flex-col gap-2">
-							{#each terdekatDulu(alternatif, alternatif.length) as sekolah (sekolah.npsn)}
-								<KartuSekolah {sekolah} tema={jenjang} />
-							{/each}
-						</ul>
-					</section>
-				{/if}
-			</div>
+			{/if}
+			{#if alternatif.length}
+				<section class="flex flex-col gap-3" aria-labelledby="judul-alternatif">
+					<h2 id="judul-alternatif" class="flex items-center gap-2 text-h3 font-bold">
+						<Sparkles size={20} strokeWidth={1.75} aria-hidden="true" class="text-muted" />
+						{t('check.alternatives')}
+					</h2>
+					<ul class="grid gap-3 md:grid-cols-2">
+						{#each alternatif as sekolah (sekolah.npsn)}
+							<KartuSekolah {sekolah} tema={jenjang} />
+						{/each}
+					</ul>
+				</section>
+			{/if}
 		</div>
 	{/if}
 </div>
