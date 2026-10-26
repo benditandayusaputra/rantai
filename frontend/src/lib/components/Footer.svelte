@@ -13,6 +13,7 @@
 			<Logo />
 			<p class="text-small text-muted">{t('footer.tagline')}</p>
 			<p class="text-small font-semibold">{t('footer.independent')}</p>
+			<p class="text-small text-muted">{t('footer.schedule')}</p>
 			<button type="button" class="btn btn-outline btn-sm self-start" onclick={mulaiTur}>
 				<Compass size={16} strokeWidth={1.75} aria-hidden="true" />
 				{t('tour.replay')}

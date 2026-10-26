@@ -167,7 +167,7 @@ Fungsi SQL `hierarki_wilayah(kode)` mengembalikan leluhur sebuah wilayah sebagai
 
 ## 3. Pipeline data
 
-Worker Go (`cmd/worker <job>`) menjalankan job. Setiap job: ambil, simpan mentah ke `data/raw/<job>/<tanggal>/`, normalisasi, cocokkan, tulis bersama `provenance`, catat `ingest_run`. Menjalankan job dua kali tidak menggandakan data.
+Worker Go (`cmd/worker <job>`) menjalankan job. Di produksi, layanan `penjadwal` menjalankan `worker jadwal`: setiap hari pukul 02.00 WIB ia menjalankan berurutan `lpse_daftar`, `lpse_detail`, `sirup`, `umpan_dprd`, `umpan_media`, `ringkas_umpan`, lalu `turunan`; job yang gagal dicatat di log dan `ingest_run`, job berikutnya tetap jalan. Setiap job: ambil, simpan mentah ke `data/raw/<job>/<tanggal>/`, normalisasi, cocokkan, tulis bersama `provenance`, catat `ingest_run`. Menjalankan job dua kali tidak menggandakan data.
 
 | Job | Jadwal | Isi |
 | --- | --- | --- |
@@ -177,14 +177,14 @@ Worker Go (`cmd/worker <job>`) menjalankan job. Setiap job: ambil, simpan mentah
 | `daya_tampung` | tahunan, manual | Impor CSV hasil ekstraksi Kepkadis 258/2026 (SMP, SMA, SMK negeri) dan SPMB Bersama (GD-04, GD-05, GD-17, GD-18) |
 | `calon_lulusan` | per semester | Siswa kelas 6 SD dan kelas 9 SMP per kecamatan (GD-12) |
 | `indikator` | setelah `calon_lulusan` dan `daya_tampung` | Penghitung indikator setiap tema aktif ke `indikator_kecamatan` |
-| `lpse_daftar` | harian 02.00 WIB | Daftar paket tender dan non-tender tahun berjalan dan sebelumnya |
-| `lpse_detail` | harian, setelah daftar | Detail paket baru dan paket yang tahapnya berubah; pemenang (GD-02) |
-| `sirup` | mingguan | Detail RUP untuk kode RUP yang ditemukan di paket |
+| `lpse_daftar` | harian 02.00 WIB | Daftar paket tender dan non-tender tahun berjalan dan sebelumnya; selalu dibaca penuh karena SPSE tidak punya filter perubahan dan perubahan tahap hanya terlihat dari daftar |
+| `lpse_detail` | harian, setelah daftar | Delta: hanya paket baru dan paket yang tahapnya berubah sejak detail terakhir diambil; pemenang (GD-02) |
+| `sirup` | harian, setelah detail | Delta: hanya kode RUP dari paket yang belum pernah diambil dari SiRUP |
 | `opentender` | sekali | Riwayat 2014 sampai 2023 untuk pembeli Pemprov DKI |
 | `kpu_dprd` | sekali per periode | Dapil per kecamatan dari `config/dprd.yaml` (PKPU 6/2023), anggota, fraksi, komisi, alat kelengkapan dari situs DPRD DKI (GD-07, GD-08) |
-| `umpan_dprd` | harian | Berita situs DPRD DKI yang menyebut anggota (GD-13) |
-| `umpan_media` | harian | Liputan media terverifikasi per anggota (GD-14) |
-| `ringkas_umpan` | setelah job umpan | Ringkasan netral satu kalimat untuk item umpan baru |
+| `umpan_dprd` | harian | Delta: berita situs DPRD DKI sejak waktu terbit terakhir yang tersimpan, yang menyebut anggota (GD-13) |
+| `umpan_media` | harian | Delta: liputan media terverifikasi sejak waktu terbit terakhir yang tersimpan, per anggota (GD-14) |
+| `ringkas_umpan` | harian, setelah job umpan | Ringkasan netral satu kalimat untuk item umpan yang belum diringkas |
 | `paripurna` | per masa sidang, manual | Impor CSV kurasi sikap fraksi dan aspirasi reses (GD-15) |
 | `turunan` | setelah job sumber | Kategori dan tema paket, penentuan lokasi, indikator tema, sinyal, kejadian notifikasi |
 

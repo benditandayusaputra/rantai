@@ -67,7 +67,7 @@ func main() {
 
 func jalankan(argumen []string) error {
 	if !isArgumenSah(argumen) {
-		return errors.New("pemakaian: worker <job> atau worker peran <email> moderator|admin; job tersedia: " + strings.Join(jobTersedia, ", "))
+		return errors.New("pemakaian: worker <job>, worker jadwal, atau worker peran <email> moderator|admin; job tersedia: " + strings.Join(jobTersedia, ", "))
 	}
 	if err := usecase.IzinkanJob(os.Getenv("RANTAI_MODE"), argumen[0]); err != nil {
 		return err
@@ -91,11 +91,15 @@ func isArgumenSah(argumen []string) bool {
 }
 
 func pilihPerintah(argumen []string, pool *pgxpool.Pool) (job, error) {
-	if argumen[0] != perintahPeran {
+	switch argumen[0] {
+	case perintahJadwal:
+		return buatJadwalHarian(pool), nil
+	case perintahPeran:
+		beri := usecase.BeriPeran{Penyimpan: repository.PenggunaRepository{DB: pool}}
+		return func(ctx context.Context) error { return beri.Jalankan(ctx, argumen[1], domain.Peran(argumen[2])) }, nil
+	default:
 		return pilihJob(argumen[0], pool)
 	}
-	beri := usecase.BeriPeran{Penyimpan: repository.PenggunaRepository{DB: pool}}
-	return func(ctx context.Context) error { return beri.Jalankan(ctx, argumen[1], domain.Peran(argumen[2])) }, nil
 }
 
 func pilihJob(nama string, pool *pgxpool.Pool) (job, error) {

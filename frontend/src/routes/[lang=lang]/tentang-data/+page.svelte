@@ -102,6 +102,7 @@
 	<div class="flex min-w-0 flex-col gap-12">
 		<section id="sumber" aria-labelledby="judul-sumber" class={kelasBagian}>
 			{@render judulBagian('sumber', 'about.sources')}
+			<p class="max-w-prose text-muted">{t('about.schedule')}</p>
 			{#await data.sumber}
 				<div class="skel h-48 rounded-lg" aria-busy="true"></div>
 			{:then hasil}

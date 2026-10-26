@@ -33,6 +33,18 @@ services:
       minio:
         condition: service_healthy
 
+  penjadwal:
+    image: rantai-api:latest
+    restart: unless-stopped
+    env_file: .env
+    entrypoint: ["worker"]
+    command: ["jadwal"]
+    environment:
+      RANTAI_MODE: live
+      RANTAI_DATA_RAW: /app/data/raw
+    volumes:
+      - ./data/raw:/app/data/raw
+
   migrate:
     build:
       context: ./backend/migrations
