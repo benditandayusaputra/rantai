@@ -862,6 +862,8 @@
 	"dash.title": "Dasbor tren data Jakarta",
 	"dash.lead": "Lihat arah data dari tahun ke tahun dan bulan ke bulan: kursi sekolah, belanja pengadaan, dan jejak kerja pengawas. Setiap angka bisa ditelusuri ke sumbernya.",
 	"dash.lensNav": "Lensa dasbor",
+	"dash.trend.title": "Tren per tahun",
+	"dash.trend.lead": "Arah paket pengadaan dan kerja DPRD dari tahun ke tahun di seluruh Jakarta. Tahun berjalan masih bertambah.",
 	"dash.services.q": "Seberapa cukup kursi SMP negeri untuk calon lulusan SD di seluruh Jakarta?",
 	"dash.money.q": "Berapa banyak paket pengadaan, berapa nilainya, kapan diumumkan, dan ke wilayah mana mengalir?",
 	"dash.accountability.q": "Seberapa sering kerja DPRD tercatat, isu apa yang disuarakan, dan instansi mana yang memegang anggaran?",

@@ -9,11 +9,13 @@ import {
 	namaWilayahPendek,
 	batasRapi,
 	rataPerBulanTercatat,
+	susunGaris,
 	susunPeta,
 	tanpaNilai,
 	tautanLensa,
 	tautanTahun,
 	tingkatKuantil,
+	ukuranGaris,
 	ukuranPeta,
 	type FiturWilayah
 } from './dasbor';
@@ -125,5 +127,28 @@ describe('teks dasbor', () => {
 		expect(namaWilayahPendek('Kota Administrasi Jakarta Pusat')).toBe('Jakarta Pusat');
 		expect(namaWilayahPendek('Kabupaten Administrasi Kepulauan Seribu')).toBe('Kepulauan Seribu');
 		expect(namaWilayahPendek('DKI Jakarta')).toBe('DKI Jakarta');
+	});
+});
+
+describe('susunGaris', () => {
+	const { lebar, tinggi, kiri, kanan, bawah } = ukuranGaris;
+
+	it('membentang dari tepi kiri ke tepi kanan area grafik', () => {
+		const titik = susunGaris([10, 20, 30]);
+		expect(titik.map((p) => p.x)).toEqual([kiri, lebar / 2, lebar - kanan]);
+	});
+
+	it('menaruh nilai nol di garis dasar dan nilai lebih besar lebih tinggi', () => {
+		const [nol, kecil, besar] = susunGaris([0, 5, 10]).map((p) => p.y);
+		expect(nol).toBe(tinggi - bawah);
+		expect(besar).toBeLessThan(kecil ?? 0);
+	});
+
+	it('menaruh satu titik di tengah', () => {
+		expect(susunGaris([7])[0]?.x).toBe(lebar / 2);
+	});
+
+	it('mengembalikan daftar kosong tanpa nilai', () => {
+		expect(susunGaris([])).toEqual([]);
 	});
 });

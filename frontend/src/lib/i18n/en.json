@@ -862,6 +862,8 @@
 	"dash.title": "Jakarta data trends dashboard",
 	"dash.lead": "Follow the data year by year and month by month: school seats, procurement spending, and the oversight record. Every number traces back to its source.",
 	"dash.lensNav": "Dashboard lenses",
+	"dash.trend.title": "Year-by-year trend",
+	"dash.trend.lead": "How procurement packages and council work move from year to year across Jakarta. The current year is still growing.",
 	"dash.services.q": "How well do public junior high seats cover primary school graduates across Jakarta?",
 	"dash.money.q": "How many procurement packages are there, what are they worth, when were they announced, and where does the money go?",
 	"dash.accountability.q": "How often is council work recorded, which issues are raised, and which agencies hold the budget?",

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { CalendarDays, ChartColumn, Info, Landmark, Megaphone, Tags } from '@lucide/svelte';
+	import { CalendarDays, Info, Landmark, Megaphone, Tags } from '@lucide/svelte';
 	import type { DasborTanggungJawab, Porsi, Seri } from '$lib/api/tipe';
 	import KeyNumberCard from '$lib/components/KeyNumberCard.svelte';
 	import { formatAngka, formatBulan, formatRupiah } from '$lib/format';
@@ -67,44 +67,23 @@
 		{/each}
 	</div>
 
-	<div class="grid gap-6 lg:grid-cols-12">
-		<KartuGrafik
-			class="lg:col-span-8"
-			judul={t('dash.acc.monthly.title', { tahun })}
-			keterangan={t('dash.acc.monthly.lead')}
-			ikon={CalendarDays}
-			angka={angkaDari(dasbor.kegiatan_bulanan, kegiatanIni, 'kegiatan')}
-			kolom={[t('dash.col.period'), t('dash.col.count')]}
-			baris={kegiatanIni > 0
-				? barisJumlah(dasbor.kegiatan_bulanan.isi, (p) => formatBulan(p.kunci, bahasaAktif))
-				: []}
-		>
-			<GrafikKolom
-				isi={dasbor.kegiatan_bulanan.isi}
-				nilaiDari={jumlahDari}
-				format={bilangan}
-				labelDari={(p) => formatBulan(p.kunci, bahasaAktif)}
-			/>
-		</KartuGrafik>
-
-		<KartuGrafik
-			class="lg:col-span-4"
-			judul={t('dash.acc.yearly.title')}
-			keterangan={t('dash.acc.yearly.lead')}
-			ikon={ChartColumn}
-			angka={angkaDari(dasbor.kegiatan_tahunan, total(dasbor.kegiatan_tahunan), 'kegiatan')}
-			kolom={[t('dash.col.period'), t('dash.col.count')]}
-			baris={barisJumlah(dasbor.kegiatan_tahunan.isi, (p) => p.kunci)}
-		>
-			<GrafikKolom
-				isi={dasbor.kegiatan_tahunan.isi}
-				nilaiDari={jumlahDari}
-				format={bilangan}
-				labelDari={(p) => p.kunci}
-				sorot={String(tahun)}
-			/>
-		</KartuGrafik>
-	</div>
+	<KartuGrafik
+		judul={t('dash.acc.monthly.title', { tahun })}
+		keterangan={t('dash.acc.monthly.lead')}
+		ikon={CalendarDays}
+		angka={angkaDari(dasbor.kegiatan_bulanan, kegiatanIni, 'kegiatan')}
+		kolom={[t('dash.col.period'), t('dash.col.count')]}
+		baris={kegiatanIni > 0
+			? barisJumlah(dasbor.kegiatan_bulanan.isi, (p) => formatBulan(p.kunci, bahasaAktif))
+			: []}
+	>
+		<GrafikKolom
+			isi={dasbor.kegiatan_bulanan.isi}
+			nilaiDari={jumlahDari}
+			format={bilangan}
+			labelDari={(p) => formatBulan(p.kunci, bahasaAktif)}
+		/>
+	</KartuGrafik>
 
 	<div class="grid gap-6 lg:grid-cols-2">
 		{#each grafikIsu as grafik (grafik.judul)}

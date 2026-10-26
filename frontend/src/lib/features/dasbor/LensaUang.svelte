@@ -3,8 +3,6 @@
 		Building2,
 		CalendarDays,
 		ChartBarBig,
-		ChartColumn,
-		HandCoins,
 		Info,
 		Map as IkonPeta,
 		Scale
@@ -81,24 +79,6 @@
 		};
 	}
 
-	const grafikTahunan = [
-		{
-			judul: t('dash.money.yearly.count'),
-			nilai: jumlahDari,
-			format: bilangan,
-			satuan: 'paket',
-			ikon: ChartColumn,
-			rincian: (p: Porsi) => rupiah(p.nilai)
-		},
-		{
-			judul: t('dash.money.yearly.value'),
-			nilai: nilaiDari,
-			format: rupiah,
-			satuan: 'rupiah',
-			ikon: HandCoins,
-			rincian: paket
-		}
-	];
 	const pilihanUkuran: { kunci: Ukuran; label: string }[] = [
 		{ kunci: 'jumlah', label: t('dash.measure.count') },
 		{ kunci: 'nilai', label: t('dash.measure.value') }
@@ -138,28 +118,6 @@
 			{#if kartu.angka}
 				<KeyNumberCard label={kartu.label} angka={kartu.angka} catatan={kartu.catatan} />
 			{/if}
-		{/each}
-	</div>
-
-	<div class="grid gap-6 lg:grid-cols-2">
-		{#each grafikTahunan as grafik (grafik.judul)}
-			<KartuGrafik
-				judul={grafik.judul}
-				keterangan={t('dash.money.yearly.lead')}
-				ikon={grafik.ikon}
-				angka={tahunIni ? angka(grafik.nilai(tahunIni), grafik.satuan) : null}
-				kolom={kolomPorsi(t('dash.col.period'))}
-				baris={barisPorsi(dasbor.tahunan.isi, (p) => p.kunci)}
-			>
-				<GrafikKolom
-					isi={dasbor.tahunan.isi}
-					nilaiDari={grafik.nilai}
-					format={grafik.format}
-					labelDari={(p) => p.kunci}
-					rincian={grafik.rincian}
-					sorot={String(tahun)}
-				/>
-			</KartuGrafik>
 		{/each}
 	</div>
 

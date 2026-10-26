@@ -75,6 +75,19 @@ export async function muatDasbor(
 	return { lensa, dasbor, peta: petaTema };
 }
 
+export interface TrenTahunan {
+	paket: Seri;
+	kegiatan: Seri;
+}
+
+export async function muatTrenTahunan(fetchFn: Fetch): Promise<TrenTahunan> {
+	const [uang, tanggungJawab] = await Promise.all([
+		ambilDasborUang(fetchFn),
+		ambilDasborTanggungJawab(fetchFn)
+	]);
+	return { paket: uang.tahunan, kegiatan: tanggungJawab.kegiatan_tahunan };
+}
+
 export function angkaDari(
 	rujukan: Pick<Seri, 'label' | 'provenance_id'>,
 	nilai: number,
@@ -133,6 +146,31 @@ export function batasRapi(maksimum: number): number {
 
 export function persenDari(nilai: number, maksimum: number): number {
 	return maksimum > 0 ? Math.min(persenPenuh, (nilai / maksimum) * persenPenuh) : 0;
+}
+
+export const ukuranGaris = {
+	lebar: 360,
+	tinggi: 200,
+	kiri: 36,
+	kanan: 36,
+	atas: 36,
+	bawah: 36
+};
+
+export interface TitikGaris {
+	x: number;
+	y: number;
+}
+
+export function susunGaris(nilai: number[]): TitikGaris[] {
+	const { lebar, tinggi, kiri, kanan, atas, bawah } = ukuranGaris;
+	const maksimum = batasRapi(Math.max(0, ...nilai));
+	const jarak = nilai.length > 1 ? (lebar - kiri - kanan) / (nilai.length - 1) : 0;
+	const tinggiArea = tinggi - atas - bawah;
+	return nilai.map((n, i) => ({
+		x: nilai.length > 1 ? kiri + i * jarak : lebar / 2,
+		y: tinggi - bawah - (persenDari(n, maksimum) / persenPenuh) * tinggiArea
+	}));
 }
 
 export function ambangKuantil(nilai: number[], jumlahKelas: number): number[] {

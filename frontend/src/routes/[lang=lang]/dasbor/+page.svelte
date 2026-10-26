@@ -1,5 +1,14 @@
 <script lang="ts">
-	import { ChartNoAxesCombined, GraduationCap, Landmark, Wallet } from '@lucide/svelte';
+	import {
+		CalendarRange,
+		ChartColumn,
+		ChartNoAxesCombined,
+		GraduationCap,
+		HandCoins,
+		Landmark,
+		TrendingUp,
+		Wallet
+	} from '@lucide/svelte';
 	import { invalidateAll } from '$app/navigation';
 	import { navigating, page } from '$app/state';
 	import ChoiceChips from '$lib/components/ChoiceChips.svelte';
@@ -7,7 +16,10 @@
 	import LensaLayanan from '$lib/features/dasbor/LensaLayanan.svelte';
 	import LensaTanggungJawab from '$lib/features/dasbor/LensaTanggungJawab.svelte';
 	import LensaUang from '$lib/features/dasbor/LensaUang.svelte';
+	import GrafikGaris from '$lib/features/dasbor/GrafikGaris.svelte';
+	import KartuGrafik from '$lib/features/dasbor/KartuGrafik.svelte';
 	import {
+		angkaDari,
 		daftarLensa,
 		tahunTersedia,
 		tautanLensa,
@@ -15,7 +27,9 @@
 		type Lensa
 	} from '$lib/features/dasbor/dasbor';
 	import { pilihanJenjang, teksJenjang } from '$lib/features/pendidikan/jenjang';
-	import { t, type KunciPesan } from '$lib/i18n';
+	import type { Porsi, Seri } from '$lib/api/tipe';
+	import { formatAngka, formatRupiah } from '$lib/format';
+	import { bahasaAktif, t, type KunciPesan } from '$lib/i18n';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
@@ -33,6 +47,50 @@
 	const hasil = $derived(data.hasil);
 	const pilihanTahun = $derived(hasil.ok ? tahunTersedia(hasil.data) : null);
 	const IkonLensa = $derived(infoLensa[data.lensa].ikon);
+	const bilangan = (n: number) => formatAngka(n, bahasaAktif);
+	const rupiah = (n: number) => formatRupiah(n, bahasaAktif);
+	const jumlahDari = (p: Porsi) => p.jumlah;
+	const nilaiDari = (p: Porsi) => p.nilai;
+
+	const grafikTren = $derived(
+		data.tren.ok
+			? [
+					{
+						judul: t('dash.money.yearly.count'),
+						keterangan: t('dash.money.yearly.lead'),
+						ikon: ChartColumn,
+						seri: data.tren.data.paket,
+						nilai: jumlahDari,
+						format: bilangan,
+						satuan: 'paket'
+					},
+					{
+						judul: t('dash.money.yearly.value'),
+						keterangan: t('dash.money.yearly.lead'),
+						ikon: HandCoins,
+						seri: data.tren.data.paket,
+						nilai: nilaiDari,
+						format: rupiah,
+						satuan: 'rupiah'
+					},
+					{
+						judul: t('dash.acc.yearly.title'),
+						keterangan: t('dash.acc.yearly.lead'),
+						ikon: CalendarRange,
+						seri: data.tren.data.kegiatan,
+						nilai: jumlahDari,
+						format: bilangan,
+						satuan: 'kegiatan'
+					}
+				]
+			: []
+	);
+
+	function angkaTerbaru(seri: Seri, nilai: (p: Porsi) => number, satuan: string) {
+		const terakhir = seri.isi.at(-1);
+		return terakhir ? angkaDari(seri, nilai(terakhir), satuan) : null;
+	}
+
 	const tanyaLensa = $derived(
 		data.lensa === 'layanan' ? teksJenjang[data.jenjang].dasborTanya : infoLensa[data.lensa].tanya
 	);
@@ -53,7 +111,35 @@
 				<p class="t-lead mt-2 max-w-prose">{t('dash.lead')}</p>
 			</div>
 		</div>
-		<nav aria-label={t('dash.lensNav')} class="mt-4">
+		{#if grafikTren.length > 0}
+			<section aria-labelledby="judul-tren" class="mt-8">
+				<div class="flex items-center gap-3">
+					<TrendingUp size={22} strokeWidth={1.75} aria-hidden="true" class="text-primary" />
+					<h2 id="judul-tren" class="t-h2">{t('dash.trend.title')}</h2>
+				</div>
+				<p class="mt-1 max-w-prose text-small text-muted">{t('dash.trend.lead')}</p>
+				<div class="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+					{#each grafikTren as grafik (grafik.judul)}
+						<KartuGrafik
+							judul={grafik.judul}
+							keterangan={grafik.keterangan}
+							ikon={grafik.ikon}
+							angka={angkaTerbaru(grafik.seri, grafik.nilai, grafik.satuan)}
+							kolom={[t('dash.col.period'), grafik.judul]}
+							baris={grafik.seri.isi.map((p) => [p.kunci, grafik.format(grafik.nilai(p))])}
+						>
+							<GrafikGaris
+								isi={grafik.seri.isi}
+								nilaiDari={grafik.nilai}
+								format={grafik.format}
+								labelDari={(p) => p.kunci}
+							/>
+						</KartuGrafik>
+					{/each}
+				</div>
+			</section>
+		{/if}
+		<nav aria-label={t('dash.lensNav')} class="mt-8">
 			<ul class="grid grid-cols-3 md:flex md:gap-2">
 				{#each daftarLensa as lensa (lensa)}
 					{@const Ikon = infoLensa[lensa].ikon}
