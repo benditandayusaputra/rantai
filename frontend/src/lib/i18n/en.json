@@ -235,6 +235,8 @@
 	"evidence.title": "Citizen evidence",
 	"evidence.blurNote": "Faces and licence plates are blurred automatically. Photos become public after 3 witnesses.",
 	"map.layers": "Map layers",
+	"map.fullscreen": "Full screen",
+	"map.fullscreen.exit": "Exit full screen",
 	"map.layer.gap": "Seat gap",
 	"map.layer.projects": "Projects",
 	"map.layer.reports": "Citizen reports",

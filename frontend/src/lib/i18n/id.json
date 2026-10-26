@@ -235,6 +235,8 @@
 	"evidence.title": "Bukti warga",
 	"evidence.blurNote": "Wajah dan pelat nomor diburamkan otomatis. Foto tampil publik setelah 3 saksi.",
 	"map.layers": "Lapisan peta",
+	"map.fullscreen": "Layar penuh",
+	"map.fullscreen.exit": "Keluar layar penuh",
 	"map.layer.gap": "Kesenjangan kursi",
 	"map.layer.projects": "Proyek",
 	"map.layer.reports": "Laporan warga",

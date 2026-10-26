@@ -333,6 +333,12 @@
 		peta?.setFilter('tema-pilih', ['==', ['get', 'kode'], terpilih ?? '']);
 	});
 
+	$effect(() => {
+		if (!peta) return;
+		if (isKooperatif) peta.cooperativeGestures.enable();
+		else peta.cooperativeGestures.disable();
+	});
+
 	export function sesuaikanUkuran() {
 		peta?.resize();
 	}

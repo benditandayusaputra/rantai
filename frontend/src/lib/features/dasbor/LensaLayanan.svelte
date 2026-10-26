@@ -6,10 +6,14 @@
 		Map as IkonPeta,
 		Users
 	} from '@lucide/svelte';
+	import { goto } from '$app/navigation';
 	import type { DasborLayanan, PetaTema, RekapKursi } from '$lib/api/tipe';
 	import KeyNumberCard from '$lib/components/KeyNumberCard.svelte';
 	import { kunciKelas, tampilkanAngka } from '$lib/features/kecamatan/kecamatan';
 	import { formatAngka } from '$lib/format';
+	import PetaBerlapis from '$lib/features/peta/PetaBerlapis.svelte';
+	import { petaDasarBawaan } from '$lib/features/peta/gaya';
+	import { bacaLapisan } from '$lib/features/peta/lapisan';
 	import {
 		teksJenjang,
 		temaPendidikanBawaan,
@@ -19,18 +23,15 @@
 	import BatangKelas from './BatangKelas.svelte';
 	import BatangPasangan from './BatangPasangan.svelte';
 	import KartuGrafik from './KartuGrafik.svelte';
-	import PetaWilayah from './PetaWilayah.svelte';
 	import {
 		angkaDari,
 		hitungKelas,
-		isiKelasPeta,
 		kelasCukup,
 		kelasKurang,
 		kotakKelasPeta,
 		namaWilayahPendek,
 		totalKecamatan,
-		urutanKelas,
-		type IsiArea
+		urutanKelas
 	} from './dasbor';
 
 	interface Props {
@@ -57,12 +58,11 @@
 		return rasio ? tampilkanAngka(rasio).nilai : '-';
 	}
 
-	function isiDari(kode: string): IsiArea {
-		const kelas = properti.get(kode)?.kelas ?? 'tidak_ada_data';
-		return {
-			kelas: isiKelasPeta[kelas],
-			keterangan: `${t(kunciKelas[kelas])} · ${rasioTampil(kode)} ${t('satuan.rasio')}`
-		};
+	let lapisan = $state(bacaLapisan(null));
+	let petaDasar = $state(petaDasarBawaan);
+
+	function bukaKecamatan(kode: string) {
+		goto(`/${bahasaAktif}/kecamatan/${kode}`);
 	}
 
 	const kartuAngka = $derived.by(() => {
@@ -119,8 +119,18 @@
 				kolom={[t('spend.col.area'), t('map.col.class'), t('spend.col.ratio')]}
 				baris={kecamatan.map((k) => [k.nama, t(kunciKelas[k.kelas]), rasioTampil(k.kode)])}
 			>
-				<PetaWilayah fitur={peta.features} {isiDari} judul={t('dash.svc.map.title')}>
-					{#snippet legenda()}
+				<PetaBerlapis
+					class="h-96 lg:h-peta-kartu"
+					tema={peta}
+					temaSekolah={jenjang}
+					onpilih={bukaKecamatan}
+					bind:lapisan
+					bind:petaDasar
+					nama="peta-dasar-dasbor"
+					judulLegenda={teks.legenda}
+				/>
+				{#snippet catatan()}
+					<div>
 						<p class="text-caption font-bold">{t(teks.legenda)}</p>
 						<ul class="mt-2 flex flex-wrap gap-x-4 gap-y-2">
 							{#each [...urutanKelas, 'tidak_ada_data' as const] as kelas (kelas)}
@@ -131,8 +141,8 @@
 								</li>
 							{/each}
 						</ul>
-					{/snippet}
-				</PetaWilayah>
+					</div>
+				{/snippet}
 			</KartuGrafik>
 
 			<KartuGrafik

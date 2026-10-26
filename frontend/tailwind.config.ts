@@ -117,6 +117,7 @@ export default {
 			height: {
 				kepala: '83px',
 				peta: 'calc(100dvh - 83px)',
+				'peta-kartu': '480px',
 				'peta-ponsel': 'calc(100dvh - 128px)'
 			},
 			width: {

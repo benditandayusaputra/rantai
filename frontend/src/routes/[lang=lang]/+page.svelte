@@ -7,7 +7,6 @@
 		FileLock,
 		FileText,
 		Landmark,
-		Layers,
 		MapPin,
 		MessageCircle,
 		School,
@@ -35,18 +34,12 @@
 	} from '$lib/features/beranda/beranda';
 	import { kotakKelasPeta, namaWilayahPendek, urutanKelas } from '$lib/features/dasbor/dasbor';
 	import { kunciKelas, tampilkanAngka } from '$lib/features/kecamatan/kecamatan';
-	import KontrolLapisan from '$lib/features/peta/KontrolLapisan.svelte';
-	import LegendaPenanda from '$lib/features/peta/LegendaPenanda.svelte';
-	import PetaInteraktif from '$lib/features/peta/PetaInteraktif.svelte';
-	import PilihPetaDasar from '$lib/features/peta/PilihPetaDasar.svelte';
+	import PetaBerlapis from '$lib/features/peta/PetaBerlapis.svelte';
 	import {
 		bacaLapisan,
 		bacaPetaDasar,
-		batasJakarta,
-		pusatJakarta,
 		tautanPetaPenuh,
-		urlDenganStatusPeta,
-		zoomKota
+		urlDenganStatusPeta
 	} from '$lib/features/peta/lapisan';
 	import { pilihanJenjang, teksJenjang } from '$lib/features/pendidikan/jenjang';
 	import { cariLokasiku, type StatusLokasi } from '$lib/features/wilayah/lokasi';
@@ -62,7 +55,6 @@
 	let akurasiM = $state(0);
 	let lapisan = $state(bacaLapisan(page.url.searchParams.get('lapisan')));
 	let petaDasar = $state(bacaPetaDasar(page.url.searchParams.get('dasar')));
-	let statusPeta = $state<'memuat' | 'siap' | 'gagal'>('memuat');
 
 	const sumberFoto = 'https://unsplash.com/photos/1555899434-94d1368aa7af';
 	const labelKepastian = ['resmi', 'proksi', 'estimasi', 'simulasi'] as const;
@@ -244,51 +236,18 @@
 									{t('home.map.lead', { period: indikator.periode })}
 								</p>
 							{/if}
-							<div class="relative mt-4 h-96 overflow-hidden rounded-md border border-line">
-								<PetaInteraktif
-									tema={data.peta.ok ? data.peta.data : null}
-									temaSekolah={data.jenjang}
-									{lapisan}
-									{petaDasar}
-									pusat={pusatJakarta}
-									zoom={zoomKota}
-									batas={batasJakarta}
-									isKooperatif
-									terpilih={sorotan.kode}
-									onpilih={bukaKecamatan}
-									bind:status={statusPeta}
-								/>
-								{#if statusPeta === 'memuat'}
-									<div class="skel absolute inset-0" aria-busy="true">
-										<p class="sr-only">{t('map.loading')}</p>
-									</div>
-								{:else if statusPeta === 'gagal'}
-									<p
-										class="absolute inset-0 flex items-center justify-center bg-sunken p-4 text-small text-muted"
-									>
-										{t('home.map.error')}
-									</p>
-								{/if}
-								<details class="absolute left-2 top-2 z-map-ui">
-									<summary
-										class="btn btn-outline btn-sm glass cursor-pointer list-none shadow-2 [&::-webkit-details-marker]:hidden"
-									>
-										<Layers size={16} strokeWidth={1.75} aria-hidden="true" />
-										{t('map.layers')}
-									</summary>
-									<div
-										class="glass mt-2 flex max-h-80 w-64 flex-col gap-4 overflow-y-auto rounded-lg border border-line p-3 shadow-2"
-									>
-										<PilihPetaDasar
-											bind:petaDasar
-											onchange={simpanStatusPeta}
-											nama="peta-dasar-beranda"
-										/>
-										<KontrolLapisan bind:lapisan onchange={simpanStatusPeta} />
-										<LegendaPenanda {lapisan} />
-									</div>
-								</details>
-							</div>
+							<PetaBerlapis
+								class="mt-4 h-96"
+								tema={data.peta.ok ? data.peta.data : null}
+								temaSekolah={data.jenjang}
+								terpilih={sorotan.kode}
+								onpilih={bukaKecamatan}
+								bind:lapisan
+								bind:petaDasar
+								onchange={simpanStatusPeta}
+								nama="peta-dasar-beranda"
+								judulLegenda={teks.legenda}
+							/>
 							{#if !data.peta.ok}
 								<p class="mt-3 text-caption text-muted">{t('home.map.error')}</p>
 							{/if}
