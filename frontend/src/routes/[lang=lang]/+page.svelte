@@ -103,7 +103,7 @@
 			<h1 class="t-h1">{t('home.title')}</h1>
 			<p class="mt-1 text-muted">{t('home.subtitle')}</p>
 		</div>
-		<div class="flex w-full flex-col gap-2 md:max-w-md">
+		<div class="flex w-full flex-col gap-2 md:max-w-md" data-tur="cari">
 			<p class="text-caption text-muted" aria-hidden="true">{t('home.searchLabel')}</p>
 			<RegionSearch
 				bind:value={kata}

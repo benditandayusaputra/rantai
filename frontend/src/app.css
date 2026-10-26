@@ -113,6 +113,11 @@
 	.cahaya-sekunder {
 		background: radial-gradient(circle, var(--secondary-hover), transparent 70%);
 	}
+	.sorot-tur {
+		box-shadow:
+			0 0 0 3px var(--primary),
+			0 0 0 9999px var(--scrim);
+	}
 	.skel {
 		background: linear-gradient(90deg, var(--skel) 0, var(--skel-hi) 40%, var(--skel) 80%);
 		background-size: 640px 100%;

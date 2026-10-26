@@ -1,5 +1,6 @@
 import { randomBytes } from 'node:crypto';
 import { defineConfig } from '@playwright/test';
+import { kunciTurSelesai } from './src/lib/features/tur/tur';
 import { logAPI, portAPI } from './e2e/lingkungan';
 
 try {
@@ -18,6 +19,10 @@ const lingkunganAPIDemo = isModeDemo
 	: {};
 const portWeb = 4174;
 const alamatWeb = `http://localhost:${portWeb}`;
+const statusTurSelesai = {
+	cookies: [],
+	origins: [{ origin: alamatWeb, localStorage: [{ name: kunciTurSelesai, value: '1' }] }]
+};
 
 export default defineConfig({
 	testDir: 'e2e',
@@ -25,7 +30,7 @@ export default defineConfig({
 	retries: process.env.CI ? 1 : 0,
 	workers: 1,
 	reporter: 'list',
-	use: { baseURL: alamatWeb, trace: 'retain-on-failure' },
+	use: { baseURL: alamatWeb, trace: 'retain-on-failure', storageState: statusTurSelesai },
 	projects: [
 		{
 			name: 'ponsel',
