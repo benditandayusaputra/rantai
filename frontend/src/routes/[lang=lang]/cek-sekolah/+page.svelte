@@ -129,13 +129,17 @@
 			<p class="max-w-prose text-muted">{t('check.start')}</p>
 		</div>
 	{:else if status === 'memuat'}
-		<div class="grid gap-6 lg:grid-cols-12" aria-busy="true">
+		<div class="flex flex-col gap-8" aria-busy="true">
 			<p class="sr-only" aria-live="polite">{t('check.loading', { km })}</p>
-			<div class="skel h-64 rounded-lg lg:col-span-7"></div>
-			<div class="flex flex-col gap-3 lg:col-span-5">
-				<div class="skel h-24 rounded-lg"></div>
-				<div class="skel h-24 rounded-lg"></div>
-				<div class="skel h-24 rounded-lg"></div>
+			<div class="skel h-64 rounded-lg"></div>
+			<div class="skel h-12 rounded-md md:max-w-md"></div>
+			<div class="flex flex-col gap-3">
+				<div class="skel h-7 w-64 max-w-full rounded-md"></div>
+				<div class="grid gap-3 md:grid-cols-2">
+					{#each [...Array(batasDaftarNegeri).keys()] as i (i)}
+						<div class="skel h-28 rounded-lg"></div>
+					{/each}
+				</div>
 			</div>
 		</div>
 	{:else if status === 'gagal' || !sekitar}
