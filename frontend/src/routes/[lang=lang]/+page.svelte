@@ -7,16 +7,18 @@
 		FileLock,
 		FileText,
 		Landmark,
+		Layers,
 		MapPin,
 		MessageCircle,
 		School,
 		Wallet
 	} from '@lucide/svelte';
-	import { goto, invalidateAll } from '$app/navigation';
+	import { goto, invalidateAll, replaceState } from '$app/navigation';
 	import { navigating, page } from '$app/state';
 	import { cariWilayah } from '$lib/api/klien';
 	import type { WilayahDitemukan } from '$lib/api/tipe';
 	import CertaintyBadge from '$lib/components/CertaintyBadge.svelte';
+	import ChoiceChips from '$lib/components/ChoiceChips.svelte';
 	import ErrorState from '$lib/components/ErrorState.svelte';
 	import FotoWakil from '$lib/components/FotoWakil.svelte';
 	import GapClassChip from '$lib/components/GapClassChip.svelte';
@@ -31,15 +33,22 @@
 		tautanSorotan,
 		wakilPengawas
 	} from '$lib/features/beranda/beranda';
-	import PetaWilayah from '$lib/features/dasbor/PetaWilayah.svelte';
-	import {
-		isiKelasPeta,
-		kotakKelasPeta,
-		namaWilayahPendek,
-		urutanKelas,
-		type IsiArea
-	} from '$lib/features/dasbor/dasbor';
+	import { kotakKelasPeta, namaWilayahPendek, urutanKelas } from '$lib/features/dasbor/dasbor';
 	import { kunciKelas, tampilkanAngka } from '$lib/features/kecamatan/kecamatan';
+	import KontrolLapisan from '$lib/features/peta/KontrolLapisan.svelte';
+	import LegendaPenanda from '$lib/features/peta/LegendaPenanda.svelte';
+	import PetaInteraktif from '$lib/features/peta/PetaInteraktif.svelte';
+	import PilihPetaDasar from '$lib/features/peta/PilihPetaDasar.svelte';
+	import {
+		bacaLapisan,
+		bacaPetaDasar,
+		batasJakarta,
+		pusatJakarta,
+		tautanPetaPenuh,
+		urlDenganStatusPeta,
+		zoomKota
+	} from '$lib/features/peta/lapisan';
+	import { pilihanJenjang, teksJenjang } from '$lib/features/pendidikan/jenjang';
 	import { cariLokasiku, type StatusLokasi } from '$lib/features/wilayah/lokasi';
 	import { tujuanWilayah } from '$lib/features/wilayah/wilayah';
 	import { formatAngka } from '$lib/format';
@@ -51,6 +60,9 @@
 	let kata = $state('');
 	let statusLokasi = $state<StatusLokasi>('idle');
 	let akurasiM = $state(0);
+	let lapisan = $state(bacaLapisan(page.url.searchParams.get('lapisan')));
+	let petaDasar = $state(bacaPetaDasar(page.url.searchParams.get('dasar')));
+	let statusPeta = $state<'memuat' | 'siap' | 'gagal'>('memuat');
 
 	const sumberFoto = 'https://unsplash.com/photos/1555899434-94d1368aa7af';
 	const labelKepastian = ['resmi', 'proksi', 'estimasi', 'simulasi'] as const;
@@ -63,6 +75,8 @@
 	const sorotan = $derived(data.sorotan);
 	const halamanWilayah = $derived(`/${bahasaAktif}/kecamatan/${sorotan.kode}`);
 	const isMemuatSorotan = $derived(navigating.to?.route.id === page.route.id);
+	const teks = $derived(teksJenjang[data.jenjang]);
+	const pilihanTema = $derived(pilihanJenjang(page.url, data.jenjang));
 
 	function buka(wilayah: WilayahDitemukan) {
 		goto(tujuanWilayah(wilayah));
@@ -76,12 +90,12 @@
 		if (hasil.status === 'found') buka(hasil.wilayah);
 	}
 
-	function isiPeta(kode: string): IsiArea {
-		const kelas = data.peta.ok
-			? (data.peta.data.features.find((f) => f.properties.kode === kode)?.properties.kelas ??
-				'tidak_ada_data')
-			: 'tidak_ada_data';
-		return { kelas: isiKelasPeta[kelas], keterangan: t(kunciKelas[kelas]) };
+	function simpanStatusPeta() {
+		replaceState(urlDenganStatusPeta(page.url, lapisan, petaDasar), page.state);
+	}
+
+	function bukaKecamatan(kode: string) {
+		goto(`/${bahasaAktif}/kecamatan/${kode}`);
 	}
 </script>
 
@@ -197,7 +211,7 @@
 			{@const nama = ringkasan.kecamatan.nama}
 			{@const kota = ringkasan.kecamatan.hierarki.find((h) => h.tingkat === 'kota')}
 			{@const lokasi = kota ? `${nama} · ${namaWilayahPendek(kota.nama)}` : nama}
-			{@const indikator = indikatorPendidikan(ringkasan.tema)}
+			{@const indikator = indikatorPendidikan(ringkasan.tema, data.jenjang)}
 			{@const dapil = ringkasan.wakilku.dapil}
 			{@const komisi = ringkasan.wakilku.komisi_pengawas.join(', ')}
 			<section class="mt-8 lg:mt-10" aria-labelledby="judul-wilayah">
@@ -214,51 +228,83 @@
 						<ArrowRight size={16} strokeWidth={1.75} aria-hidden="true" />
 					</a>
 				</div>
+				<div class="mt-4 flex flex-wrap items-center gap-3">
+					<p id="judul-jenjang-beranda" class="text-small font-semibold text-muted">
+						{t('level.label')}
+					</p>
+					<ChoiceChips labelledby="judul-jenjang-beranda" items={pilihanTema} />
+				</div>
 
 				<div class="mt-5 grid gap-8 lg:grid-cols-[1.25fr_1fr] lg:gap-9">
 					<div class="min-w-0">
 						<div class="rounded-lg border border-line bg-surface p-4 md:p-5">
-							<p class="text-small font-semibold">{t('home.map.title')}</p>
+							<p class="text-small font-semibold">{t(teks.berandaPeta)}</p>
 							{#if indikator}
 								<p class="text-caption text-muted">
 									{t('home.map.lead', { period: indikator.periode })}
 								</p>
 							{/if}
-							{#if data.peta.ok}
-								<div class="mx-auto mt-4 max-w-md">
-									<PetaWilayah
-										fitur={data.peta.data.features}
-										isiDari={isiPeta}
-										judul={t('home.map.title')}
-										terpilih={sorotan.kode}
+							<div class="relative mt-4 h-96 overflow-hidden rounded-md border border-line">
+								<PetaInteraktif
+									tema={data.peta.ok ? data.peta.data : null}
+									temaSekolah={data.jenjang}
+									{lapisan}
+									{petaDasar}
+									pusat={pusatJakarta}
+									zoom={zoomKota}
+									batas={batasJakarta}
+									isKooperatif
+									terpilih={sorotan.kode}
+									onpilih={bukaKecamatan}
+									bind:status={statusPeta}
+								/>
+								{#if statusPeta === 'memuat'}
+									<div class="skel absolute inset-0" aria-busy="true">
+										<p class="sr-only">{t('map.loading')}</p>
+									</div>
+								{:else if statusPeta === 'gagal'}
+									<p
+										class="absolute inset-0 flex items-center justify-center bg-sunken p-4 text-small text-muted"
 									>
-										{#snippet legenda()}
-											<ul class="flex flex-wrap gap-x-4 gap-y-2">
-												{#each urutanKelas as kelas (kelas)}
-													<li class="flex items-center gap-2 text-caption">
-														<span
-															class="h-3 w-5 rounded-xs {kotakKelasPeta[kelas]}"
-															aria-hidden="true"
-														></span>
-														{t(kunciKelas[kelas])}
-													</li>
-												{/each}
-												<li class="flex items-center gap-2 text-caption">
-													<span
-														class="h-3 w-5 rounded-xs border-2 border-dashed border-primary"
-														aria-hidden="true"
-													></span>
-													{t('home.map.selected')}
-												</li>
-											</ul>
-										{/snippet}
-									</PetaWilayah>
-								</div>
-							{:else}
-								<p class="mt-4 rounded-md bg-sunken p-4 text-small text-muted">
-									{t('home.map.error')}
-								</p>
+										{t('home.map.error')}
+									</p>
+								{/if}
+								<details class="absolute left-2 top-2 z-map-ui">
+									<summary
+										class="btn btn-outline btn-sm glass cursor-pointer list-none shadow-2 [&::-webkit-details-marker]:hidden"
+									>
+										<Layers size={16} strokeWidth={1.75} aria-hidden="true" />
+										{t('map.layers')}
+									</summary>
+									<div
+										class="glass mt-2 flex max-h-80 w-64 flex-col gap-4 overflow-y-auto rounded-lg border border-line p-3 shadow-2"
+									>
+										<PilihPetaDasar
+											bind:petaDasar
+											onchange={simpanStatusPeta}
+											nama="peta-dasar-beranda"
+										/>
+										<KontrolLapisan bind:lapisan onchange={simpanStatusPeta} />
+										<LegendaPenanda {lapisan} />
+									</div>
+								</details>
+							</div>
+							{#if !data.peta.ok}
+								<p class="mt-3 text-caption text-muted">{t('home.map.error')}</p>
 							{/if}
+							<ul class="mt-4 flex flex-wrap gap-x-4 gap-y-2">
+								{#each urutanKelas as kelas (kelas)}
+									<li class="flex items-center gap-2 text-caption">
+										<span class="h-3 w-5 rounded-xs {kotakKelasPeta[kelas]}" aria-hidden="true"
+										></span>
+										{t(kunciKelas[kelas])}
+									</li>
+								{/each}
+								<li class="flex items-center gap-2 text-caption">
+									<span class="h-3 w-5 rounded-xs border-2 border-fg" aria-hidden="true"></span>
+									{t('home.map.selected')}
+								</li>
+							</ul>
 						</div>
 						<div class="mt-2 flex flex-wrap items-center justify-between gap-x-4">
 							<p class="flex items-center gap-1.5 text-caption text-muted">
@@ -266,7 +312,7 @@
 								{lokasi}
 							</p>
 							<a
-								href="/{bahasaAktif}/peta"
+								href={tautanPetaPenuh(page.url, bahasaAktif)}
 								class="inline-flex min-h-touch items-center text-caption font-semibold underline-offset-4 hover:underline"
 							>
 								{t('home.map.open')}
@@ -288,16 +334,16 @@
 								/>
 							{/if}
 						</div>
-						<h3 id="judul-pendidikan" class="t-h2 mt-3">{t('home.edu.title')}</h3>
+						<h3 id="judul-pendidikan" class="t-h2 mt-3">{t(teks.berandaJudul)}</h3>
 						{#if indikator}
 							{@const acuan = Math.max(indikator.kebutuhan.nilai, indikator.kapasitas.nilai)}
 							{@const selisih = indikator.kesenjangan.nilai}
 							{@const batang = [
-								{ label: t('pen.graduates'), angka: indikator.kebutuhan, warna: 'bg-chart' },
-								{ label: t('pen.seats.negeri'), angka: indikator.kapasitas, warna: 'bg-chart-2' }
+								{ label: t(teks.lulusan), angka: indikator.kebutuhan, warna: 'bg-chart' },
+								{ label: t(teks.kursiNegeri), angka: indikator.kapasitas, warna: 'bg-chart-2' }
 							]}
 							<p class="mt-2 text-small text-muted">
-								{t('home.edu.lead', { name: nama, period: indikator.periode })}
+								{t(teks.berandaLead, { name: nama, period: indikator.periode })}
 							</p>
 							<dl class="mt-5 flex flex-col gap-3">
 								{#each batang as item (item.label)}
@@ -325,7 +371,7 @@
 							<p class="mt-3 text-small text-muted">{t('tema.empty')}</p>
 						{/if}
 						<a
-							href="{halamanWilayah}/pendidikan"
+							href="{halamanWilayah}/{data.jenjang}"
 							class="mt-auto flex min-h-touch items-center justify-between gap-3 border-t border-line pt-3 text-small font-semibold underline-offset-4 hover:underline max-lg:mt-5"
 						>
 							{t('home.edu.more', { name: nama })}

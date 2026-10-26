@@ -1003,5 +1003,8 @@
 	"map.popup.swasta": "private",
 	"map.cooperative.windows": "Hold Ctrl while scrolling to zoom the map",
 	"map.cooperative.mac": "Hold ⌘ while scrolling to zoom the map",
-	"map.cooperative.mobile": "Use two fingers to move the map"
+	"map.cooperative.mobile": "Use two fingers to move the map",
+	"home.sma.map.title": "Public senior high and vocational seat gap by district",
+	"home.sma.edu.title": "Are there enough public senior high and vocational seats for children here?",
+	"home.sma.edu.lead": "Expected junior high graduates compared with public senior high and vocational seats in {name}, period {period}."
 }

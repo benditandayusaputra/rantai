@@ -30,6 +30,9 @@ interface TeksJenjang {
 	dasborKursi: KunciPesan;
 	belanjaLead: KunciPesan;
 	belanjaSumbuX: KunciPesan;
+	berandaPeta: KunciPesan;
+	berandaJudul: KunciPesan;
+	berandaLead: KunciPesan;
 }
 
 export const teksJenjang: Record<TemaPendidikan, TeksJenjang> = {
@@ -57,7 +60,10 @@ export const teksJenjang: Record<TemaPendidikan, TeksJenjang> = {
 		dasborLulusan: 'dash.svc.graduates',
 		dasborKursi: 'dash.svc.seats',
 		belanjaLead: 'spend.lead',
-		belanjaSumbuX: 'spend.xAxis'
+		belanjaSumbuX: 'spend.xAxis',
+		berandaPeta: 'home.map.title',
+		berandaJudul: 'home.edu.title',
+		berandaLead: 'home.edu.lead'
 	},
 	pendidikan_sma_smk: {
 		jenjang: 'level.sma',
@@ -83,7 +89,10 @@ export const teksJenjang: Record<TemaPendidikan, TeksJenjang> = {
 		dasborLulusan: 'dash.sma.svc.graduates',
 		dasborKursi: 'dash.sma.svc.seats',
 		belanjaLead: 'spend.sma.lead',
-		belanjaSumbuX: 'spend.sma.xAxis'
+		belanjaSumbuX: 'spend.sma.xAxis',
+		berandaPeta: 'home.sma.map.title',
+		berandaJudul: 'home.sma.edu.title',
+		berandaLead: 'home.sma.edu.lead'
 	}
 };
 

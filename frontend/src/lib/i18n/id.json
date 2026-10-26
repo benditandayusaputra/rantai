@@ -1003,5 +1003,8 @@
 	"map.popup.swasta": "swasta",
 	"map.cooperative.windows": "Tahan Ctrl sambil menggulir untuk memperbesar peta",
 	"map.cooperative.mac": "Tahan ⌘ sambil menggulir untuk memperbesar peta",
-	"map.cooperative.mobile": "Geser peta dengan dua jari"
+	"map.cooperative.mobile": "Geser peta dengan dua jari",
+	"home.sma.map.title": "Kesenjangan kursi SMA/SMK negeri per kecamatan",
+	"home.sma.edu.title": "Apakah kursi SMA/SMK negeri cukup untuk anak di sini?",
+	"home.sma.edu.lead": "Calon lulusan SMP dibanding kursi SMA dan SMK negeri di {name}, periode {period}."
 }

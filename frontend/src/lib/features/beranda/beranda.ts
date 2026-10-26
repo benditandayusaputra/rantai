@@ -1,4 +1,5 @@
 import type { Dapil, IndikatorRingkas, TemaKecamatan, Wakil } from '$lib/api/tipe';
+import type { TemaPendidikan } from '$lib/features/pendidikan/jenjang';
 
 export interface WilayahSorotan {
 	kode: string;
@@ -14,7 +15,6 @@ export const daftarSorotan: WilayahSorotan[] = [
 	{ kode: '31.71.07', nama: 'Tanah Abang' }
 ];
 
-export const temaBeranda = 'pendidikan';
 export const batasPaketBeranda = 3;
 export const batasWakilBeranda = 3;
 const persenPenuh = 100;
@@ -30,8 +30,11 @@ export function tautanSorotan(url: URL, kode: string): string {
 	return tujuan.pathname + tujuan.search;
 }
 
-export function indikatorPendidikan(tema: TemaKecamatan[]): IndikatorRingkas | null {
-	return tema.find((item) => item.kode === temaBeranda)?.indikator ?? null;
+export function indikatorPendidikan(
+	tema: TemaKecamatan[],
+	jenjang: TemaPendidikan
+): IndikatorRingkas | null {
+	return tema.find((item) => item.kode === jenjang)?.indikator ?? null;
 }
 
 export function persenTerhadap(nilai: number, acuan: number): number {

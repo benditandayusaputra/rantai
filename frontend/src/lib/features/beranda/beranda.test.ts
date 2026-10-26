@@ -27,16 +27,20 @@ describe('wilayah sorotan beranda', () => {
 describe('indikatorPendidikan', () => {
 	const indikator = { kelas: 'kurang' } as TemaKecamatan['indikator'];
 
-	it('mengambil indikator tema pendidikan saja', () => {
-		const tema = [
-			{ kode: 'kesehatan', indikator: null },
-			{ kode: 'pendidikan', indikator }
-		] as TemaKecamatan[];
-		expect(indikatorPendidikan(tema)).toBe(indikator);
+	const indikatorSMA = { kelas: 'cukup' } as TemaKecamatan['indikator'];
+	const tema = [
+		{ kode: 'kesehatan', indikator: null },
+		{ kode: 'pendidikan', indikator },
+		{ kode: 'pendidikan_sma_smk', indikator: indikatorSMA }
+	] as TemaKecamatan[];
+
+	it('mengambil indikator sesuai jenjang yang dipilih', () => {
+		expect(indikatorPendidikan(tema, 'pendidikan')).toBe(indikator);
+		expect(indikatorPendidikan(tema, 'pendidikan_sma_smk')).toBe(indikatorSMA);
 	});
 
-	it('mengembalikan null bila tema pendidikan belum dihitung', () => {
-		expect(indikatorPendidikan([])).toBeNull();
+	it('mengembalikan null bila jenjang itu belum dihitung', () => {
+		expect(indikatorPendidikan([], 'pendidikan_sma_smk')).toBeNull();
 	});
 });
 
