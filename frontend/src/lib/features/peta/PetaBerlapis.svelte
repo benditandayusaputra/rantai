@@ -63,8 +63,8 @@
 
 <div
 	class={isLayarPenuh
-		? 'fixed inset-0 z-dialog bg-page'
-		: `relative overflow-hidden rounded-md border border-line ${kelas}`}
+		? 'fixed inset-0 isolate z-dialog bg-page'
+		: `relative isolate overflow-hidden rounded-md border border-line ${kelas}`}
 	role={isLayarPenuh ? 'dialog' : undefined}
 	aria-modal={isLayarPenuh ? 'true' : undefined}
 	aria-label={isLayarPenuh ? t('map.region') : undefined}

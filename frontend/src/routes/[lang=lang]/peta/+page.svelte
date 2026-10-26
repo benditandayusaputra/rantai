@@ -83,7 +83,7 @@
 
 <h1 class="sr-only">{t('map.title')}</h1>
 
-<div class="relative">
+<div class="relative isolate">
 	<div class="relative {isTabel ? 'hidden' : 'h-peta-ponsel lg:h-peta'}">
 		<PetaInteraktif
 			bind:this={komponenPeta}
