@@ -6,7 +6,8 @@
 	import fontIsi from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
 	import fontJudul from '@fontsource-variable/plus-jakarta-sans/files/plus-jakarta-sans-latin-wght-normal.woff2?url';
 	import '../app.css';
-	import { page } from '$app/state';
+	import { fade } from 'svelte/transition';
+	import { navigating, page } from '$app/state';
 	import { aturBahasa, bahasaDari } from '$lib/i18n';
 
 	let { children } = $props();
@@ -24,6 +25,14 @@
 	<link rel="preload" as="font" type="font/woff2" href={fontIsi} crossorigin="anonymous" />
 	<link rel="preload" as="font" type="font/woff2" href={fontJudul} crossorigin="anonymous" />
 </svelte:head>
+
+{#if navigating.to}
+	<div
+		class="fixed inset-x-0 top-0 z-tooltip h-0.75 origin-left animate-muat bg-primary motion-reduce:animate-none"
+		aria-hidden="true"
+		out:fade={{ duration: 200 }}
+	></div>
+{/if}
 
 {#key bahasa}
 	{@render children()}

@@ -13,6 +13,7 @@
 	import { tangkap } from '$lib/api/klien';
 	import { konfirmasiLaporan } from '$lib/api/laporan';
 	import type { DetailLaporan } from '$lib/api/tipe';
+	import TombolKembali from '$lib/components/TombolKembali.svelte';
 	import ErrorState from '$lib/components/ErrorState.svelte';
 	import ReportStatusChip from '$lib/components/ReportStatusChip.svelte';
 	import RightOfReply from '$lib/components/RightOfReply.svelte';
@@ -78,6 +79,7 @@
 </svelte:head>
 
 <div class="wrap flex flex-col gap-6 py-6 lg:gap-8 lg:py-10">
+	<TombolKembali />
 	{#if isGagalMuat}
 		<ErrorState title={t('report.notFound')} />
 	{:else if laporan}

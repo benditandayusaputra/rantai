@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Building2, ExternalLink, Info, Landmark, MapPin, Users } from '@lucide/svelte';
 	import type { ProfilAnggota } from '$lib/api/tipe';
+	import TombolKembali from '$lib/components/TombolKembali.svelte';
 	import FotoWakil from '$lib/components/FotoWakil.svelte';
 	import { bahasaAktif, t } from '$lib/i18n';
 	import IsuDisuarakan from './IsuDisuarakan.svelte';
@@ -23,6 +24,7 @@
 </svelte:head>
 
 <article class="wrap flex flex-col gap-10 py-8 lg:py-12">
+	<TombolKembali />
 	<header class="flex flex-col gap-4">
 		<div
 			class="card flex flex-col gap-5 p-5 md:p-6 lg:flex-row lg:items-center lg:justify-between lg:p-8"

@@ -12,6 +12,7 @@
 		Scale
 	} from '@lucide/svelte';
 	import type { DetailPaket } from '$lib/api/tipe';
+	import TombolKembali from '$lib/components/TombolKembali.svelte';
 	import ChainStepper from '$lib/components/ChainStepper.svelte';
 	import KeyNumberCard from '$lib/components/KeyNumberCard.svelte';
 	import MaintenanceCounter from '$lib/components/MaintenanceCounter.svelte';
@@ -55,6 +56,7 @@
 </script>
 
 <article class="wrap flex flex-col gap-6 pt-6 lg:gap-8 lg:pt-10">
+	<TombolKembali />
 	<header
 		class="card flex flex-col overflow-hidden {paket.is_simulation
 			? 'border-ctrl border-cert-sim'

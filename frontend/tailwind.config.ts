@@ -177,11 +177,16 @@ export default {
 					'0%': { backgroundPosition: '-320px 0' },
 					'100%': { backgroundPosition: '320px 0' }
 				},
-				blink: { '50%': { opacity: '0' } }
+				blink: { '50%': { opacity: '0' } },
+				muat: {
+					'0%': { transform: 'scaleX(0)' },
+					'100%': { transform: 'scaleX(0.9)' }
+				}
 			},
 			animation: {
 				shimmer: 'shimmer 1.4s linear infinite',
-				caret: 'blink 1s steps(1) infinite'
+				caret: 'blink 1s steps(1) infinite',
+				muat: 'muat 8s cubic-bezier(0.08, 0.8, 0.2, 1) 100ms both'
 			}
 		}
 	},

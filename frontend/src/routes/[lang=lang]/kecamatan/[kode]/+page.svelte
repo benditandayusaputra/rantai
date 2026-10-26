@@ -15,6 +15,7 @@
 	import { alamatKartuKecamatan } from '$lib/api/klien';
 	import { page } from '$app/state';
 	import ErrorState from '$lib/components/ErrorState.svelte';
+	import TombolKembali from '$lib/components/TombolKembali.svelte';
 	import BagianAnggaran from '$lib/features/kecamatan/BagianAnggaran.svelte';
 	import BagianTema from '$lib/features/kecamatan/BagianTema.svelte';
 	import BagianWakilku from '$lib/features/kecamatan/BagianWakilku.svelte';
@@ -83,20 +84,24 @@
 	{@const IkonBagian = infoBagian[bagianAktif].ikon}
 	<div class="border-b border-line bg-surface">
 		<div class="wrap pt-6 lg:pt-10">
-			<nav aria-label={t('nav.breadcrumb')}>
-				<ol class="flex flex-wrap items-center gap-1 text-small text-muted">
-					<li>
-						<a
-							href="/{bahasaAktif}"
-							class="inline-flex items-center gap-1 underline-offset-4 hover:text-fg hover:underline"
-						>
-							<House size={14} strokeWidth={1.75} aria-hidden="true" />{t('nav.home')}
-						</a>
-					</li>
-					<li aria-hidden="true"><ChevronRight size={16} strokeWidth={1.75} /></li>
-					<li aria-current="page" class="font-semibold text-fg">{ringkasan.kecamatan.nama}</li>
-				</ol>
-			</nav>
+			<div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+				<TombolKembali />
+				<span class="h-5 w-px bg-line" aria-hidden="true"></span>
+				<nav aria-label={t('nav.breadcrumb')}>
+					<ol class="flex flex-wrap items-center gap-1 text-small text-muted">
+						<li>
+							<a
+								href="/{bahasaAktif}"
+								class="inline-flex items-center gap-1 underline-offset-4 hover:text-fg hover:underline"
+							>
+								<House size={14} strokeWidth={1.75} aria-hidden="true" />{t('nav.home')}
+							</a>
+						</li>
+						<li aria-hidden="true"><ChevronRight size={16} strokeWidth={1.75} /></li>
+						<li aria-current="page" class="font-semibold text-fg">{ringkasan.kecamatan.nama}</li>
+					</ol>
+				</nav>
+			</div>
 			<div class="mt-4 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
 				<div class="flex items-start gap-4">
 					<span class="icon-tile hidden h-14 w-14 md:inline-flex">
@@ -174,6 +179,7 @@
 							<a
 								href={tautanBagian(page.url, bagian)}
 								data-sveltekit-noscroll
+								data-sveltekit-replacestate
 								aria-current={bagianAktif === bagian ? 'page' : undefined}
 								class="-mb-px flex h-15 flex-col items-center justify-center gap-1 border-b-link border-transparent px-2 text-small font-semibold text-muted transition-colors duration-fast ease-standard hover:text-fg md:h-14 md:flex-row md:gap-2 md:px-4 md:text-body aria-[current=page]:border-primary aria-[current=page]:text-primary"
 							>

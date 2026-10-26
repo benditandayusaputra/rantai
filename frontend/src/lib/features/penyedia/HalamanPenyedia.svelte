@@ -1,4 +1,5 @@
 <script lang="ts">
+	import TombolKembali from '$lib/components/TombolKembali.svelte';
 	import TableScroll from '$lib/components/TableScroll.svelte';
 	import { Building2, ChartColumn, FileText, History, Info, Package, Tags } from '@lucide/svelte';
 	import type { ProfilPenyedia } from '$lib/api/tipe';
@@ -24,6 +25,7 @@
 </svelte:head>
 
 <article class="wrap flex flex-col gap-8 py-6 lg:py-10">
+	<TombolKembali />
 	<header class="card flex flex-col gap-4 p-5 md:p-6 lg:p-8">
 		<div class="flex items-center gap-4">
 			<span
