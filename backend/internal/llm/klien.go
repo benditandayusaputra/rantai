@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/anthropics/anthropic-sdk-go"
+	"github.com/benditandayusaputra/rantai/backend/internal/tanya"
 )
 
 var (
@@ -21,16 +22,26 @@ type Konfigurasi struct {
 	Effort    anthropic.OutputConfigEffort
 }
 
+type Model interface {
+	BukaPercakapan(sistem string, alat []tanya.Spek) tanya.Percakapan
+	Tulis(ctx context.Context, sistem, isi string) (string, error)
+}
+
 type Klien struct {
 	api anthropic.Client
 	cfg Konfigurasi
 }
 
-func Baru(cfg Konfigurasi) (Klien, error) {
-	if strings.TrimSpace(cfg.Model) == "" {
-		return Klien{}, ErrModelBelumDiatur
+func Baru(cfg Konfigurasi) (Model, error) {
+	cfg.Model = strings.TrimSpace(cfg.Model)
+	switch {
+	case cfg.Model == "":
+		return nil, ErrModelBelumDiatur
+	case isModelGemini(cfg.Model):
+		return baruGemini(cfg), nil
+	default:
+		return Klien{api: anthropic.NewClient(), cfg: cfg}, nil
 	}
-	return Klien{api: anthropic.NewClient(), cfg: cfg}, nil
 }
 
 func (k Klien) Tulis(ctx context.Context, sistem, isi string) (string, error) {

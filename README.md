@@ -35,7 +35,7 @@ flowchart LR
   F -- "/api/v1 diteruskan" --> A[API Go + GoFiber]
   A --> D[(PostgreSQL + PostGIS di Neon)]
   A --> M[(MinIO: foto laporan)]
-  A --> L[Claude API: Tanya Rantai]
+  A --> L[Gemini API atau Claude API: Tanya Rantai]
   J[Worker job terjadwal] --> D
   J --> S[LPSE, SiRUP, Dapodik, KPU, DPRD, Opentender, media]
 ```
@@ -54,7 +54,7 @@ flowchart LR
 | Penyimpanan objek | MinIO (kompatibel S3) |
 | Frontend | SvelteKit 2, Svelte 5, TypeScript, TailwindCSS, Lucide |
 | Peta | MapLibre GL JS |
-| Tanya Rantai | Claude API dengan tool use |
+| Tanya Rantai | Gemini API atau Claude API dengan tool use, dipilih dari nama model di `TANYA_MODEL` |
 | Pengujian | go test, Vitest, Playwright, axe |
 | Orkestrasi | Docker Compose, Caddy, Vercel |
 
@@ -115,7 +115,7 @@ cd frontend && npm install && npm run dev
 
 `make seed-demo` memuat snapshot lalu skenario `data/snapshot/skenario_demo.yaml`: kecamatan demo Kelapa Gading (`31.72.06`), satu paket simulasi, dua laporan simulasi, dan akun contoh `warga@`, `petugas@`, `anggota@`, `moderator@demo.rantai.test`. Semua data simulasi berlabel "Data simulasi" dan tidak tertaut ke penyedia, instansi, atau anggota sungguhan. Tanpa `SMTP_HOST`, kode masuk akun contoh ditulis ke log API.
 
-Dengan `RANTAI_MODE=demo`, worker menolak job yang mengambil data dari internet dan Tanya Rantai menjawab pertanyaan demo dari `data/snapshot/tanya_demo.json` (`make tanya-demo` terhadap API live yang punya `ANTHROPIC_API_KEY`). Peta dasar memakai ubin PMTiles wilayah DKI di `frontend/static/peta/dki.pmtiles` (Protomaps, © OpenStreetMap contributors), sehingga demo tidak butuh internet; isi `PUBLIC_PETA_DASAR_URL` hanya bila ingin memakai sumber ubin lain.
+Dengan `RANTAI_MODE=demo`, worker menolak job yang mengambil data dari internet dan Tanya Rantai menjawab pertanyaan demo dari `data/snapshot/tanya_demo.json` (`make tanya-demo` terhadap API live yang punya kunci penyedia model, `GEMINI_API_KEY` atau `ANTHROPIC_API_KEY`). Peta dasar memakai ubin PMTiles wilayah DKI di `frontend/static/peta/dki.pmtiles` (Protomaps, © OpenStreetMap contributors), sehingga demo tidak butuh internet; isi `PUBLIC_PETA_DASAR_URL` hanya bila ingin memakai sumber ubin lain.
 
 ### Basis data
 
@@ -147,7 +147,7 @@ Jadwalkan `docker compose -f docker-compose.prod.yml run --rm --entrypoint worke
 
 Profile `caddy` menyalakan Caddy milik Rantai dengan TLS otomatis untuk `API_DOMAIN` (misalnya `rantai.130-162-198-219.sslip.io`). Bila server sudah punya reverse proxy bersama, lewati profile itu dan tambahkan `-f deploy/compose.proxy-bersama.yml` agar API bergabung ke jaringan proxy (`JARINGAN_PROXY`, bawaan `deploy_default`) dengan alias `rantai-api`. Layanan `cadangan` menyimpan `pg_dump` harian dari Neon ke `cadangan/` selama tujuh hari.
 
-Isi `.env` server dengan URL Neon, `AUTH_RAHASIA`, `PROXY_RAHASIA` acak, kredensial MinIO, dan `CORS_ORIGIN=https://rantai-civic.vercel.app`. Tanpa `SMTP_HOST`, masuk dengan OTP hanya aktif bila `RANTAI_MODE=demo`.
+Isi `.env` server dengan URL Neon, `AUTH_RAHASIA`, `PROXY_RAHASIA` acak, kredensial MinIO, dan `CORS_ORIGIN=https://rantai-civic.vercel.app`. Untuk Tanya Rantai isi `TANYA_MODEL` (misalnya `gemini-3.5-flash-lite`) beserta kunci penyedianya, `GEMINI_API_KEY` atau `ANTHROPIC_API_KEY`. Tanpa `SMTP_HOST`, masuk dengan OTP hanya aktif bila `RANTAI_MODE=demo`.
 
 Di Vercel, root directory adalah `frontend`, dengan env berikut:
 
