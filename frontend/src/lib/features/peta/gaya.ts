@@ -1,4 +1,9 @@
-import type { FilterSpecification, StyleSpecification } from 'maplibre-gl';
+import type {
+	FilterSpecification,
+	LayerSpecification,
+	SourceSpecification,
+	StyleSpecification
+} from 'maplibre-gl';
 import type { KelasRasio } from '$lib/api/tipe';
 
 export const awalanPMTiles = 'pmtiles://';
@@ -45,12 +50,76 @@ export function bacaTokenDokumen(nama: string): string {
 	return getComputedStyle(document.documentElement).getPropertyValue(`--${nama}`).trim();
 }
 
+export const daftarPetaDasar = ['standar', 'jalan', 'satelit'] as const;
+export type PetaDasar = (typeof daftarPetaDasar)[number];
+type PetaDasarRaster = Exclude<PetaDasar, 'standar'>;
+export const petaDasarBawaan: PetaDasar = 'standar';
+
+const ubinRaster: Record<PetaDasarRaster, { url: string; atribusi: string }> = {
+	jalan: {
+		url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+		atribusi: '© OpenStreetMap contributors'
+	},
+	satelit: {
+		url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+		atribusi: 'Esri, Maxar, Earthstar Geographics'
+	}
+};
+const daftarPetaDasarRaster = Object.keys(ubinRaster) as PetaDasarRaster[];
+const ukuranUbinRaster = 256;
+const zoomUbinRasterMaks = 19;
+const ubinContohJakarta = { z: '12', x: '3263', y: '2118' };
+
+export function isPetaDasar(nilai: string | null): nilai is PetaDasar {
+	return (daftarPetaDasar as readonly (string | null)[]).includes(nilai);
+}
+
+export function idLapisanRaster(dasar: PetaDasarRaster): string {
+	return `dasar-${dasar}`;
+}
+
+export function isPetaDasarRaster(dasar: PetaDasar): dasar is PetaDasarRaster {
+	return dasar !== 'standar';
+}
+
+export function contohUbin(dasar: PetaDasarRaster): string {
+	return ubinRaster[dasar].url
+		.replace('{z}', ubinContohJakarta.z)
+		.replace('{x}', ubinContohJakarta.x)
+		.replace('{y}', ubinContohJakarta.y);
+}
+
+function sumberRaster(): Record<string, SourceSpecification> {
+	return Object.fromEntries(
+		daftarPetaDasarRaster.map((dasar) => [
+			idLapisanRaster(dasar),
+			{
+				type: 'raster',
+				tiles: [ubinRaster[dasar].url],
+				tileSize: ukuranUbinRaster,
+				maxzoom: zoomUbinRasterMaks,
+				attribution: ubinRaster[dasar].atribusi
+			}
+		])
+	);
+}
+
+function lapisanRaster(): LayerSpecification[] {
+	return daftarPetaDasarRaster.map((dasar) => ({
+		id: idLapisanRaster(dasar),
+		type: 'raster',
+		source: idLapisanRaster(dasar),
+		layout: { visibility: 'none' }
+	}));
+}
+
 export function buatGayaDasar(urlSumber: string, token: BacaToken): StyleSpecification {
 	const skema = skemaUbin(urlSumber);
 	return {
 		version: 8,
 		sources: {
-			dasar: { type: 'vector', url: urlSumber, attribution: skema.atribusi }
+			dasar: { type: 'vector', url: urlSumber, attribution: skema.atribusi },
+			...sumberRaster()
 		},
 		layers: [
 			{ id: 'latar', type: 'background', paint: { 'background-color': token('map') } },
@@ -75,7 +144,8 @@ export function buatGayaDasar(urlSumber: string, token: BacaToken): StyleSpecifi
 				source: 'dasar',
 				'source-layer': skema.jalan,
 				paint: { 'line-color': token('map-road'), 'line-width': 1 }
-			}
+			},
+			...lapisanRaster()
 		]
 	};
 }
@@ -91,24 +161,4 @@ export const tokenKelas: Record<KelasRasio, string> = {
 export function warnaKelas(token: BacaToken): unknown[] {
 	const pasangan = Object.entries(tokenKelas).flatMap(([kelas, nama]) => [kelas, token(nama)]);
 	return ['match', ['get', 'kelas'], ...pasangan, token('sunken')];
-}
-
-const tokenSektor: Record<string, string> = {
-	pendidikan: 'sector-edu',
-	air: 'sector-air',
-	jalan: 'sector-jalan'
-};
-
-export function warnaSektor(token: BacaToken): unknown[] {
-	const pasangan = Object.entries(tokenSektor).flatMap(([sektor, nama]) => [sektor, token(nama)]);
-	return ['match', ['get', 'sektor'], ...pasangan, token('sector-lain')];
-}
-
-export function warnaLaporan(token: BacaToken): unknown[] {
-	return [
-		'case',
-		['get', 'is_simulation'],
-		token('cert-sim'),
-		['match', ['get', 'status'], ['TERVERIFIKASI', 'SELESAI'], token('success'), token('info')]
-	];
 }

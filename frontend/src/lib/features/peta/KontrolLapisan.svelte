@@ -1,10 +1,17 @@
 <script lang="ts">
-	import { Layers } from '@lucide/svelte';
+	import { Camera, HardHat, Layers, School } from '@lucide/svelte';
 	import { t } from '$lib/i18n';
-	import { daftarLapisan, type StatusLapisan } from './lapisan';
+	import { daftarLapisan, type Lapisan, type StatusLapisan } from './lapisan';
 
 	let { lapisan = $bindable(), onchange }: { lapisan: StatusLapisan; onchange: () => void } =
 		$props();
+
+	const ikonLapisan: Record<Exclude<Lapisan, 'tema'>, typeof School> = {
+		proyek: HardHat,
+		sekolah: School,
+		laporan: Camera
+	};
+	const skalaKesenjangan = ['bg-gap-1', 'bg-gap-2', 'bg-gap-3', 'bg-gap-4'];
 </script>
 
 <fieldset>
@@ -21,8 +28,16 @@
 					type="checkbox"
 					bind:checked={lapisan[nama]}
 					{onchange}
-					class="h-5 w-5 accent-primary"
+					class="h-5 w-5 shrink-0 accent-primary"
 				/>
+				{#if nama === 'tema'}
+					<span class="flex h-3.5 w-5 shrink-0 overflow-hidden rounded-xs" aria-hidden="true">
+						{#each skalaKesenjangan as kelas (kelas)}<span class="flex-1 {kelas}"></span>{/each}
+					</span>
+				{:else}
+					{@const Ikon = ikonLapisan[nama]}
+					<Ikon size={18} strokeWidth={1.75} aria-hidden="true" class="shrink-0 text-muted" />
+				{/if}
 				{t(`map.layer.${nama}`)}
 			</label>
 		{/each}

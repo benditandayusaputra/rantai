@@ -987,5 +987,21 @@
 	"dash.sma.svc.seats": "Public senior high and vocational seats",
 	"spend.sma.lead": "Each dot is one district in DKI Jakarta. Further right means more public senior high and vocational seats per expected graduate; higher means more senior high and vocational spending in {tahun}.",
 	"spend.sma.xAxis": "Public senior high and vocational seats per expected graduate",
-	"tema.detailJenjang": "See {jenjang} school details"
+	"tema.detailJenjang": "See {jenjang} school details",
+	"map.basemap": "Base map",
+	"map.basemap.standar": "Standard",
+	"map.basemap.jalan": "Streets",
+	"map.basemap.satelit": "Satellite",
+	"map.markers": "Marker key",
+	"map.marker.reportDone": "Verified or resolved report",
+	"map.marker.reportOpen": "Report in progress",
+	"map.marker.reportSim": "Simulated report",
+	"map.marker.school": "School",
+	"map.popup.package": "Open package",
+	"map.popup.report": "View report",
+	"map.popup.negeri": "public",
+	"map.popup.swasta": "private",
+	"map.cooperative.windows": "Hold Ctrl while scrolling to zoom the map",
+	"map.cooperative.mac": "Hold ⌘ while scrolling to zoom the map",
+	"map.cooperative.mobile": "Use two fingers to move the map"
 }

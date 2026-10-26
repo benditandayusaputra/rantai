@@ -53,3 +53,9 @@ export const tampilanStatus: Record<StatusLaporan, TampilanStatus> = {
 		ikon: CircleX
 	}
 };
+
+export function kunciStatusSingkat(status: StatusLaporan): KunciPesan {
+	return status === 'MENUNGGU_SAKSI'
+		? 'report.menunggu-saksi.singkat'
+		: tampilanStatus[status].label;
+}

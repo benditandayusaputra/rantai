@@ -160,3 +160,33 @@
 		@apply flex flex-col gap-3 pt-8 lg:pt-12;
 	}
 }
+
+.popup-rantai .maplibregl-popup-content {
+	@apply rounded-md bg-raised px-4 py-3 text-fg shadow-2;
+}
+.popup-rantai .maplibregl-popup-close-button {
+	@apply h-7 w-7 rounded-sm text-h3 text-muted hover:bg-sunken hover:text-fg;
+}
+.popup-rantai.maplibregl-popup-anchor-bottom .maplibregl-popup-tip,
+.popup-rantai.maplibregl-popup-anchor-bottom-left .maplibregl-popup-tip,
+.popup-rantai.maplibregl-popup-anchor-bottom-right .maplibregl-popup-tip {
+	border-top-color: var(--raised);
+}
+.popup-rantai.maplibregl-popup-anchor-top .maplibregl-popup-tip,
+.popup-rantai.maplibregl-popup-anchor-top-left .maplibregl-popup-tip,
+.popup-rantai.maplibregl-popup-anchor-top-right .maplibregl-popup-tip {
+	border-bottom-color: var(--raised);
+}
+.popup-rantai.maplibregl-popup-anchor-left .maplibregl-popup-tip {
+	border-right-color: var(--raised);
+}
+.popup-rantai.maplibregl-popup-anchor-right .maplibregl-popup-tip {
+	border-left-color: var(--raised);
+}
+
+.contoh-peta-standar {
+	background:
+		linear-gradient(0deg, transparent 58%, var(--map-road) 58% 66%, transparent 66%),
+		linear-gradient(110deg, transparent 62%, var(--map-road) 62% 67%, transparent 67%),
+		linear-gradient(135deg, var(--map-water) 0 28%, var(--map-park) 28% 40%, var(--map) 40%);
+}

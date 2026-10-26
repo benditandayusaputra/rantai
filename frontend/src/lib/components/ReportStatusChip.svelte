@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { SaksiLaporan, StatusLaporan } from '$lib/api/tipe';
-	import { tampilanStatus } from '$lib/features/lapor/status';
+	import { kunciStatusSingkat, tampilanStatus } from '$lib/features/lapor/status';
 	import { t } from '$lib/i18n';
 
 	interface Props {
@@ -15,7 +15,7 @@
 	const label = $derived(
 		witnesses
 			? t(tampilan.label, { n: witnesses.jumlah, m: witnesses.dibutuhkan })
-			: t(status === 'MENUNGGU_SAKSI' ? 'report.menunggu-saksi.singkat' : tampilan.label)
+			: t(kunciStatusSingkat(status))
 	);
 </script>
 

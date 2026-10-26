@@ -12,14 +12,17 @@
 	import TableToggle from '$lib/components/TableToggle.svelte';
 	import {
 		bacaLapisan,
+		bacaPetaDasar,
 		pusatJakarta,
-		tulisLapisan,
+		urlDenganStatusPeta,
 		zoomKota,
 		zoomSekolah
 	} from '$lib/features/peta/lapisan';
 	import KontrolLapisan from '$lib/features/peta/KontrolLapisan.svelte';
 	import LegendaKelas from '$lib/features/peta/LegendaKelas.svelte';
+	import LegendaPenanda from '$lib/features/peta/LegendaPenanda.svelte';
 	import PetaInteraktif from '$lib/features/peta/PetaInteraktif.svelte';
+	import PilihPetaDasar from '$lib/features/peta/PilihPetaDasar.svelte';
 	import TabelPeta from '$lib/features/peta/TabelPeta.svelte';
 	import { pilihanJenjang, teksJenjang } from '$lib/features/pendidikan/jenjang';
 	import { bahasaAktif, t } from '$lib/i18n';
@@ -36,6 +39,7 @@
 	const lapisanAwal = bacaLapisan(kueri.get('lapisan'));
 
 	let lapisan = $state(isAdaTitik ? { ...lapisanAwal, sekolah: true } : lapisanAwal);
+	let petaDasar = $state(bacaPetaDasar(kueri.get('dasar')));
 	let isTabel = $state(kueri.get('tampilan') === 'tabel');
 	let isKontrolTerbuka = $state(false);
 	let terpilih = $state<string | null>(null);
@@ -57,8 +61,7 @@
 	);
 
 	function simpanKeURL() {
-		const url = new URL(page.url);
-		url.searchParams.set('lapisan', tulisLapisan(lapisan));
+		const url = urlDenganStatusPeta(page.url, lapisan, petaDasar);
 		if (isTabel) url.searchParams.set('tampilan', 'tabel');
 		else url.searchParams.delete('tampilan');
 		replaceState(url, {});
@@ -87,6 +90,7 @@
 			tema={fiturTema}
 			temaSekolah={data.jenjang}
 			{lapisan}
+			{petaDasar}
 			{pusat}
 			{zoom}
 			{terpilih}
@@ -113,7 +117,7 @@
 	<div
 		class="z-map-ui flex flex-col gap-2 {isTabel
 			? 'wrap mt-6'
-			: 'absolute left-3 top-3 lg:glass lg:left-8 lg:top-8 lg:w-66 lg:gap-3 lg:rounded-lg lg:border lg:border-line lg:p-4 lg:shadow-2'}"
+			: 'absolute left-3 top-3 max-h-[calc(100%-theme(spacing.6))] overflow-y-auto lg:glass lg:left-8 lg:top-8 lg:max-h-[calc(100%-theme(spacing.16))] lg:w-66 lg:gap-3 lg:rounded-lg lg:border lg:border-line lg:p-4 lg:shadow-2'}"
 	>
 		<div class="flex flex-col items-start gap-2 md:flex-row {isTabel ? '' : 'lg:order-last'}">
 			<button
@@ -151,8 +155,10 @@
 				<p id="judul-jenjang-peta" class="text-caption font-bold">{t('level.label')}</p>
 				<ChoiceChips labelledby="judul-jenjang-peta" items={pilihanTema} />
 			</div>
+			{#if !isTabel}<PilihPetaDasar bind:petaDasar onchange={simpanKeURL} />{/if}
 			<KontrolLapisan bind:lapisan onchange={simpanKeURL} />
 			{#if lapisan.tema}<LegendaKelas judul={teksJenjang[data.jenjang].legenda} />{/if}
+			{#if !isTabel}<LegendaPenanda {lapisan} />{/if}
 		</div>
 	</div>
 </div>

@@ -1,52 +1,79 @@
 <script lang="ts">
 	import type { FeatureCollection } from 'geojson';
-	import type { GeoJSONSource, Map as PetaMaplibre } from 'maplibre-gl';
-	import { untrack } from 'svelte';
+	import type {
+		GeoJSONSource,
+		LngLatBoundsLike,
+		MapLayerMouseEvent,
+		Map as PetaMaplibre,
+		Popup as PopupMaplibre
+	} from 'maplibre-gl';
+	import { mount, unmount, untrack } from 'svelte';
 	import { env } from '$env/dynamic/public';
 	import { ambilPetaPaket, ambilSekolahTerdekat, tangkap } from '$lib/api/klien';
 	import { ambilPetaLaporan } from '$lib/api/laporan';
 	import type { FiturLaporan, PetaPaket, PetaTema, SekolahTerdekat, Titik } from '$lib/api/tipe';
-	import { t } from '$lib/i18n';
+	import { bahasaAktif, t } from '$lib/i18n';
 	import {
 		bacaTokenDokumen,
 		buatGayaDasar,
+		daftarPetaDasar,
+		idLapisanRaster,
+		isPetaDasarRaster,
 		urlSumberDasar,
 		warnaKelas,
-		warnaLaporan,
-		warnaSektor
+		type PetaDasar
 	} from './gaya';
 	import { gabungSekolah, radiusTampilanM, type StatusLapisan } from './lapisan';
+	import {
+		ekspresiPenandaLaporan,
+		ekspresiPenandaProyek,
+		pasangPenanda,
+		penandaSekolah,
+		ukuranPenandaMenurutZoom
+	} from './penanda';
+	import { idPenanda, isIdPenanda, isiPopup } from './popup';
+	import PopupPenanda from './PopupPenanda.svelte';
 
 	interface Props {
 		tema: PetaTema | null;
 		temaSekolah: string;
 		lapisan: StatusLapisan;
+		petaDasar: PetaDasar;
 		pusat: Titik;
 		zoom: number;
+		batas?: LngLatBoundsLike;
+		isKooperatif?: boolean;
 		terpilih: string | null;
 		onpilih: (kode: string) => void;
-		paket: PetaPaket['features'];
-		sekolah: SekolahTerdekat[];
-		laporan: FiturLaporan[];
-		status: 'memuat' | 'siap' | 'gagal';
+		paket?: PetaPaket['features'];
+		sekolah?: SekolahTerdekat[];
+		laporan?: FiturLaporan[];
+		status?: 'memuat' | 'siap' | 'gagal';
 	}
 
 	let {
 		tema,
 		temaSekolah,
 		lapisan,
+		petaDasar,
 		pusat,
 		zoom,
+		batas,
+		isKooperatif = false,
 		terpilih,
 		onpilih,
-		paket = $bindable(),
-		sekolah = $bindable(),
-		laporan = $bindable(),
-		status = $bindable()
+		paket = $bindable([]),
+		sekolah = $bindable([]),
+		laporan = $bindable([]),
+		status = $bindable('memuat')
 	}: Props = $props();
 
 	const koleksiKosong: FeatureCollection = { type: 'FeatureCollection', features: [] };
 	const luasBboxMaksimalDerajat = 1;
+	const opasitasTema = 0.85;
+	const opasitasTemaDiAtasRaster = 0.55;
+	const jarakPopupPx = 28;
+	const paddingBatasPx = 12;
 	const idLapisan = {
 		tema: ['tema-isi', 'tema-garis', 'tema-pilih'],
 		proyek: ['proyek-area', 'proyek-titik'],
@@ -65,7 +92,12 @@
 		for (const nama of ['tema', 'proyek', 'sekolah', 'laporan']) {
 			m.addSource(nama, { type: 'geojson', data: koleksiKosong });
 		}
-		m.addLayer({ id: 'tema-isi', type: 'fill', source: 'tema', paint: { 'fill-opacity': 0.85 } });
+		m.addLayer({
+			id: 'tema-isi',
+			type: 'fill',
+			source: 'tema',
+			paint: { 'fill-opacity': opasitasTema }
+		});
 		m.addLayer({ id: 'tema-garis', type: 'line', source: 'tema', paint: { 'line-width': 2 } });
 		m.addLayer({ id: 'tema-pilih', type: 'line', source: 'tema', paint: { 'line-width': 3.5 } });
 		m.addLayer({
@@ -75,24 +107,30 @@
 			filter: ['==', ['get', 'jenis_lokasi'], 'area'],
 			paint: { 'fill-opacity': 0.35 }
 		});
-		m.addLayer({
-			id: 'proyek-titik',
-			type: 'circle',
-			source: 'proyek',
-			filter: ['==', ['get', 'jenis_lokasi'], 'titik'],
-			paint: { 'circle-radius': 7, 'circle-stroke-width': 2.5 }
-		});
+		tambahLapisanPenanda(m);
+	}
+
+	function tambahLapisanPenanda(m: PetaMaplibre) {
+		const tataLetak = { 'icon-size': ukuranPenandaMenurutZoom, 'icon-allow-overlap': true };
+		const tataLetakPin = { ...tataLetak, 'icon-anchor': 'bottom' as const };
 		m.addLayer({
 			id: 'sekolah-titik',
-			type: 'circle',
+			type: 'symbol',
 			source: 'sekolah',
-			paint: { 'circle-radius': 6, 'circle-stroke-width': 2 }
+			layout: { ...tataLetak, 'icon-image': penandaSekolah }
+		});
+		m.addLayer({
+			id: 'proyek-titik',
+			type: 'symbol',
+			source: 'proyek',
+			filter: ['==', ['get', 'jenis_lokasi'], 'titik'],
+			layout: { ...tataLetakPin, 'icon-image': ekspresiPenandaProyek }
 		});
 		m.addLayer({
 			id: 'laporan-titik',
-			type: 'circle',
+			type: 'symbol',
 			source: 'laporan',
-			paint: { 'circle-radius': 6, 'circle-stroke-width': 2 }
+			layout: { ...tataLetakPin, 'icon-image': ekspresiPenandaLaporan }
 		});
 	}
 
@@ -106,12 +144,6 @@
 		m.setPaintProperty('tema-garis', 'line-color', token('map'));
 		m.setPaintProperty('tema-pilih', 'line-color', token('text'));
 		m.setPaintProperty('proyek-area', 'fill-color', token('sector-lain'));
-		m.setPaintProperty('proyek-titik', 'circle-color', warnaSektor(token));
-		m.setPaintProperty('proyek-titik', 'circle-stroke-color', token('surface'));
-		m.setPaintProperty('sekolah-titik', 'circle-color', token('surface'));
-		m.setPaintProperty('sekolah-titik', 'circle-stroke-color', token('text'));
-		m.setPaintProperty('laporan-titik', 'circle-color', warnaLaporan(token));
-		m.setPaintProperty('laporan-titik', 'circle-stroke-color', token('surface'));
 	}
 
 	function bboxTampilan(m: PetaMaplibre): string | null {
@@ -146,7 +178,7 @@
 							{
 								type: 'Feature',
 								geometry: { type: 'Point', coordinates: [s.lokasi.lng, s.lokasi.lat] },
-								properties: { npsn: s.npsn, nama: s.nama }
+								properties: { npsn: s.npsn, nama: s.nama, bentuk: s.bentuk, status: s.status }
 							}
 						]
 					: []
@@ -167,6 +199,47 @@
 		if (lapisan.laporan) muatLaporan(m);
 	}
 
+	function tampilkanPopup(Popup: typeof PopupMaplibre, m: PetaMaplibre, e: MapLayerMouseEvent) {
+		const fitur = e.features?.[0];
+		if (!fitur || !isIdPenanda(fitur.layer.id)) return;
+		const isi = document.createElement('div');
+		const komponen = mount(PopupPenanda, {
+			target: isi,
+			props: isiPopup(fitur.layer.id, fitur.properties, bahasaAktif)
+		});
+		const titik = fitur.geometry.type === 'Point' ? fitur.geometry.coordinates : e.lngLat.toArray();
+		new Popup({ offset: jarakPopupPx, className: 'popup-rantai' })
+			.setLngLat(titik as [number, number])
+			.setDOMContent(isi)
+			.addTo(m)
+			.on('close', () => unmount(komponen));
+	}
+
+	function isKenaPenanda(m: PetaMaplibre, e: MapLayerMouseEvent): boolean {
+		const aktif = idPenanda.filter((id) => m.getLayer(id));
+		return m.queryRenderedFeatures(e.point, { layers: aktif }).length > 0;
+	}
+
+	function pasangInteraksi(m: PetaMaplibre, Popup: typeof PopupMaplibre) {
+		m.on('click', 'tema-isi', (e) => {
+			const kode = e.features?.[0]?.properties?.kode;
+			if (typeof kode === 'string' && !isKenaPenanda(m, e)) onpilih(kode);
+		});
+		for (const id of ['tema-isi', ...idPenanda]) {
+			m.on('mouseenter', id, () => (m.getCanvas().style.cursor = 'pointer'));
+			m.on('mouseleave', id, () => (m.getCanvas().style.cursor = ''));
+		}
+		for (const id of idPenanda) m.on('click', id, (e) => tampilkanPopup(Popup, m, e));
+	}
+
+	function teksGesturKooperatif() {
+		return {
+			'CooperativeGesturesHandler.WindowsHelpText': t('map.cooperative.windows'),
+			'CooperativeGesturesHandler.MacHelpText': t('map.cooperative.mac'),
+			'CooperativeGesturesHandler.MobileHelpText': t('map.cooperative.mobile')
+		};
+	}
+
 	async function buatPeta(): Promise<PetaMaplibre> {
 		const [maplibre, { Protocol }] = await Promise.all([
 			import('maplibre-gl'),
@@ -174,38 +247,46 @@
 			import('maplibre-gl/dist/maplibre-gl.css')
 		]);
 		maplibre.addProtocol('pmtiles', new Protocol().tile);
-		const awal = untrack(() => ({ pusat, zoom }));
+		const awal = untrack(() => ({ pusat, zoom, batas, isKooperatif }));
 		const m = new maplibre.Map({
 			container: wadah,
 			style: buatGayaDasar(urlSumberDasar(env.PUBLIC_PETA_DASAR_URL), bacaTokenDokumen),
 			center: [awal.pusat.lng, awal.pusat.lat],
 			zoom: awal.zoom,
+			...(awal.batas ? { bounds: awal.batas, fitBoundsOptions: { padding: paddingBatasPx } } : {}),
+			cooperativeGestures: awal.isKooperatif,
+			locale: teksGesturKooperatif(),
 			attributionControl: { compact: true }
 		});
 		m.addControl(new maplibre.NavigationControl({ showCompass: false }), 'bottom-right');
-		m.on('click', 'tema-isi', (e) => {
-			const kode = e.features?.[0]?.properties?.kode;
-			if (typeof kode === 'string') onpilih(kode);
-		});
-		m.on('mouseenter', 'tema-isi', () => (m.getCanvas().style.cursor = 'pointer'));
-		m.on('mouseleave', 'tema-isi', () => (m.getCanvas().style.cursor = ''));
+		pasangInteraksi(m, maplibre.Popup);
 		m.on('moveend', () => muatDataTampilan(m));
 		return m;
 	}
 
+	async function siapkan(m: PetaMaplibre) {
+		await pasangPenanda(m, bacaTokenDokumen);
+		tambahLapisan(m);
+		warnai(m);
+		peta = m;
+		status = 'siap';
+		muatDataTampilan(m);
+	}
+
+	function warnaiUlang(m: PetaMaplibre) {
+		warnai(m);
+		void pasangPenanda(m, bacaTokenDokumen);
+	}
+
 	$effect(() => {
 		let instansi: PetaMaplibre | null = null;
-		const pengamatTema = new MutationObserver(() => instansi?.isStyleLoaded() && warnai(instansi));
+		const pengamatTema = new MutationObserver(
+			() => instansi?.isStyleLoaded() && warnaiUlang(instansi)
+		);
 		buatPeta()
 			.then((m) => {
 				instansi = m;
-				m.on('load', () => {
-					tambahLapisan(m);
-					warnai(m);
-					peta = m;
-					status = 'siap';
-					muatDataTampilan(m);
-				});
+				m.on('load', () => siapkan(m).catch(() => (status = 'gagal')));
 			})
 			.catch(() => (status = 'gagal'));
 		pengamatTema.observe(document.documentElement, { attributeFilter: ['data-theme'] });
@@ -228,6 +309,19 @@
 			}
 		}
 		untrack(() => peta && muatDataTampilan(peta));
+	});
+
+	$effect(() => {
+		if (!peta) return;
+		for (const dasar of daftarPetaDasar.filter(isPetaDasarRaster)) {
+			peta.setLayoutProperty(
+				idLapisanRaster(dasar),
+				'visibility',
+				dasar === petaDasar ? 'visible' : 'none'
+			);
+		}
+		const opasitas = isPetaDasarRaster(petaDasar) ? opasitasTemaDiAtasRaster : opasitasTema;
+		peta.setPaintProperty('tema-isi', 'fill-opacity', opasitas);
 	});
 
 	$effect(() => {

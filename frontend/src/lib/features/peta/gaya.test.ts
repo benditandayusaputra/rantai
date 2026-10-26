@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { buatGayaDasar, sumberDasarBawaan, warnaKelas, warnaSektor } from './gaya';
+import {
+	buatGayaDasar,
+	contohUbin,
+	idLapisanRaster,
+	isPetaDasar,
+	sumberDasarBawaan,
+	warnaKelas
+} from './gaya';
 
 const token = (nama: string) => `var-${nama}`;
 
@@ -38,7 +45,18 @@ describe('gaya peta', () => {
 		]);
 	});
 
-	it('memberi sektor tak dikenal warna lainnya', () => {
-		expect(warnaSektor(token).at(-1)).toBe('var-sector-lain');
+	it('menyiapkan peta dasar jalan dan satelit dalam keadaan tersembunyi', () => {
+		const gaya = buatGayaDasar(sumberDasarBawaan, token);
+		const raster = gaya.layers.filter((l) => l.type === 'raster');
+		expect(raster.map((l) => l.id)).toEqual([idLapisanRaster('jalan'), idLapisanRaster('satelit')]);
+		expect(raster.every((l) => l.layout?.visibility === 'none')).toBe(true);
+		expect(gaya.sources[idLapisanRaster('satelit')]).toMatchObject({ type: 'raster' });
+	});
+
+	it('mengenali nama peta dasar dan membuat contoh ubin Jakarta', () => {
+		expect(isPetaDasar('satelit')).toBe(true);
+		expect(isPetaDasar('gelap')).toBe(false);
+		expect(contohUbin('jalan')).toBe('https://tile.openstreetmap.org/12/3263/2118.png');
+		expect(contohUbin('satelit')).toMatch(/\/tile\/12\/2118\/3263$/);
 	});
 });

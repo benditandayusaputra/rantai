@@ -987,5 +987,21 @@
 	"dash.sma.svc.seats": "Kursi SMA dan SMK negeri",
 	"spend.sma.lead": "Setiap titik adalah satu kecamatan di DKI Jakarta. Makin ke kanan makin banyak kursi SMA dan SMK negeri per calon lulusan; makin ke atas makin besar belanja SMA dan SMK tahun {tahun}.",
 	"spend.sma.xAxis": "Kursi SMA dan SMK negeri per calon lulusan",
-	"tema.detailJenjang": "Lihat detail sekolah {jenjang}"
+	"tema.detailJenjang": "Lihat detail sekolah {jenjang}",
+	"map.basemap": "Peta dasar",
+	"map.basemap.standar": "Standar",
+	"map.basemap.jalan": "Jalan",
+	"map.basemap.satelit": "Satelit",
+	"map.markers": "Arti penanda",
+	"map.marker.reportDone": "Laporan terverifikasi atau selesai",
+	"map.marker.reportOpen": "Laporan dalam proses",
+	"map.marker.reportSim": "Laporan simulasi",
+	"map.marker.school": "Sekolah",
+	"map.popup.package": "Buka paket",
+	"map.popup.report": "Lihat laporan",
+	"map.popup.negeri": "negeri",
+	"map.popup.swasta": "swasta",
+	"map.cooperative.windows": "Tahan Ctrl sambil menggulir untuk memperbesar peta",
+	"map.cooperative.mac": "Tahan ⌘ sambil menggulir untuk memperbesar peta",
+	"map.cooperative.mobile": "Geser peta dengan dua jari"
 }
