@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { SekolahTerdekat } from '$lib/api/tipe';
-import { pecahanTekanan, radiusKm, terdekatDulu } from './cekSekolah';
+import { pecahanTekanan, radiusCekSekolahM, radiusKm, terdekatDulu } from './cekSekolah';
 
 function sekolah(npsn: string, jarak_m: number): SekolahTerdekat {
 	return {
@@ -29,5 +29,10 @@ describe('cekSekolah', () => {
 
 	it('menulis radius dalam kilometer', () => {
 		expect(radiusKm(3000)).toBe('3');
+	});
+
+	it('memakai radius 5 km untuk SMP dan 10 km untuk SMA/SMK', () => {
+		expect(radiusKm(radiusCekSekolahM.pendidikan)).toBe('5');
+		expect(radiusKm(radiusCekSekolahM.pendidikan_sma_smk)).toBe('10');
 	});
 });

@@ -376,6 +376,8 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - Migrasi 000039 (bentuk SMA, SMK, MA; `calon_lulusan_kecamatan.jenjang`), impor sekolah SMA/SMK/MA dari Sekolah Kita, daya tampung SMA dan SMK negeri dari Kepkadis 258/2026 jo. 315/2026, kursi SPMB Bersama SMA dan SMK swasta dari Kepkadis 262/2026, calon lulusan kelas 9 SMP, tema `pendidikan_sma_smk`.
   - Satu rumus domain untuk dua peralihan jenjang; API detail, sekolah, dan sekolah terdekat menerima tema; halaman detail per jenjang dengan bagian "Cara menghitung"; pilihan jenjang di Peta, Dasbor (termasuk rekap per kota), dan Cek Sekolahku.
   - Selesai bila: total kursi terimpor sama dengan dokumen (29.337, 19.541, 2.519, 3.592) tanpa NPSN tak terpetakan; tes rumus SMA/SMK, provenance per bentuk, dan alur demo lulus.
+- [x] **T-1111** Radius Cek Sekolahku per jenjang · `✨ Perlebar radius Cek Sekolahku menjadi 5 km untuk SMP dan 10 km untuk SMA/SMK`
+  - SMA dan SMK lebih sedikit dan menampung lulusan lintas kecamatan, sehingga radius 3 km terlalu sempit; SMP 5 km, SMA/SMK 10 km (batas maksimal API).
 
 ## Keluaran lomba di luar kode
 

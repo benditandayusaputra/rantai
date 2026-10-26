@@ -389,7 +389,7 @@ API: `GET /kecamatan/{kode}/wakil?tema=pendidikan&dengan_umpan=true`. Respons me
 
 Input alamat atau lokasi. Keluaran:
 
-- Sekolah negeri jenjang tujuan (SMP, atau SMA dan SMK) dalam radius 3 km (konfigurasi), diurutkan dari terdekat, dengan jarak garis lurus dan daya tampung resmi.
+- Sekolah negeri jenjang tujuan (SMP, atau SMA dan SMK) dalam radius 5 km untuk SMP dan 10 km untuk SMA/SMK (`radiusCekSekolahM` di frontend; API memakai `radius_bawaan_m` 3 km bila radius tidak dikirim dan menolak radius di atas `radius_maksimal_m` 10 km), diurutkan dari terdekat, dengan jarak garis lurus dan daya tampung resmi.
 - `tekanan_radius = calon lulusan dalam radius ÷ kursi negeri dalam radius`, dengan calon lulusan siswa kelas 6 SD atau kelas 9 SMP, dijelaskan dengan kalimat ("sekitar 2 lulusan untuk setiap 1 kursi negeri di sekitarmu"). Label mengikuti aturan label terlemah.
 - Alternatif: sekolah SPMB Bersama dan madrasah dalam radius yang sama.
 

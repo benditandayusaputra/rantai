@@ -1,8 +1,12 @@
 import type { SekolahTerdekat } from '$lib/api/tipe';
 import { formatAngka } from '$lib/format';
+import type { TemaPendidikan } from '$lib/features/pendidikan/jenjang';
 import { bahasaAktif } from '$lib/i18n';
 
-export const radiusBawaanM = 3000;
+export const radiusCekSekolahM: Record<TemaPendidikan, number> = {
+	pendidikan: 5000,
+	pendidikan_sma_smk: 10000
+};
 export const batasDaftarNegeri = 5;
 const meterPerKilometer = 1000;
 const desimalRasio = 1;

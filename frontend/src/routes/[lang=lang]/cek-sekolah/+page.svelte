@@ -13,7 +13,7 @@
 	import {
 		batasDaftarNegeri,
 		pecahanTekanan,
-		radiusBawaanM,
+		radiusCekSekolahM,
 		radiusKm,
 		terdekatDulu
 	} from '$lib/features/cekSekolah/cekSekolah';
@@ -35,16 +35,17 @@
 	let sekitar = $state<SekitarTitik | null>(null);
 	let status = $state<'awal' | 'memuat' | 'siap' | 'gagal'>('awal');
 
-	const km = radiusKm(radiusBawaanM);
 	const jenjang = $derived(bacaTemaPendidikan(page.url.searchParams.get('tema')));
 	const teks = $derived(teksJenjang[jenjang]);
+	const radiusM = $derived(radiusCekSekolahM[jenjang]);
+	const km = $derived(radiusKm(radiusM));
 	const rasio = $derived(sekitar?.tekanan_radius.rasio ?? null);
 	const alternatif = $derived(sekitar ? [...sekitar.spmb_bersama, ...sekitar.madrasah] : []);
 
 	async function muat(label: string, titik: Titik) {
 		pusat = { label, titik };
 		status = 'memuat';
-		const hasil = await tangkap(ambilSekolahTerdekat(fetch, titik, radiusBawaanM, jenjang));
+		const hasil = await tangkap(ambilSekolahTerdekat(fetch, titik, radiusM, jenjang));
 		sekitar = hasil.ok ? hasil.data : null;
 		status = hasil.ok ? 'siap' : 'gagal';
 	}
