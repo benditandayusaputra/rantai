@@ -20,13 +20,7 @@ export interface Ukuran {
 
 export const langkahTur: LangkahTur[] = [
 	{ target: null, judul: 'tour.welcome.title', isi: 'tour.welcome.body' },
-	{ target: 'cari', judul: 'tour.search.title', isi: 'tour.search.body' },
-	{ target: 'peta', judul: 'tour.map.title', isi: 'tour.map.body' },
-	{ target: 'dasbor', judul: 'tour.dashboard.title', isi: 'tour.dashboard.body' },
-	{ target: 'tanya', judul: 'tour.ask.title', isi: 'tour.ask.body' },
-	{ target: 'lapor', judul: 'tour.report.title', isi: 'tour.report.body' },
-	{ target: 'pantau', judul: 'tour.watch.title', isi: 'tour.watch.body' },
-	{ target: 'tentang', judul: 'tour.about.title', isi: 'tour.about.body' }
+	{ target: 'cari', judul: 'tour.search.title', isi: 'tour.search.body' }
 ];
 
 export const kunciTurSelesai = 'rantai-tour-done';

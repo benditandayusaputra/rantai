@@ -18,7 +18,7 @@ const lingkunganAPIDemo = isModeDemo
 		}
 	: {};
 const portWeb = 4174;
-const alamatWeb = `http://localhost:${portWeb}`;
+const alamatWeb = process.env.RANTAI_REVIEW_URL ?? `http://localhost:${portWeb}`;
 const statusTurSelesai = {
 	cookies: [],
 	origins: [{ origin: alamatWeb, localStorage: [{ name: kunciTurSelesai, value: '1' }] }]
@@ -38,29 +38,31 @@ export default defineConfig({
 		},
 		{ name: 'desktop', use: { viewport: { width: 1440, height: 900 } } }
 	],
-	webServer: [
-		{
-			command: `mkdir -p ../frontend/test-logs && go run ./cmd/api > ../frontend/${logAPI} 2>&1`,
-			cwd: '../backend',
-			url: `http://localhost:${portAPI}/api/v1/kesehatan`,
-			timeout: 180_000,
-			reuseExistingServer: !process.env.CI,
-			env: {
-				...process.env,
-				...lingkunganAPIDemo,
-				API_PORT: String(portAPI),
-				CORS_ORIGIN: alamatWeb
-			} as Record<string, string>
-		},
-		{
-			command: `npm run dev -- --port ${portWeb} --strictPort`,
-			url: alamatWeb,
-			timeout: 120_000,
-			reuseExistingServer: !process.env.CI,
-			env: {
-				...process.env,
-				PUBLIC_API_URL: `http://localhost:${portAPI}/api/v1`
-			} as Record<string, string>
-		}
-	]
+	webServer: process.env.RANTAI_REVIEW_URL
+		? undefined
+		: [
+				{
+					command: `mkdir -p ../frontend/test-logs && go run ./cmd/api > ../frontend/${logAPI} 2>&1`,
+					cwd: '../backend',
+					url: `http://localhost:${portAPI}/api/v1/kesehatan`,
+					timeout: 180_000,
+					reuseExistingServer: !process.env.CI,
+					env: {
+						...process.env,
+						...lingkunganAPIDemo,
+						API_PORT: String(portAPI),
+						CORS_ORIGIN: alamatWeb
+					} as Record<string, string>
+				},
+				{
+					command: `npm run dev -- --port ${portWeb} --strictPort`,
+					url: alamatWeb,
+					timeout: 120_000,
+					reuseExistingServer: !process.env.CI,
+					env: {
+						...process.env,
+						PUBLIC_API_URL: `http://localhost:${portAPI}/api/v1`
+					} as Record<string, string>
+				}
+			]
 });

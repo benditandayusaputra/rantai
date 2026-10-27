@@ -20,16 +20,23 @@ interface TautanKaki {
 export const tujuanUtama: TujuanNavigasi[] = [
 	{ kunci: 'beranda', path: '', label: 'nav.home', ikon: House },
 	{ kunci: 'peta', path: '/peta', label: 'nav.map', ikon: Map },
-	{ kunci: 'dasbor', path: '/dasbor', label: 'nav.dashboard', ikon: ChartNoAxesCombined },
+	{
+		kunci: 'dasbor',
+		path: '/dasbor',
+		label: 'nav.dashboard',
+		ikon: ChartNoAxesCombined,
+		isHanyaLayarLebar: true
+	},
 	{ kunci: 'tanya', path: '/tanya', label: 'nav.ask', ikon: MessageCircle },
 	{ kunci: 'lapor', path: '/lapor', label: 'nav.report', ikon: Camera },
-	{ kunci: 'pantau', path: '/pantau', label: 'nav.watch', ikon: Bell, isHanyaLayarLebar: true },
+	{ kunci: 'pantau', path: '/pantau', label: 'nav.watch', ikon: Bell },
 	{
 		kunci: 'tentang',
 		path: '/tentang-data',
 		label: 'nav.about',
 		labelPonsel: 'nav.aboutShort',
-		ikon: Info
+		ikon: Info,
+		isHanyaLayarLebar: true
 	}
 ];
 
@@ -67,3 +74,18 @@ export function tujuanAktif(pathname: string, bahasa: string): Tujuan | null {
 }
 
 export const tujuanPonsel = tujuanUtama.filter((tujuan) => !tujuan.isHanyaLayarLebar);
+
+export function kodeWilayahDariURL(url: URL): string | null {
+	const kandidat =
+		url.pathname.match(/\/kecamatan\/(31\.\d{2}\.\d{2})(?:\/|$)/)?.[1] ?? url.searchParams.get('w');
+	return kandidat && /^31\.\d{2}\.\d{2}(?:\.\d{4})?$/.test(kandidat)
+		? kandidat.split('.').slice(0, 3).join('.')
+		: null;
+}
+
+export function tautanDenganWilayah(path: string, bahasa: string, kode: string | null): string {
+	const tujuan = `/${bahasa}${path}`;
+	return kode && (path === '/tanya' || path === '/cek-sekolah')
+		? `${tujuan}?w=${encodeURIComponent(kode)}`
+		: tujuan;
+}

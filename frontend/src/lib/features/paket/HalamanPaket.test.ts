@@ -69,7 +69,7 @@ describe('HalamanPaket', () => {
 		render(HalamanPaket, { paket: paketSimulasi });
 		const rantai = screen.getByRole('list', { name: '2 dari 4 tersambung, 1 putus' });
 		const rencana = within(rantai).getAllByRole('listitem')[0] as HTMLElement;
-		expect(within(rencana).getByText('Putus')).toBeVisible();
+		expect(within(rencana).getByText('Data belum tersedia')).toBeVisible();
 		expect(within(rencana).getByText('rencana tidak ditemukan')).toBeVisible();
 	});
 });

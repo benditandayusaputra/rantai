@@ -109,6 +109,11 @@
 					</span>
 					<div class="min-w-0">
 						<h1 class="t-h1">{t('area.title', { name: ringkasan.kecamatan.nama })}</h1>
+						<a
+							href="/{bahasaAktif}#cari-wilayah"
+							class="mt-1 inline-flex min-h-touch items-center text-small font-semibold underline underline-offset-4"
+							>{t('area.change')}</a
+						>
 						{#if kota}
 							<p class="mt-1 flex items-center gap-2 text-muted">
 								<Building2 size={16} strokeWidth={1.75} aria-hidden="true" />{kota.nama}

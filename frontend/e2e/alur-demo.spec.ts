@@ -145,7 +145,7 @@ test('5. Tanya Rantai menjawab dengan rujukan yang membuka sumber', async ({ pag
 
 test('6. Paket Aspirasi tersusun dan bisa diunduh sebagai PDF', async ({ page, request }) => {
 	await bukaBagian(page, 'wakilku');
-	await page.getByRole('link', { name: 'Buat Paket Aspirasi' }).click();
+	await page.getByRole('link', { name: 'Susun aspirasi', exact: true }).click();
 	await expect(page).toHaveURL(/\/id\/aspirasi/);
 	await page.getByRole('link', { name: masalahDemo }).click();
 	const unduh = page.getByRole('link', { name: 'Unduh PDF' });

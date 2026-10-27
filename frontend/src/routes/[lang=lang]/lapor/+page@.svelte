@@ -129,6 +129,7 @@
 				</p>
 				<h1 class="t-h1 mt-2">{t('report.signIn.title')}</h1>
 				<p class="mt-2 text-muted">{t('report.signIn.body')}</p>
+				<p class="mt-3 text-small text-muted">{t('report.requirements')}</p>
 				<ol class="mt-5 flex flex-col gap-3">
 					{#each langkahLapor as item, i (item.teks)}
 						{@const Ikon = item.ikon}

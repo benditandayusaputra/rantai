@@ -7,6 +7,7 @@
 	import EmptyState from '$lib/components/EmptyState.svelte';
 	import ErrorState from '$lib/components/ErrorState.svelte';
 	import { bahasaDokumen, tautanAspirasi } from '$lib/features/aspirasi/aspirasi';
+	import LangkahPenyampaian from '$lib/features/aspirasi/LangkahPenyampaian.svelte';
 	import { bahasaAktif, t } from '$lib/i18n';
 	import type { PageProps } from './$types';
 
@@ -54,6 +55,7 @@
 					<p class="t-over">{tema.nama[bahasaAktif]}</p>
 					<h1 class="t-h1 mt-1">{t('packet.title')}</h1>
 					<p class="mt-2 text-muted">{t('packet.forArea', { name: wilayah.nama })}</p>
+					<p class="mt-2 max-w-prose text-small text-muted">{t('packet.intro')}</p>
 				</div>
 			</header>
 
@@ -98,6 +100,11 @@
 				<section aria-labelledby="judul-pratinjau" class="lg:col-span-8">
 					{#if dokumen}
 						<DocumentPreview id="judul-pratinjau" title={t('packet.previewTitle')} {dokumen} />
+						<LangkahPenyampaian
+							kodeWilayah={wilayah.kode}
+							penerima={tema.tanggung_jawab.find((tj) => tj.masalah === data.pilihan.masalah)
+								?.instansi_pelaksana ?? ''}
+						/>
 					{:else}
 						<h2 id="judul-pratinjau" class="sr-only">{t('packet.previewTitle')}</h2>
 						<EmptyState title={t('packet.chooseIssue')} />

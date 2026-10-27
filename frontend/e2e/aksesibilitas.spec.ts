@@ -46,6 +46,7 @@ async function bukaDanAudit(page: Page, path: string) {
 	await page.goto(path);
 	await page.locator('main').first().waitFor();
 	await page.waitForLoadState('networkidle', { timeout: 15_000 }).catch(() => undefined);
+	await expect(page.locator('main')).not.toContainText('terlalu banyak permintaan');
 	expect(await pelanggaranBerat(page)).toEqual([]);
 }
 

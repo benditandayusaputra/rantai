@@ -161,7 +161,9 @@ No glow, decorative background grid, or endless moving texture belongs in the ba
 
 Keep the Rantai wordmark on the left, the main destinations in the middle, and saved items, notifications, and the account control on the right. Use these labels consistently:
 
-`Beranda` · `Wilayah` · `Wakilku` · `Arus Anggaran` · `Aksi`
+`Beranda` · `Peta` · `Data wilayah` · `Tanya` · `Lapor` · `Pantau` · `Tentang Data`
+
+On phones, show five destinations: `Beranda`, `Peta`, `Tanya`, `Lapor`, and `Pantau`. Keep `Data wilayah` and `Tentang Data` available in the footer.
 
 Use the red underline for the current main destination. Set `aria-current="page"` for a page route. Do not mark the homepage as current on every route.
 
@@ -451,3 +453,15 @@ Recorded decisions:
 - **Dark theme.** The earlier release already shipped a complete dark theme behind the header toggle with a saved choice (`localStorage` key `rantai-theme`). It is kept and retuned to these tokens. Light is the default and the theme no longer follows the system setting.
 - **Map data colour.** Seat-gap classes use a slate sequential scale (`--gap-1` to `--gap-4`) with a legend. The selected area is a dashed red outline, a separate state from the data measure (§8 Maps).
 - **Hero photo.** `frontend/static/foto/bundaran-hi.webp` (Unsplash) with the charcoal overlay `.bayang-foto`; the caption links to the source.
+
+## UX revision · 27 October 2026
+
+- The homepage explains a concrete benefit and places region search beside it on desktop and directly after the introduction on phones. Photography is omitted from the phone introduction to keep search near the top.
+- Search accepts Jakarta kelurahan and district names. Show its scope and three-character minimum. Enter selects a unique exact match; ambiguous results require an explicit choice.
+- Onboarding is optional and introduces the region task. Do not interrupt a first visit with an automatic modal.
+- Label homepage sample areas as examples. Never imply that the default sample is the visitor's own location.
+- Carry explicit district context through the URL when opening Ask, Check My School, and aspiration drafts. For schools searched from an area's centre, explain the origin of the distance calculation.
+- Education starts with seats per 100 prospective graduates, its interpretation limit, then detailed values and sources. Keep related actions near the summary. Representative activity is available through a disclosure after the education summaries.
+- Source controls retain certainty labels and accessible source descriptions. Use a complete short label and a 44 px hit area on narrow numeric cards.
+- Project chain status describes data availability. Explain the distinction between missing data and the project's physical progress.
+- Aspiration documents show that they have not been sent, identify the responsible agency, and expose existing delivery instructions outside the document. Links to channel information must not be labelled as submission buttons.

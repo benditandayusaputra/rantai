@@ -19,7 +19,7 @@ export function saringHasilPencarian(hasil: WilayahDitemukan[]): WilayahHalaman[
 		.sort((a, b) => urutanTingkat[a.tingkat] - urutanTingkat[b.tingkat]);
 }
 
-function kodeKecamatan(w: WilayahDitemukan): string {
+export function kodeKecamatan(w: WilayahDitemukan): string {
 	return w.hierarki.find((h) => h.tingkat === 'kecamatan')?.kode ?? w.kode;
 }
 

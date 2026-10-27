@@ -29,6 +29,7 @@
 	let hasil = $state<WilayahHalaman[]>([]);
 	let terbuka = $state(false);
 	let aktif = $state(-1);
+	let isPerluMemilih = $state(false);
 	let urutanPermintaan = 0;
 	let masukan: HTMLInputElement;
 
@@ -61,14 +62,18 @@
 
 	$effect(() => {
 		const kata = value.trim();
+		urutanPermintaan++;
 		aktif = -1;
+		isPerluMemilih = false;
 		if (kata.length < panjangKataMinimal) {
 			urutanPermintaan++;
 			hasil = [];
 			status = 'idle';
 			return;
 		}
-		bukaSaran();
+		if (document.activeElement === masukan) terbuka = true;
+		status = 'loading';
+		hasil = [];
 		const jeda = setTimeout(() => muat(kata), jedaKetikMs);
 		return () => clearTimeout(jeda);
 	});
@@ -94,9 +99,21 @@
 		if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
 			e.preventDefault();
 			geser(e.key === 'ArrowDown' ? 1 : -1);
-		} else if (e.key === 'Enter' && terbuka && aktif >= 0) {
+		} else if (e.key === 'Enter') {
 			e.preventDefault();
-			pilih(aktif);
+			if (terbuka && aktif >= 0) {
+				pilih(aktif);
+				return;
+			}
+			bukaSaran();
+			if (status !== 'ready') return;
+			const persis = hasil.filter(
+				(w) => w.nama.toLocaleLowerCase() === value.trim().toLocaleLowerCase()
+			);
+			const [cocok] = persis;
+			if (persis.length === 1 && cocok) pilih(hasil.indexOf(cocok));
+			else if (hasil.length === 1) pilih(0);
+			else isPerluMemilih = true;
 		} else if (e.key === 'Escape') {
 			terbuka = false;
 		}
@@ -119,6 +136,7 @@
 			bind:this={masukan}
 			bind:value
 			type="search"
+			enterkeyhint="search"
 			role="combobox"
 			autocomplete="off"
 			aria-autocomplete="list"
@@ -134,7 +152,7 @@
 			onkeydown={tanganiTombol}
 		/>
 	</div>
-	<p id="{id}-bantuan" class="sr-only">{t('search.hint')}</p>
+	<p id="{id}-bantuan" class="mt-2 text-caption text-muted">{t('search.hint')}</p>
 	<div
 		class="absolute inset-x-0 top-full z-popover mt-2 overflow-hidden rounded-lg border border-line bg-raised shadow-2"
 		hidden={!terbuka || status === 'idle'}
@@ -159,6 +177,11 @@
 					{t('action.retry')}
 				</button>
 			</div>
+		{/if}
+		{#if isPerluMemilih && status === 'ready'}
+			<p role="status" class="border-b border-line px-4 py-3 text-small font-semibold">
+				{t('search.chooseResult')}
+			</p>
 		{/if}
 		<ul
 			id={idDaftar}

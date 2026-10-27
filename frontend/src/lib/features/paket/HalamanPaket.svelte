@@ -106,10 +106,11 @@
 	{/if}
 
 	<section aria-labelledby="judul-rantai" class="card p-5 md:p-6 lg:p-8">
-		<h2 id="judul-rantai" class="t-h2 mb-6 flex items-center gap-3">
+		<h2 id="judul-rantai" class="t-h2 flex items-center gap-3">
 			<span class="icon-tile"><Link2 size={20} strokeWidth={1.75} aria-hidden="true" /></span>
 			{t('chain.title')}
 		</h2>
+		<p class="mb-6 mt-3 max-w-prose text-small text-muted">{t('chain.explainer')}</p>
 		<ChainStepper rantai={paket.rantai} />
 	</section>
 

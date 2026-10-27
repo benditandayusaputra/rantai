@@ -14,11 +14,17 @@
 
 	const durasiTandaSalin = 3000;
 	let isDisalin = $state(false);
+	let isGagalSalin = $state(false);
 
 	async function salin() {
-		await navigator.clipboard.writeText(dokumen.teks);
-		isDisalin = true;
-		setTimeout(() => (isDisalin = false), durasiTandaSalin);
+		isGagalSalin = false;
+		try {
+			await navigator.clipboard.writeText(dokumen.teks);
+			isDisalin = true;
+			setTimeout(() => (isDisalin = false), durasiTandaSalin);
+		} catch {
+			isGagalSalin = true;
+		}
 	}
 </script>
 
@@ -42,5 +48,8 @@
 	</div>
 </div>
 <p class="sr-only" aria-live="polite">{isDisalin ? t('action.copied') : ''}</p>
+{#if isGagalSalin}<p role="alert" class="mt-3 text-small text-danger">
+		{t('packet.copyFailed')}
+	</p>{/if}
 <pre
 	class="mt-4 overflow-x-auto whitespace-pre-wrap rounded-lg border border-line bg-raised p-5 font-sans text-body shadow-2 md:p-8">{dokumen.teks}</pre>

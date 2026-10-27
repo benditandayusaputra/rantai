@@ -3,6 +3,7 @@
 		ArrowRight,
 		Bell,
 		Camera,
+		Compass,
 		ExternalLink,
 		FileLock,
 		FileText,
@@ -10,6 +11,7 @@
 		MapPin,
 		MessageCircle,
 		School,
+		ShieldCheck,
 		Wallet
 	} from '@lucide/svelte';
 	import { goto, invalidateAll, replaceState } from '$app/navigation';
@@ -23,6 +25,7 @@
 	import GapClassChip from '$lib/components/GapClassChip.svelte';
 	import ProvenanceBadge from '$lib/components/ProvenanceBadge.svelte';
 	import RegionSearch from '$lib/components/RegionSearch.svelte';
+	import SeatSummary from '$lib/components/SeatSummary.svelte';
 	import UseLocationButton from '$lib/components/UseLocationButton.svelte';
 	import {
 		batasPaketBeranda,
@@ -44,6 +47,7 @@
 	import { pilihanJenjang, teksJenjang } from '$lib/features/pendidikan/jenjang';
 	import { cariLokasiku, type StatusLokasi } from '$lib/features/wilayah/lokasi';
 	import { tujuanWilayah } from '$lib/features/wilayah/wilayah';
+	import { mulaiTur } from '$lib/features/tur/tur.svelte';
 	import { formatAngka } from '$lib/format';
 	import { bahasaAktif, t } from '$lib/i18n';
 	import type { PageProps } from './$types';
@@ -96,71 +100,106 @@
 </svelte:head>
 
 <div class="wrap">
-	<div
-		class="flex flex-col gap-5 pb-6 pt-7 md:flex-row md:items-start md:justify-between lg:pb-7 lg:pt-8"
-	>
-		<div class="md:pt-2">
-			<h1 class="t-h1">{t('home.title')}</h1>
-			<p class="mt-1 text-muted">{t('home.subtitle')}</p>
-		</div>
-		<div class="flex w-full flex-col gap-2 md:max-w-md" data-tur="cari">
-			<p class="text-caption text-muted" aria-hidden="true">{t('home.searchLabel')}</p>
-			<RegionSearch
-				bind:value={kata}
-				cari={(q) => cariWilayah(fetch, q)}
-				onselect={buka}
-				onuselocation={pakaiLokasiku}
-			/>
-			<div class="flex flex-wrap items-start gap-x-4">
-				<UseLocationButton state={statusLokasi} {akurasiM} onclick={pakaiLokasiku} />
-				<p class="pt-3 text-caption text-muted">{t('location.privacy')}</p>
-			</div>
-		</div>
-	</div>
-
 	<section
-		class="relative isolate flex min-h-foto overflow-hidden rounded-xl bg-foto text-foto-on"
-		aria-labelledby="judul-pahlawan"
+		class="grid gap-6 pt-6 lg:grid-cols-[1.15fr_1fr] lg:gap-8 lg:pt-8"
+		aria-labelledby="judul-beranda"
 	>
-		<picture>
-			<source media="(max-width: 767px)" srcset="/foto/bundaran-hi-800.webp" />
-			<img
-				src="/foto/bundaran-hi.webp"
-				alt={t('home.photoAlt')}
-				width="1600"
-				height="1067"
-				fetchpriority="high"
-				class="absolute inset-0 -z-10 h-full w-full object-cover object-[60%_58%] max-md:object-[67%_50%]"
-			/>
-		</picture>
-		<div class="bayang-foto absolute inset-0 -z-10" aria-hidden="true"></div>
-		<div class="flex max-w-xl flex-col items-start px-6 py-7 md:px-9 md:py-8">
-			<p class="text-caption font-medium md:text-small">{t('home.kicker')}</p>
-			<h2 id="judul-pahlawan" class="t-display mt-3">{t('home.heroTitle')}</h2>
-			<p class="mt-3 max-w-md text-small md:text-body">{t('home.lead')}</p>
-			<a href="/{bahasaAktif}/peta" class="btn mt-6 gap-5 bg-foto-on text-foto hover:opacity-90">
-				{t('home.heroCta')}
-				<ArrowRight size={18} strokeWidth={1.75} aria-hidden="true" />
+		<div
+			class="relative isolate flex flex-col justify-center overflow-hidden lg:min-h-foto lg:rounded-xl lg:bg-foto lg:px-9 lg:py-10 lg:text-foto-on"
+		>
+			<picture class="hidden lg:block">
+				<img
+					src="/foto/bundaran-hi.webp"
+					alt=""
+					width="1600"
+					height="1067"
+					fetchpriority="high"
+					class="absolute inset-0 -z-20 h-full w-full object-cover object-[60%_58%]"
+				/>
+			</picture>
+			<div class="bayang-foto absolute inset-0 -z-10 hidden lg:block" aria-hidden="true"></div>
+			<p class="text-small font-semibold">{t('home.kicker')}</p>
+			<h1 id="judul-beranda" class="t-display mt-3 max-w-xl">{t('home.title')}</h1>
+			<p class="mt-4 max-w-lg text-body lg:text-foto-on">{t('home.lead')}</p>
+			<ul
+				class="mt-5 hidden flex-wrap gap-x-5 gap-y-2 text-small font-medium lg:flex"
+				aria-label={t('home.benefits')}
+			>
+				<li class="flex items-center gap-2">
+					<School size={18} aria-hidden="true" />{t('home.benefit.schools')}
+				</li>
+				<li class="flex items-center gap-2">
+					<Wallet size={18} aria-hidden="true" />{t('home.benefit.projects')}
+				</li>
+				<li class="flex items-center gap-2">
+					<Landmark size={18} aria-hidden="true" />{t('home.benefit.reps')}
+				</li>
+			</ul>
+			<a
+				href={sumberFoto}
+				target="_blank"
+				rel="noopener"
+				class="absolute bottom-2 right-4 hidden min-h-touch items-center gap-2 text-caption hover:underline lg:inline-flex"
+				aria-label="{t('home.photoCredit')} {t('a11y.opensNewTab')}"
+			>
+				{t('home.photoCaption')}<ExternalLink size={14} aria-hidden="true" />
 			</a>
 		</div>
-		<a
-			href={sumberFoto}
-			target="_blank"
-			rel="noopener"
-			class="bayang-teks-foto absolute bottom-2 right-3 inline-flex min-h-touch items-center gap-2 text-caption hover:underline"
-			aria-label="{t('home.photoCredit')} {t('a11y.opensNewTab')}"
+		<div
+			id="cari-wilayah"
+			class="flex scroll-mt-28 flex-col justify-center rounded-xl border border-line bg-surface p-5 md:p-7"
+			data-tur="cari"
 		>
-			{t('home.photoCaption')}
-			<ExternalLink size={14} strokeWidth={1.75} aria-hidden="true" />
-		</a>
+			<p class="t-over text-primary">{t('home.startStep')}</p>
+			<h2 class="t-h2 mt-2">{t('home.searchTitle')}</h2>
+			<p class="mt-2 text-small text-muted">{t('home.searchLead')}</p>
+			<div class="mt-5">
+				<RegionSearch
+					bind:value={kata}
+					cari={(q) => cariWilayah(fetch, q)}
+					onselect={buka}
+					onuselocation={pakaiLokasiku}
+				/>
+			</div>
+			<div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+				<UseLocationButton state={statusLokasi} {akurasiM} onclick={pakaiLokasiku} />
+				<a
+					href="/{bahasaAktif}/peta"
+					class="inline-flex min-h-touch items-center gap-2 text-small font-semibold underline-offset-4 hover:underline"
+					>{t('home.heroCta')}<ArrowRight size={16} aria-hidden="true" /></a
+				>
+			</div>
+			<p class="mt-3 flex items-start gap-2 text-caption text-muted">
+				<ShieldCheck size={16} class="mt-0.5 shrink-0" aria-hidden="true" />{t('location.privacy')}
+			</p>
+			<div class="mt-5 flex flex-wrap items-center justify-between gap-2 border-t border-line pt-3">
+				<p class="text-caption text-muted">{t('home.noAccount')}</p>
+				<button type="button" class="btn btn-ghost btn-sm" onclick={mulaiTur}
+					><Compass size={16} aria-hidden="true" />{t('home.howTo')}</button
+				>
+			</div>
+		</div>
 	</section>
+	<ol
+		class="mt-6 grid gap-3 border-b border-line pb-5 text-small md:grid-cols-3"
+		aria-label={t('home.howTo')}
+	>
+		{#each ['home.step.choose', 'home.step.understand', 'home.step.act'] as langkah, i (langkah)}
+			<li class="flex items-center gap-3">
+				<span
+					class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sunken text-caption font-semibold"
+					aria-hidden="true">{i + 1}</span
+				>{t(langkah as 'home.step.choose' | 'home.step.understand' | 'home.step.act')}
+			</li>
+		{/each}
+	</ol>
 
 	<div
 		class="mt-5 flex flex-col gap-2 border-b border-line md:flex-row md:items-center md:justify-between"
 	>
 		<nav aria-label={t('home.areaPicker')} class="-mb-px overflow-x-auto">
 			<ul class="flex items-center gap-6">
-				<li class="hidden shrink-0 text-small text-muted md:block" aria-hidden="true">
+				<li class="shrink-0 text-small text-muted" aria-hidden="true">
 					{t('home.areaPicker')}
 				</li>
 				{#each daftarSorotan as wilayah (wilayah.kode)}
@@ -209,7 +248,8 @@
 			<section class="mt-8 lg:mt-10" aria-labelledby="judul-wilayah">
 				<div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
 					<div>
-						<p class="t-over">{lokasi}</p>
+						<p class="text-caption font-medium text-muted">{t('home.exampleLabel')}</p>
+						<p class="t-over mt-2">{lokasi}</p>
 						<h2 id="judul-wilayah" class="t-h2 mt-1">{t('home.area.title')}</h2>
 					</div>
 					<a
@@ -228,7 +268,7 @@
 				</div>
 
 				<div class="mt-5 grid gap-8 lg:grid-cols-[1.25fr_1fr] lg:gap-9">
-					<div class="min-w-0">
+					<div class="min-w-0 max-lg:order-2">
 						<div class="rounded-lg border border-line bg-surface p-4 md:p-5">
 							<p class="text-small font-semibold">{t(teks.berandaPeta)}</p>
 							{#if indikator}
@@ -304,6 +344,7 @@
 							<p class="mt-2 text-small text-muted">
 								{t(teks.berandaLead, { name: nama, period: indikator.periode })}
 							</p>
+							<div class="mt-4"><SeatSummary {indikator} tema={data.jenjang} /></div>
 							<dl class="mt-5 flex flex-col gap-3">
 								{#each batang as item (item.label)}
 									<div class="flex flex-wrap items-baseline justify-between gap-x-3 text-small">
@@ -325,7 +366,6 @@
 								</p>
 								<GapClassChip kelas={indikator.kelas} />
 							</div>
-							<p class="mt-3 text-caption text-muted">{t('services.zoningNote')}</p>
 						{:else}
 							<p class="mt-3 text-small text-muted">{t('tema.empty')}</p>
 						{/if}

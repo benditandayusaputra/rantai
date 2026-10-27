@@ -35,4 +35,25 @@ describe('RegionSearch', () => {
 		const pesan = await screen.findAllByText('Tidak ada wilayah bernama "xyz"');
 		expect(pesan[0]).toBeVisible();
 	});
+
+	it('Enter langsung memilih kecamatan yang namanya tepat meski ada saran kelurahan', async () => {
+		const pengguna = userEvent.setup();
+		const onselect = vi.fn();
+		render(RegionSearch, { cari: async () => hasil, onselect });
+		await pengguna.type(screen.getByRole('combobox'), 'Kelapa Gading');
+		await screen.findByRole('option', { name: /Kelapa Gading Barat/ });
+		await pengguna.keyboard('{Enter}');
+		expect(onselect).toHaveBeenCalledWith(hasil[0]);
+	});
+
+	it('Enter pada nama ambigu meminta pengguna memilih dan tidak menebak', async () => {
+		const pengguna = userEvent.setup();
+		const onselect = vi.fn();
+		render(RegionSearch, { cari: async () => hasil, onselect });
+		await pengguna.type(screen.getByRole('combobox'), 'gading');
+		await screen.findByRole('option', { name: /Kelapa Gading Barat/ });
+		await pengguna.keyboard('{Enter}');
+		expect(onselect).not.toHaveBeenCalled();
+		expect(screen.getByRole('status')).toHaveTextContent('Pilih salah satu hasil');
+	});
 });

@@ -10,12 +10,19 @@
 	import { inisial, keluar, pulihkanSesi, sesiAktif } from '$lib/features/akun/sesi.svelte';
 	import { isAkunPanel } from '$lib/features/panel/panel';
 	import TurPengenalan from '$lib/features/tur/TurPengenalan.svelte';
-	import { tujuanAktif, tujuanPonsel, tujuanUtama } from '$lib/features/navigasi/navigasi';
+	import {
+		kodeWilayahDariURL,
+		tautanDenganWilayah,
+		tujuanAktif,
+		tujuanPonsel,
+		tujuanUtama
+	} from '$lib/features/navigasi/navigasi';
 	import { bahasaAktif, t } from '$lib/i18n';
 
 	let { children } = $props();
 
 	const aktif = $derived(tujuanAktif(page.url.pathname, bahasaAktif));
+	const kodeWilayah = $derived(kodeWilayahDariURL(page.url));
 	const sesi = $derived(sesiAktif());
 	const tautanMasuk = $derived(
 		`/${bahasaAktif}/masuk?lanjut=${encodeURIComponent(page.url.pathname + page.url.search)}`
@@ -29,7 +36,7 @@
 		if (!from) return;
 		const judul = document.querySelector<HTMLElement>('main h1');
 		judul?.setAttribute('tabindex', '-1');
-		judul?.focus();
+		judul?.focus({ preventScroll: true });
 	});
 </script>
 
@@ -50,11 +57,11 @@
 		<div class="wrap flex h-16 items-center gap-6 md:h-18 lg:h-kepala xl:gap-10">
 			<Logo />
 			<nav aria-label={t('nav.main')} class="hidden self-stretch lg:mx-auto lg:block">
-				<ul class="flex h-full items-stretch gap-6 xl:gap-7.5">
+				<ul class="flex h-full items-stretch gap-3 xl:gap-7.5">
 					{#each tujuanUtama as tujuan (tujuan.kunci)}
 						<li class="flex">
 							<a
-								href="/{bahasaAktif}{tujuan.path}"
+								href={tautanDenganWilayah(tujuan.path, bahasaAktif, kodeWilayah)}
 								aria-current={aktif === tujuan.kunci ? 'page' : undefined}
 								data-tur={tujuan.kunci}
 								class="relative inline-flex items-center whitespace-nowrap text-small font-medium text-fg transition-colors duration-fast ease-standard after:absolute after:inset-x-0 after:bottom-0 after:h-0.75 after:bg-transparent hover:text-primary aria-[current=page]:font-semibold aria-[current=page]:after:bg-primary"
@@ -67,7 +74,7 @@
 			</nav>
 			<div class="ml-auto flex items-center gap-2 lg:ml-0">
 				<PengalihTema class="max-md:hidden" />
-				<PengalihBahasa />
+				<div class="hidden xs:block"><PengalihBahasa /></div>
 				<span class="mx-1 hidden h-6 w-px bg-line md:block" aria-hidden="true"></span>
 				{#if sesi}
 					{#if isAkunPanel(sesi.pengguna.peran)}
@@ -106,7 +113,7 @@
 		{@render children()}
 	</main>
 
-	<Footer />
+	<Footer {kodeWilayah} />
 </div>
 
 <nav
@@ -118,7 +125,7 @@
 			{@const Ikon = tujuan.ikon}
 			<li class="min-w-0 flex-1">
 				<a
-					href="/{bahasaAktif}{tujuan.path}"
+					href={tautanDenganWilayah(tujuan.path, bahasaAktif, kodeWilayah)}
 					aria-current={aktif === tujuan.kunci ? 'page' : undefined}
 					data-tur={tujuan.kunci}
 					class="relative flex h-full flex-col items-center justify-center gap-1 text-caption text-muted before:absolute before:inset-x-3 before:top-0 before:h-0.75 before:bg-transparent aria-[current=page]:font-semibold aria-[current=page]:text-fg aria-[current=page]:before:bg-primary"

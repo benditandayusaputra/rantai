@@ -2,6 +2,7 @@
 	import { Info, MapPin, School, Search, ShieldCheck, Sparkles } from '@lucide/svelte';
 	import { untrack } from 'svelte';
 	import { page } from '$app/state';
+	import { goto, replaceState } from '$app/navigation';
 	import { ambilDetailWilayah, ambilSekolahTerdekat, cariWilayah, tangkap } from '$lib/api/klien';
 	import type { SekitarTitik, SekolahTerdekat, Titik, WilayahDitemukan } from '$lib/api/tipe';
 	import ChoiceChips from '$lib/components/ChoiceChips.svelte';
@@ -31,6 +32,8 @@
 	let kata = $state('');
 	let statusLokasi = $state<StatusLokasi>('idle');
 	let akurasiM = $state(0);
+	let isTitikWilayah = $state(false);
+	let urutanMuat = 0;
 	let pusat = $state<{ label: string; titik: Titik } | null>(null);
 	let sekitar = $state<SekitarTitik | null>(null);
 	let status = $state<'awal' | 'memuat' | 'siap' | 'gagal'>('awal');
@@ -57,9 +60,11 @@
 	);
 
 	async function muat(label: string, titik: Titik) {
+		const nomor = ++urutanMuat;
 		pusat = { label, titik };
 		status = 'memuat';
 		const hasil = await tangkap(ambilSekolahTerdekat(fetch, titik, radiusM, jenjang));
+		if (nomor !== urutanMuat) return;
 		sekitar = hasil.ok ? hasil.data : null;
 		status = hasil.ok ? 'siap' : 'gagal';
 	}
@@ -69,10 +74,29 @@
 		untrack(() => pusat && muat(pusat.label, pusat.titik));
 	});
 
-	async function pilihWilayah(wilayah: WilayahDitemukan) {
-		const detail = await tangkap(ambilDetailWilayah(fetch, wilayah.kode));
-		if (detail.ok) await muat(t('check.near', { nama: wilayah.nama }), detail.data.titik_tengah);
-		else status = 'gagal';
+	$effect(() => {
+		const kode = page.url.searchParams.get('w');
+		let dibatalkan = false;
+		if (kode) {
+			status = 'memuat';
+			void tangkap(ambilDetailWilayah(fetch, kode)).then((hasil) => {
+				if (dibatalkan) return;
+				if (hasil.ok) {
+					isTitikWilayah = true;
+					kata = hasil.data.nama;
+					void muat(t('check.near', { nama: hasil.data.nama }), hasil.data.titik_tengah);
+				} else status = 'gagal';
+			});
+		}
+		return () => {
+			dibatalkan = true;
+		};
+	});
+
+	function pilihWilayah(wilayah: WilayahDitemukan) {
+		const url = new URL(page.url);
+		url.searchParams.set('w', wilayah.kode);
+		void goto(url, { noScroll: true, keepFocus: true });
 	}
 
 	async function pakaiLokasiku() {
@@ -83,6 +107,10 @@
 			return;
 		}
 		akurasiM = hasil.akurasiM;
+		isTitikWilayah = false;
+		const url = new URL(page.url);
+		url.searchParams.delete('w');
+		replaceState(url, page.state);
 		statusLokasi = hasil.status === 'akurat' ? 'found' : 'coarse';
 		await muat(t('check.nearMe'), hasil.titik);
 	}
@@ -152,6 +180,7 @@
 						<MapPin size={14} strokeWidth={2} aria-hidden="true" />{pusat?.label}
 					</p>
 					<h2 id="judul-tekanan" class="t-h3">{t('check.pressure', { km })}</h2>
+					{#if isTitikWilayah}<p class="text-small text-muted">{t('check.areaCenter')}</p>{/if}
 					{#if rasio}
 						{@const pecahan = pecahanTekanan(rasio.nilai)}
 						<p class="font-heading text-h2 lg:text-h2-lg">{t(teks.kalimatTekanan, pecahan)}</p>

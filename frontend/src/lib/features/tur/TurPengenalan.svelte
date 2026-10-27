@@ -3,17 +3,9 @@
 	import { tick } from 'svelte';
 	import LogoMark from '$lib/components/LogoMark.svelte';
 	import { t } from '$lib/i18n';
-	import {
-		elemenTarget,
-		isTurSelesai,
-		langkahTersedia,
-		langkahTur,
-		posisiKartu,
-		type Kotak
-	} from './tur';
-	import { mulaiTur, tur, tutupTur } from './tur.svelte';
+	import { elemenTarget, langkahTersedia, langkahTur, posisiKartu, type Kotak } from './tur';
+	import { tur, tutupTur } from './tur.svelte';
 
-	const jedaTampilMs = 800;
 	const ruangSorot = 6;
 	const lensa = [
 		{ ikon: GraduationCap, teks: t('tour.lens.services') },
@@ -36,12 +28,6 @@
 			? posisiKartu(kotakTarget, kartu, layar)
 			: { x: (layar.lebar - kartu.lebar) / 2, y: (layar.tinggi - kartu.tinggi) / 2 }
 	);
-
-	$effect(() => {
-		if (isTurSelesai()) return;
-		const jeda = setTimeout(mulaiTur, jedaTampilMs);
-		return () => clearTimeout(jeda);
-	});
 
 	$effect(() => {
 		if (!dialog) return;
@@ -138,7 +124,7 @@
 							class="btn btn-primary btn-lg"
 							onclick={lanjut}
 						>
-							{t('tour.start')}
+							{isTerakhir ? t('tour.done') : t('tour.start')}
 							<ArrowRight size={18} strokeWidth={1.75} aria-hidden="true" />
 						</button>
 					</div>

@@ -40,14 +40,16 @@
 
 <button
 	type="button"
-	class="relative inline-flex h-6.5 max-w-full items-center overflow-hidden rounded-sm border-ctrl border-line-strong bg-surface text-caption text-fg transition-colors duration-fast ease-standard after:absolute after:-inset-y-2.5 after:inset-x-0 hover:bg-sunken"
+	class="inline-flex min-h-touch max-w-full items-center gap-1 rounded-sm border-ctrl border-line-strong bg-surface px-1.5 text-caption text-fg transition-colors duration-fast ease-standard hover:bg-sunken"
 	aria-haspopup="dialog"
 	aria-expanded={open}
 	aria-label={labelAksesibel}
 	onclick={() => (open = true)}
 >
-	<CertaintyBadge level={angka.label} class="h-full rounded-none border-0" />
-	{#if provenance && tanggal}
+	<CertaintyBadge level={angka.label} class="shrink-0 border-0" />
+	{#if compact}
+		<span class="whitespace-nowrap">{t('source.openShort')}</span>
+	{:else if provenance && tanggal}
 		<span class="truncate px-1.5">
 			{namaSumber(provenance.sumber)}{#if !compact}<span class="num text-muted">
 					· {formatTanggal(tanggal, bahasaAktif)}</span

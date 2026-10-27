@@ -2,6 +2,11 @@
 	import { LoaderCircle, MessageCircle } from '@lucide/svelte';
 	import PercakapanTanya from '$lib/features/tanya/PercakapanTanya.svelte';
 	import { t } from '$lib/i18n';
+	import { goto } from '$app/navigation';
+	import { cariWilayah } from '$lib/api/klien';
+	import RegionSearch from '$lib/components/RegionSearch.svelte';
+	import { kodeKecamatan } from '$lib/features/wilayah/wilayah';
+	import { bahasaAktif } from '$lib/i18n';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
@@ -26,6 +31,16 @@
 					{t('ask.thinking')}
 				</p>
 			{:then hasil}
+				{#if !hasil?.ok}
+					<div class="mb-6 rounded-lg border border-line bg-surface p-5">
+						<h2 class="t-h3">{t('ask.chooseArea')}</h2>
+						<p class="mb-4 mt-2 text-small text-muted">{t('ask.chooseAreaLead')}</p>
+						<RegionSearch
+							cari={(q) => cariWilayah(fetch, q)}
+							onselect={(wilayah) => goto(`/${bahasaAktif}/tanya?w=${kodeKecamatan(wilayah)}`)}
+						/>
+					</div>
+				{/if}
 				<PercakapanTanya
 					konteks={hasil?.ok ? { kode: hasil.data.kode, nama: hasil.data.nama } : null}
 				/>

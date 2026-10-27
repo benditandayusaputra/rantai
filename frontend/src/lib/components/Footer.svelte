@@ -1,10 +1,13 @@
 <script lang="ts">
 	import { Compass } from '@lucide/svelte';
-	import { kelompokKaki } from '$lib/features/navigasi/navigasi';
+	import { kelompokKaki, tautanDenganWilayah } from '$lib/features/navigasi/navigasi';
 	import { mulaiTur } from '$lib/features/tur/tur.svelte';
 	import { bahasaAktif, t } from '$lib/i18n';
 	import Logo from './Logo.svelte';
 	import PengalihTema from './PengalihTema.svelte';
+	import PengalihBahasa from './PengalihBahasa.svelte';
+
+	let { kodeWilayah = null }: { kodeWilayah?: string | null } = $props();
 </script>
 
 <footer class="mt-16 border-t border-line bg-sunken lg:mt-20">
@@ -14,6 +17,7 @@
 			<p class="text-small text-muted">{t('footer.tagline')}</p>
 			<p class="text-small font-semibold">{t('footer.independent')}</p>
 			<p class="text-small text-muted">{t('footer.schedule')}</p>
+			<div class="xs:hidden"><PengalihBahasa /></div>
 			<button type="button" class="btn btn-outline btn-sm self-start" onclick={mulaiTur}>
 				<Compass size={16} strokeWidth={1.75} aria-hidden="true" />
 				{t('tour.replay')}
@@ -26,7 +30,7 @@
 					{#each kelompok.tautan as tautan (tautan.path)}
 						<li>
 							<a
-								href="/{bahasaAktif}{tautan.path}"
+								href={tautanDenganWilayah(tautan.path, bahasaAktif, kodeWilayah)}
 								class="inline-flex min-h-touch items-center text-small font-medium text-fg underline-offset-4 hover:underline"
 							>
 								{t(tautan.label)}

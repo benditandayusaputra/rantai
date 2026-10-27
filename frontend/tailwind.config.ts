@@ -17,6 +17,7 @@ export default {
 	darkMode: ['selector', '[data-theme="dark"]'],
 	theme: {
 		screens: {
+			xs: '380px',
 			md: '768px',
 			lg: '1024px',
 			xl: '1360px'
