@@ -162,7 +162,7 @@
 			<div class="skel h-40 w-full rounded-lg" aria-busy="true"></div>
 		{:then hasil}
 			{#if hasil.ok}
-				<DaftarSekolah sekolah={hasil.data} tema={data.tema} />
+				<DaftarSekolah sekolah={hasil.data} tema={data.tema} kodeKecamatan={data.kode} />
 			{:else}
 				<ErrorState title={t('error.sectionFailed')} onretry={invalidateAll} />
 			{/if}

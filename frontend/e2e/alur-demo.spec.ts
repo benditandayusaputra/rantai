@@ -107,6 +107,7 @@ test('3. arus anggaran memuat paket sekolah dan grafik kesenjangan dibanding bel
 	page
 }) => {
 	await bukaBagian(page, 'anggaran');
+	await page.getByText('Bandingkan belanja dan kecukupan kursi sekolah', { exact: true }).click();
 	for (const jenjang of ['SMP', 'SMA/SMK']) {
 		const judul = `Kesenjangan kursi dibanding belanja sekolah · ${jenjang}`;
 		await expect(page.getByRole('heading', { name: judul })).toBeVisible();

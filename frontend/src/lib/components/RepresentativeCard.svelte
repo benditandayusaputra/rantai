@@ -4,11 +4,11 @@
 	import FotoWakil from './FotoWakil.svelte';
 	import { bahasaAktif, t } from '$lib/i18n';
 
-	let { wakil }: { wakil: Wakil } = $props();
+	let { wakil, kodeKecamatan }: { wakil: Wakil; kodeKecamatan?: string } = $props();
 </script>
 
 <a
-	href="/{bahasaAktif}/anggota/{wakil.id}"
+	href={`/${bahasaAktif}/anggota/${wakil.id}${kodeKecamatan ? `?w=${encodeURIComponent(kodeKecamatan)}` : ''}`}
 	class="card-link group flex h-full items-start gap-3 p-4"
 >
 	<FotoWakil nama={wakil.nama} foto={wakil.foto_url} class="h-12 w-12 text-small" />

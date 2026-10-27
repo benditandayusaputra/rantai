@@ -118,7 +118,7 @@
 		</p>
 		<ul class="grid gap-3 md:grid-cols-2 md:gap-4" aria-busy={status === 'memuat'}>
 			{#each daftar as paket (paket.kode)}
-				<li><PackageCard {paket} /></li>
+				<li><PackageCard {paket} {kodeKecamatan} /></li>
 			{/each}
 		</ul>
 		{#if status === 'memuat'}

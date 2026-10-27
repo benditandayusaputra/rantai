@@ -1,5 +1,7 @@
 <script lang="ts">
 	import {
+		ArrowLeft,
+		ArrowRight,
 		Building2,
 		ChevronRight,
 		GraduationCap,
@@ -12,10 +14,9 @@
 		Wallet
 	} from '@lucide/svelte';
 	import { invalidateAll } from '$app/navigation';
-	import { alamatKartuKecamatan } from '$lib/api/klien';
 	import { page } from '$app/state';
+	import { alamatKartuKecamatan } from '$lib/api/klien';
 	import ErrorState from '$lib/components/ErrorState.svelte';
-	import TombolKembali from '$lib/components/TombolKembali.svelte';
 	import BagianAnggaran from '$lib/features/kecamatan/BagianAnggaran.svelte';
 	import BagianTema from '$lib/features/kecamatan/BagianTema.svelte';
 	import BagianWakilku from '$lib/features/kecamatan/BagianWakilku.svelte';
@@ -27,28 +28,38 @@
 		tautanBagian,
 		type Bagian
 	} from '$lib/features/kecamatan/kecamatan';
-	import { bahasaAktif, t } from '$lib/i18n';
+	import { bahasaAktif, t, type KunciPesan } from '$lib/i18n';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
-
 	const hasil = $derived(data.ringkasan);
-
 	const bagianAktif = $derived(bacaBagian(page.url.searchParams.get('bagian')));
 	let pesanBagikan = $state('');
-	const isTanyaDiminta = page.url.searchParams.get('tanya') === '1';
-	let isTanyaTerbuka = $state(isTanyaDiminta);
-	let isTanyaDimuat = $state(isTanyaDiminta);
-
-	function bukaTanya() {
-		isTanyaDimuat = true;
-		isTanyaTerbuka = true;
-	}
-
-	const infoBagian: Record<Bagian, { ikon: typeof Wallet; tanya: string }> = {
-		tema: { ikon: GraduationCap, tanya: t('lens.services.q') },
-		anggaran: { ikon: Wallet, tanya: t('lens.money.q') },
-		wakilku: { ikon: Landmark, tanya: t('lens.accountability.q') }
+	const halamanWilayah = $derived(
+		`/${bahasaAktif}/kecamatan/${data.kode}${page.url.searchParams.has('kelurahan') ? `?kelurahan=${encodeURIComponent(page.url.searchParams.get('kelurahan') ?? '')}` : ''}`
+	);
+	const infoBagian: Record<
+		Bagian,
+		{ ikon: typeof Wallet; judul: KunciPesan; isi: KunciPesan; cakupan: KunciPesan }
+	> = {
+		tema: {
+			ikon: GraduationCap,
+			judul: 'bagian.tema',
+			isi: 'hub.services.body',
+			cakupan: 'hub.services.scope'
+		},
+		anggaran: {
+			ikon: Wallet,
+			judul: 'bagian.anggaran',
+			isi: 'hub.projects.body',
+			cakupan: 'hub.projects.scope'
+		},
+		wakilku: {
+			ikon: Landmark,
+			judul: 'bagian.wakilku',
+			isi: 'hub.people.body',
+			cakupan: 'hub.people.scope'
+		}
 	};
 
 	async function bagikan() {
@@ -81,145 +92,139 @@
 {:else}
 	{@const ringkasan = hasil.data}
 	{@const kota = ringkasan.kecamatan.hierarki.find((h) => h.tingkat === 'kota')}
-	{@const IkonBagian = infoBagian[bagianAktif].ikon}
 	<div class="border-b border-line bg-surface">
-		<div class="wrap pt-6 lg:pt-10">
-			<div class="flex flex-wrap items-center gap-x-3 gap-y-1">
-				<TombolKembali />
-				<span class="h-5 w-px bg-line" aria-hidden="true"></span>
-				<nav aria-label={t('nav.breadcrumb')}>
-					<ol class="flex flex-wrap items-center gap-1 text-small text-muted">
-						<li>
-							<a
-								href="/{bahasaAktif}"
-								class="inline-flex items-center gap-1 underline-offset-4 hover:text-fg hover:underline"
-							>
-								<House size={14} strokeWidth={1.75} aria-hidden="true" />{t('nav.home')}
-							</a>
-						</li>
-						<li aria-hidden="true"><ChevronRight size={16} strokeWidth={1.75} /></li>
-						<li aria-current="page" class="font-semibold text-fg">{ringkasan.kecamatan.nama}</li>
-					</ol>
-				</nav>
-			</div>
-			<div class="mt-4 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-				<div class="flex items-start gap-4">
-					<span class="icon-tile hidden h-14 w-14 md:inline-flex">
-						<MapPin size={28} strokeWidth={1.75} aria-hidden="true" />
-					</span>
-					<div class="min-w-0">
-						<h1 class="t-h1">{t('area.title', { name: ringkasan.kecamatan.nama })}</h1>
+		<div class="wrap py-6 lg:py-8">
+			<nav aria-label={t('nav.breadcrumb')}>
+				<ol class="flex flex-wrap items-center gap-2 text-small text-muted">
+					<li>
 						<a
-							href="/{bahasaAktif}#cari-wilayah"
-							class="mt-1 inline-flex min-h-touch items-center text-small font-semibold underline underline-offset-4"
-							>{t('area.change')}</a
+							href="/{bahasaAktif}"
+							class="inline-flex min-h-touch items-center gap-1 hover:underline"
+							><House size={14} aria-hidden="true" />{t('nav.home')}</a
 						>
-						{#if kota}
-							<p class="mt-1 flex items-center gap-2 text-muted">
-								<Building2 size={16} strokeWidth={1.75} aria-hidden="true" />{kota.nama}
-							</p>
-						{/if}
-					</div>
+					</li>
+					<li aria-hidden="true"><ChevronRight size={16} /></li>
+					<li>
+						{#if bagianAktif}<a
+								href={halamanWilayah}
+								class="inline-flex min-h-touch items-center font-semibold text-fg hover:underline"
+								>{ringkasan.kecamatan.nama}</a
+							>{:else}<span aria-current="page" class="font-semibold text-fg"
+								>{ringkasan.kecamatan.nama}</span
+							>{/if}
+					</li>
+					{#if bagianAktif}<li aria-hidden="true"><ChevronRight size={16} /></li>
+						<li aria-current="page">{t(infoBagian[bagianAktif].judul)}</li>{/if}
+				</ol>
+			</nav>
+			<div class="mt-3 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+				<div>
+					<p class="t-over flex items-center gap-2">
+						<MapPin size={16} aria-hidden="true" />{t('hub.selectedArea')}
+					</p>
+					<h1 class="t-h1 mt-2">{t('area.title', { name: ringkasan.kecamatan.nama })}</h1>
+					{#if kota}<p class="mt-2 flex items-center gap-2 text-small text-muted">
+							<Building2 size={16} aria-hidden="true" />{kota.nama}
+						</p>{/if}
 				</div>
-				<div class="flex flex-wrap items-center gap-2">
-					<TombolPantau kodeKecamatan={ringkasan.kecamatan.kode} />
-					<button
-						type="button"
-						class="btn btn-outline max-md:px-3 max-md:text-small"
-						onclick={bagikan}
-					>
-						<Share2 size={18} strokeWidth={1.75} aria-hidden="true" />
-						{t('action.share')}
-					</button>
-					<a
+				<a href="/{bahasaAktif}#cari-wilayah" class="btn btn-outline self-start"
+					>{t('area.change')}</a
+				>
+			</div>
+			{#if ringkasan.kelurahan_disorot}<p class="mt-4 rounded-md bg-info-bg p-3 text-small">
+					{t('area.highlighted', { name: ringkasan.kelurahan_disorot.nama })}
+				</p>{/if}
+		</div>
+	</div>
+
+	{#if bagianAktif === null}
+		<section class="wrap pt-8 lg:pt-10" aria-labelledby="judul-pilih-informasi">
+			<h2 id="judul-pilih-informasi" class="t-h2">{t('hub.title')}</h2>
+			<p class="mt-2 max-w-prose text-muted">{t('hub.lead', { name: ringkasan.kecamatan.nama })}</p>
+			<ul class="mt-6 grid gap-4 lg:grid-cols-3 lg:gap-6">
+				{#each daftarBagian as bagian (bagian)}
+					{@const info = infoBagian[bagian]}
+					{@const Ikon = info.ikon}
+					<li>
+						<a
+							href={tautanBagian(page.url, bagian)}
+							class="card-link group flex h-full flex-col p-5 md:p-6"
+						>
+							<span class="icon-tile h-12 w-12"><Ikon size={24} aria-hidden="true" /></span>
+							<h3 class="t-h3 mt-5">{t(info.judul)}</h3>
+							<p class="mt-2 text-small text-muted">{t(info.isi)}</p>
+							<p class="mt-4 text-caption text-muted">{t(info.cakupan)}</p>
+							<span
+								class="mt-auto flex min-h-touch items-center justify-between gap-3 border-t border-line pt-4 text-small font-semibold group-hover:text-primary"
+								><span>{t('hub.open')}</span><ArrowRight size={18} aria-hidden="true" /></span
+							>
+						</a>
+					</li>
+				{/each}
+			</ul>
+			<div
+				class="mt-8 flex flex-col gap-4 rounded-lg bg-sunken p-5 md:flex-row md:items-center md:justify-between md:p-6"
+			>
+				<div>
+					<h3 class="t-h3">{t('hub.askTitle')}</h3>
+					<p class="mt-1 text-small text-muted">{t('hub.askBody')}</p>
+				</div>
+				<a
+					href="/{bahasaAktif}/tanya?w={ringkasan.kecamatan.kode}"
+					class="btn btn-secondary shrink-0"
+					><MessageCircle size={18} aria-hidden="true" />{t('ask.title')}</a
+				>
+			</div>
+			<div class="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4">
+				<TombolPantau kodeKecamatan={ringkasan.kecamatan.kode} />
+				<div class="flex flex-wrap gap-2">
+					<button type="button" class="btn btn-ghost" onclick={bagikan}
+						><Share2 size={18} aria-hidden="true" />{t('action.share')}</button
+					><a
 						href={alamatKartuKecamatan(ringkasan.kecamatan.kode, bahasaAktif)}
-						download="rantai-{ringkasan.kecamatan.kode}.png"
-						class="btn btn-outline max-md:btn-icon"
-						title={t('action.shareImage')}
+						download
+						class="btn btn-ghost"
+						><ImageDown size={18} aria-hidden="true" />{t('action.shareImage')}</a
 					>
-						<ImageDown size={18} strokeWidth={1.75} aria-hidden="true" />
-						<span class="max-md:sr-only">{t('action.shareImage')}</span>
-					</a>
-					<a
-						href="/{bahasaAktif}/tanya?w={encodeURIComponent(ringkasan.kecamatan.kode)}"
-						class="btn btn-secondary max-md:px-3 max-md:text-small lg:hidden"
-					>
-						<MessageCircle size={18} strokeWidth={1.75} aria-hidden="true" />
-						{t('ask.title')}
-					</a>
-					<button
-						type="button"
-						class="btn btn-secondary hidden lg:inline-flex"
-						aria-haspopup="dialog"
-						onclick={bukaTanya}
-					>
-						<MessageCircle size={18} strokeWidth={1.75} aria-hidden="true" />
-						{t('ask.title')}
-					</button>
-					<p class="text-small text-success" aria-live="polite">{pesanBagikan}</p>
 				</div>
 			</div>
-			{#if ringkasan.kelurahan_disorot}
-				<p
-					class="mt-4 flex items-start gap-2 rounded-md border-ctrl border-primary bg-secondary p-4 text-small text-secondary-on"
-				>
-					<MapPin size={18} strokeWidth={1.75} aria-hidden="true" class="mt-px shrink-0" />
-					{t('area.highlighted', { name: ringkasan.kelurahan_disorot.nama })}
-				</p>
-			{/if}
-			{#if isTanyaDimuat}
-				{#await import('$lib/features/tanya/PanelTanya.svelte') then { default: PanelTanya }}
-					<PanelTanya
-						bind:open={isTanyaTerbuka}
-						konteks={{ kode: ringkasan.kecamatan.kode, nama: ringkasan.kecamatan.nama }}
-					/>
-				{/await}
-			{/if}
-
-			<nav aria-label={t('lens.nav')} class="mt-4">
-				<ul class="grid grid-cols-3 md:flex md:gap-2">
+			<p class="mt-2 text-small text-success" aria-live="polite">{pesanBagikan}</p>
+		</section>
+	{:else}
+		<div class="wrap pt-5">
+			<a href={halamanWilayah} class="btn btn-ghost btn-sm -ml-3"
+				><ArrowLeft size={18} aria-hidden="true" />{t('hub.back')}</a
+			>
+			<nav aria-label={t('lens.nav')} class="mt-4 border-b border-line">
+				<ul class="grid grid-cols-3 gap-1 md:flex md:gap-3">
 					{#each daftarBagian as bagian (bagian)}
-						{@const Ikon = infoBagian[bagian].ikon}
 						<li>
 							<a
 								href={tautanBagian(page.url, bagian)}
-								data-sveltekit-noscroll
-								data-sveltekit-replacestate
 								aria-current={bagianAktif === bagian ? 'page' : undefined}
-								class="-mb-px flex h-15 flex-col items-center justify-center gap-1 border-b-link border-transparent px-2 text-small font-semibold text-muted transition-colors duration-fast ease-standard hover:text-fg md:h-14 md:flex-row md:gap-2 md:px-4 md:text-body aria-[current=page]:border-primary aria-[current=page]:text-primary"
+								class="-mb-px flex min-h-15 items-center justify-center border-b-link border-transparent px-2 py-3 text-center text-small font-semibold text-muted hover:text-fg md:px-4 aria-[current=page]:border-primary aria-[current=page]:text-primary"
+								>{t(infoBagian[bagian].judul)}</a
 							>
-								<Ikon size={20} strokeWidth={1.75} aria-hidden="true" />
-								{t(`bagian.${bagian}`)}
-							</a>
 						</li>
 					{/each}
 				</ul>
 			</nav>
 		</div>
-	</div>
-
-	<section class="wrap mt-8 lg:mt-10" aria-labelledby="judul-bagian">
-		<div class="flex items-start gap-4">
-			<span class="icon-tile hidden md:inline-flex">
-				<IkonBagian size={20} strokeWidth={1.75} aria-hidden="true" />
-			</span>
-			<div>
-				<h2 id="judul-bagian" class="t-h2">{t(`bagian.${bagianAktif}`)}</h2>
-				<p class="t-lead mt-1 max-w-prose">{infoBagian[bagianAktif].tanya}</p>
+		<section class="wrap pt-7 lg:pt-8" aria-labelledby="judul-bagian">
+			<h2 id="judul-bagian" class="t-h2">{t(infoBagian[bagianAktif].judul)}</h2>
+			<p class="mt-2 max-w-prose text-muted">{t(infoBagian[bagianAktif].isi)}</p>
+			<div class="mt-6">
+				{#if bagianAktif === 'tema'}<BagianTema
+						tema={ringkasan.tema}
+						kodeKecamatan={ringkasan.kecamatan.kode}
+					/>
+				{:else if bagianAktif === 'anggaran'}<BagianAnggaran
+						anggaran={ringkasan.anggaran}
+						kodeKecamatan={ringkasan.kecamatan.kode}
+						tema={ringkasan.tema}
+					/>
+				{:else}<BagianWakilku wakilku={ringkasan.wakilku} tema={ringkasan.tema} />{/if}
 			</div>
-		</div>
-		<div class="mt-6 lg:mt-8">
-			{#if bagianAktif === 'tema'}
-				<BagianTema tema={ringkasan.tema} kodeKecamatan={ringkasan.kecamatan.kode} />
-			{:else if bagianAktif === 'anggaran'}
-				<BagianAnggaran
-					anggaran={ringkasan.anggaran}
-					kodeKecamatan={ringkasan.kecamatan.kode}
-					tema={ringkasan.tema}
-				/>
-			{:else}
-				<BagianWakilku wakilku={ringkasan.wakilku} />
-			{/if}
-		</div>
-	</section>
+		</section>
+	{/if}
 {/if}

@@ -1,17 +1,23 @@
 <script lang="ts">
-	import type { WakilKecamatan } from '$lib/api/tipe';
+	import type { TemaKecamatan, WakilKecamatan } from '$lib/api/tipe';
 	import KeyNumberCard from '$lib/components/KeyNumberCard.svelte';
 	import RepresentativeCard from '$lib/components/RepresentativeCard.svelte';
 	import AspirasiReses from './AspirasiReses.svelte';
+	import PenanggungJawabLayanan from './PenanggungJawabLayanan.svelte';
 	import { ArrowRight, FileLock, FileText, Landmark, Users } from '@lucide/svelte';
 	import { bahasaAktif, t } from '$lib/i18n';
 
-	let { wakilku }: { wakilku: WakilKecamatan } = $props();
+	let { wakilku, tema }: { wakilku: WakilKecamatan; tema: TemaKecamatan[] } = $props();
 
 	const dapil = $derived(wakilku.dapil);
 </script>
 
 <section aria-labelledby="judul-dapil" class="flex flex-col gap-6">
+	<div class="rounded-lg bg-sunken p-4 md:p-5">
+		<h3 class="t-h3">{t('hub.people.rolesTitle')}</h3>
+		<p class="mt-2 text-small text-muted">{t('hub.people.rolesBody')}</p>
+	</div>
+	{#if tema[0]}<PenanggungJawabLayanan kodeTema={tema[0].kode} />{/if}
 	<div class="card flex flex-col gap-5 p-4 md:p-6">
 		<div class="flex items-center gap-3">
 			<span class="icon-tile"><Landmark size={20} strokeWidth={1.75} aria-hidden="true" /></span>
@@ -47,7 +53,7 @@
 		<p class="text-caption text-muted">{t('photo.dprd')}</p>
 		<ul class="grid gap-3 md:grid-cols-2 md:gap-4 xl:grid-cols-3">
 			{#each dapil.anggota as wakil (wakil.id)}
-				<li><RepresentativeCard {wakil} /></li>
+				<li><RepresentativeCard {wakil} kodeKecamatan={wakilku.kecamatan.kode} /></li>
 			{/each}
 		</ul>
 	</div>

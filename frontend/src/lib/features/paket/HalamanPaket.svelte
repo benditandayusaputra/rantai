@@ -2,7 +2,7 @@
 	import {
 		Building2,
 		Calendar,
-		CircleCheck,
+		Info,
 		CircleHelp,
 		CircleX,
 		ExternalLink,
@@ -13,6 +13,7 @@
 	} from '@lucide/svelte';
 	import type { DetailPaket } from '$lib/api/tipe';
 	import TombolKembali from '$lib/components/TombolKembali.svelte';
+	import RingkasanProyek from './RingkasanProyek.svelte';
 	import ChainStepper from '$lib/components/ChainStepper.svelte';
 	import KeyNumberCard from '$lib/components/KeyNumberCard.svelte';
 	import MaintenanceCounter from '$lib/components/MaintenanceCounter.svelte';
@@ -105,6 +106,8 @@
 		</div>
 	{/if}
 
+	<RingkasanProyek {paket} />
+
 	<section aria-labelledby="judul-rantai" class="card p-5 md:p-6 lg:p-8">
 		<h2 id="judul-rantai" class="t-h2 flex items-center gap-3">
 			<span class="icon-tile"><Link2 size={20} strokeWidth={1.75} aria-hidden="true" /></span>
@@ -118,10 +121,13 @@
 		<div class="flex flex-col gap-8 lg:col-span-8">
 			<section aria-labelledby="judul-sinyal" class="flex flex-col gap-4">
 				<h2 id="judul-sinyal" class="t-h2 flex items-center gap-3">
-					<span class="icon-tile bg-attn-bg text-attn"
+					<span
+						class="icon-tile {paket.sinyal.length
+							? 'bg-attn-bg text-attn'
+							: 'bg-sunken text-muted'}"
 						><CircleHelp size={20} strokeWidth={1.75} aria-hidden="true" /></span
 					>
-					{t('signal.sectionTitle')}
+					{t(paket.sinyal.length ? 'signal.sectionTitle' : 'project.assessmentTitle')}
 				</h2>
 				{#if paket.sinyal.length}
 					<ul class="flex flex-col gap-3">
@@ -145,7 +151,7 @@
 					<p
 						class="flex items-center gap-2 rounded-lg border border-dashed border-line-strong p-4 text-small text-muted"
 					>
-						<CircleCheck size={18} strokeWidth={1.75} aria-hidden="true" class="shrink-0" />
+						<Info size={18} strokeWidth={1.75} aria-hidden="true" class="shrink-0" />
 						{t('signal.none')}
 					</p>
 				{/if}

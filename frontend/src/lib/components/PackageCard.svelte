@@ -7,7 +7,7 @@
 	import CertaintyBadge from './CertaintyBadge.svelte';
 	import SimRibbon from './SimRibbon.svelte';
 
-	let { paket }: { paket: PaketRingkas } = $props();
+	let { paket, kodeKecamatan }: { paket: PaketRingkas; kodeKecamatan?: string } = $props();
 
 	const nilai = $derived(paket.nilai_kontrak ?? paket.hps);
 	const tampil = $derived(nilai ? tampilkanAngka(nilai) : null);
@@ -15,7 +15,7 @@
 </script>
 
 <a
-	href="/{bahasaAktif}/paket/{paket.kode}"
+	href={`/${bahasaAktif}/paket/${paket.kode}${kodeKecamatan ? `?w=${encodeURIComponent(kodeKecamatan)}` : ''}`}
 	class="card-link group flex h-full flex-col overflow-hidden {paket.is_simulation
 		? 'border-ctrl border-cert-sim'
 		: ''}"

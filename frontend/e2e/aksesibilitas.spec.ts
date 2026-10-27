@@ -9,6 +9,9 @@ const dampakBerat = new Set(['serious', 'critical']);
 const halamanTetap = [
 	'/id',
 	`/id/kecamatan/${kecamatanUji}`,
+	`/id/kecamatan/${kecamatanUji}?bagian=tema`,
+	`/id/kecamatan/${kecamatanUji}?bagian=anggaran`,
+	`/id/kecamatan/${kecamatanUji}?bagian=wakilku`,
 	`/id/kecamatan/${kecamatanUji}/pendidikan`,
 	`/id/kecamatan/${kecamatanUji}/pendidikan_sma_smk`,
 	'/id/peta',

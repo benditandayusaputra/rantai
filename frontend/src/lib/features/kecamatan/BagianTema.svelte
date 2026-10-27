@@ -1,17 +1,35 @@
 <script lang="ts">
-	import { ArrowRight, Calendar, FileText, GraduationCap, LocateFixed } from '@lucide/svelte';
+	import {
+		ArrowRight,
+		Calendar,
+		FileText,
+		GraduationCap,
+		LocateFixed,
+		Wallet
+	} from '@lucide/svelte';
 	import type { TemaKecamatan } from '$lib/api/tipe';
 	import EmptyState from '$lib/components/EmptyState.svelte';
-	import GapClassChip from '$lib/components/GapClassChip.svelte';
+	import ChoiceChips from '$lib/components/ChoiceChips.svelte';
+	import { page } from '$app/state';
+	import { statusLayanan } from './kecamatan';
+	import PenanggungJawabLayanan from './PenanggungJawabLayanan.svelte';
+	import DataLayanan from './DataLayanan.svelte';
 	import KeyNumberCard from '$lib/components/KeyNumberCard.svelte';
 	import SeatSummary from '$lib/components/SeatSummary.svelte';
-	import { isTemaPendidikan, teksJenjang } from '$lib/features/pendidikan/jenjang';
+	import {
+		bacaTemaPendidikan,
+		pilihanJenjang,
+		isTemaPendidikan,
+		teksJenjang
+	} from '$lib/features/pendidikan/jenjang';
 	import { bahasaAktif, t } from '$lib/i18n';
 	import SuaraPengawas from './SuaraPengawas.svelte';
 
 	let { tema, kodeKecamatan }: { tema: TemaKecamatan[]; kodeKecamatan: string } = $props();
 
-	const temaPendidikanPertama = $derived(tema.find((item) => isTemaPendidikan(item.kode))?.kode);
+	const jenjangAktif = $derived(bacaTemaPendidikan(page.url.searchParams.get('tema')));
+	const temaTampil = $derived(tema.filter((item) => item.kode === jenjangAktif));
+	const pilihan = $derived(pilihanJenjang(page.url, jenjangAktif));
 
 	const tautanCekSekolah = (kode: string) =>
 		`/${bahasaAktif}/cek-sekolah?w=${kodeKecamatan}&tema=${kode}`;
@@ -19,8 +37,14 @@
 		`/${bahasaAktif}/aspirasi?w=${kodeKecamatan}&tema=${kode}&masalah=${kode === 'pendidikan' ? 'kursi_smp_kurang' : 'kursi_sma_smk_kurang'}`;
 </script>
 
-<div class="flex flex-col gap-10">
-	{#each tema as item (item.kode)}
+<div class="flex flex-col gap-6">
+	<div>
+		<p id="judul-pilih-layanan" class="mb-3 text-small font-semibold">{t('services.choose')}</p>
+		<ChoiceChips labelledby="judul-pilih-layanan" items={pilihan} />
+		<p class="mt-3 text-caption text-muted">{t('services.availableScope')}</p>
+	</div>
+	{#each temaTampil as item (item.kode)}
+		{@const kondisi = statusLayanan(item.indikator)}
 		<section aria-labelledby="tema-{item.kode}" class="flex flex-col gap-6">
 			<div class="card flex flex-col gap-5 p-4 md:p-6">
 				<div class="flex items-start gap-3">
@@ -32,15 +56,24 @@
 						<h3 id="tema-{item.kode}" class="t-h3">{item.judul[bahasaAktif]}</h3>
 					</div>
 				</div>
-				{#if item.indikator}
+				{#if item.indikator && kondisi !== 'belum-dinilai'}
 					<div class="flex flex-wrap items-center gap-3">
-						<GapClassChip kelas={item.indikator.kelas} />
+						{#if kondisi === 'perhatian'}<span
+								class="inline-flex min-h-7 items-center rounded-xs bg-attn-bg px-3 text-caption font-semibold text-attn"
+								>{t('services.issue')}</span
+							>{/if}
 						<span class="inline-flex items-center gap-1 text-small text-muted">
 							<Calendar size={16} strokeWidth={1.75} aria-hidden="true" />
 							{t('tema.period', { period: item.indikator.periode })}
 						</span>
 					</div>
 					<SeatSummary indikator={item.indikator} tema={item.kode} />
+					<div class="rounded-md bg-sunken p-4">
+						<h4 class="text-small font-semibold">{t('services.impactTitle')}</h4>
+						<p class="mt-2 text-small text-muted">
+							{t(kondisi === 'perhatian' ? 'services.impactAttention' : 'services.impactGood')}
+						</p>
+					</div>
 					<div class="grid gap-3 xs:grid-cols-2 lg:grid-cols-4 lg:gap-4">
 						<KeyNumberCard label={t('tema.needs')} angka={item.indikator.kebutuhan} />
 						<KeyNumberCard label={t('tema.capacity')} angka={item.indikator.kapasitas} />
@@ -50,12 +83,12 @@
 						{/if}
 					</div>
 				{:else}
-					<EmptyState title={t('tema.empty')} />
+					<EmptyState title={t('services.unassessed')} description={t('services.unassessedBody')} />
 				{/if}
 				{#if isTemaPendidikan(item.kode)}
 					{@const jenjang = t(teksJenjang[item.kode].jenjang)}
 					<div class="flex flex-col gap-2 border-t border-line pt-4 md:flex-row md:flex-wrap">
-						{#if item.indikator && item.indikator.kesenjangan.nilai > 0}
+						{#if kondisi === 'perhatian'}
 							<a href={tautanAspirasi(item.kode)} class="btn btn-primary max-md:btn-block">
 								<FileText size={18} aria-hidden="true" />{t('services.actOnIssue')}
 							</a>
@@ -76,12 +109,23 @@
 			</div>
 		</section>
 	{/each}
-	{#if temaPendidikanPertama}
+	{#if temaTampil.length}
+		<PenanggungJawabLayanan kodeTema={jenjangAktif} />
+		<div class="rounded-lg border border-line p-4 md:p-5">
+			<h3 class="t-h3">{t('services.budgetTitle')}</h3>
+			<p class="mt-2 max-w-prose text-small text-muted">{t('services.budgetBody')}</p>
+			<a
+				href="/{bahasaAktif}/kecamatan/{kodeKecamatan}?bagian=anggaran&tema={jenjangAktif}"
+				class="btn btn-outline mt-4"
+				><Wallet size={18} aria-hidden="true" />{t('services.budgetAction')}</a
+			>
+		</div>
+		<DataLayanan {kodeKecamatan} kodeTema={jenjangAktif} />
 		<details class="border-t border-line pt-4">
 			<summary class="min-h-touch cursor-pointer py-3 font-heading text-h3 font-semibold"
 				>{t('services.oversightNews')}</summary
 			>
-			<div class="mt-4"><SuaraPengawas {kodeKecamatan} kodeTema={temaPendidikanPertama} /></div>
+			<div class="mt-4"><SuaraPengawas {kodeKecamatan} kodeTema={jenjangAktif} /></div>
 		</details>
 	{/if}
 </div>

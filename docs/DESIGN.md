@@ -119,7 +119,7 @@ Align the header and main content to the same frame. The large desktop wrapper i
 | 1101–1439 px | 30 px | Standard desktop frame, up to 1280 px including gutters |
 | 1440 px and wider | 40 px | Large frame, up to 1316 px including gutters |
 
-The homepage's map and education section use a roughly 60/40 split. The lower budget and oversight section uses a roughly 55/45 split. These ratios suit that content; other screens choose their columns from their job.
+The homepage has one full-row hero followed by region search and a short explanation. The photograph keeps its natural aspect ratio at every viewport; do not crop it with a fixed height or object-cover. Regional data belongs after the visitor selects an area and an information category.
 
 ### Page hierarchy
 
@@ -161,9 +161,9 @@ No glow, decorative background grid, or endless moving texture belongs in the ba
 
 Keep the Rantai wordmark on the left, the main destinations in the middle, and saved items, notifications, and the account control on the right. Use these labels consistently:
 
-`Beranda` · `Peta` · `Data wilayah` · `Tanya` · `Lapor` · `Pantau` · `Tentang Data`
+`Beranda` · `Wilayah` · `Tanya` · `Lapor` · `Tentang Data`
 
-On phones, show five destinations: `Beranda`, `Peta`, `Tanya`, `Lapor`, and `Pantau`. Keep `Data wilayah` and `Tentang Data` available in the footer.
+Use the same five destinations on phones, shortening `Tentang Data` to `Tentang`. `Wilayah` returns to the selected area or to search when no area is selected. Maps, comparative data, and monitoring remain available through contextual links and the footer.
 
 Use the red underline for the current main destination. Set `aria-current="page"` for a page route. Do not mark the homepage as current on every route.
 
@@ -449,19 +449,29 @@ The mockup `rantai-beranda.html` is kept outside the repository. Its production 
 Recorded decisions:
 
 - **Brand mark.** `frontend/src/lib/components/LogoMark.svelte` is a vector trace of the supplied `logo-rantai.png`; the favicon is `frontend/static/favicon.svg`. The wordmark uses the `text-merek` type token.
-- **Navigation labels.** The header lists the destinations that exist in the app (Beranda, Peta, Dasbor, Tanya, Lapor, Pantau, Tentang Data) instead of the mockup's labels, following §7.
+- **Navigation labels.** The header uses the region-first destinations in §7. Area category navigation presents public services, government projects, and representatives/agencies.
 - **Dark theme.** The earlier release already shipped a complete dark theme behind the header toggle with a saved choice (`localStorage` key `rantai-theme`). It is kept and retuned to these tokens. Light is the default and the theme no longer follows the system setting.
 - **Map data colour.** Seat-gap classes use a slate sequential scale (`--gap-1` to `--gap-4`) with a legend. The selected area is a dashed red outline, a separate state from the data measure (§8 Maps).
 - **Hero photo.** `frontend/static/foto/bundaran-hi.webp` (Unsplash) with the charcoal overlay `.bayang-foto`; the caption links to the source.
 
 ## UX revision · 27 October 2026
 
-- The homepage explains a concrete benefit and places region search beside it on desktop and directly after the introduction on phones. Photography is omitted from the phone introduction to keep search near the top.
+- The homepage explains a concrete benefit in one full-row photo hero, with a link to region search below it. Render the complete photograph at its native ratio, including on phones. Keep the caption in normal flow on phones where an overlay would not fit.
 - Search accepts Jakarta kelurahan and district names. Show its scope and three-character minimum. Enter selects a unique exact match; ambiguous results require an explicit choice.
 - Onboarding is optional and introduces the region task. Do not interrupt a first visit with an automatic modal.
-- Label homepage sample areas as examples. Never imply that the default sample is the visitor's own location.
+- The homepage offers an explicit example link without showing sample regional statistics. The area landing page asks the visitor to choose one information category before displaying its data.
 - Carry explicit district context through the URL when opening Ask, Check My School, and aspiration drafts. For schools searched from an area's centre, explain the origin of the distance calculation.
 - Education starts with seats per 100 prospective graduates, its interpretation limit, then detailed values and sources. Keep related actions near the summary. Representative activity is available through a disclosure after the education summaries.
 - Source controls retain certainty labels and accessible source descriptions. Use a complete short label and a 44 px hit area on narrow numeric cards.
 - Project chain status describes data availability. Explain the distinction between missing data and the project's physical progress.
 - Aspiration documents show that they have not been sent, identify the responsible agency, and expose existing delivery instructions outside the document. Links to channel information must not be labelled as submission buttons.
+
+## Region-first information architecture · 27 October 2026
+
+1. Homepage: purpose, complete hero photograph, area search, and a brief explanation. Do not fetch or render regional statistics, a thematic map, or project lists here.
+2. Area landing page: selected area, change-area control, and three information choices: `Layanan publik`, `Proyek pemerintah`, `Wakil rakyat & instansi`. A missing or invalid `bagian` query shows these choices.
+3. Category view: explicitly select a `bagian`; preserve area context and provide a return to the information choices. Services display one education level at a time.
+4. Explain services in the order: condition, meaning for residents, evidence, responsible agency/oversight, related spending, then map/table and next actions.
+5. Label a measured shortage as `Perlu perhatian`. Adequate capacity receives a factual explanation of its benefit without an issue badge. Missing or invalid data is `Belum dapat dinilai`, never inferred to be a good condition.
+6. A project overview identifies its recorded agency, contractor, planned dates, recorded procurement stage, available handover date, and location precision. Missing structured outcomes remain unknown. Do not infer work duration or completion from a budget or tender stage.
+7. Agency delivery, contractor work, and council oversight are distinct roles. Do not call the current DPRD directory a regional cabinet.

@@ -35,7 +35,7 @@
 				{@const umpan = data.umpan_isu_pengawas?.[wakil.id] ?? []}
 				<li class="card flex flex-col gap-3 p-4">
 					<a
-						href="/{bahasaAktif}/anggota/{wakil.id}"
+						href="/{bahasaAktif}/anggota/{wakil.id}?w={kodeKecamatan}"
 						class="group flex items-center gap-3 font-bold underline-offset-4 hover:underline"
 					>
 						<FotoWakil nama={wakil.nama} foto={wakil.foto_url} class="h-10 w-10 text-small" />

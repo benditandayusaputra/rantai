@@ -1,7 +1,8 @@
-import { Bell, Camera, ChartNoAxesCombined, House, Info, Map, MessageCircle } from '@lucide/svelte';
+import { Camera, House, Info, MapPin, MessageCircle } from '@lucide/svelte';
 import type { KunciPesan } from '$lib/i18n';
 
-export type Tujuan = 'beranda' | 'peta' | 'dasbor' | 'tanya' | 'lapor' | 'pantau' | 'tentang';
+export type Tujuan =
+	'beranda' | 'wilayah' | 'peta' | 'dasbor' | 'tanya' | 'lapor' | 'pantau' | 'tentang';
 
 interface TujuanNavigasi {
 	kunci: Tujuan;
@@ -19,24 +20,15 @@ interface TautanKaki {
 
 export const tujuanUtama: TujuanNavigasi[] = [
 	{ kunci: 'beranda', path: '', label: 'nav.home', ikon: House },
-	{ kunci: 'peta', path: '/peta', label: 'nav.map', ikon: Map },
-	{
-		kunci: 'dasbor',
-		path: '/dasbor',
-		label: 'nav.dashboard',
-		ikon: ChartNoAxesCombined,
-		isHanyaLayarLebar: true
-	},
+	{ kunci: 'wilayah', path: '/wilayah', label: 'nav.area', ikon: MapPin },
 	{ kunci: 'tanya', path: '/tanya', label: 'nav.ask', ikon: MessageCircle },
 	{ kunci: 'lapor', path: '/lapor', label: 'nav.report', ikon: Camera },
-	{ kunci: 'pantau', path: '/pantau', label: 'nav.watch', ikon: Bell },
 	{
 		kunci: 'tentang',
 		path: '/tentang-data',
 		label: 'nav.about',
 		labelPonsel: 'nav.aboutShort',
-		ikon: Info,
-		isHanyaLayarLebar: true
+		ikon: Info
 	}
 ];
 
@@ -69,6 +61,8 @@ export const kelompokKaki: { judul: KunciPesan; tautan: TautanKaki[] }[] = [
 export function tujuanAktif(pathname: string, bahasa: string): Tujuan | null {
 	const sisa = pathname.slice(bahasa.length + 1);
 	if (sisa === '' || sisa === '/') return 'beranda';
+	if (/^\/(kecamatan|peta|dasbor|cek-sekolah|anggota|paket|penyedia)(?:\/|$)/.test(sisa))
+		return 'wilayah';
 	const isCocok = (path: string) => sisa === path || sisa.startsWith(`${path}/`);
 	return tujuanUtama.find((tujuan) => tujuan.path && isCocok(tujuan.path))?.kunci ?? null;
 }
@@ -84,6 +78,7 @@ export function kodeWilayahDariURL(url: URL): string | null {
 }
 
 export function tautanDenganWilayah(path: string, bahasa: string, kode: string | null): string {
+	if (path === '/wilayah') return kode ? `/${bahasa}/kecamatan/${kode}` : `/${bahasa}#cari-wilayah`;
 	const tujuan = `/${bahasa}${path}`;
 	return kode && (path === '/tanya' || path === '/cek-sekolah')
 		? `${tujuan}?w=${encodeURIComponent(kode)}`

@@ -38,11 +38,13 @@
 	const zoom = isAdaTitik ? zoomSekolah : zoomKota;
 	const lapisanAwal = bacaLapisan(kueri.get('lapisan'));
 
-	let lapisan = $state(isAdaTitik ? { ...lapisanAwal, sekolah: true } : lapisanAwal);
+	let lapisan = $state(
+		isAdaTitik && !kueri.has('lapisan') ? { ...lapisanAwal, sekolah: true } : lapisanAwal
+	);
 	let petaDasar = $state(bacaPetaDasar(kueri.get('dasar')));
 	let isTabel = $state(kueri.get('tampilan') === 'tabel');
 	let isKontrolTerbuka = $state(false);
-	let terpilih = $state<string | null>(null);
+	let terpilih = $state<string | null>(kueri.get('w'));
 	let paket = $state<PetaPaket['features']>([]);
 	let sekolah = $state<SekolahTerdekat[]>([]);
 	let laporan = $state<FiturLaporan[]>([]);

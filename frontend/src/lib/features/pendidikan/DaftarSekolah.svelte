@@ -11,8 +11,11 @@
 	import { teksJenjang, temaPendidikanBawaan, type TemaPendidikan } from './jenjang';
 	import { kunciJenisSekolah } from './pendidikan';
 
-	let { sekolah, tema = temaPendidikanBawaan }: { sekolah: Sekolah[]; tema?: TemaPendidikan } =
-		$props();
+	let {
+		sekolah,
+		tema = temaPendidikanBawaan,
+		kodeKecamatan
+	}: { sekolah: Sekolah[]; tema?: TemaPendidikan; kodeKecamatan?: string } = $props();
 
 	const teks = $derived(teksJenjang[tema]);
 </script>
@@ -56,7 +59,7 @@
 						<td class="p-3">
 							{#if item.lokasi}
 								<a
-									href="/{bahasaAktif}/peta?lat={item.lokasi.lat}&lng={item.lokasi.lng}"
+									href={`/${bahasaAktif}/peta?lat=${item.lokasi.lat}&lng=${item.lokasi.lng}&tema=${tema}${kodeKecamatan ? `&w=${encodeURIComponent(kodeKecamatan)}` : ''}`}
 									class="link inline-flex min-h-touch items-center gap-1 whitespace-nowrap"
 								>
 									<MapPin size={16} strokeWidth={1.75} aria-hidden="true" />{t('pen.school.onMap')}

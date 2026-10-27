@@ -42,12 +42,15 @@
 	<EmptyState title={t('money.empty')} />
 {/if}
 
-{#each temaPendidikan as item (item.kode)}
-	<div class="mt-10">
-		<GrafikBelanja {kodeKecamatan} kodeTema={item.kode} />
-	</div>
-{/each}
-
 <div class="mt-10">
 	<DaftarPaket {kodeKecamatan} {tema} tahunAwal={anggaran?.tahun ?? new Date().getFullYear()} />
 </div>
+
+<details class="mt-8 border-t border-line pt-4">
+	<summary class="min-h-touch cursor-pointer py-3 font-semibold"
+		>{t('project.compareEducation')}</summary
+	>
+	{#each temaPendidikan as item (item.kode)}<div class="mt-6">
+			<GrafikBelanja {kodeKecamatan} kodeTema={item.kode} />
+		</div>{/each}
+</details>

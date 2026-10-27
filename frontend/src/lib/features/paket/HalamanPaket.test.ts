@@ -86,3 +86,15 @@ describe('PackageCard', () => {
 		expect(screen.getByRole('link')).toHaveAttribute('href', '/id/paket/simulasi-1');
 	});
 });
+
+describe('konteks proyek wilayah', () => {
+	it('membawa wilayah ke detail paket agar Tanya tetap berkonteks', () => {
+		const ringkas = {
+			...paketSimulasi,
+			penyedia: 'CV Contoh Simulasi',
+			tema: []
+		} as unknown as PaketRingkas;
+		render(PackageCard, { paket: ringkas, kodeKecamatan: '31.72.06' });
+		expect(screen.getByRole('link')).toHaveAttribute('href', '/id/paket/simulasi-1?w=31.72.06');
+	});
+});

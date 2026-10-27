@@ -3,7 +3,8 @@
 	import { kunciKelas } from '$lib/features/kecamatan/kecamatan';
 	import { t, type KunciPesan } from '$lib/i18n';
 
-	let { judul = 'map.legend' }: { judul?: KunciPesan } = $props();
+	let { judul = 'map.legend', mendatar = false }: { judul?: KunciPesan; mendatar?: boolean } =
+		$props();
 
 	const kotak: Record<KelasRasio, string> = {
 		sangat_kurang: 'bg-gap-1',
@@ -17,7 +18,7 @@
 
 <div>
 	<p class="text-caption font-bold">{t(judul)}</p>
-	<ul class="mt-2 flex flex-col gap-1">
+	<ul class="mt-2 flex {mendatar ? 'flex-wrap gap-x-4 gap-y-2' : 'flex-col gap-1'}">
 		{#each urutan as kelas (kelas)}
 			<li class="flex items-center gap-2 text-caption">
 				<span class="h-4 w-6 rounded-xs {kotak[kelas]}" aria-hidden="true"></span>

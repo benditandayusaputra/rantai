@@ -1,19 +1,33 @@
-import type { Angka, KelasRasio } from '$lib/api/tipe';
+import type { Angka, IndikatorRingkas, KelasRasio } from '$lib/api/tipe';
 import { formatAngka, formatRupiah } from '$lib/format';
 import { bahasaAktif, isKunciPesan, t, type KunciPesan } from '$lib/i18n';
 
 export const daftarBagian = ['tema', 'anggaran', 'wakilku'] as const;
 export type Bagian = (typeof daftarBagian)[number];
 
-export function bacaBagian(nilai: string | null): Bagian {
-	return daftarBagian.find((b) => b === nilai) ?? 'tema';
+export function bacaBagian(nilai: string | null): Bagian | null {
+	return daftarBagian.find((b) => b === nilai) ?? null;
 }
 
 export function tautanBagian(url: URL, bagian: Bagian): string {
 	const tujuan = new URL(url);
-	if (bagian === 'tema') tujuan.searchParams.delete('bagian');
-	else tujuan.searchParams.set('bagian', bagian);
+	tujuan.searchParams.set('bagian', bagian);
 	return tujuan.pathname + tujuan.search;
+}
+
+export function statusLayanan(
+	indikator: IndikatorRingkas | null
+): 'perhatian' | 'memadai' | 'belum-dinilai' {
+	if (
+		!indikator ||
+		indikator.kelas === 'tidak_ada_data' ||
+		!Number.isFinite(indikator.kebutuhan.nilai) ||
+		indikator.kebutuhan.nilai <= 0 ||
+		!Number.isFinite(indikator.kapasitas.nilai) ||
+		indikator.kapasitas.nilai < 0
+	)
+		return 'belum-dinilai';
+	return indikator.kapasitas.nilai < indikator.kebutuhan.nilai ? 'perhatian' : 'memadai';
 }
 
 export const kunciKelas: Record<KelasRasio, KunciPesan> = {
