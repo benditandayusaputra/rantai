@@ -60,7 +60,7 @@
 				width="1600"
 				height="1067"
 				fetchpriority="high"
-				class="block h-auto w-full object-contain"
+				class="block h-auto w-full object-cover md:h-80 lg:h-96"
 				data-testid="hero-image"
 			/>
 		</picture>

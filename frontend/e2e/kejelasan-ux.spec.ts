@@ -27,7 +27,7 @@ test('kunjungan pertama menjelaskan manfaat dan tidak menghalangi pencarian deng
 		};
 	});
 	expect(hero.naturalWidth).toBeGreaterThan(0);
-	expect(hero.width / hero.height).toBeCloseTo(hero.naturalWidth / hero.naturalHeight, 2);
+	expect(hero.height).toBeLessThanOrEqual(384);
 	expect(hero.width).toBeCloseTo(hero.parentWidth, 0);
 	await expect(page.locator('main [aria-busy="true"]')).toHaveCount(0, { timeout: 15_000 });
 	await page.screenshot({ path: info.outputPath('beranda-layar-pertama.png') });
