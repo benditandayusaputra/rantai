@@ -1,7 +1,6 @@
 <script lang="ts">
 	import {
 		ArrowDown,
-		ArrowRight,
 		Compass,
 		ExternalLink,
 		Landmark,
@@ -106,13 +105,8 @@
 					onuselocation={pakaiLokasiku}
 				/>
 			</div>
-			<div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+			<div class="mt-4">
 				<UseLocationButton state={statusLokasi} {akurasiM} onclick={pakaiLokasiku} />
-				<a
-					href="/{bahasaAktif}/kecamatan/31.72.06"
-					class="inline-flex min-h-touch items-center gap-2 text-small font-semibold underline-offset-4 hover:underline"
-					>{t('home.tryExample')}<ArrowRight size={16} aria-hidden="true" /></a
-				>
 			</div>
 			<p class="mt-3 flex items-start gap-2 text-caption text-muted">
 				<ShieldCheck size={16} class="mt-0.5 shrink-0" aria-hidden="true" />{t('location.privacy')}
