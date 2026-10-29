@@ -34,14 +34,15 @@ function geolokasiTiruan(hasil: { akurasi?: number; kodeGalat?: number }): Geolo
 }
 
 describe('pencarian wilayah', () => {
-	it('membuang kota dan mendahulukan kelurahan', () => {
+	it('menyertakan kota dan mendahulukan kelurahan', () => {
 		const hasil = saringHasilPencarian([{ ...kota, hierarki: [provinsi] }, kecamatan, kelurahan]);
-		expect(hasil.map((w) => w.kode)).toEqual(['31.72.06.1001', '31.72.06']);
+		expect(hasil.map((w) => w.kode)).toEqual(['31.72.06.1001', '31.72.06', '31.72']);
 	});
 
 	it('mengarahkan kelurahan ke halaman kecamatan dengan kelurahan disorot', () => {
 		expect(tujuanWilayah(kelurahan)).toBe('/id/kecamatan/31.72.06?kelurahan=31.72.06.1001');
 		expect(tujuanWilayah(kecamatan)).toBe('/id/kecamatan/31.72.06');
+		expect(tujuanWilayah({ ...kota, hierarki: [provinsi] })).toBe('/id/kota/31.72');
 	});
 
 	it('menulis induk dari yang terdekat tanpa provinsi', () => {

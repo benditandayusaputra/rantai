@@ -38,6 +38,18 @@
 </script>
 
 <div class="flex flex-col gap-6">
+	<div class="rounded-lg border border-line bg-sunken p-4 md:p-5">
+		<h3 class="t-h3">{t('city.districtContext.title')}</h3>
+		<p class="mt-2 text-small text-muted">{t('city.districtContext.body')}</p>
+		<a
+			href="/{bahasaAktif}/kota/{kodeKecamatan
+				.split('.')
+				.slice(0, 2)
+				.join('.')}?tema={jenjangAktif}"
+			class="btn btn-outline mt-4"
+			>{t('city.districtContext.action')}<ArrowRight size={18} aria-hidden="true" /></a
+		>
+	</div>
 	<div>
 		<p id="judul-pilih-layanan" class="mb-3 text-small font-semibold">{t('services.choose')}</p>
 		<ChoiceChips labelledby="judul-pilih-layanan" items={pilihan} />

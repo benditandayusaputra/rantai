@@ -59,7 +59,9 @@ test('ringkasan angka tersambung ke aspirasi dengan wilayah dan masalah terpilih
 }, info) => {
 	await page.goto(`/id/kecamatan/${wilayah}`);
 	await page.getByRole('link', { name: /^Layanan publik/ }).click();
-	await expect(page).toHaveURL(/bagian=tema/);
+	await expect(page).toHaveURL(/kota\/31.72/);
+	await page.getByRole('link', { name: 'Kelapa Gading', exact: true }).first().click();
+	await expect(page).toHaveURL(/bagian=tema/, { timeout: 15_000 });
 	await expect(page.getByText(/kursi SMP negeri tersedia untuk setiap 100/)).toBeVisible();
 	await expect(page.locator('main [aria-busy="true"]')).toHaveCount(0, { timeout: 15_000 });
 	await page.screenshot({ path: info.outputPath('kecamatan.png'), fullPage: true });
@@ -150,6 +152,7 @@ test('layanan menampilkan satu jenjang, dampak, kewenangan, peta, dan tabel', as
 	await expect(
 		page.getByRole('heading', { name: 'Kursi SMA/SMK negeri dibanding lulusan SMP', exact: true })
 	).toHaveCount(0);
+	await expect(page.locator('main [aria-busy="true"]')).toHaveCount(0, { timeout: 15_000 });
 	await page.getByRole('button', { name: 'Tabel sekolah', exact: true }).click();
 	await expect(page.getByRole('table')).toBeVisible();
 	await page.getByRole('link', { name: 'SMA/SMK', exact: true }).click();

@@ -61,7 +61,7 @@ export const kelompokKaki: { judul: KunciPesan; tautan: TautanKaki[] }[] = [
 export function tujuanAktif(pathname: string, bahasa: string): Tujuan | null {
 	const sisa = pathname.slice(bahasa.length + 1);
 	if (sisa === '' || sisa === '/') return 'beranda';
-	if (/^\/(kecamatan|peta|dasbor|cek-sekolah|anggota|paket|penyedia)(?:\/|$)/.test(sisa))
+	if (/^\/(kota|kecamatan|peta|dasbor|cek-sekolah|anggota|paket|penyedia)(?:\/|$)/.test(sisa))
 		return 'wilayah';
 	const isCocok = (path: string) => sisa === path || sisa.startsWith(`${path}/`);
 	return tujuanUtama.find((tujuan) => tujuan.path && isCocok(tujuan.path))?.kunci ?? null;
@@ -71,16 +71,20 @@ export const tujuanPonsel = tujuanUtama.filter((tujuan) => !tujuan.isHanyaLayarL
 
 export function kodeWilayahDariURL(url: URL): string | null {
 	const kandidat =
-		url.pathname.match(/\/kecamatan\/(31\.\d{2}\.\d{2})(?:\/|$)/)?.[1] ?? url.searchParams.get('w');
-	return kandidat && /^31\.\d{2}\.\d{2}(?:\.\d{4})?$/.test(kandidat)
+		url.pathname.match(/\/(?:kota|kecamatan)\/(31\.\d{2}(?:\.\d{2})?)(?:\/|$)/)?.[1] ??
+		url.searchParams.get('w');
+	return kandidat && /^31\.\d{2}(?:\.\d{2}(?:\.\d{4})?)?$/.test(kandidat)
 		? kandidat.split('.').slice(0, 3).join('.')
 		: null;
 }
 
 export function tautanDenganWilayah(path: string, bahasa: string, kode: string | null): string {
-	if (path === '/wilayah') return kode ? `/${bahasa}/kecamatan/${kode}` : `/${bahasa}#cari-wilayah`;
+	if (path === '/wilayah')
+		return kode
+			? `/${bahasa}/${kode.split('.').length === 2 ? 'kota' : 'kecamatan'}/${kode}`
+			: `/${bahasa}#cari-wilayah`;
 	const tujuan = `/${bahasa}${path}`;
-	return kode && (path === '/tanya' || path === '/cek-sekolah')
+	return kode && kode.split('.').length === 3 && (path === '/tanya' || path === '/cek-sekolah')
 		? `${tujuan}?w=${encodeURIComponent(kode)}`
 		: tujuan;
 }

@@ -124,7 +124,10 @@
 					</p>
 					<h1 class="t-h1 mt-2">{t('area.title', { name: ringkasan.kecamatan.nama })}</h1>
 					{#if kota}<p class="mt-2 flex items-center gap-2 text-small text-muted">
-							<Building2 size={16} aria-hidden="true" />{kota.nama}
+							<Building2 size={16} aria-hidden="true" /><a
+								href="/{bahasaAktif}/kota/{kota.kode}"
+								class="link">{kota.nama}</a
+							>
 						</p>{/if}
 				</div>
 				<a href="/{bahasaAktif}#cari-wilayah" class="btn btn-outline self-start"
@@ -147,7 +150,9 @@
 					{@const Ikon = info.ikon}
 					<li>
 						<a
-							href={tautanBagian(page.url, bagian)}
+							href={bagian === 'tema' && kota
+								? `/${bahasaAktif}/kota/${kota.kode}`
+								: tautanBagian(page.url, bagian)}
 							class="card-link group flex h-full flex-col p-5 md:p-6"
 						>
 							<span class="icon-tile h-12 w-12"><Ikon size={24} aria-hidden="true" /></span>
@@ -200,7 +205,9 @@
 					{#each daftarBagian as bagian (bagian)}
 						<li>
 							<a
-								href={tautanBagian(page.url, bagian)}
+								href={bagian === 'tema' && kota
+									? `/${bahasaAktif}/kota/${kota.kode}`
+									: tautanBagian(page.url, bagian)}
 								aria-current={bagianAktif === bagian ? 'page' : undefined}
 								class="-mb-px flex min-h-15 items-center justify-center border-b-link border-transparent px-2 py-3 text-center text-small font-semibold text-muted hover:text-fg md:px-4 aria-[current=page]:border-primary aria-[current=page]:text-primary"
 								>{t(infoBagian[bagian].judul)}</a

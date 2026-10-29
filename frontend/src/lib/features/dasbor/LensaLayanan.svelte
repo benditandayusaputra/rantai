@@ -109,6 +109,21 @@
 			{/each}
 		</div>
 
+		<section aria-labelledby="judul-analisis-kota">
+			<h3 id="judul-analisis-kota" class="t-h3">{t('city.choose')}</h3>
+			<p class="mt-2 text-small text-muted">{t('city.entryLead')}</p>
+			<ul class="mt-4 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+				{#each dasbor.kota as kota (kota.kunci)}
+					<li>
+						<a
+							href="/{bahasaAktif}/kota/{kota.kunci}?tema={jenjang}"
+							class="card-link flex min-h-touch items-center p-4 font-semibold">{kota.nama}</a
+						>
+					</li>
+				{/each}
+			</ul>
+		</section>
+
 		<div class="grid gap-6 lg:grid-cols-12">
 			<KartuGrafik
 				class="lg:col-span-7"

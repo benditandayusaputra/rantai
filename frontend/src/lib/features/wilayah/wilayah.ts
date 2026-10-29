@@ -4,7 +4,7 @@ import { bahasaAktif } from '$lib/i18n';
 export const panjangKataMinimal = 3;
 export const jedaKetikMs = 200;
 
-const urutanTingkat = { kelurahan: 0, kecamatan: 1 } as const;
+const urutanTingkat = { kelurahan: 0, kecamatan: 1, kota: 2 } as const;
 type TingkatHalaman = keyof typeof urutanTingkat;
 
 export type WilayahHalaman = WilayahDitemukan & { tingkat: TingkatHalaman };
@@ -24,6 +24,7 @@ export function kodeKecamatan(w: WilayahDitemukan): string {
 }
 
 export function tujuanWilayah(w: WilayahDitemukan): string {
+	if (w.tingkat === 'kota') return `/${bahasaAktif}/kota/${w.kode}`;
 	const halaman = `/${bahasaAktif}/kecamatan/${kodeKecamatan(w)}`;
 	return w.tingkat === 'kelurahan' ? `${halaman}?kelurahan=${w.kode}` : halaman;
 }

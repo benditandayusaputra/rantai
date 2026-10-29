@@ -13,7 +13,8 @@ describe('tujuanAktif', () => {
 		['/id/pantau', null],
 		['/id/lapor/terkirim', 'lapor'],
 		['/id/laporan/51', null],
-		['/id/kecamatan/31.72.01', 'wilayah']
+		['/id/kecamatan/31.72.01', 'wilayah'],
+		['/id/kota/31.72', 'wilayah']
 	])('%s menandai %s', (path, harapan) => {
 		expect(tujuanAktif(path, 'id')).toBe(harapan);
 	});
@@ -22,6 +23,7 @@ describe('tujuanAktif', () => {
 describe('konteks wilayah saat berpindah halaman', () => {
 	it.each([
 		['/id/kecamatan/31.72.06', '31.72.06'],
+		['/id/kota/31.72', '31.72'],
 		['/id/kecamatan/31.72.06/pendidikan', '31.72.06'],
 		['/en/tanya?w=31.72.06', '31.72.06'],
 		['/id/cek-sekolah?w=31.72.06.1001', '31.72.06'],
@@ -48,4 +50,9 @@ describe('konteks wilayah saat berpindah halaman', () => {
 			'tentang'
 		]);
 	});
+});
+
+it('mempertahankan konteks kota tanpa mengirimkannya sebagai kecamatan ke Tanya', () => {
+	expect(tautanDenganWilayah('/wilayah', 'id', '31.72')).toBe('/id/kota/31.72');
+	expect(tautanDenganWilayah('/tanya', 'id', '31.72')).toBe('/id/tanya');
 });

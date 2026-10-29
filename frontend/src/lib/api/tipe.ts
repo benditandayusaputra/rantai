@@ -823,3 +823,27 @@ export interface DasborTanggungJawab {
 	reses: Seri;
 	instansi: Seri;
 }
+
+export interface PendidikanKota {
+	kabupaten_kota: RingkasanWilayah[];
+	wilayah: RingkasanWilayah;
+	tema: string;
+	periode: string;
+	kecamatan: { kode: string; nama: string; indikator: IndikatorRingkas | null }[];
+	sekolah: {
+		kode_kecamatan: string;
+		bentuk: BentukSekolah;
+		negeri: Angka;
+		swasta: Angka;
+		diambil_pada: string;
+	}[];
+	ringkasan: {
+		total_kecamatan: number;
+		kecamatan_dengan_data: number;
+		kecamatan_kurang: number;
+		kebutuhan: Angka | null;
+		kapasitas: Angka | null;
+		kesenjangan: Angka | null;
+		rasio: Angka | null;
+	};
+}

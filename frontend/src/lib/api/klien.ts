@@ -359,3 +359,11 @@ export function ambilDasborTanggungJawab(
 ): Promise<DasborTanggungJawab> {
 	return ambilData<DasborTanggungJawab>(fetchFn, '/dasbor/tanggung-jawab', { tahun });
 }
+
+export function ambilPendidikanKota(
+	fetchFn: Fetch,
+	tema: string,
+	kode: string
+): Promise<import('./tipe').PendidikanKota> {
+	return ambilData(fetchFn, `/tema/${tema}/kota/${kode}`);
+}

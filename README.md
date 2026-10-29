@@ -27,6 +27,10 @@ Karya cabang Web In Action, MIA 2026 (UPNVJ), tema "Designing Digital Futures, P
 | Aksi | Tanya Rantai dengan rujukan bernomor yang membuka sumber; Paket Aspirasi dalam teks dan PDF ke kanal yang tepat; jalur aspirasi terdekat; Data yang Belum Dibuka dengan templat permohonan PPID |
 | Akun | Masuk tanpa kata sandi dengan kode OTP email; Panel Instansi dan anggota DPRD untuk hak jawab yang tampil apa adanya; panel moderasi laporan dan umpan |
 
+Layanan publik juga tersedia pada tingkat **kabupaten/kota**, dengan perbandingan seluruh kecamatan di dalamnya. Pilih kabupaten/kota melalui pencarian wilayah atau halaman Data Wilayah; dari halaman kecamatan, pilihan Layanan Publik membuka analisis kota induknya. Tabel tetap menautkan rincian tiap kecamatan.
+
+Halaman `/id/kota/<kode>` (misalnya `/id/kota/31.72`) menampilkan sebaran SD, SMP, SMA, dan SMK negeri/swasta, kapasitas masuk SMP serta SMA/SMK dibanding calon lulusan, penjelasan dampak potensial pada akses siswa, dan kesimpulan beserta batas datanya. Endpoint `GET /api/v1/tema/{tema}/kota/{kode}` mengagregasi indikator periode terbaru yang sama. Rasio kabupaten/kota memakai jumlah kursi dibagi jumlah calon lulusan; total ditahan bila data kecamatan belum lengkap. Inventaris sekolah dihitung per NPSN, bukan per jalur penerimaan, dan tidak disamakan dengan penyerapan siswa aktual.
+
 ## Arsitektur
 
 ```mermaid

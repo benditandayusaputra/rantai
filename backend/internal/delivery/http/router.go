@@ -8,29 +8,30 @@ import (
 const prefiksAPI = "/api/v1"
 
 type Layanan struct {
-	Wilayah    LayananWilayah
-	Provenance LayananProvenance
-	Tema       LayananTema
-	Wakil      LayananWakil
-	Umpan      LayananUmpan
-	Ringkasan  LayananRingkasanKecamatan
-	Kartu      PembuatKartu
-	Paket      LayananPaket
-	Belanja    LayananBelanja
-	Dasbor     LayananDasbor
-	Pembanding LayananPembanding
-	Penyedia   LayananPenyedia
-	Indikator  LayananIndikator
-	Sekolah    LayananSekolahTerdekat
-	SumberData LayananSumberData
-	Tanya      LayananTanya
-	Aspirasi   LayananAspirasi
-	Jalur      LayananJalurAspirasi
-	BelumBuka  LayananDataBelumDibuka
-	Masuk      LayananMasuk
-	Akses      PemeriksaAkses
-	Paripurna  LayananParipurna
-	Laporan    LayananLaporan
+	PendidikanKota LayananPendidikanKota
+	Wilayah        LayananWilayah
+	Provenance     LayananProvenance
+	Tema           LayananTema
+	Wakil          LayananWakil
+	Umpan          LayananUmpan
+	Ringkasan      LayananRingkasanKecamatan
+	Kartu          PembuatKartu
+	Paket          LayananPaket
+	Belanja        LayananBelanja
+	Dasbor         LayananDasbor
+	Pembanding     LayananPembanding
+	Penyedia       LayananPenyedia
+	Indikator      LayananIndikator
+	Sekolah        LayananSekolahTerdekat
+	SumberData     LayananSumberData
+	Tanya          LayananTanya
+	Aspirasi       LayananAspirasi
+	Jalur          LayananJalurAspirasi
+	BelumBuka      LayananDataBelumDibuka
+	Masuk          LayananMasuk
+	Akses          PemeriksaAkses
+	Paripurna      LayananParipurna
+	Laporan        LayananLaporan
 
 	BacaLaporan       LayananBacaLaporan
 	KonfirmasiLaporan LayananKonfirmasiLaporan
@@ -53,7 +54,7 @@ func NewApp(cfg config.Server, layanan Layanan) *fiber.App {
 	daftarkanUmpan(api, handlerUmpan{layanan: layanan.Umpan})
 	daftarkanRingkasan(api, handlerRingkasanKecamatan{layanan: layanan.Ringkasan, kartuKecamatan: layanan.Kartu})
 	daftarkanAnggaran(api, layanan)
-	daftarkanPendidikan(api, handlerPendidikan{layanan: layanan.Indikator})
+	daftarkanLayananPendidikan(api, layanan)
 	api.Get("/sumber-data", handlerSumberData{layanan: layanan.SumberData}.baca)
 	api.Get("/sekolah/terdekat", handlerSekolahTerdekat{layanan: layanan.Sekolah}.cari)
 	daftarkanTanya(api, layanan.Tanya, cfg.Tanya, cfg.ProxyRahasia)
@@ -120,4 +121,9 @@ func daftarkanPendidikan(api fiber.Router, h handlerPendidikan) {
 	api.Get("/peta/tema/:kode", h.petaTema)
 	api.Get("/tema/:kode/kecamatan/:kecamatan", h.detailKecamatan)
 	api.Get("/tema/:kode/kecamatan/:kecamatan/sekolah", h.sekolahKecamatan)
+}
+
+func daftarkanLayananPendidikan(api fiber.Router, layanan Layanan) {
+	daftarkanPendidikan(api, handlerPendidikan{layanan: layanan.Indikator})
+	api.Get("/tema/:kode/kota/:kota", handlerPendidikanKota{layanan: layanan.PendidikanKota}.baca)
 }
