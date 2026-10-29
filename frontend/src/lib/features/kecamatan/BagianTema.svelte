@@ -57,23 +57,10 @@
 					</div>
 				</div>
 				{#if item.indikator && kondisi !== 'belum-dinilai'}
-					<div class="flex flex-wrap items-center gap-3">
-						{#if kondisi === 'perhatian'}<span
-								class="inline-flex min-h-7 items-center rounded-xs bg-attn-bg px-3 text-caption font-semibold text-attn"
-								>{t('services.issue')}</span
-							>{/if}
-						<span class="inline-flex items-center gap-1 text-small text-muted">
-							<Calendar size={16} strokeWidth={1.75} aria-hidden="true" />
-							{t('tema.period', { period: item.indikator.periode })}
-						</span>
-					</div>
-					<SeatSummary indikator={item.indikator} tema={item.kode} />
-					<div class="rounded-md bg-sunken p-4">
-						<h4 class="text-small font-semibold">{t('services.impactTitle')}</h4>
-						<p class="mt-2 text-small text-muted">
-							{t(kondisi === 'perhatian' ? 'services.impactAttention' : 'services.impactGood')}
-						</p>
-					</div>
+					<p class="inline-flex items-center gap-1 text-small text-muted">
+						<Calendar size={16} strokeWidth={1.75} aria-hidden="true" />
+						{t('tema.period', { period: item.indikator.periode })}
+					</p>
 					<div class="grid gap-3 xs:grid-cols-2 lg:grid-cols-4 lg:gap-4">
 						<KeyNumberCard label={t('tema.needs')} angka={item.indikator.kebutuhan} />
 						<KeyNumberCard label={t('tema.capacity')} angka={item.indikator.kapasitas} />
@@ -84,6 +71,27 @@
 					</div>
 				{:else}
 					<EmptyState title={t('services.unassessed')} description={t('services.unassessedBody')} />
+				{/if}
+			</div>
+			{#if isTemaPendidikan(item.kode)}
+				<DataLayanan {kodeKecamatan} kodeTema={item.kode} />
+			{/if}
+			<div class="card flex flex-col gap-5 p-4 md:p-6">
+				{#if item.indikator && kondisi !== 'belum-dinilai'}
+					<SeatSummary indikator={item.indikator} tema={item.kode} />
+					<div class="rounded-md bg-sunken p-4">
+						<h4 class="text-small font-semibold">{t('services.impactTitle')}</h4>
+						<p class="mt-2 text-small text-muted">
+							{t(kondisi === 'perhatian' ? 'services.impactAttention' : 'services.impactGood')}
+						</p>
+					</div>
+					{#if kondisi === 'perhatian'}
+						<p
+							class="self-start rounded-xs bg-attn-bg px-3 py-1 text-caption font-semibold text-attn"
+						>
+							{t('services.issue')}
+						</p>
+					{/if}
 				{/if}
 				{#if isTemaPendidikan(item.kode)}
 					{@const jenjang = t(teksJenjang[item.kode].jenjang)}
@@ -120,7 +128,6 @@
 				><Wallet size={18} aria-hidden="true" />{t('services.budgetAction')}</a
 			>
 		</div>
-		<DataLayanan {kodeKecamatan} kodeTema={jenjangAktif} />
 		<details class="border-t border-line pt-4">
 			<summary class="min-h-touch cursor-pointer py-3 font-heading text-h3 font-semibold"
 				>{t('services.oversightNews')}</summary

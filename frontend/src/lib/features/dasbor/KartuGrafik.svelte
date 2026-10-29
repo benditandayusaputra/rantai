@@ -44,7 +44,6 @@
 			<span class="icon-tile"><Ikon size={20} strokeWidth={1.75} aria-hidden="true" /></span>
 			<div class="min-w-0">
 				<h3 id="{id}-judul" class="t-h3">{judul}</h3>
-				{#if keterangan}<p class="mt-1 max-w-prose text-small text-muted">{keterangan}</p>{/if}
 			</div>
 		</div>
 		{#if !isKosong}<TableToggle bind:pressed={isTabel} controls={id} />{/if}
@@ -82,6 +81,7 @@
 			{@render children()}
 		{/if}
 	</div>
+	{#if keterangan}<p class="max-w-prose text-small text-muted">{keterangan}</p>{/if}
 	{#if catatan}{@render catatan()}{/if}
 	{#if angka && !isKosong}
 		<div><ProvenanceBadge {angka} nilai={tampilkanAngka(angka).nilai} /></div>

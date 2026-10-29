@@ -111,34 +111,6 @@
 				<p class="t-lead mt-2 max-w-prose">{t('dash.lead')}</p>
 			</div>
 		</div>
-		{#if grafikTren.length > 0}
-			<section aria-labelledby="judul-tren" class="mt-8">
-				<div class="flex items-center gap-3">
-					<TrendingUp size={22} strokeWidth={1.75} aria-hidden="true" class="text-primary" />
-					<h2 id="judul-tren" class="t-h2">{t('dash.trend.title')}</h2>
-				</div>
-				<p class="mt-1 max-w-prose text-small text-muted">{t('dash.trend.lead')}</p>
-				<div class="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-6">
-					{#each grafikTren as grafik (grafik.judul)}
-						<KartuGrafik
-							judul={grafik.judul}
-							keterangan={grafik.keterangan}
-							ikon={grafik.ikon}
-							angka={angkaTerbaru(grafik.seri, grafik.nilai, grafik.satuan)}
-							kolom={[t('dash.col.period'), grafik.judul]}
-							baris={grafik.seri.isi.map((p) => [p.kunci, grafik.format(grafik.nilai(p))])}
-						>
-							<GrafikGaris
-								isi={grafik.seri.isi}
-								nilaiDari={grafik.nilai}
-								format={grafik.format}
-								labelDari={(p) => p.kunci}
-							/>
-						</KartuGrafik>
-					{/each}
-				</div>
-			</section>
-		{/if}
 		<nav aria-label={t('dash.lensNav')} class="mt-8">
 			<ul class="grid grid-cols-3 md:flex md:gap-2">
 				{#each daftarLensa as lensa (lensa)}
@@ -222,3 +194,32 @@
 		{/if}
 	</div>
 </section>
+
+{#if grafikTren.length > 0}
+	<section aria-labelledby="judul-tren" class="wrap mt-10">
+		<div class="flex items-center gap-3">
+			<TrendingUp size={22} strokeWidth={1.75} aria-hidden="true" class="text-primary" />
+			<h2 id="judul-tren" class="t-h2">{t('dash.trend.title')}</h2>
+		</div>
+		<p class="mt-1 max-w-prose text-small text-muted">{t('dash.trend.lead')}</p>
+		<div class="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+			{#each grafikTren as grafik (grafik.judul)}
+				<KartuGrafik
+					judul={grafik.judul}
+					keterangan={grafik.keterangan}
+					ikon={grafik.ikon}
+					angka={angkaTerbaru(grafik.seri, grafik.nilai, grafik.satuan)}
+					kolom={[t('dash.col.period'), grafik.judul]}
+					baris={grafik.seri.isi.map((p) => [p.kunci, grafik.format(grafik.nilai(p))])}
+				>
+					<GrafikGaris
+						isi={grafik.seri.isi}
+						nilaiDari={grafik.nilai}
+						format={grafik.format}
+						labelDari={(p) => p.kunci}
+					/>
+				</KartuGrafik>
+			{/each}
+		</div>
+	</section>
+{/if}
