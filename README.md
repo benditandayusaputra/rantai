@@ -22,7 +22,7 @@ Karya cabang Web In Action, MIA 2026 (UPNVJ), tema "Designing Digital Futures, P
 | --- | --- |
 | Wilayah | Pencarian kelurahan dan kecamatan serta "pakai lokasiku"; halaman kecamatan dengan bagian Tema, Arus Anggaran, dan Wakilku; peta kesenjangan kursi, proyek, sekolah, dan laporan warga dengan tabel alternatif; lencana sumber di setiap angka; halaman Tentang Data; Pantau Wilayahku dengan feed dan Web Push |
 | Tema Pendidikan | Kesenjangan kursi SMP negeri (lulusan SD) dan SMA/SMK negeri (lulusan SMP) per kecamatan dan per kota, dengan rumus terbuka berisi angka kecamatan; daftar sekolah dan daya tampungnya; grafik kesenjangan dibanding belanja sekolah; anggota Komisi E yang menyuarakan isu sekolah; Cek Sekolahku berbasis radius |
-| Arus Anggaran | Paket LPSE DKI bertaut ke RUP SiRUP; lokasi paket dari namanya; halaman paket berbentuk rantai dari rencana sampai bukti warga; estimasi masa pemeliharaan; pembanding HPS paket sejenis dan sinyal perlu ditanyakan; profil penyedia dari Opentender; Aspirasi ke Anggaran; Lapor Bukti dengan foto tanpa EXIF dan verifikasi saksi |
+| Arus Anggaran | Paket LPSE DKI bertaut ke RUP SiRUP; jaringan relasi interaktif instansi, paket, dan penyedia; Temuan Komunitas untuk jurnalis warga dan peneliti dengan pemeriksaan sesama; lokasi paket dari namanya; halaman paket berbentuk rantai dari rencana sampai bukti warga; estimasi masa pemeliharaan; pembanding HPS paket sejenis dan sinyal perlu ditanyakan; profil penyedia dari Opentender; Aspirasi ke Anggaran; Lapor Bukti dengan foto tanpa EXIF dan verifikasi saksi |
 | Wakilku | Dapil dan anggota DPRD DKI 2024 sampai 2029; profil dengan komisi, alat kelengkapan, dan tautan LHKPN; jejak kegiatan dari rilis resmi DPRD dan media terverifikasi dengan ringkasan netral; isu yang disuarakan; sikap fraksi; aspirasi reses per bidang |
 | Aksi | Tanya Rantai dengan rujukan bernomor yang membuka sumber; Paket Aspirasi dalam teks dan PDF ke kanal yang tepat; jalur aspirasi terdekat; Data yang Belum Dibuka dengan templat permohonan PPID |
 | Akun | Masuk tanpa kata sandi dengan kode OTP email; Panel Instansi dan anggota DPRD untuk hak jawab yang tampil apa adanya; panel moderasi laporan dan umpan |
@@ -30,6 +30,18 @@ Karya cabang Web In Action, MIA 2026 (UPNVJ), tema "Designing Digital Futures, P
 Layanan publik juga tersedia pada tingkat **kabupaten/kota**, dengan perbandingan seluruh kecamatan di dalamnya. Pilih kabupaten/kota melalui pencarian wilayah atau halaman Data Wilayah; dari halaman kecamatan, pilihan Layanan Publik membuka analisis kota induknya. Tabel tetap menautkan rincian tiap kecamatan.
 
 Halaman `/id/kota/<kode>` (misalnya `/id/kota/31.72`) menampilkan sebaran SD, SMP, SMA, dan SMK negeri/swasta, kapasitas masuk SMP serta SMA/SMK dibanding calon lulusan, penjelasan dampak potensial pada akses siswa, dan kesimpulan beserta batas datanya. Endpoint `GET /api/v1/tema/{tema}/kota/{kode}` mengagregasi indikator periode terbaru yang sama. Rasio kabupaten/kota memakai jumlah kursi dibagi jumlah calon lulusan; total ditahan bila data kecamatan belum lengkap. Inventaris sekolah dihitung per NPSN, bukan per jalur penerimaan, dan tidak disamakan dengan penyerapan siswa aktual.
+
+## API terbuka
+
+Semua data Rantai dapat dipakai ulang lewat API JSON tanpa kunci di `https://rantai-civic.vercel.app/api/v1`, diperbarui otomatis setiap hari pukul 02.00 WIB dari LPSE dan SiRUP. Contoh:
+
+```bash
+curl 'https://rantai-civic.vercel.app/api/v1/kecamatan/31.72.06/ringkasan'
+curl 'https://rantai-civic.vercel.app/api/v1/jaringan?wilayah=31.72'
+curl -o paket.csv 'https://rantai-civic.vercel.app/api/v1/unduh/paket.csv?kode_wilayah=31.72.06&tahun=2026'
+```
+
+Setiap angka membawa `provenance_id` yang dapat dibuka di `/provenance/{id}`. Daftar lengkap ada di bagian API Terbuka halaman Tentang Data dan `docs/SPEC.md` bagian 11. Cantumkan Rantai dan sumber aslinya saat memakai ulang; turunan data Opentender berlisensi ODbL.
 
 ## Arsitektur
 

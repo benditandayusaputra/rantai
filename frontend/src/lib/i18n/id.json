@@ -1252,5 +1252,17 @@
 	"finding.invalid": "Lengkapi isi (20 sampai 1000 karakter) dan tautan sumber yang sah.",
 	"finding.login": "Masuk untuk menambah atau memeriksa temuan",
 	"finding.hide": "Sembunyikan (moderator)",
-	"finding.hideReason": "Alasan disembunyikan"
+	"finding.hideReason": "Alasan disembunyikan",
+	"about.api": "API Terbuka",
+	"about.api.lead": "Semua angka di Rantai dapat diambil ulang oleh jurnalis, peneliti, dan pengembang lewat API JSON tanpa kunci dan unduhan CSV. Datanya diperbarui otomatis setiap hari pukul 02.00 WIB dari LPSE dan SiRUP, dan setiap angka membawa provenance_id yang dapat dibuka di /provenance/{id}.",
+	"about.api.terms": "Cantumkan Rantai dan sumber aslinya saat memakai ulang. Turunan data Opentender berlisensi ODbL. Permintaan dibatasi wajar per alamat IP; untuk penarikan besar, pakai unduhan CSV.",
+	"about.api.try": "Coba",
+	"about.api.search": "Cari kelurahan atau kecamatan",
+	"about.api.summary": "Ringkasan satu kecamatan: layanan, anggaran, dan wakil",
+	"about.api.packages": "Paket pengadaan LPSE di kecamatan, per tahun dan halaman",
+	"about.api.seats": "Kesenjangan kursi SMP dengan rumus dan angka asalnya",
+	"about.api.network": "Jaringan relasi instansi, paket, dan penyedia",
+	"about.api.csv": "Unduh paket satu wilayah sebagai CSV",
+	"about.api.sources": "Status pengambilan tiap sumber data dan waktu berhasil terakhir",
+	"about.api.method": "GET"
 }

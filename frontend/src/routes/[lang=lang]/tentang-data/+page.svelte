@@ -5,8 +5,10 @@
 	import {
 		ArrowRight,
 		BadgeCheck,
+		Braces,
 		CircleHelp,
 		Database,
+		ExternalLink,
 		FileLock,
 		FileText,
 		MapPin,
@@ -15,6 +17,8 @@
 		TriangleAlert
 	} from '@lucide/svelte';
 	import { invalidateAll } from '$app/navigation';
+	import { page } from '$app/state';
+	import { alamatLengkap, contohPath, titikAkhirTerbuka } from '$lib/features/tentang/apiTerbuka';
 	import type { JenisSinyal, Label } from '$lib/api/tipe';
 	import CertaintyBadge from '$lib/components/CertaintyBadge.svelte';
 	import EmptyState from '$lib/components/EmptyState.svelte';
@@ -30,6 +34,7 @@
 	const sinyal: JenisSinyal[] = ['S-01', 'S-02', 'S-03', 'S-04', 'S-05'];
 	const daftarIsi = [
 		{ id: 'sumber', judul: 'about.sources', ikon: Database },
+		{ id: 'api', judul: 'about.api', ikon: Braces },
 		{ id: 'label', judul: 'about.labels', ikon: BadgeCheck },
 		{ id: 'rumus', judul: 'about.formula', ikon: Sigma },
 		{ id: 'lokasi', judul: 'about.location', ikon: MapPin },
@@ -144,6 +149,36 @@
 					</div>
 				{/if}
 			{/await}
+		</section>
+
+		<section id="api" aria-labelledby="judul-api" class={kelasBagian}>
+			{@render judulBagian('api', 'about.api')}
+			<p class="max-w-prose text-muted">{t('about.api.lead')}</p>
+			<ul class="card flex flex-col divide-y divide-line">
+				{#each titikAkhirTerbuka as titik (titik.path)}
+					<li class="flex flex-col gap-2 p-4 md:flex-row md:items-center md:justify-between">
+						<div class="flex min-w-0 flex-col gap-1">
+							<p class="flex min-w-0 items-center gap-2">
+								<span class="rounded-xs bg-sunken px-2 py-0.5 text-caption font-bold"
+									>{t('about.api.method')}</span
+								>
+								<code class="min-w-0 break-all font-mono text-mono">{contohPath(titik)}</code>
+							</p>
+							<p class="text-small text-muted">{t(titik.deskripsi)}</p>
+						</div>
+						<a
+							href={alamatLengkap(titik, page.url.origin)}
+							target="_blank"
+							rel="noopener"
+							class="btn btn-outline shrink-0 self-start text-small md:self-center"
+							><ExternalLink size={16} strokeWidth={1.75} aria-hidden="true" />{t(
+								'about.api.try'
+							)}<span class="sr-only">{t('a11y.opensNewTab')}</span></a
+						>
+					</li>
+				{/each}
+			</ul>
+			<p class="max-w-prose text-small text-muted">{t('about.api.terms')}</p>
 		</section>
 
 		<section id="label" aria-labelledby="judul-label" class={kelasBagian}>

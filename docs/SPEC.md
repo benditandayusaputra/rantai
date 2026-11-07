@@ -291,6 +291,8 @@ Halaman berisi: daftar sumber dan tanggal ambil terakhir (dari `ingest_run`, buk
 
 API: `GET /sumber-data`.
 
+Bagian **API Terbuka** di halaman yang sama mendaftar titik akhir publik tanpa kunci (cari wilayah, ringkasan kecamatan, paket kecamatan, kesenjangan kursi, jaringan relasi, unduh CSV, status sumber data) dengan contoh kueri dan tautan coba, ditambah syarat pakai ulang: cantumkan Rantai dan sumber asli, turunan Opentender berlisensi ODbL, dan batas laju per IP. Setiap angka membawa `provenance_id` yang dapat dibuka di `/provenance/{id}`.
+
 ### WIL-06 Pantau Wilayahku
 
 Warga berlangganan kecamatan. Kanal: feed di aplikasi (wajib), Web Push dengan VAPID, email ringkasan mingguan. Kejadian:

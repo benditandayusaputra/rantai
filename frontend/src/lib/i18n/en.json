@@ -1252,5 +1252,17 @@
 	"finding.invalid": "Complete the finding (20 to 1000 characters) and a valid source link.",
 	"finding.login": "Sign in to add or check findings",
 	"finding.hide": "Hide (moderator)",
-	"finding.hideReason": "Reason for hiding"
+	"finding.hideReason": "Reason for hiding",
+	"about.api": "Open API",
+	"about.api.lead": "Every figure in Rantai can be reused by journalists, researchers, and developers through a keyless JSON API and CSV downloads. Data updates automatically every day at 02.00 WIB from LPSE and SiRUP, and every figure carries a provenance_id resolvable at /provenance/{id}.",
+	"about.api.terms": "Credit Rantai and the original source when reusing. Derivatives of Opentender data are licensed under ODbL. Requests are fairly rate limited per IP address; for bulk pulls, use the CSV download.",
+	"about.api.try": "Try",
+	"about.api.search": "Search sub-districts and districts",
+	"about.api.summary": "One district summary: services, budget, and representatives",
+	"about.api.packages": "LPSE procurement packages in a district, by year and page",
+	"about.api.seats": "Junior high seat gap with its formula and source figures",
+	"about.api.network": "Agency, package, and contractor relation network",
+	"about.api.csv": "Download one area's packages as CSV",
+	"about.api.sources": "Retrieval status of each data source and last success time",
+	"about.api.method": "GET"
 }

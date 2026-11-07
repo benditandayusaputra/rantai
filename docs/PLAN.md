@@ -385,6 +385,10 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - Saran juri: grafik jaringan interaktif yang memetakan relasi kontraktor, proyek, dan anggaran. Tata letak gaya pegas tanpa pustaka baru, tabel alternatif, dan lencana sumber di panel rincian.
 - [x] **T-1202** Temuan Komunitas (ANG-11) · `✨ Tambah Temuan Komunitas untuk kontribusi dan verifikasi bersama`
   - Saran juri: ruang bagi jurnalis warga dan peneliti independen untuk menyumbang temuan dan memverifikasi data secara kolaboratif. Migrasi 000040, kosakata terlarang, batas harian, pemeriksaan sesama, dan penyembunyian oleh moderator.
+- [x] **T-1203** API Terbuka di Tentang Data (WIL-05) · `✨ Tambah bagian API Terbuka berisi titik akhir data publik`
+  - Saran juri: integrasi open data dan API publik dengan pembaruan otomatis. Pembaruan harian 02.00 WIB sudah berjalan sejak T-1004; tugas ini membuka data Rantai kembali sebagai API JSON tanpa kunci dan CSV, terdokumentasi di Tentang Data dan README.
+- [ ] **T-1204** Realisasi APBD DKI dari portal resmi **[GERBANG DATA]**
+  - Saran juri: hubungkan ke data Kemenkeu (DJPK) atau APBD daerah. Verifikasi dulu format, robots.txt, dan rincian per SKPD sebelum membangun importer; tampilkan belanja per urusan pendidikan di samping paket LPSE.
 
 ## Keluaran lomba di luar kode
 
