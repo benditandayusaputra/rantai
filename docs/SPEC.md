@@ -604,6 +604,17 @@ Halaman `/{bahasa}/penyedia/{id}`: nama, jumlah dan total nilai paket per tahun 
 
 API: `GET /penyedia/{id}`. Kategori utama dan instansi pemberi tampil sebagai daftar nama berurutan frekuensi, tanpa angka skor; jumlah dan total per tahun dipisah per sumber (`lpse`, `opentender`).
 
+### ANG-10 Jaringan relasi pengadaan
+
+Grafik jaringan interaktif yang memetakan instansi pemberi, paket, dan penyedia pelaksana, sehingga warga dan jurnalis dapat menelusuri penyedia yang menerima paket dari beberapa instansi atau instansi yang memakai penyedia yang sama. Tampil di bagian Arus Anggaran halaman kecamatan, di profil penyedia, dan di lensa Uang dasbor dengan pilihan seluruh DKI atau satu kota.
+
+- Hanya paket non-simulasi, tidak batal, dan sudah punya penyedia; diurutkan menurut nilai kontrak, lalu HPS, lalu pagu, paling banyak `BatasPaketJaringan` = 60 paket.
+- Simpul: instansi (persegi), paket (lingkaran), penyedia (belah ketupat); ukuran mengikuti akar nilai relatif per jenis. Sisi: instansi ke paket, paket ke penyedia. Nilai simpul instansi dan penyedia adalah jumlah nilai paket yang tampil, berlabel `resmi` dengan provenance paket terbesar.
+- Memilih simpul menyorot tetangganya dan membuka panel rincian berisi lencana sumber dan tautan ke halaman paket atau penyedia. Tersedia tabel alternatif (instansi, paket, penyedia, nilai) dan navigasi papan ketik.
+- Teks penjelas menegaskan bahwa garis hanya hubungan pengadaan yang tercatat, bukan penilaian atau tuduhan.
+
+API: `GET /jaringan?wilayah={kode}|penyedia={id}[&tahun=]`. Tepat satu dari `wilayah` (kode provinsi, kota, atau kecamatan; cocok awalan) atau `penyedia`. Respons `{simpul: [{id, jenis, kunci, label, nilai: Angka, jumlah_paket}], sisi: [{dari, ke}], is_terpotong, batas_paket}`.
+
 ### ANG-08 Lapor Bukti dan verifikasi
 
 **Alur seluler** (layar sempit adalah target utama):
@@ -779,7 +790,7 @@ API: `GET /panel/antrean`, `POST /hak-jawab`, `PATCH /panel/paket/{kode}/serah-t
 | GET | `/dasbor/uang`, `/dasbor/tanggung-jawab` | publik |
 | GET | `/tema/{tema}/kecamatan/{kode}`, `/tema/{tema}/kecamatan/{kode}/sekolah`, `/sekolah/terdekat`, `/peta/sekolah` | publik |
 | GET | `/kecamatan/{kode}/wakil`, `/dapil/{id}`, `/anggota/{id}`, `/anggota/{id}/umpan`, `/anggota/{id}/isu`, `/fraksi/{nama}/sikap`, `/aspirasi-reses` | publik |
-| GET | `/kecamatan/{kode}/paket`, `/paket/{kode}`, `/paket/{kode}/pembanding`, `/paket/terdekat`, `/penyedia/{id}`, `/aspirasi-reses/{id}/paket-terkait`, `/peta/paket`, `/peta/laporan`, `/unduh/paket.csv` | publik |
+| GET | `/kecamatan/{kode}/paket`, `/paket/{kode}`, `/paket/{kode}/pembanding`, `/paket/terdekat`, `/penyedia/{id}`, `/jaringan`, `/aspirasi-reses/{id}/paket-terkait`, `/peta/paket`, `/peta/laporan`, `/unduh/paket.csv` | publik |
 | GET | `/jalur-aspirasi`, `/aspirasi/pdf`, `/data-belum-dibuka`, `/data-belum-dibuka/{kode}/permohonan/pdf` | publik |
 | POST | `/tanya`, `/aspirasi`, `/data-belum-dibuka/{kode}/permohonan` | publik dengan batas laju |
 | POST | `/auth/otp/kirim`, `/auth/otp/verifikasi`, `/auth/refresh`, `/auth/keluar` | publik dengan batas laju |

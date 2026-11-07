@@ -9,6 +9,7 @@
 	} from '@lucide/svelte';
 	import type { DasborUang, PetaTema, Porsi } from '$lib/api/tipe';
 	import KeyNumberCard from '$lib/components/KeyNumberCard.svelte';
+	import BagianJaringan from '$lib/features/jaringan/BagianJaringan.svelte';
 	import { formatAngka, formatBulan, formatRupiah } from '$lib/format';
 	import { bahasaAktif, t } from '$lib/i18n';
 	import GrafikBatang from './GrafikBatang.svelte';
@@ -38,6 +39,8 @@
 	const bertanggal = $derived(jumlahkan(dasbor.bulanan.isi, (p) => p.jumlah));
 	const provinsi = $derived(dasbor.kota.isi.find((p) => !p.kunci.includes('.')));
 	const kota = $derived(dasbor.kota.isi.filter((p) => p.kunci.includes('.')));
+	const kodeDKI = '31';
+	let wilayahJaringan = $state(kodeDKI);
 	const perKecamatan = $derived(new Map(dasbor.kecamatan.isi.map((p) => [p.kunci, p])));
 	const ambang = $derived(
 		ambangKuantil(
@@ -238,4 +241,17 @@
 		<Info size={18} strokeWidth={1.75} class="mt-0.5 shrink-0 text-info" aria-hidden="true" />
 		{t('dash.money.hpsNote')}
 	</p>
+
+	<div class="flex flex-col gap-3">
+		<label class="flex max-w-sm flex-col gap-1 text-small font-semibold">
+			{t('network.area')}
+			<select bind:value={wilayahJaringan} class="field font-normal">
+				<option value={kodeDKI}>{t('network.allDki')}</option>
+				{#each kota as k (k.kunci)}
+					<option value={k.kunci}>{namaPorsi(k)}</option>
+				{/each}
+			</select>
+		</label>
+		<BagianJaringan filter={{ wilayah: wilayahJaringan, tahun }} idBagian="jaringan-dasbor" />
+	</div>
 </div>

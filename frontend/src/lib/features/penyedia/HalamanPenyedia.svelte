@@ -7,6 +7,7 @@
 	import KeyNumberCard from '$lib/components/KeyNumberCard.svelte';
 	import PackageCard from '$lib/components/PackageCard.svelte';
 	import ProvenanceBadge from '$lib/components/ProvenanceBadge.svelte';
+	import BagianJaringan from '$lib/features/jaringan/BagianJaringan.svelte';
 	import TableToggle from '$lib/components/TableToggle.svelte';
 	import { tampilkanAngka } from '$lib/features/kecamatan/kecamatan';
 	import { t } from '$lib/i18n';
@@ -139,6 +140,8 @@
 					<EmptyState title={t('vendor.noPackages')} />
 				{/if}
 			</section>
+
+			<BagianJaringan filter={{ penyedia: penyedia.id }} idBagian="jaringan-penyedia" />
 
 			{#if penyedia.riwayat_opentender.length}
 				<section aria-labelledby="judul-riwayat" class="flex flex-col gap-3">

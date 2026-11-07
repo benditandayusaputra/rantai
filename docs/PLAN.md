@@ -379,6 +379,11 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
 - [x] **T-1111** Radius Cek Sekolahku per jenjang · `✨ Perlebar radius Cek Sekolahku menjadi 5 km untuk SMP dan 10 km untuk SMA/SMK`
   - SMA dan SMK lebih sedikit dan menampung lulusan lintas kecamatan, sehingga radius 3 km terlalu sempit; SMP 5 km, SMA/SMK 10 km (batas maksimal API).
 
+## Revisi catatan juri FDS (7 November 2026)
+
+- [x] **T-1201** Jaringan relasi pengadaan (ANG-10) · `✨ Tambah grafik jaringan relasi instansi, paket, dan penyedia`
+  - Saran juri: grafik jaringan interaktif yang memetakan relasi kontraktor, proyek, dan anggaran. Tata letak gaya pegas tanpa pustaka baru, tabel alternatif, dan lencana sumber di panel rincian.
+
 ## Keluaran lomba di luar kode
 
 Dikerjakan tim, bukan tugas commit. Dicatat di sini agar urutannya terlihat.

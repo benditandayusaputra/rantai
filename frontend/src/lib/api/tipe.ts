@@ -847,3 +847,26 @@ export interface PendidikanKota {
 		rasio: Angka | null;
 	};
 }
+
+export type JenisSimpul = 'instansi' | 'paket' | 'penyedia';
+
+export interface SimpulJaringan {
+	id: string;
+	jenis: JenisSimpul;
+	kunci: string;
+	label: string;
+	nilai: Angka;
+	jumlah_paket: number;
+}
+
+export interface SisiJaringan {
+	dari: string;
+	ke: string;
+}
+
+export interface Jaringan {
+	simpul: SimpulJaringan[];
+	sisi: SisiJaringan[];
+	is_terpotong: boolean;
+	batas_paket: number;
+}

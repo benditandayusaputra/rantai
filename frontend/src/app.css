@@ -212,3 +212,59 @@
 		linear-gradient(110deg, transparent 62%, var(--map-road) 62% 67%, transparent 67%),
 		linear-gradient(135deg, var(--map-water) 0 28%, var(--map-park) 28% 40%, var(--map) 40%);
 }
+
+.jaringan-sisi {
+	stroke: var(--line-strong);
+	stroke-width: 1.25;
+	transition: opacity 160ms;
+}
+.jaringan-sisi-aktif {
+	stroke: var(--primary);
+	stroke-width: 2.25;
+}
+.jaringan-simpul {
+	outline: none;
+	transition: opacity 160ms;
+}
+.jaringan-redup {
+	opacity: 0.18;
+}
+.jaringan-cincin {
+	fill: none;
+	stroke: transparent;
+	stroke-width: 2.5;
+}
+.jaringan-cincin-aktif,
+.jaringan-simpul:focus-visible .jaringan-cincin {
+	stroke: var(--focus);
+}
+.simpul-instansi {
+	fill: var(--chart);
+	stroke: var(--surface);
+	stroke-width: 1.5;
+}
+.simpul-paket {
+	fill: var(--chart-2);
+	stroke: var(--surface);
+	stroke-width: 1;
+}
+.simpul-penyedia {
+	fill: var(--surface);
+	stroke: var(--text);
+	stroke-width: 2.5;
+}
+.jaringan-label {
+	fill: var(--text);
+	font-size: 12px;
+	font-weight: 600;
+	paint-order: stroke;
+	stroke: var(--surface);
+	stroke-width: 4px;
+	stroke-linejoin: round;
+}
+@media (prefers-reduced-motion: reduce) {
+	.sisi,
+	.jaringan-simpul {
+		transition: none;
+	}
+}

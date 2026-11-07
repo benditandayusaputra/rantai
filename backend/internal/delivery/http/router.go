@@ -21,6 +21,7 @@ type Layanan struct {
 	Dasbor         LayananDasbor
 	Pembanding     LayananPembanding
 	Penyedia       LayananPenyedia
+	Jaringan       LayananJaringan
 	Indikator      LayananIndikator
 	Sekolah        LayananSekolahTerdekat
 	SumberData     LayananSumberData
@@ -85,6 +86,7 @@ func daftarkanAnggaran(api fiber.Router, layanan Layanan) {
 	daftarkanDasbor(api, handlerDasbor{layanan: layanan.Dasbor})
 	api.Get("/paket/:kode/pembanding", handlerPembanding{layanan: layanan.Pembanding}.bandingkan)
 	api.Get("/penyedia/:id", handlerPenyedia{layanan: layanan.Penyedia}.ambil)
+	api.Get("/jaringan", handlerJaringan{layanan: layanan.Jaringan}.susun)
 }
 
 func daftarkanAksiWarga(api fiber.Router, layanan Layanan) {

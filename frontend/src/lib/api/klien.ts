@@ -19,6 +19,7 @@ import type {
 	HasilPaketTerkait,
 	Dokumen,
 	InfoSumberData,
+	Jaringan,
 	PaketRingkas,
 	PermintaanAspirasi,
 	PetaPaket,
@@ -292,6 +293,16 @@ export function susunPermohonan(fetchFn: Fetch, kode: string, bahasa: string): P
 
 export function ambilPenyedia(fetchFn: Fetch, id: number): Promise<ProfilPenyedia> {
 	return ambilData<ProfilPenyedia>(fetchFn, `/penyedia/${id}`);
+}
+
+export interface FilterJaringan {
+	wilayah?: string;
+	penyedia?: number;
+	tahun?: number;
+}
+
+export function ambilJaringan(fetchFn: Fetch, filter: FilterJaringan): Promise<Jaringan> {
+	return ambilData<Jaringan>(fetchFn, '/jaringan', { ...filter });
 }
 
 export function ambilDetailWilayah(fetchFn: Fetch, kode: string): Promise<DetailWilayah> {
