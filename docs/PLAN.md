@@ -383,6 +383,8 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
 
 - [x] **T-1201** Jaringan relasi pengadaan (ANG-10) · `✨ Tambah grafik jaringan relasi instansi, paket, dan penyedia`
   - Saran juri: grafik jaringan interaktif yang memetakan relasi kontraktor, proyek, dan anggaran. Tata letak gaya pegas tanpa pustaka baru, tabel alternatif, dan lencana sumber di panel rincian.
+- [x] **T-1202** Temuan Komunitas (ANG-11) · `✨ Tambah Temuan Komunitas untuk kontribusi dan verifikasi bersama`
+  - Saran juri: ruang bagi jurnalis warga dan peneliti independen untuk menyumbang temuan dan memverifikasi data secara kolaboratif. Migrasi 000040, kosakata terlarang, batas harian, pemeriksaan sesama, dan penyembunyian oleh moderator.
 
 ## Keluaran lomba di luar kode
 

@@ -870,3 +870,17 @@ export interface Jaringan {
 	is_terpotong: boolean;
 	batas_paket: number;
 }
+
+export type StatusTemuan = 'menunggu_konfirmasi' | 'terkonfirmasi' | 'diperdebatkan';
+export type SikapTemuan = 'mendukung' | 'membantah';
+
+export interface Temuan {
+	id: number;
+	isi: string;
+	tautan_sumber: string;
+	nama_kontributor: string;
+	dibuat_pada: string;
+	jumlah_mendukung: number;
+	jumlah_membantah: number;
+	status: StatusTemuan;
+}

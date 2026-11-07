@@ -615,6 +615,19 @@ Grafik jaringan interaktif yang memetakan instansi pemberi, paket, dan penyedia 
 
 API: `GET /jaringan?wilayah={kode}|penyedia={id}[&tahun=]`. Tepat satu dari `wilayah` (kode provinsi, kota, atau kecamatan; cocok awalan) atau `penyedia`. Respons `{simpul: [{id, jenis, kunci, label, nilai: Angka, jumlah_paket}], sisi: [{dari, ke}], is_terpotong, batas_paket}`.
 
+### ANG-11 Temuan Komunitas
+
+Ruang kolaborasi bagi jurnalis warga, peneliti independen, dan warga untuk menyumbang temuan bersumber tentang sebuah paket dan saling memverifikasinya. Tampil di halaman paket di bawah Hak Jawab. Temuan adalah catatan kontributor, bukan data resmi Rantai, dan ditandai begitu di antarmuka.
+
+- Kirim (akun masuk): isi 20 sampai 1000 karakter dan tautan sumber wajib (`http`/`https`, paling panjang 500). Isi yang memuat kosakata terlarang (`config/kosakata_terlarang.yaml`) ditolak dengan ajakan menulis fakta. Batas 5 temuan per akun per 24 jam.
+- Periksa (akun masuk, bukan pengirim): sikap `mendukung` atau `membantah` dengan tautan bukti opsional; satu sikap per akun per temuan, bisa diubah.
+- Status turunan: `diperdebatkan` bila ada bantahan, `terkonfirmasi` bila minimal `AmbangKonfirmasiTemuan` = 2 dukungan tanpa bantahan, selain itu `menunggu_konfirmasi`.
+- Tampilan publik: isi, tautan sumber (`rel="nofollow ugc noopener noreferrer"`), nama tampilan kontributor atau "Kontributor terdaftar", tanggal, jumlah dukungan dan bantahan. Email dan id akun tidak dibuka.
+- Moderator dan admin dapat menyembunyikan temuan dengan alasan dari halaman paket; tercatat di `moderasi_log` dengan `target_jenis = 'temuan'`.
+- Tabel `temuan` dan `temuan_tanggapan` (migrasi 000040) tidak ikut snapshot demo.
+
+API: `GET /paket/{kode}/temuan`, `POST /paket/{kode}/temuan` `{isi, tautan_sumber}`, `POST /temuan/{id}/tanggapan` `{sikap, tautan_sumber}`, `PATCH /moderasi/temuan/{id}` `{alasan}`.
+
 ### ANG-08 Lapor Bukti dan verifikasi
 
 **Alur seluler** (layar sempit adalah target utama):
@@ -790,12 +803,12 @@ API: `GET /panel/antrean`, `POST /hak-jawab`, `PATCH /panel/paket/{kode}/serah-t
 | GET | `/dasbor/uang`, `/dasbor/tanggung-jawab` | publik |
 | GET | `/tema/{tema}/kecamatan/{kode}`, `/tema/{tema}/kecamatan/{kode}/sekolah`, `/sekolah/terdekat`, `/peta/sekolah` | publik |
 | GET | `/kecamatan/{kode}/wakil`, `/dapil/{id}`, `/anggota/{id}`, `/anggota/{id}/umpan`, `/anggota/{id}/isu`, `/fraksi/{nama}/sikap`, `/aspirasi-reses` | publik |
-| GET | `/kecamatan/{kode}/paket`, `/paket/{kode}`, `/paket/{kode}/pembanding`, `/paket/terdekat`, `/penyedia/{id}`, `/jaringan`, `/aspirasi-reses/{id}/paket-terkait`, `/peta/paket`, `/peta/laporan`, `/unduh/paket.csv` | publik |
+| GET | `/kecamatan/{kode}/paket`, `/paket/{kode}`, `/paket/{kode}/pembanding`, `/paket/terdekat`, `/penyedia/{id}`, `/jaringan`, `/paket/{kode}/temuan`, `/aspirasi-reses/{id}/paket-terkait`, `/peta/paket`, `/peta/laporan`, `/unduh/paket.csv` | publik |
 | GET | `/jalur-aspirasi`, `/aspirasi/pdf`, `/data-belum-dibuka`, `/data-belum-dibuka/{kode}/permohonan/pdf` | publik |
 | POST | `/tanya`, `/aspirasi`, `/data-belum-dibuka/{kode}/permohonan` | publik dengan batas laju |
 | POST | `/auth/otp/kirim`, `/auth/otp/verifikasi`, `/auth/refresh`, `/auth/keluar` | publik dengan batas laju |
 | GET | `/auth/saya`, `/notifikasi` | warga |
-| POST | `/laporan`, `/laporan/{id}/konfirmasi`, `/langganan` | warga |
+| POST | `/laporan`, `/laporan/{id}/konfirmasi`, `/langganan`, `/paket/{kode}/temuan`, `/temuan/{id}/tanggapan` | warga |
 | GET, POST, PATCH | `/panel/*`, `/hak-jawab` | instansi, anggota |
 | GET, PATCH | `/moderasi/*` | moderator |
 | POST, GET | `/admin/ingest/{job}`, `/admin/ingest/runs` | admin |

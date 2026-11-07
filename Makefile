@@ -105,7 +105,7 @@ ringkasan-mingguan:
 	cd backend && go run ./cmd/worker ringkasan_mingguan
 
 SNAPSHOT_DEMO := data/snapshot/rantai.sql.gz
-TABEL_AKUN_DAN_WARGA := -T pengguna -T otp -T sesi_refresh -T langganan -T notifikasi -T ringkasan_email -T moderasi_log \
+TABEL_AKUN_DAN_WARGA := -T pengguna -T otp -T sesi_refresh -T langganan -T notifikasi -T ringkasan_email -T moderasi_log -T temuan -T temuan_tanggapan \
 	-T laporan -T laporan_foto -T laporan_konfirmasi -T laporan_riwayat -T hak_jawab
 
 snapshot-demo:

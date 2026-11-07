@@ -75,6 +75,9 @@ func denganTanyaAuthLaporan(ctx context.Context, layanan deliveryhttp.Layanan, p
 	if layanan, err = denganAuth(layanan, pool, cfg); err != nil {
 		return layanan, err
 	}
+	if layanan, err = denganTemuan(layanan, pool); err != nil {
+		return layanan, err
+	}
 	return denganLaporan(ctx, layanan, pool)
 }
 

@@ -33,6 +33,7 @@ type Layanan struct {
 	Akses          PemeriksaAkses
 	Paripurna      LayananParipurna
 	Laporan        LayananLaporan
+	Temuan         LayananTemuan
 
 	BacaLaporan       LayananBacaLaporan
 	KonfirmasiLaporan LayananKonfirmasiLaporan
@@ -91,6 +92,7 @@ func daftarkanAnggaran(api fiber.Router, layanan Layanan) {
 
 func daftarkanAksiWarga(api fiber.Router, layanan Layanan) {
 	daftarkanLaporan(api, layanan)
+	daftarkanTemuan(api, layanan)
 	daftarkanModerasi(api, layanan)
 	daftarkanPantau(api, layanan)
 	daftarkanWebPush(api, layanan)

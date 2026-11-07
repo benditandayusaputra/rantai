@@ -14,6 +14,7 @@
 	import type { DetailPaket } from '$lib/api/tipe';
 	import TombolKembali from '$lib/components/TombolKembali.svelte';
 	import RingkasanProyek from './RingkasanProyek.svelte';
+	import TemuanKomunitas from '$lib/features/temuan/TemuanKomunitas.svelte';
 	import ChainStepper from '$lib/components/ChainStepper.svelte';
 	import KeyNumberCard from '$lib/components/KeyNumberCard.svelte';
 	import MaintenanceCounter from '$lib/components/MaintenanceCounter.svelte';
@@ -175,6 +176,8 @@
 					</p>
 				{/each}
 			</section>
+
+			<TemuanKomunitas kodePaket={paket.kode} />
 		</div>
 
 		<aside class="flex flex-col gap-4 lg:col-span-4">
