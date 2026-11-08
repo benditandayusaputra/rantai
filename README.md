@@ -80,6 +80,14 @@ flowchart LR
 | --- | --- |
 | ![Beranda Rantai](docs/screenshots/beranda-desktop.png) | ![Halaman Kecamatan Kelapa Gading](docs/screenshots/kecamatan-desktop.png) |
 
+| Grafik jaringan relasi pengadaan (Jakarta Selatan) | Temuan Komunitas di detail paket |
+| --- | --- |
+| ![Grafik jaringan instansi, paket, dan penyedia di Jakarta Selatan](docs/screenshots/jaringan-dasbor-desktop.png) | ![Formulir Temuan Komunitas di halaman detail paket](docs/screenshots/temuan-komunitas-desktop.png) |
+
+| Jaringan di profil penyedia | API Terbuka di Tentang Data |
+| --- | --- |
+| ![Grafik jaringan di profil penyedia](docs/screenshots/jaringan-penyedia-desktop.png) | ![Daftar titik akhir API Terbuka](docs/screenshots/api-terbuka-desktop.png) |
+
 Tangkapan layar lain (ponsel, halaman paket, peta) ada di `docs/screenshots/`.
 
 ## Cara menjalankan

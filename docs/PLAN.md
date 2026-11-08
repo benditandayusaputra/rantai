@@ -398,7 +398,7 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - Kaki halaman, Tentang Data, API Terbuka, dan README menyebut data diperbarui otomatis setiap hari, padahal LPSE, SiRUP, dan situs DPRD menolak server (T-1204). Teks kini menyebut jadwal penjadwal, menjelaskan penolakan itu, dan merujuk ke status per sumber di `/sumber-data`.
 - [x] **T-1207** Label grafik jaringan di lapisan teratas · `💄 Gambar label grafik jaringan di atas semua simpul`
   - Simpul paket yang digambar belakangan menutupi label simpul terpilih. Label kini digambar dalam satu lapisan setelah semua simpul, tanpa menangkap klik.
-- [ ] **T-1208** Tangkapan layar fitur revisi juri · `📝 Tambah tangkapan layar grafik jaringan, Temuan Komunitas, dan API Terbuka`
+- [x] **T-1208** Tangkapan layar fitur revisi juri · `📝 Tambah tangkapan layar grafik jaringan, Temuan Komunitas, dan API Terbuka`
   - Tangkapan layar untuk README dan dokumen lomba: grafik jaringan per kota, profil penyedia, Temuan Komunitas di detail paket, dan API Terbuka di Tentang Data.
 - [ ] **T-1209** Realisasi APBD DKI dari portal resmi **[GERBANG DATA]**
   - Saran juri: hubungkan ke data Kemenkeu (DJPK) atau APBD daerah. Verifikasi dulu format, robots.txt, dan rincian per SKPD sebelum membangun importer; tampilkan belanja per urusan pendidikan di samping paket LPSE.
