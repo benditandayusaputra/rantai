@@ -11,7 +11,7 @@ var ErrJobDimatikanModeDemo = errors.New("job pengambilan data dimatikan dalam m
 
 var jobPengambilan = map[string]bool{
 	JobWilayah: true, JobKPUDPRD: true, JobLPSEDaftar: true, JobLPSEDetail: true, JobSIRUP: true,
-	JobOpentender: true, JobUmpanDPRD: true, JobUmpanMedia: true, JobRingkasUmpan: true, JobDapodik: true,
+	JobOpentender: true, JobUmpanDPRD: true, JobUmpanMedia: true, JobRingkasUmpan: true, JobDapodik: true, JobAPBD: true,
 }
 
 func IzinkanJob(mode, job string) error {

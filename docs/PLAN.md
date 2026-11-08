@@ -400,8 +400,10 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - Simpul paket yang digambar belakangan menutupi label simpul terpilih. Label kini digambar dalam satu lapisan setelah semua simpul, tanpa menangkap klik.
 - [x] **T-1208** Tangkapan layar fitur revisi juri · `📝 Tambah tangkapan layar grafik jaringan, Temuan Komunitas, dan API Terbuka`
   - Tangkapan layar untuk README dan dokumen lomba: grafik jaringan per kota, profil penyedia, Temuan Komunitas di detail paket, dan API Terbuka di Tentang Data.
-- [ ] **T-1209** Realisasi APBD DKI dari portal resmi **[GERBANG DATA]**
-  - Saran juri: hubungkan ke data Kemenkeu (DJPK) atau APBD daerah. Verifikasi dulu format, robots.txt, dan rincian per SKPD sebelum membangun importer; tampilkan belanja per urusan pendidikan di samping paket LPSE.
+- [x] **T-1209** Realisasi APBD DKI dari portal resmi **[GERBANG DATA GD-19]** · `✨ Tambah belanja APBD DKI dari DJPK Kemenkeu yang diperbarui otomatis`
+  - Saran juri: hubungkan ke data Kemenkeu (DJPK) atau APBD daerah dengan pembaruan otomatis. Gerbang data di `docs/data-sources.md` GD-19: ekspor resmi Portal Data SIKD DJPK (SpreadsheetML, anggaran dan realisasi per jenis akun) lolos dan terjangkau dari server; rincian per SKPD dan urusan hanya ada di endpoint internal SMARTAPBD dan dasbor BPKD (lihat Catatan blokir).
+  - Migrasi 000041 (`apbd_akun`, sumber `djpk`), importer `internal/ingest/djpk` dengan penentuan bulan realisasi, job `apbd_djpk` di penjadwal harian, `GET /apbd`, kartu Belanja APBD di lensa Uang (ANG-12), dan API Terbuka.
+  - Selesai bila: job `apbd_djpk` berhasil di server produksi dan `GET /apbd` produksi mengembalikan realisasi 2025 dan 2026.
 
 ## Keluaran lomba di luar kode
 
@@ -422,4 +424,5 @@ Format: `- T-xxx · tanggal · alasan · tugas yang dikerjakan sebagai gantinya`
 
 - T-301 · 23 Oktober 2026 · halaman detail dan evaluasi tender SPSE DKI tertutup untuk publik (403, "Akses Ditolak"); detail tender butuh token API Gateway Inaproc (peran Data Integrator, surat ke LKPP) · paket tender disimpan dari kolom daftar, non-tender memakai halaman pengumuman lengkap
 - T-1204 · 8 November 2026 · LPSE (`spse.inaproc.id`) dan SiRUP menjawab 403 untuk semua permintaan dari IP server produksi, termasuk `robots.txt`; API berita DPRD (`/wp-json/wp/v2/posts`) menjawab halaman "URL yang diminta ditolak" dari WAF Diskominfotik DKI dengan Support ID. Dari jaringan di Indonesia dengan User-Agent yang sama ketiganya dijawab 200. Rantai tidak menyamar untuk melewati penolakan ini. Jalur resmi: token API Gateway Inaproc (peran Data Integrator, surat ke LKPP) dan permintaan izin IP ke servicedesk.jakarta.go.id dengan Support ID. Sementara itu `make impor-lpse impor-sirup impor-umpan-dprd turunan` dijalankan dari mesin tim di Indonesia sesuai T-1004 · T-1205 sampai T-1209
+- T-1209 · 8 November 2026 · belanja per SKPD, urusan, dan program (misalnya Dinas Pendidikan dan urusan pendidikan) hanya tersedia lewat endpoint internal dasbor SMARTAPBD (`/umum/pantau/belanja/data/{tahun}`) dan dasbor BPKD (`/skpd/index/datatable`), tanpa dokumentasi; dipakai hanya setelah keputusan tim atau izin Bappeda/BPKD DKI · T-1209 memakai belanja per jenis dari DJPK
 - T-1005 · 25 Oktober 2026 · `ANTHROPIC_API_KEY` kosong di `.env` lokal dan Tanya Rantai di API produksi belum menjawab, sehingga `tanya_demo.json` belum bisa direkam (`RANTAI_API_URL=<api live> make tanya-demo`); langkah lain T-1005 sudah dikerjakan · T-650

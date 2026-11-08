@@ -864,6 +864,19 @@ export interface SisiJaringan {
 	ke: string;
 }
 
+export interface AkunAPBD {
+	nama: string;
+	anggaran: Angka;
+	realisasi: Angka;
+}
+
+export interface BelanjaAPBD {
+	tahun: number;
+	bulan_realisasi: number;
+	belanja: AkunAPBD;
+	jenis: AkunAPBD[];
+}
+
 export interface Jaringan {
 	simpul: SimpulJaringan[];
 	sisi: SisiJaringan[];

@@ -23,7 +23,7 @@ func pilihJobDemo(nama string, pool *pgxpool.Pool) (job, error) {
 	case usecase.JobParipurna:
 		return buatImporParipurna(pool)
 	default:
-		return pilihJobPantau(nama, pool)
+		return pilihJobAnggaran(nama, pool)
 	}
 }
 

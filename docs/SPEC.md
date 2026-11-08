@@ -91,6 +91,7 @@ Tugas bertanda **[GERBANG DATA]** di PLAN.md dimulai dengan verifikasi ini. Hasi
 | GD-17 | Kepkadis 258/2026 lampiran D (SMA) dan E (SMK) sebagaimana diubah Kepkadis 315/2026: daya tampung SMA dan SMK negeri per sekolah dengan NPSN; total 29.337 dan 19.541 kursi | Bila tidak per sekolah, tampilkan total provinsi saja dan sebut keterbatasannya. **Lolos**, lihat `docs/data-sources.md` |
 | GD-18 | Kepkadis 262/2026 (Juknis PMB Bersama) lampiran V dan VI: SMA dan SMK swasta mitra beserta kursinya; total 2.519 dan 3.592 kursi | Bila tidak per sekolah, keluarkan dari angka kecamatan dengan catatan. **Lolos**, lihat `docs/data-sources.md` |
 | GD-15 | Dokumen dan berita paripurna DPRD DKI: pandangan umum fraksi atas raperda dan APBD, kompilasi aspirasi reses per bidang | Bila tidak ada dokumen, WAK-05 dan WAK-06 memakai kurasi manual berbasis berita resmi dengan tautan sumber. **Lolos sebagian**: dokumen periode 2024-2029 tidak terbit, kurasi berita resmi dipakai, lihat `docs/data-sources.md` |
+| GD-19 | APBD Provinsi DKI Jakarta: anggaran dan realisasi belanja, sebaiknya per urusan dan SKPD | Bila rincian per urusan atau SKPD tidak tersedia lewat jalur resmi yang terbuka, pakai belanja per jenis dari Portal Data SIKD DJPK. **Lolos sebagian**: DJPK per jenis belanja dipakai, lihat `docs/data-sources.md` |
 
 ## 2. Model data
 
@@ -136,6 +137,7 @@ Fungsi SQL `hierarki_wilayah(kode)` mengembalikan leluhur sebuah wilayah sebagai
 | `laporan_foto` | `id`, `laporan_id`, `urutan`, `object_key`, `thumbnail_key`, `lebar`, `tinggi` |
 | `laporan_konfirmasi` | `laporan_id`, `pengguna_id`, `kondisi`, `lokasi_asli`, `dibuat_pada`; unik (`laporan_id`, `pengguna_id`) |
 | `laporan_riwayat` | `laporan_id`, `status_lama`, `status_baru`, `oleh_pengguna_id`, `alasan`, `dibuat_pada` |
+| `apbd_akun` | `tahun`, `urutan`, `nama` (nama akun DJPK), `anggaran`, `realisasi`, `bulan_realisasi`, `provenance_id`; PK (`tahun`, `urutan`); diganti utuh per tahun setiap impor |
 
 ### 2.5 Wakilku
 
@@ -167,7 +169,7 @@ Fungsi SQL `hierarki_wilayah(kode)` mengembalikan leluhur sebuah wilayah sebagai
 
 ## 3. Pipeline data
 
-Worker Go (`cmd/worker <job>`) menjalankan job. Di produksi, layanan `penjadwal` menjalankan `worker jadwal`: setiap hari pukul 02.00 WIB ia menjalankan berurutan `lpse_daftar`, `lpse_detail`, `sirup`, `umpan_dprd`, `umpan_media`, `ringkas_umpan`, lalu `turunan`; job yang gagal dicatat di log dan `ingest_run`, job berikutnya tetap jalan. Setiap job: ambil, simpan mentah ke `data/raw/<job>/<tanggal>/`, normalisasi, cocokkan, tulis bersama `provenance`, catat `ingest_run`. Menjalankan job dua kali tidak menggandakan data.
+Worker Go (`cmd/worker <job>`) menjalankan job. Di produksi, layanan `penjadwal` menjalankan `worker jadwal`: setiap hari pukul 02.00 WIB ia menjalankan berurutan `lpse_daftar`, `lpse_detail`, `sirup`, `umpan_dprd`, `umpan_media`, `ringkas_umpan`, `apbd_djpk`, lalu `turunan`; job yang gagal dicatat di log dan `ingest_run`, job berikutnya tetap jalan. Setiap job: ambil, simpan mentah ke `data/raw/<job>/<tanggal>/`, normalisasi, cocokkan, tulis bersama `provenance`, catat `ingest_run`. Menjalankan job dua kali tidak menggandakan data.
 
 | Job | Jadwal | Isi |
 | --- | --- | --- |
@@ -186,6 +188,7 @@ Worker Go (`cmd/worker <job>`) menjalankan job. Di produksi, layanan `penjadwal`
 | `umpan_media` | harian | Delta: liputan media terverifikasi sejak waktu terbit terakhir yang tersimpan, per anggota (GD-14) |
 | `ringkas_umpan` | harian, setelah job umpan | Ringkasan netral satu kalimat untuk item umpan yang belum diringkas |
 | `paripurna` | per masa sidang, manual | Impor CSV kurasi sikap fraksi dan aspirasi reses (GD-15) |
+| `apbd_djpk` | harian, sebelum turunan | Anggaran dan realisasi APBD Provinsi DKI per jenis akun dari ekspor Portal Data SIKD DJPK Kemenkeu; tahun berjalan dicek setiap hari, tahun yang sudah lengkap tidak diambil ulang (GD-19) |
 | `turunan` | setelah job sumber | Kategori dan tema paket, penentuan lokasi, indikator tema, sinyal, kejadian notifikasi |
 
 Aturan pengambilan: 1 permintaan per detik per domain, User-Agent `RantaiBot/1.0 (+https://github.com/benditandayusaputra/rantai)`, header `If-Modified-Since` bila didukung, berhenti dan catat error bila menerima 403 atau 429, patuhi robots.txt. Portal pengadaan sering menolak IP luar Indonesia; job LPSE dan SiRUP dijalankan dari server di Indonesia, dan lingkungan lain memakai snapshot.
@@ -630,6 +633,16 @@ Ruang kolaborasi bagi jurnalis warga, peneliti independen, dan warga untuk menyu
 
 API: `GET /paket/{kode}/temuan`, `POST /paket/{kode}/temuan` `{isi, tautan_sumber}`, `POST /temuan/{id}/tanggapan` `{sikap, tautan_sumber}`, `PATCH /moderasi/temuan/{id}` `{alasan}`.
 
+### ANG-12 Belanja APBD menurut Kemenkeu
+
+Kartu di lensa Uang dasbor yang menempatkan paket LPSE dalam konteks seluruh belanja daerah. Data diambil otomatis setiap hari dari Portal Data SIKD DJPK Kemenkeu (GD-19).
+
+- Menampilkan Belanja Daerah tahun terpilih: realisasi dari anggaran dan persentase serapan, lalu jenis belanja menurut `config/djpk.yaml` (Pegawai, Barang dan Jasa, Modal, Lainnya) dengan batang serapan dan tabel alternatif.
+- Keterangan menyebut bulan realisasi kumulatif terakhir yang dilaporkan pemda ke SIKD dan menegaskan bahwa sumber ini belum merinci belanja per SKPD atau urusan.
+- Setiap angka berlabel `resmi` dengan provenance sumber `djpk`; tahun tanpa data menampilkan keadaan kosong.
+
+API: `GET /apbd[?tahun=]`. Tanpa `tahun`, tahun terbaru yang tersimpan. Respons `{tahun, bulan_realisasi, belanja: {nama, anggaran: Angka, realisasi: Angka}, jenis: [...]}`; 404 bila tahun belum tersedia.
+
 ### ANG-08 Lapor Bukti dan verifikasi
 
 **Alur seluler** (layar sempit adalah target utama):
@@ -802,7 +815,7 @@ API: `GET /panel/antrean`, `POST /hak-jawab`, `PATCH /panel/paket/{kode}/serah-t
 | GET | `/kesehatan`, `/provenance/{id}`, `/sumber-data` | publik |
 | GET | `/wilayah/cari`, `/wilayah/titik`, `/wilayah/{kode}`, `/kecamatan/{kode}/ringkasan` | publik |
 | GET | `/tema`, `/tema/{kode}`, `/tema/{kode}/belanja`, `/tema/{kode}/dasbor`, `/peta/tema/{kode}` | publik |
-| GET | `/dasbor/uang`, `/dasbor/tanggung-jawab` | publik |
+| GET | `/dasbor/uang`, `/dasbor/tanggung-jawab`, `/apbd` | publik |
 | GET | `/tema/{tema}/kecamatan/{kode}`, `/tema/{tema}/kecamatan/{kode}/sekolah`, `/sekolah/terdekat`, `/peta/sekolah` | publik |
 | GET | `/kecamatan/{kode}/wakil`, `/dapil/{id}`, `/anggota/{id}`, `/anggota/{id}/umpan`, `/anggota/{id}/isu`, `/fraksi/{nama}/sikap`, `/aspirasi-reses` | publik |
 | GET | `/kecamatan/{kode}/paket`, `/paket/{kode}`, `/paket/{kode}/pembanding`, `/paket/terdekat`, `/penyedia/{id}`, `/jaringan`, `/paket/{kode}/temuan`, `/aspirasi-reses/{id}/paket-terkait`, `/peta/paket`, `/peta/laporan`, `/unduh/paket.csv` | publik |

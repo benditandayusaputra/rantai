@@ -1,0 +1,17 @@
+url_ekspor: https://djpk.kemenkeu.go.id/portal/csv_apbd
+url_rujukan: https://djpk.kemenkeu.go.id/portal/data/apbd
+kode_provinsi: "09"
+kode_pemda: "00"
+tahun_anggaran: [2025, 2026]
+klien:
+  user_agent: RantaiBot/1.0 (+https://github.com/benditandayusaputra/rantai)
+  jeda_permintaan: 1s
+  percobaan_ulang: 2
+  jeda_ulang: 30s
+aturan:
+  akun_belanja: Belanja Daerah
+  jenis_belanja:
+    - Belanja Pegawai
+    - Belanja Barang dan Jasa
+    - Belanja Modal
+    - Belanja Lainnya

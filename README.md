@@ -22,7 +22,7 @@ Karya cabang Web In Action, MIA 2026 (UPNVJ), tema "Designing Digital Futures, P
 | --- | --- |
 | Wilayah | Pencarian kelurahan dan kecamatan serta "pakai lokasiku"; halaman kecamatan dengan bagian Tema, Arus Anggaran, dan Wakilku; peta kesenjangan kursi, proyek, sekolah, dan laporan warga dengan tabel alternatif; lencana sumber di setiap angka; halaman Tentang Data; Pantau Wilayahku dengan feed dan Web Push |
 | Tema Pendidikan | Kesenjangan kursi SMP negeri (lulusan SD) dan SMA/SMK negeri (lulusan SMP) per kecamatan dan per kota, dengan rumus terbuka berisi angka kecamatan; daftar sekolah dan daya tampungnya; grafik kesenjangan dibanding belanja sekolah; anggota Komisi E yang menyuarakan isu sekolah; Cek Sekolahku berbasis radius |
-| Arus Anggaran | Paket LPSE DKI bertaut ke RUP SiRUP; jaringan relasi interaktif instansi, paket, dan penyedia; Temuan Komunitas untuk jurnalis warga dan peneliti dengan pemeriksaan sesama; lokasi paket dari namanya; halaman paket berbentuk rantai dari rencana sampai bukti warga; estimasi masa pemeliharaan; pembanding HPS paket sejenis dan sinyal perlu ditanyakan; profil penyedia dari Opentender; Aspirasi ke Anggaran; Lapor Bukti dengan foto tanpa EXIF dan verifikasi saksi |
+| Arus Anggaran | Belanja APBD DKI per jenis dari Kemenkeu (DJPK) yang diperbarui otomatis; paket LPSE DKI bertaut ke RUP SiRUP; jaringan relasi interaktif instansi, paket, dan penyedia; Temuan Komunitas untuk jurnalis warga dan peneliti dengan pemeriksaan sesama; lokasi paket dari namanya; halaman paket berbentuk rantai dari rencana sampai bukti warga; estimasi masa pemeliharaan; pembanding HPS paket sejenis dan sinyal perlu ditanyakan; profil penyedia dari Opentender; Aspirasi ke Anggaran; Lapor Bukti dengan foto tanpa EXIF dan verifikasi saksi |
 | Wakilku | Dapil dan anggota DPRD DKI 2024 sampai 2029; profil dengan komisi, alat kelengkapan, dan tautan LHKPN; jejak kegiatan dari rilis resmi DPRD dan media terverifikasi dengan ringkasan netral; isu yang disuarakan; sikap fraksi; aspirasi reses per bidang |
 | Aksi | Tanya Rantai dengan rujukan bernomor yang membuka sumber; Paket Aspirasi dalam teks dan PDF ke kanal yang tepat; jalur aspirasi terdekat; Data yang Belum Dibuka dengan templat permohonan PPID |
 | Akun | Masuk tanpa kata sandi dengan kode OTP email; Panel Instansi dan anggota DPRD untuk hak jawab yang tampil apa adanya; panel moderasi laporan dan umpan |
@@ -38,6 +38,7 @@ Semua data Rantai dapat dipakai ulang lewat API JSON tanpa kunci di `https://ran
 ```bash
 curl 'https://rantai-civic.vercel.app/api/v1/kecamatan/31.72.06/ringkasan'
 curl 'https://rantai-civic.vercel.app/api/v1/jaringan?wilayah=31.72'
+curl 'https://rantai-civic.vercel.app/api/v1/apbd?tahun=2026'
 curl -o paket.csv 'https://rantai-civic.vercel.app/api/v1/unduh/paket.csv?kode_wilayah=31.72.06&tahun=2026'
 ```
 
@@ -207,7 +208,7 @@ Rincian setiap tugas ada di `docs/PLAN.md`.
 
 ## Sumber data
 
-Batas wilayah: [cahyadsn/wilayah_boundaries](https://github.com/cahyadsn/wilayah_boundaries) (MIT), sesuai Kepmendagri No 300.2.2-2430 Tahun 2025. Sekolah dari Dapodik, daya tampung dari Kepkadis Pendidikan DKI 258/2026, paket dari LPSE DKI dan SiRUP, anggota dan dapil dari KPU dan situs DPRD DKI, riwayat penyedia dari Opentender (ODbL). Rincian verifikasi tiap sumber ada di `docs/data-sources.md` dan halaman Tentang Data.
+Batas wilayah: [cahyadsn/wilayah_boundaries](https://github.com/cahyadsn/wilayah_boundaries) (MIT), sesuai Kepmendagri No 300.2.2-2430 Tahun 2025. Sekolah dari Dapodik, daya tampung dari Kepkadis Pendidikan DKI 258/2026, paket dari LPSE DKI dan SiRUP, anggaran dan realisasi APBD dari Portal Data SIKD DJPK Kemenkeu, anggota dan dapil dari KPU dan situs DPRD DKI, riwayat penyedia dari Opentender (ODbL). Rincian verifikasi tiap sumber ada di `docs/data-sources.md` dan halaman Tentang Data.
 
 ## Pengambilan data
 

@@ -18,7 +18,7 @@ const (
 
 var (
 	zonaWIB      = time.FixedZone("WIB", int(selisihWIBDariUTC.Seconds()))
-	urutanHarian = []string{usecase.JobLPSEDaftar, usecase.JobLPSEDetail, usecase.JobSIRUP, usecase.JobUmpanDPRD, usecase.JobUmpanMedia, usecase.JobRingkasUmpan, usecase.JobTurunan}
+	urutanHarian = []string{usecase.JobLPSEDaftar, usecase.JobLPSEDetail, usecase.JobSIRUP, usecase.JobUmpanDPRD, usecase.JobUmpanMedia, usecase.JobRingkasUmpan, usecase.JobAPBD, usecase.JobTurunan}
 )
 
 func buatJadwalHarian(pool *pgxpool.Pool) job {

@@ -8,6 +8,7 @@ import type {
 	ProfilAnggota,
 	SikapFraksi,
 	WakilDenganUmpan,
+	BelanjaAPBD,
 	BelanjaTema,
 	DaftarDataBelumDibuka,
 	DasborLayanan,
@@ -377,4 +378,8 @@ export function ambilPendidikanKota(
 	kode: string
 ): Promise<import('./tipe').PendidikanKota> {
 	return ambilData(fetchFn, `/tema/${tema}/kota/${kode}`);
+}
+
+export function ambilBelanjaAPBD(fetchFn: Fetch, tahun: number): Promise<BelanjaAPBD> {
+	return ambilData<BelanjaAPBD>(fetchFn, '/apbd', { tahun });
 }

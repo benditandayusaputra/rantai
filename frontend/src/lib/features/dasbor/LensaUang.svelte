@@ -10,6 +10,7 @@
 	import type { DasborUang, PetaTema, Porsi } from '$lib/api/tipe';
 	import KeyNumberCard from '$lib/components/KeyNumberCard.svelte';
 	import BagianJaringan from '$lib/features/jaringan/BagianJaringan.svelte';
+	import BagianAPBD from './BagianAPBD.svelte';
 	import { formatAngka, formatBulan, formatRupiah } from '$lib/format';
 	import { bahasaAktif, t } from '$lib/i18n';
 	import GrafikBatang from './GrafikBatang.svelte';
@@ -123,6 +124,8 @@
 			{/if}
 		{/each}
 	</div>
+
+	<BagianAPBD {tahun} />
 
 	<KartuGrafik
 		judul={t('dash.money.monthly.title', { tahun })}

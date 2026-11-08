@@ -151,6 +151,9 @@ func denganSumberDasborDanKartu(layanan deliveryhttp.Layanan, pool *pgxpool.Pool
 	if layanan.Dasbor, err = buatBacaDasbor(pool); err != nil {
 		return layanan, err
 	}
+	if layanan, err = denganAPBD(layanan, pool); err != nil {
+		return layanan, err
+	}
 	layanan.Kartu, err = buatPembuatKartu()
 	return layanan, err
 }

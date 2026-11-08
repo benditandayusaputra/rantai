@@ -12,4 +12,9 @@ describe('API terbuka', () => {
 		const jaringan = titikAkhirTerbuka.find((t) => t.path === '/jaringan');
 		expect(jaringan && contohPath(jaringan)).toMatch(/\/jaringan\?wilayah=31\.72$/);
 	});
+
+	it('mencantumkan APBD Kemenkeu per tahun', () => {
+		const apbd = titikAkhirTerbuka.find((t) => t.path === '/apbd');
+		expect(apbd && contohPath(apbd)).toMatch(/\/apbd\?tahun=2026$/);
+	});
 });

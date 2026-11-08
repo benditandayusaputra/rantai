@@ -12,7 +12,7 @@ COMPOSE := docker compose
 MIGRATE := $(COMPOSE) run --rm --build migrate
 KLIEN_PG := $(COMPOSE) run --rm -T klien-pg sh -c
 
-.PHONY: up down migrate siapkan-uji e2e migrate-down lint test impor-wilayah impor-tema impor-kpu-dprd impor-lpse impor-sirup impor-opentender turunan laporan-geocode snapshot-paket muat-snapshot-paket impor-umpan-dprd impor-umpan-media ringkas-umpan impor-sekolah impor-daya-tampung hitung-calon-lulusan hitung-indikator impor-paripurna impor-foto-wikimedia kunci-vapid ringkasan-mingguan snapshot-demo seed-demo tanya-demo
+.PHONY: up down migrate siapkan-uji e2e migrate-down lint test impor-wilayah impor-tema impor-kpu-dprd impor-lpse impor-sirup impor-opentender impor-apbd turunan laporan-geocode snapshot-paket muat-snapshot-paket impor-umpan-dprd impor-umpan-media ringkas-umpan impor-sekolah impor-daya-tampung hitung-calon-lulusan hitung-indikator impor-paripurna impor-foto-wikimedia kunci-vapid ringkasan-mingguan snapshot-demo seed-demo tanya-demo
 
 up:
 	$(COMPOSE) up -d --wait db minio
@@ -52,6 +52,9 @@ impor-lpse:
 
 impor-sirup:
 	cd backend && go run ./cmd/worker sirup
+
+impor-apbd:
+	cd backend && go run ./cmd/worker apbd_djpk
 
 impor-opentender:
 	cd backend && go run ./cmd/worker opentender

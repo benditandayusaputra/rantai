@@ -25,6 +25,7 @@ export const titikAkhirTerbuka: TitikAkhirTerbuka[] = [
 		deskripsi: 'about.api.seats'
 	},
 	{ path: '/jaringan', kueri: { wilayah: kotaContoh }, deskripsi: 'about.api.network' },
+	{ path: '/apbd', kueri: { tahun: tahunContoh }, deskripsi: 'about.api.budget' },
 	{
 		path: '/unduh/paket.csv',
 		kueri: { kode_wilayah: kecamatanContoh, tahun: tahunContoh },
