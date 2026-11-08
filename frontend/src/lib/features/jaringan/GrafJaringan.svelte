@@ -9,8 +9,10 @@
 	import {
 		cariTetangga,
 		hitungJari,
+		kotakLabel,
 		nilaiMaksPerJenis,
 		ringkasLabel,
+		saringLabelBertumpuk,
 		susunBarisRelasi,
 		tautanSimpul
 	} from './jaringan';
@@ -25,6 +27,8 @@
 
 	const bidang = { lebar: 960, tinggi: 600, tepi: 32 };
 	const batasLabelTetangga = 6;
+	const jarakLabel = 15;
+	const jarakCincin = 6;
 	const jenisLegenda: JenisSimpul[] = ['instansi', 'paket', 'penyedia'];
 
 	let isTabel = $state(false);
@@ -52,6 +56,29 @@
 		[...jaringan.simpul].sort((a, b) => Number(a.jenis === 'paket') - Number(b.jenis === 'paket'))
 	);
 
+	const penghalangLabel = $derived.by(() => {
+		const p = terpilih ? posisi.get(terpilih) : undefined;
+		if (!p || !simpulTerpilih) return [];
+		const sisi = (hitungJari(simpulTerpilih, nilaiMaks) + jarakCincin) * 2;
+		return [{ id: simpulTerpilih.id, x: p.x, y: p.y, lebar: sisi, tinggi: sisi }];
+	});
+	const labelTampil = $derived(
+		saringLabelBertumpuk(
+			penghalangLabel,
+			jaringan.simpul
+				.filter(isLabelKandidat)
+				.sort(
+					(a, b) =>
+						Number(b.id === terpilih) - Number(a.id === terpilih) || b.nilai.nilai - a.nilai.nilai
+				)
+				.flatMap((s) => {
+					const p = posisi.get(s.id);
+					const yGaris = (p?.y ?? 0) + hitungJari(s, nilaiMaks) + jarakLabel;
+					return p ? [kotakLabel(s.id, p.x, yGaris, ringkasLabel(s.label))] : [];
+				})
+		)
+	);
+
 	function isRedup(id: string): boolean {
 		return terpilih !== null && id !== terpilih && !tetangga.has(id);
 	}
@@ -60,7 +87,7 @@
 		return terpilih !== null && (dari === terpilih || ke === terpilih);
 	}
 
-	function isLabelTampil(s: SimpulJaringan): boolean {
+	function isLabelKandidat(s: SimpulJaringan): boolean {
 		if (terpilih === null) return s.jenis === 'instansi';
 		return s.id === terpilih || (tetangga.size <= batasLabelTetangga && tetangga.has(s.id));
 	}
@@ -199,13 +226,13 @@
 								>
 									<title>{s.label}</title>
 									<circle
-										r={jari + 6}
+										r={jari + jarakCincin}
 										class="jaringan-cincin"
 										class:jaringan-cincin-aktif={terpilih === s.id}
 									/>
 									{@render bentuk(s.jenis, jari, `simpul-${s.jenis}`)}
-									{#if isLabelTampil(s)}
-										<text y={jari + 15} text-anchor="middle" class="jaringan-label"
+									{#if labelTampil.has(s.id)}
+										<text y={jari + jarakLabel} text-anchor="middle" class="jaringan-label"
 											>{ringkasLabel(s.label)}</text
 										>
 									{/if}

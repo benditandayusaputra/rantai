@@ -35,6 +35,48 @@ export function ringkasLabel(label: string): string {
 	return label.length > batasLabel ? `${label.slice(0, batasLabel - 1)}…` : label;
 }
 
+const lebarHurufLabel = 7;
+const tinggiLabel = 14;
+const naikPusatLabel = 5;
+
+export interface Kotak {
+	id: string;
+	x: number;
+	y: number;
+	lebar: number;
+	tinggi: number;
+}
+
+export function kotakLabel(id: string, x: number, yGaris: number, teks: string): Kotak {
+	return {
+		id,
+		x,
+		y: yGaris - naikPusatLabel,
+		lebar: teks.length * lebarHurufLabel,
+		tinggi: tinggiLabel
+	};
+}
+
+export function saringLabelBertumpuk(
+	penghalang: Kotak[],
+	labelUrutPrioritas: Kotak[]
+): Set<string> {
+	const terpasang = [...penghalang];
+	const tampil = new Set<string>();
+	for (const label of labelUrutPrioritas) {
+		if (terpasang.some((lain) => lain.id !== label.id && isBertumpuk(label, lain))) continue;
+		terpasang.push(label);
+		tampil.add(label.id);
+	}
+	return tampil;
+}
+
+function isBertumpuk(a: Kotak, b: Kotak): boolean {
+	return (
+		Math.abs(a.x - b.x) * 2 < a.lebar + b.lebar && Math.abs(a.y - b.y) * 2 < a.tinggi + b.tinggi
+	);
+}
+
 export interface BarisRelasi {
 	paket: SimpulJaringan;
 	instansi: SimpulJaringan | null;

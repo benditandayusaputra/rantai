@@ -392,9 +392,13 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - Container berjalan sebagai uid 65532, sedangkan `data/raw` server milik uid 1000; folder diberi grup 65532 yang bisa menulis. Layanan `penjadwal` ikut dibuat ulang di setiap rilis agar tidak tertinggal image lama.
   - LPSE dan SiRUP menolak IP server (403, termasuk `robots.txt`), dan API berita DPRD menjawab halaman penolakan WAF Diskominfotik meski TLS kini lolos; User-Agent yang sama diterima dari jaringan di Indonesia. Lihat Catatan blokir.
   - Selesai bila: `umpan_media` berhasil di produksi dan `umpan_dprd` lolos TLS di produksi (8 November 2026: keduanya terpenuhi).
-- [ ] **T-1205** Tangkapan layar fitur revisi juri · `📝 Tambah tangkapan layar grafik jaringan, Temuan Komunitas, dan API Terbuka`
-  - Tangkapan layar produksi untuk README dan dokumen lomba: grafik jaringan per kota, profil penyedia, Temuan Komunitas di detail paket, dan API Terbuka di Tentang Data.
-- [ ] **T-1206** Realisasi APBD DKI dari portal resmi **[GERBANG DATA]**
+- [x] **T-1205** Label grafik jaringan tidak bertumpuk · `🐛 Cegah label simpul bertumpuk di grafik jaringan`
+  - Label simpul terpilih dan tetangganya saling menimpa bila simpulnya berdekatan. Label kini dipasang berurutan dari simpul terpilih lalu nilai terbesar, dan label yang menimpa label lain atau bentuk simpul terpilih tidak digambar; daftar lengkapnya tetap ada di panel rincian.
+- [ ] **T-1206** Keterangan pembaruan data sesuai kenyataan · `🐛 Luruskan keterangan pembaruan data otomatis`
+  - Kaki halaman, Tentang Data, API Terbuka, dan README menyebut data diperbarui otomatis setiap hari, padahal LPSE, SiRUP, dan situs DPRD menolak server (T-1204). Teks kini menyebut jadwal penjadwal, menjelaskan penolakan itu, dan merujuk ke status per sumber di `/sumber-data`.
+- [ ] **T-1207** Tangkapan layar fitur revisi juri · `📝 Tambah tangkapan layar grafik jaringan, Temuan Komunitas, dan API Terbuka`
+  - Tangkapan layar untuk README dan dokumen lomba: grafik jaringan per kota, profil penyedia, Temuan Komunitas di detail paket, dan API Terbuka di Tentang Data.
+- [ ] **T-1208** Realisasi APBD DKI dari portal resmi **[GERBANG DATA]**
   - Saran juri: hubungkan ke data Kemenkeu (DJPK) atau APBD daerah. Verifikasi dulu format, robots.txt, dan rincian per SKPD sebelum membangun importer; tampilkan belanja per urusan pendidikan di samping paket LPSE.
 
 ## Keluaran lomba di luar kode
@@ -415,5 +419,5 @@ Dikerjakan tim, bukan tugas commit. Dicatat di sini agar urutannya terlihat.
 Format: `- T-xxx · tanggal · alasan · tugas yang dikerjakan sebagai gantinya`
 
 - T-301 · 23 Oktober 2026 · halaman detail dan evaluasi tender SPSE DKI tertutup untuk publik (403, "Akses Ditolak"); detail tender butuh token API Gateway Inaproc (peran Data Integrator, surat ke LKPP) · paket tender disimpan dari kolom daftar, non-tender memakai halaman pengumuman lengkap
-- T-1204 · 8 November 2026 · LPSE (`spse.inaproc.id`) dan SiRUP menjawab 403 untuk semua permintaan dari IP server produksi, termasuk `robots.txt`; API berita DPRD (`/wp-json/wp/v2/posts`) menjawab halaman "URL yang diminta ditolak" dari WAF Diskominfotik DKI dengan Support ID. Dari jaringan di Indonesia dengan User-Agent yang sama ketiganya dijawab 200. Rantai tidak menyamar untuk melewati penolakan ini. Jalur resmi: token API Gateway Inaproc (peran Data Integrator, surat ke LKPP) dan permintaan izin IP ke servicedesk.jakarta.go.id dengan Support ID. Sementara itu `make impor-lpse impor-sirup impor-umpan-dprd turunan` dijalankan dari mesin tim di Indonesia sesuai T-1004 · T-1205
+- T-1204 · 8 November 2026 · LPSE (`spse.inaproc.id`) dan SiRUP menjawab 403 untuk semua permintaan dari IP server produksi, termasuk `robots.txt`; API berita DPRD (`/wp-json/wp/v2/posts`) menjawab halaman "URL yang diminta ditolak" dari WAF Diskominfotik DKI dengan Support ID. Dari jaringan di Indonesia dengan User-Agent yang sama ketiganya dijawab 200. Rantai tidak menyamar untuk melewati penolakan ini. Jalur resmi: token API Gateway Inaproc (peran Data Integrator, surat ke LKPP) dan permintaan izin IP ke servicedesk.jakarta.go.id dengan Support ID. Sementara itu `make impor-lpse impor-sirup impor-umpan-dprd turunan` dijalankan dari mesin tim di Indonesia sesuai T-1004 · T-1205 sampai T-1208
 - T-1005 · 25 Oktober 2026 · `ANTHROPIC_API_KEY` kosong di `.env` lokal dan Tanya Rantai di API produksi belum menjawab, sehingga `tanya_demo.json` belum bisa direkam (`RANTAI_API_URL=<api live> make tanya-demo`); langkah lain T-1005 sudah dikerjakan · T-650

@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import type { SimpulJaringan, SisiJaringan } from '$lib/api/tipe';
-import { cariTetangga, hitungJari, nilaiMaksPerJenis, susunBarisRelasi } from './jaringan';
+import {
+	cariTetangga,
+	hitungJari,
+	nilaiMaksPerJenis,
+	kotakLabel,
+	saringLabelBertumpuk,
+	susunBarisRelasi
+} from './jaringan';
 import { susunTataLetak } from './tataLetak';
 
 function simpul(id: string, jenis: SimpulJaringan['jenis'], nilai = 100): SimpulJaringan {
@@ -44,6 +51,23 @@ describe('jaringan', () => {
 			['paket:A', 'instansi:1', 'penyedia:9'],
 			['paket:B', 'instansi:1', null]
 		]);
+	});
+
+	it('membuang label yang bertumpuk dengan label berprioritas lebih tinggi atau penghalang', () => {
+		const tampil = saringLabelBertumpuk(
+			[
+				{ id: 'bentuk', x: 300, y: 100, lebar: 30, tinggi: 30 },
+				{ id: 'terpilih', x: 100, y: 90, lebar: 30, tinggi: 30 }
+			],
+			[
+				kotakLabel('terpilih', 100, 100, 'PT ALMA KARYA SEJATI'),
+				kotakLabel('tumpuk', 120, 106, 'Perbaikan Pintu Air'),
+				kotakLabel('di-bawah', 110, 130, 'Pembangunan Tangki'),
+				kotakLabel('kena-bentuk', 300, 110, 'Turap'),
+				kotakLabel('jauh', 500, 100, 'Perbaikan Turap')
+			]
+		);
+		expect([...tampil].sort()).toEqual(['di-bawah', 'jauh', 'terpilih']);
 	});
 
 	it('menata simpul di dalam bidang dan mendekatkan simpul yang bertaut', () => {
