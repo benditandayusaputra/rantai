@@ -231,14 +231,22 @@
 										class:jaringan-cincin-aktif={terpilih === s.id}
 									/>
 									{@render bentuk(s.jenis, jari, `simpul-${s.jenis}`)}
-									{#if labelTampil.has(s.id)}
-										<text y={jari + jarakLabel} text-anchor="middle" class="jaringan-label"
-											>{ringkasLabel(s.label)}</text
-										>
-									{/if}
 								</g>
 							{/if}
 						{/each}
+						<g aria-hidden="true" class="pointer-events-none">
+							{#each urutanGambar as s (s.id)}
+								{@const p = posisi.get(s.id)}
+								{#if p && labelTampil.has(s.id)}
+									<text
+										x={p.x}
+										y={p.y + hitungJari(s, nilaiMaks) + jarakLabel}
+										text-anchor="middle"
+										class="jaringan-label">{ringkasLabel(s.label)}</text
+									>
+								{/if}
+							{/each}
+						</g>
 					</svg>
 				</div>
 
