@@ -394,7 +394,7 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - Selesai bila: `umpan_media` berhasil di produksi dan `umpan_dprd` lolos TLS di produksi (8 November 2026: keduanya terpenuhi).
 - [x] **T-1205** Label grafik jaringan tidak bertumpuk · `🐛 Cegah label simpul bertumpuk di grafik jaringan`
   - Label simpul terpilih dan tetangganya saling menimpa bila simpulnya berdekatan. Label kini dipasang berurutan dari simpul terpilih lalu nilai terbesar, dan label yang menimpa label lain atau bentuk simpul terpilih tidak digambar; daftar lengkapnya tetap ada di panel rincian.
-- [ ] **T-1206** Keterangan pembaruan data sesuai kenyataan · `🐛 Luruskan keterangan pembaruan data otomatis`
+- [x] **T-1206** Keterangan pembaruan data sesuai kenyataan · `🐛 Luruskan keterangan pembaruan data otomatis`
   - Kaki halaman, Tentang Data, API Terbuka, dan README menyebut data diperbarui otomatis setiap hari, padahal LPSE, SiRUP, dan situs DPRD menolak server (T-1204). Teks kini menyebut jadwal penjadwal, menjelaskan penolakan itu, dan merujuk ke status per sumber di `/sumber-data`.
 - [ ] **T-1207** Tangkapan layar fitur revisi juri · `📝 Tambah tangkapan layar grafik jaringan, Temuan Komunitas, dan API Terbuka`
   - Tangkapan layar untuk README dan dokumen lomba: grafik jaringan per kota, profil penyedia, Temuan Komunitas di detail paket, dan API Terbuka di Tentang Data.

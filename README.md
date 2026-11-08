@@ -33,7 +33,7 @@ Halaman `/id/kota/<kode>` (misalnya `/id/kota/31.72`) menampilkan sebaran SD, SM
 
 ## API terbuka
 
-Semua data Rantai dapat dipakai ulang lewat API JSON tanpa kunci di `https://rantai-civic.vercel.app/api/v1`, diperbarui otomatis setiap hari pukul 02.00 WIB dari LPSE dan SiRUP. Contoh:
+Semua data Rantai dapat dipakai ulang lewat API JSON tanpa kunci di `https://rantai-civic.vercel.app/api/v1`. Status dan waktu berhasil terakhir tiap sumber ada di `/sumber-data`. Contoh:
 
 ```bash
 curl 'https://rantai-civic.vercel.app/api/v1/kecamatan/31.72.06/ringkasan'
