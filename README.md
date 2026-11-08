@@ -159,6 +159,8 @@ docker compose -f docker-compose.prod.yml --profile caddy up -d --build
 docker compose -f docker-compose.prod.yml run --rm --entrypoint worker api <job>
 ```
 
+Layanan `penjadwal` menjalankan pembaruan harian pukul 02.00 WIB dari image yang sama dengan API, jadi buat ulang keduanya di setiap rilis (`up -d --no-build api penjadwal`). Container berjalan sebagai uid 65532; beri folder data mentah izin tulis sekali dengan `sudo chgrp -R 65532 data/raw && sudo chmod -R g+rwX data/raw`. Situs DPRD tidak mengirim sertifikat perantaranya, sehingga perantara itu disimpan di `backend/config/sertifikat` dan dimuat lewat `SSL_CERT_DIR`.
+
 Jadwalkan `docker compose -f docker-compose.prod.yml run --rm --entrypoint worker api ringkasan_mingguan` sepekan sekali (misalnya cron Senin pagi) untuk mengirim ringkasan Pantau via email; alamat situs di tautan email dan kartu bagikan diatur di `backend/config/situs.yaml`.
 
 Profile `caddy` menyalakan Caddy milik Rantai dengan TLS otomatis untuk `API_DOMAIN` (misalnya `rantai.130-162-198-219.sslip.io`). Bila server sudah punya reverse proxy bersama, lewati profile itu dan tambahkan `-f deploy/compose.proxy-bersama.yml` agar API bergabung ke jaringan proxy (`JARINGAN_PROXY`, bawaan `deploy_default`) dengan alias `rantai-api`. Layanan `cadangan` menyimpan `pg_dump` harian dari Neon ke `cadangan/` selama tujuh hari.

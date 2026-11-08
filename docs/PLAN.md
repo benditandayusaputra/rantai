@@ -386,8 +386,15 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
 - [x] **T-1202** Temuan Komunitas (ANG-11) · `✨ Tambah Temuan Komunitas untuk kontribusi dan verifikasi bersama`
   - Saran juri: ruang bagi jurnalis warga dan peneliti independen untuk menyumbang temuan dan memverifikasi data secara kolaboratif. Migrasi 000040, kosakata terlarang, batas harian, pemeriksaan sesama, dan penyembunyian oleh moderator.
 - [x] **T-1203** API Terbuka di Tentang Data (WIL-05) · `✨ Tambah bagian API Terbuka berisi titik akhir data publik`
-  - Saran juri: integrasi open data dan API publik dengan pembaruan otomatis. Pembaruan harian 02.00 WIB sudah berjalan sejak T-1004; tugas ini membuka data Rantai kembali sebagai API JSON tanpa kunci dan CSV, terdokumentasi di Tentang Data dan README.
-- [ ] **T-1204** Realisasi APBD DKI dari portal resmi **[GERBANG DATA]**
+  - Saran juri: integrasi open data dan API publik dengan pembaruan otomatis. Tugas ini membuka data Rantai kembali sebagai API JSON tanpa kunci dan CSV, terdokumentasi di Tentang Data dan README. Penjadwal harian 02.00 WIB ternyata gagal sejak 29 Oktober; perbaikannya di T-1204.
+- [x] **T-1204** Perbaiki penjadwal harian produksi · `🐛 Perbaiki penjadwal harian: rantai sertifikat DPRD dan izin folder mentah`
+  - Situs DPRD hanya mengirim sertifikat daun tanpa perantara Sectigo DV R36, sehingga Go di Linux menolak TLS-nya; perantara disimpan di `backend/config/sertifikat` dan dimuat lewat `SSL_CERT_DIR`.
+  - Container berjalan sebagai uid 65532, sedangkan `data/raw` server milik uid 1000; folder diberi grup 65532 yang bisa menulis. Layanan `penjadwal` ikut dibuat ulang di setiap rilis agar tidak tertinggal image lama.
+  - LPSE dan SiRUP menolak IP server (403, termasuk `robots.txt`), dan API berita DPRD menjawab halaman penolakan WAF Diskominfotik meski TLS kini lolos; User-Agent yang sama diterima dari jaringan di Indonesia. Lihat Catatan blokir.
+  - Selesai bila: `umpan_media` berhasil di produksi dan `umpan_dprd` lolos TLS di produksi (8 November 2026: keduanya terpenuhi).
+- [ ] **T-1205** Tangkapan layar fitur revisi juri · `📝 Tambah tangkapan layar grafik jaringan, Temuan Komunitas, dan API Terbuka`
+  - Tangkapan layar produksi untuk README dan dokumen lomba: grafik jaringan per kota, profil penyedia, Temuan Komunitas di detail paket, dan API Terbuka di Tentang Data.
+- [ ] **T-1206** Realisasi APBD DKI dari portal resmi **[GERBANG DATA]**
   - Saran juri: hubungkan ke data Kemenkeu (DJPK) atau APBD daerah. Verifikasi dulu format, robots.txt, dan rincian per SKPD sebelum membangun importer; tampilkan belanja per urusan pendidikan di samping paket LPSE.
 
 ## Keluaran lomba di luar kode
@@ -408,4 +415,5 @@ Dikerjakan tim, bukan tugas commit. Dicatat di sini agar urutannya terlihat.
 Format: `- T-xxx · tanggal · alasan · tugas yang dikerjakan sebagai gantinya`
 
 - T-301 · 23 Oktober 2026 · halaman detail dan evaluasi tender SPSE DKI tertutup untuk publik (403, "Akses Ditolak"); detail tender butuh token API Gateway Inaproc (peran Data Integrator, surat ke LKPP) · paket tender disimpan dari kolom daftar, non-tender memakai halaman pengumuman lengkap
+- T-1204 · 8 November 2026 · LPSE (`spse.inaproc.id`) dan SiRUP menjawab 403 untuk semua permintaan dari IP server produksi, termasuk `robots.txt`; API berita DPRD (`/wp-json/wp/v2/posts`) menjawab halaman "URL yang diminta ditolak" dari WAF Diskominfotik DKI dengan Support ID. Dari jaringan di Indonesia dengan User-Agent yang sama ketiganya dijawab 200. Rantai tidak menyamar untuk melewati penolakan ini. Jalur resmi: token API Gateway Inaproc (peran Data Integrator, surat ke LKPP) dan permintaan izin IP ke servicedesk.jakarta.go.id dengan Support ID. Sementara itu `make impor-lpse impor-sirup impor-umpan-dprd turunan` dijalankan dari mesin tim di Indonesia sesuai T-1004 · T-1205
 - T-1005 · 25 Oktober 2026 · `ANTHROPIC_API_KEY` kosong di `.env` lokal dan Tanya Rantai di API produksi belum menjawab, sehingga `tanya_demo.json` belum bisa direkam (`RANTAI_API_URL=<api live> make tanya-demo`); langkah lain T-1005 sudah dikerjakan · T-650

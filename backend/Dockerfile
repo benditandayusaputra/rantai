@@ -12,5 +12,6 @@ WORKDIR /app/backend
 COPY --from=bangun /keluaran/api /keluaran/worker /usr/local/bin/
 COPY backend/config ./config
 COPY data/snapshot /app/data/snapshot
+ENV SSL_CERT_DIR=/app/backend/config/sertifikat
 EXPOSE 8080
 ENTRYPOINT ["api"]
