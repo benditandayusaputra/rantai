@@ -432,6 +432,10 @@ Temuan uji tim atas situs produksi. Tiga saran mentor di akhir dokumen QA (integ
   - Tanpa konteks, server mengirim tag `<kecamatan_aktif>` kosong dan model menyalinnya ke jawaban. Tag kini hanya dikirim bila konteksnya ada, gema tag masukan dibuang dari jawaban, dan kotak pertanyaan terkunci sampai wilayah dipilih; wilayah tersimpan (T-1211) dipakai otomatis.
   - Peristiwa `jawaban` membawa `tautan` yang disusun server dari hasil fungsi: nama anggota ke profilnya, nama dapil ke bagian wakil di halaman kecamatan, dan judul rilis ke sumbernya (AKS-01 diperbarui).
 
+- [x] **T-1216** Halaman Belajar untuk warga awam · `✨ Tambah halaman Belajar berisi cara kerja pemerintahan dan kamus istilah`
+  - `/{bahasa}/belajar` menjelaskan enam langkah kerja pemerintahan daerah DKI Jakarta (pemilu, perencanaan, APBD, pelaksanaan, pengawasan, peran warga) dan kamus 19 istilah yang muncul di Rantai, dalam ID dan EN.
+  - Terjangkau dari menu utama layar lebar, kaki halaman, dan bagian "Cara kerja" di beranda.
+
 ## Keluaran lomba di luar kode
 
 Dikerjakan tim, bukan tugas commit. Dicatat di sini agar urutannya terlihat.

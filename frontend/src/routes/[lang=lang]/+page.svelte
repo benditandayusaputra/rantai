@@ -190,6 +190,12 @@
 				class="inline-flex min-h-touch items-center font-semibold underline underline-offset-4"
 				>{t('home.trustLink')}</a
 			>
+			·
+			<a
+				href="/{bahasaAktif}/belajar"
+				class="inline-flex min-h-touch items-center font-semibold underline underline-offset-4"
+				>{t('home.learnLink')}</a
+			>
 		</p>
 	</section>
 

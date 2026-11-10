@@ -1,8 +1,8 @@
-import { Camera, House, Info, MapPin, MessageCircle } from '@lucide/svelte';
+import { BookOpen, Camera, House, Info, MapPin, MessageCircle } from '@lucide/svelte';
 import type { KunciPesan } from '$lib/i18n';
 
 export type Tujuan =
-	'beranda' | 'wilayah' | 'peta' | 'dasbor' | 'tanya' | 'lapor' | 'pantau' | 'tentang';
+	'beranda' | 'wilayah' | 'peta' | 'dasbor' | 'tanya' | 'lapor' | 'belajar' | 'pantau' | 'tentang';
 
 interface TujuanNavigasi {
 	kunci: Tujuan;
@@ -24,6 +24,13 @@ export const tujuanUtama: TujuanNavigasi[] = [
 	{ kunci: 'tanya', path: '/tanya', label: 'nav.ask', ikon: MessageCircle },
 	{ kunci: 'lapor', path: '/lapor', label: 'nav.report', ikon: Camera },
 	{
+		kunci: 'belajar',
+		path: '/belajar',
+		label: 'nav.learn',
+		ikon: BookOpen,
+		isHanyaLayarLebar: true
+	},
+	{
 		kunci: 'tentang',
 		path: '/tentang-data',
 		label: 'nav.about',
@@ -39,7 +46,8 @@ export const kelompokKaki: { judul: KunciPesan; tautan: TautanKaki[] }[] = [
 			{ path: '/peta', label: 'nav.map' },
 			{ path: '/dasbor', label: 'nav.dashboard' },
 			{ path: '/tanya', label: 'ask.title' },
-			{ path: '/cek-sekolah', label: 'check.title' }
+			{ path: '/cek-sekolah', label: 'check.title' },
+			{ path: '/belajar', label: 'nav.learn' }
 		]
 	},
 	{

@@ -10,6 +10,7 @@ describe('tujuanAktif', () => {
 		['/id/tanya', 'tanya'],
 		['/id/tentang-data', 'tentang'],
 		['/id/lapor', 'lapor'],
+		['/id/belajar', 'belajar'],
 		['/id/pantau', null],
 		['/id/lapor/terkirim', 'lapor'],
 		['/id/laporan/51', null],

@@ -20,6 +20,7 @@ const halamanTetap = [
 	'/id/dasbor?lensa=tanggung-jawab',
 	'/id/tanya',
 	'/id/tentang-data',
+	'/id/belajar',
 	'/id/data-belum-dibuka',
 	'/id/cek-sekolah',
 	`/id/aspirasi?w=${kecamatanUji}`,
