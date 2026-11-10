@@ -9,7 +9,6 @@
 	import PengalihTema from '$lib/components/PengalihTema.svelte';
 	import { inisial, keluar, pulihkanSesi, sesiAktif } from '$lib/features/akun/sesi.svelte';
 	import { isAkunPanel } from '$lib/features/panel/panel';
-	import TurPengenalan from '$lib/features/tur/TurPengenalan.svelte';
 	import {
 		kodeWilayahDariURL,
 		tautanDenganWilayah,
@@ -63,7 +62,6 @@
 							<a
 								href={tautanDenganWilayah(tujuan.path, bahasaAktif, kodeWilayah)}
 								aria-current={aktif === tujuan.kunci ? 'page' : undefined}
-								data-tur={tujuan.kunci}
 								class="relative inline-flex items-center whitespace-nowrap text-small font-medium text-fg transition-colors duration-fast ease-standard after:absolute after:inset-x-0 after:bottom-0 after:h-0.75 after:bg-transparent hover:text-primary aria-[current=page]:font-semibold aria-[current=page]:after:bg-primary"
 							>
 								{t(tujuan.label)}
@@ -127,7 +125,6 @@
 				<a
 					href={tautanDenganWilayah(tujuan.path, bahasaAktif, kodeWilayah)}
 					aria-current={aktif === tujuan.kunci ? 'page' : undefined}
-					data-tur={tujuan.kunci}
 					class="relative flex h-full flex-col items-center justify-center gap-1 text-caption text-muted before:absolute before:inset-x-3 before:top-0 before:h-0.75 before:bg-transparent aria-[current=page]:font-semibold aria-[current=page]:text-fg aria-[current=page]:before:bg-primary"
 				>
 					<Ikon size={20} strokeWidth={1.75} aria-hidden="true" />
@@ -137,5 +134,3 @@
 		{/each}
 	</ul>
 </nav>
-
-<TurPengenalan />

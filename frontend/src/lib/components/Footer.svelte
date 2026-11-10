@@ -1,7 +1,5 @@
 <script lang="ts">
-	import { Compass } from '@lucide/svelte';
 	import { kelompokKaki, tautanDenganWilayah } from '$lib/features/navigasi/navigasi';
-	import { mulaiTur } from '$lib/features/tur/tur.svelte';
 	import { bahasaAktif, t } from '$lib/i18n';
 	import Logo from './Logo.svelte';
 	import PengalihTema from './PengalihTema.svelte';
@@ -18,10 +16,6 @@
 			<p class="text-small font-semibold">{t('footer.independent')}</p>
 			<p class="text-small text-muted">{t('footer.schedule')}</p>
 			<div class="xs:hidden"><PengalihBahasa /></div>
-			<button type="button" class="btn btn-outline btn-sm self-start" onclick={mulaiTur}>
-				<Compass size={16} strokeWidth={1.75} aria-hidden="true" />
-				{t('tour.replay')}
-			</button>
 		</div>
 		{#each kelompokKaki as kelompok (kelompok.judul)}
 			<nav aria-label={t(kelompok.judul)}>

@@ -4,15 +4,22 @@ import type { TemaPendidikan } from '$lib/features/pendidikan/jenjang';
 export interface WilayahSorotan {
 	kode: string;
 	nama: string;
+	kota: string;
 }
 
-export const sorotanBawaan: WilayahSorotan = { kode: '31.75.07', nama: 'Duren Sawit' };
+export const sorotanBawaan: WilayahSorotan = {
+	kode: '31.75.07',
+	nama: 'Duren Sawit',
+	kota: 'Jakarta Timur'
+};
 
 export const daftarSorotan: WilayahSorotan[] = [
 	sorotanBawaan,
-	{ kode: '31.72.04', nama: 'Cilincing' },
-	{ kode: '31.72.06', nama: 'Kelapa Gading' },
-	{ kode: '31.71.07', nama: 'Tanah Abang' }
+	{ kode: '31.72.04', nama: 'Cilincing', kota: 'Jakarta Utara' },
+	{ kode: '31.72.06', nama: 'Kelapa Gading', kota: 'Jakarta Utara' },
+	{ kode: '31.71.07', nama: 'Tanah Abang', kota: 'Jakarta Pusat' },
+	{ kode: '31.74.07', nama: 'Kebayoran Baru', kota: 'Jakarta Selatan' },
+	{ kode: '31.73.01', nama: 'Cengkareng', kota: 'Jakarta Barat' }
 ];
 
 export const batasPaketBeranda = 3;

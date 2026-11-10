@@ -5,7 +5,7 @@ test.use({ storageState: { cookies: [], origins: [] } });
 
 const wilayah = '31.72.06';
 
-test('kunjungan pertama menjelaskan manfaat dan tidak menghalangi pencarian dengan tur', async ({
+test('kunjungan pertama menjelaskan manfaat, cara kerja, dan pertanyaan umum', async ({
 	page
 }, info) => {
 	await page.goto('/id');
@@ -38,8 +38,15 @@ test('kunjungan pertama menjelaskan manfaat dan tidak menghalangi pencarian deng
 	expect(audit.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical')).toEqual(
 		[]
 	);
-	await page.getByRole('button', { name: 'Cara memakai Rantai', exact: true }).first().click();
-	await expect(page.getByRole('dialog')).toBeVisible();
+	await expect(page.getByRole('heading', { name: 'Cara kerja', exact: true })).toBeVisible();
+	await expect(page.getByRole('link', { name: /Kebayoran Baru/ })).toHaveAttribute(
+		'href',
+		'/id/kecamatan/31.74.07'
+	);
+	await page.getByText('Apakah harus punya akun?', { exact: true }).click();
+	await expect(
+		page.getByText('Semua data bisa dibaca tanpa masuk.', { exact: false })
+	).toBeVisible();
 });
 
 test('ketik wilayah lalu Enter membuka kecamatan yang tepat', async ({ page }, info) => {

@@ -405,6 +405,14 @@ Prasyarat: `docs/DESIGN.md` memuat layar PRD v2.0 (SPEC 14), terutama halaman ke
   - Migrasi 000041 (`apbd_akun`, sumber `djpk`), importer `internal/ingest/djpk` dengan penentuan bulan realisasi, job `apbd_djpk` di penjadwal harian, `GET /apbd`, kartu Belanja APBD di lensa Uang (ANG-12), dan API Terbuka.
   - Selesai bila: job `apbd_djpk` berhasil di server produksi dan `GET /apbd` produksi mengembalikan realisasi 2025 dan 2026.
 
+## Revisi QA tim (10 November 2026)
+
+Temuan uji tim atas situs produksi. Tiga saran mentor di akhir dokumen QA (integrasi data terbuka, kolaborasi komunitas, grafik jaringan) sudah dikerjakan di T-1203 sampai T-1209.
+
+- [x] **T-1210** Beranda lebih terisi dan tanpa tur · `💄 Rapikan beranda: contoh wilayah, Cara kerja, dan pertanyaan umum`
+  - Bagian "Mulai di sini" kini selebar bagian lain dan berdampingan dengan enam contoh kecamatan (satu sampai dua per kota) serta tautan ke peta. Judul tiga lensa menjadi "Cara kerja", dan ada bagian pertanyaan yang sering diajukan.
+  - Tur "Cara memakai Rantai" dihapus dari beranda, kaki halaman, dan kode karena hanya berisi satu langkah.
+
 ## Keluaran lomba di luar kode
 
 Dikerjakan tim, bukan tugas commit. Dicatat di sini agar urutannya terlihat.
