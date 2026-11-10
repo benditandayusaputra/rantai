@@ -1,17 +1,19 @@
 <script lang="ts">
 	import { PenLine } from '@lucide/svelte';
+	import { formatJam } from '$lib/format';
 	import { t } from '$lib/i18n';
 	import { draf } from './draf.svelte';
 
 	let { onubah }: { onubah: (langkah: number) => void } = $props();
 
+	const langkahFoto = 3;
 	const namaPaket = $derived(
 		draf.paketTerdekat?.find((p) => p.kode === draf.paketKode)?.nama ?? t('report.s2.notListed')
 	);
 	const baris = $derived([
 		{ langkah: 2, label: t('report.s6.project'), isi: namaPaket },
 		{
-			langkah: 3,
+			langkah: langkahFoto,
 			label: t('report.s6.photos'),
 			isi: t('report.s6.photoCount', { n: draf.foto.length })
 		},
@@ -32,6 +34,17 @@
 				<div class="flex flex-1 flex-col gap-1">
 					<dt class="text-small text-muted">{b.label}</dt>
 					<dd class="break-words">{b.isi}</dd>
+					{#if b.langkah === langkahFoto}
+						<dd class="mt-1 grid grid-cols-4 gap-2">
+							{#each draf.foto as foto, i (foto.id)}
+								<img
+									src={foto.pratinjau}
+									alt={t('report.s3.alt', { n: i + 1, jam: formatJam(foto.diambilPada) })}
+									class="aspect-square w-full rounded-md bg-sunken object-cover"
+								/>
+							{/each}
+						</dd>
+					{/if}
 				</div>
 				<button
 					type="button"

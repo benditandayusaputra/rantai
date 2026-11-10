@@ -33,8 +33,21 @@
 			<span class="font-bold">{t('report.flowTitle')}</span>
 			<span class="truncate text-small text-muted">{teksLangkah} · {stepLabel}</span>
 		</div>
-		<span class="icon-tile h-9 w-9" aria-hidden="true"><Camera size={18} strokeWidth={1.75} /></span
-		>
+		{#if step === 1}
+			<span class="icon-tile h-9 w-9" aria-hidden="true"
+				><Camera size={18} strokeWidth={1.75} /></span
+			>
+		{:else}
+			<button
+				type="button"
+				class="btn btn-ghost btn-icon"
+				aria-label={t('action.close')}
+				title={t('action.close')}
+				onclick={onclose}
+			>
+				<X size={20} strokeWidth={1.75} aria-hidden="true" />
+			</button>
+		{/if}
 	</div>
 	<div
 		role="progressbar"

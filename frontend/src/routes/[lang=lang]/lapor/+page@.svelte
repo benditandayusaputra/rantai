@@ -25,6 +25,7 @@
 	import { aturUlangDraf, draf } from '$lib/features/lapor/draf.svelte';
 	import {
 		bacaLangkah,
+		isDrafTerisi,
 		isLangkahLengkap,
 		langkahTerjauh,
 		susunFormulir,
@@ -36,6 +37,7 @@
 	import LangkahLokasi from '$lib/features/lapor/LangkahLokasi.svelte';
 	import LangkahProyek from '$lib/features/lapor/LangkahProyek.svelte';
 	import LangkahRingkasan from '$lib/features/lapor/LangkahRingkasan.svelte';
+	import { berandaPengguna } from '$lib/features/wilayah/wilayahku.svelte';
 	import { bahasaAktif, t, type KunciPesan } from '$lib/i18n';
 
 	let isSesiDiperiksa = $state(false);
@@ -67,8 +69,9 @@
 	}
 
 	function tutup() {
+		if (isDrafTerisi(draf) && !confirm(t('report.discardConfirm'))) return;
 		aturUlangDraf();
-		void goto(`/${bahasaAktif}`);
+		void goto(berandaPengguna(bahasaAktif));
 	}
 
 	function lewatiCatatan() {
@@ -169,7 +172,7 @@
 		<main id="konten" class="mx-auto flex w-full max-w-form flex-1 flex-col px-4 py-6 md:py-10">
 			<div class="flex flex-1 flex-col md:card md:flex-none md:p-8">
 				{#if langkah === 1}
-					<LangkahLokasi onlanjut={() => keLangkah(2)} />
+					<LangkahLokasi onlanjut={() => keLangkah(2)} onkeluar={tutup} />
 				{:else if langkah === 2}
 					<LangkahProyek />
 				{:else if langkah === 3}

@@ -3,8 +3,10 @@ import type {
 	PaketTerdekat,
 	RiwayatLaporan,
 	StatusLaporan,
-	Titik
+	Titik,
+	WilayahDitemukan
 } from '$lib/api/tipe';
+import { ambilWilayahDiTitik, tangkap, type Fetch } from '$lib/api/klien';
 import { ambangAkurasiKasarM, isIzinDitolak, mintaPosisi } from '$lib/features/wilayah/lokasi';
 
 export const totalLangkah = 6;
@@ -122,6 +124,21 @@ export async function cariPosisi(geolokasi: Geolocation | undefined): Promise<Ha
 	} catch (galat) {
 		return isIzinDitolak(galat) ? { status: 'ditolak' } : { status: 'gagal' };
 	}
+}
+
+export type HasilTempat =
+	{ status: 'dikenali'; wilayah: WilayahDitemukan } | { status: 'luar' } | { status: 'gagal' };
+
+const kodeDiLuarJakarta = 404;
+
+export async function kenaliTempat(fetchFn: Fetch, titik: Titik): Promise<HasilTempat> {
+	const hasil = await tangkap(ambilWilayahDiTitik(fetchFn, titik.lat, titik.lng));
+	if (hasil.ok) return { status: 'dikenali', wilayah: hasil.data };
+	return { status: hasil.galat.kode === kodeDiLuarJakarta ? 'luar' : 'gagal' };
+}
+
+export function isDrafTerisi(draf: DrafLaporan): boolean {
+	return draf.foto.length > 0 || draf.kondisi !== null || draf.catatan.trim() !== '';
 }
 
 export const jalurStatusUtama: StatusLaporan[] = [

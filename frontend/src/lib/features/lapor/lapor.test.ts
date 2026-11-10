@@ -1,7 +1,9 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import {
 	bacaLangkah,
 	drafKosong,
+	isDrafTerisi,
+	kenaliTempat,
 	langkahTerjauh,
 	nilaiPosisi,
 	susunLinimasa,
@@ -9,6 +11,14 @@ import {
 	ukuranSkala,
 	type DrafLaporan
 } from './lapor';
+
+vi.mock('$env/dynamic/public', () => ({ env: { PUBLIC_API_URL: 'http://api.uji/api/v1' } }));
+
+function jawab(status: number, data: unknown) {
+	return vi.fn(
+		async () => new Response(JSON.stringify({ code: status, message: 'x', data }), { status })
+	);
+}
 
 function drafLengkap(): DrafLaporan {
 	return {
@@ -99,5 +109,25 @@ describe('susunLinimasa', () => {
 		]);
 		expect(linimasa).toHaveLength(1);
 		expect(linimasa[0]?.catatan).toBe('duplikat');
+	});
+});
+
+describe('konfirmasi lokasi laporan', () => {
+	const titik = { lat: -6.158, lng: 106.905 };
+
+	it.each([
+		[200, { kode: '31.72.06.1001', nama: 'Kelapa Gading Timur' }, 'dikenali'],
+		[404, null, 'luar'],
+		[500, null, 'gagal']
+	] as const)('jawaban %i dari pencarian titik menjadi %s', async (status, data, harapan) => {
+		const hasil = await kenaliTempat(jawab(status, data), titik);
+
+		expect(hasil.status).toBe(harapan);
+	});
+
+	it('menganggap draf terisi setelah ada foto, kondisi, atau catatan', () => {
+		expect(isDrafTerisi(drafKosong())).toBe(false);
+		expect(isDrafTerisi({ ...drafKosong(), catatan: 'retak' })).toBe(true);
+		expect(isDrafTerisi(drafLengkap())).toBe(true);
 	});
 });

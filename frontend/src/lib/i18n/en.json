@@ -1067,7 +1067,7 @@
 	"packet.copyFailed": "Automatic copying failed. Select the document text manually or download the PDF.",
 	"ask.chooseArea": "Which area would you like to ask about?",
 	"ask.chooseAreaLead": "Choose an area for answers about your district. You can also include the area name in your question.",
-	"report.requirements": "Have an account, an accurate device location, and 1–4 project photos ready. Your report will await confirmation from 3 witnesses.",
+	"report.requirements": "Have an account, an accurate device location in DKI Jakarta, and 1–4 project photos ready. Your report will await confirmation from 3 witnesses.",
 	"services.oversightNews": "What have representatives said about education?",
 	"nav.area": "Your area",
 	"home.startSearch": "Find your area",
@@ -1269,5 +1269,13 @@
 	"hub.services.more": "See public services",
 	"hub.trend.title": "See Jakarta-wide trends",
 	"hub.trend.body": "Compare school seats, procurement spending, and council work across DKI Jakarta year by year.",
-	"hub.trend.action": "Open the trends dashboard"
+	"hub.trend.action": "Open the trends dashboard",
+	"report.s1.confirmTitle": "Is this location correct?",
+	"report.s1.confirmBody": "Your device was detected in {area}, accurate to about {m} m. If that is wrong, search again before continuing.",
+	"report.s1.confirmYes": "Yes, this is correct",
+	"report.s1.searchAgain": "Find my location again",
+	"report.s1.outsideTitle": "Your location was detected outside DKI Jakarta",
+	"report.s1.outsideBody": "Report Evidence is only available for projects in DKI Jakarta for now. If you are actually in Jakarta, your device location is off: turn on GPS or use a phone, then search again.",
+	"report.exit": "Exit Report Evidence",
+	"report.discardConfirm": "Exit and discard this report?"
 }

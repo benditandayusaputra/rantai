@@ -421,6 +421,10 @@ Temuan uji tim atas situs produksi. Tiga saran mentor di akhir dokumen QA (integ
   - Tiga kartu pilihan diganti pratinjau langsung, berurutan: wakil rakyat (delapan anggota pertama dengan foto besar), proyek pemerintah (angka kunci dan tiga paket terbaru), lalu layanan publik (arti angka kursi tiap jenjang). Tiap bagian punya tautan ke halaman lengkapnya.
   - Di bawahnya ada ajakan ke dasbor tren se-Jakarta, yang sebelumnya hanya terjangkau dari kaki halaman.
 
+- [x] **T-1213** Lapor Bukti: konfirmasi lokasi dan jalan keluar · `🐛 Minta konfirmasi lokasi dan sediakan jalan keluar di Lapor Bukti`
+  - Setelah izin lokasi, alur tidak lagi langsung lanjut: nama kelurahan dan kecamatan yang terdeteksi ditampilkan untuk dikonfirmasi, karena perangkat tanpa GPS sering melapor posisi yang keliru. Lokasi di luar DKI Jakarta ditolak di langkah pertama (bukan saat kirim) dengan tombol keluar.
+  - Tombol tutup tersedia di semua langkah (dengan konfirmasi bila draf sudah terisi), dan ringkasan menampilkan pratinjau foto. Alur ini memang satu kolom sempit di semua lebar layar karena dipakai di lapangan lewat ponsel.
+
 ## Keluaran lomba di luar kode
 
 Dikerjakan tim, bukan tugas commit. Dicatat di sini agar urutannya terlihat.

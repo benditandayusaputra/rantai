@@ -1067,7 +1067,7 @@
 	"packet.copyFailed": "Teks belum bisa disalin otomatis. Pilih teks dokumen secara manual atau unduh PDF.",
 	"ask.chooseArea": "Wilayah mana yang ingin kamu tanyakan?",
 	"ask.chooseAreaLead": "Pilih wilayah agar jawaban sesuai dengan kecamatanmu. Kamu juga bisa menuliskan nama wilayah langsung dalam pertanyaan.",
-	"report.requirements": "Siapkan akun, akses lokasi yang akurat, dan 1–4 foto kondisi proyek. Laporan akan menunggu konfirmasi 3 saksi.",
+	"report.requirements": "Siapkan akun, akses lokasi yang akurat di DKI Jakarta, dan 1–4 foto kondisi proyek. Laporan akan menunggu konfirmasi 3 saksi.",
 	"services.oversightNews": "Apa yang disuarakan wakil rakyat tentang pendidikan?",
 	"nav.area": "Wilayah",
 	"home.startSearch": "Cari wilayahmu",
@@ -1269,5 +1269,13 @@
 	"hub.services.more": "Lihat layanan publik",
 	"hub.trend.title": "Lihat tren se-Jakarta",
 	"hub.trend.body": "Bandingkan kursi sekolah, belanja pengadaan, dan kerja DPRD di seluruh DKI Jakarta dari tahun ke tahun.",
-	"hub.trend.action": "Buka dasbor tren"
+	"hub.trend.action": "Buka dasbor tren",
+	"report.s1.confirmTitle": "Apakah lokasi ini benar?",
+	"report.s1.confirmBody": "Perangkatmu terdeteksi di {area}, akurasi sekitar {m} m. Kalau keliru, cari ulang sebelum melanjutkan.",
+	"report.s1.confirmYes": "Ya, lokasi ini benar",
+	"report.s1.searchAgain": "Cari ulang lokasi",
+	"report.s1.outsideTitle": "Lokasimu terdeteksi di luar DKI Jakarta",
+	"report.s1.outsideBody": "Lapor Bukti baru tersedia untuk proyek di DKI Jakarta. Kalau kamu sebenarnya di Jakarta, lokasi perangkatmu keliru: nyalakan GPS atau pakai ponsel, lalu cari ulang.",
+	"report.exit": "Keluar dari Lapor Bukti",
+	"report.discardConfirm": "Keluar dan hapus isian laporan ini?"
 }

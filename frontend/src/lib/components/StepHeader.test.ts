@@ -15,6 +15,14 @@ describe('StepHeader', () => {
 		expect(onback).toHaveBeenCalled();
 	});
 
+	it('tetap menyediakan tombol tutup setelah langkah 1', async () => {
+		const onclose = vi.fn();
+		render(StepHeader, { step: 6, stepLabel: 'ringkasan', onback: vi.fn(), onclose });
+
+		await userEvent.setup().click(screen.getByRole('button', { name: 'Tutup' }));
+		expect(onclose).toHaveBeenCalled();
+	});
+
 	it('memakai tombol tutup di langkah 1', () => {
 		render(StepHeader, { step: 1, stepLabel: 'izin lokasi', onback: vi.fn(), onclose: vi.fn() });
 
