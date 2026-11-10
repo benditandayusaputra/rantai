@@ -32,7 +32,7 @@ func (p PenjawabTercache) Jawab(ctx context.Context, m Permintaan, kabar func(Ka
 		for _, alat := range entri.Alat {
 			kabar(Kabar{Alat: alat})
 		}
-		return Jawaban{Teks: entri.Teks, Rujukan: entri.Rujukan, HasilAlat: []json.RawMessage{}}, nil
+		return Jawaban{Teks: entri.Teks, Rujukan: entri.Rujukan, Tautan: []Tautan{}, HasilAlat: []json.RawMessage{}}, nil
 	}
 	if p.Cadangan.Model == nil {
 		return Jawaban{}, ErrTidakTercache

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Sparkles } from '@lucide/svelte';
+	import { ExternalLink, Sparkles } from '@lucide/svelte';
 	import { tanyaRantai, type JawabanTanya } from '$lib/api/tanya';
 	import type { Provenance } from '$lib/api/tipe';
 	import ChatComposer from '$lib/components/ChatComposer.svelte';
@@ -8,13 +8,20 @@
 	import SourcePanel from '$lib/components/SourcePanel.svelte';
 	import { muatProvenance, namaSumber } from '$lib/features/provenance/provenance';
 	import { bahasaAktif, t } from '$lib/i18n';
-	import { pecahRujukan, panjangMaksPertanyaan, saranPertanyaan } from './tanya';
+	import {
+		pecahJawaban,
+		panjangMaksPertanyaan,
+		saranPertanyaan,
+		siapkanTautan,
+		type TautanSiap
+	} from './tanya';
 
 	interface Props {
 		konteks?: { kode: string; nama: string } | null;
+		onlepas?: () => void;
 	}
 
-	let { konteks = $bindable(null) }: Props = $props();
+	let { konteks = null, onlepas }: Props = $props();
 
 	interface Pesan {
 		id: number;
@@ -23,6 +30,7 @@
 		status: 'streaming' | 'done' | 'error';
 		jumlahAlat: number;
 		rujukan: Map<number, Provenance>;
+		tautan: TautanSiap[];
 	}
 
 	let pesan = $state<Pesan[]>([]);
@@ -41,7 +49,7 @@
 
 	function tambahPesan(peran: Pesan['peran'], teks: string, status: Pesan['status']): number {
 		const id = urutan++;
-		pesan.push({ id, peran, teks, status, jumlahAlat: 0, rujukan: new Map() });
+		pesan.push({ id, peran, teks, status, jumlahAlat: 0, rujukan: new Map(), tautan: [] });
 		return id;
 	}
 
@@ -60,7 +68,8 @@
 				() => ubahPesan(id, (p) => ({ jumlahAlat: p.jumlahAlat + 1 }))
 			);
 			const rujukan = await muatRujukan(jawaban);
-			ubahPesan(id, () => ({ teks: jawaban.teks, rujukan, status: 'done' }));
+			const tautan = siapkanTautan(jawaban.tautan ?? [], bahasaAktif);
+			ubahPesan(id, () => ({ teks: jawaban.teks, rujukan, tautan, status: 'done' }));
 		} catch {
 			ubahPesan(id, () => ({ teks: t('ask.error'), status: 'error' }));
 		}
@@ -91,8 +100,18 @@
 					</span>
 				{:else}
 					<p class="whitespace-pre-line">
-						{#each pecahRujukan(p.teks, [...p.rujukan.keys()]) as segmen, i (i)}
-							{#if segmen.jenis === 'teks'}{segmen.isi}{:else}
+						{#each pecahJawaban(p.teks, [...p.rujukan.keys()], p.tautan) as segmen, i (i)}
+							{#if segmen.jenis === 'teks'}{segmen.isi}{:else if segmen.jenis === 'tautan'}<a
+									href={segmen.href}
+									class="link"
+									target={segmen.isLuar ? '_blank' : undefined}
+									rel={segmen.isLuar ? 'noopener' : undefined}
+									>{segmen.isi}{#if segmen.isLuar}<ExternalLink
+											size={14}
+											class="ml-0.5 inline align-baseline"
+											aria-hidden="true"
+										/><span class="sr-only">{t('a11y.opensNewTab')}</span>{/if}</a
+								>{:else}
 								{@const provenance = p.rujukan.get(segmen.nomor)}
 								{#if provenance}
 									<Citation
@@ -111,9 +130,10 @@
 	</div>
 	<ChatComposer
 		bind:value={masukan}
-		context={konteks ? { label: konteks.nama, onremove: () => (konteks = null) } : undefined}
+		context={konteks ? { label: konteks.nama, onremove: onlepas } : undefined}
 		suggestions={pesan.length === 0 ? saranPertanyaan() : []}
-		disabled={isMenjawab}
+		disabled={isMenjawab || !konteks}
+		placeholder={konteks ? undefined : t('ask.needArea')}
 		maxLength={panjangMaksPertanyaan}
 		onsubmit={tanya}
 	/>

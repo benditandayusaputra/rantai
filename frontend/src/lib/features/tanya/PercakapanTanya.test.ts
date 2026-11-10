@@ -50,10 +50,34 @@ describe('PercakapanTanya', () => {
 	it('menampilkan pesan error yang bisa dipahami saat jawaban gagal', async () => {
 		tanyaRantai.mockRejectedValue(new Error('jaringan putus'));
 		const pengguna = userEvent.setup();
-		render(PercakapanTanya, {});
+		render(PercakapanTanya, { konteks: { kode: '31.72.01', nama: 'Cilincing' } });
 
 		await pengguna.click(screen.getByRole('button', { name: t('ask.suggest.1') }));
 
 		expect(await screen.findByText(t('ask.error'))).toBeVisible();
+	});
+
+	it('menautkan nama dari jawaban ke halaman detailnya', async () => {
+		tanyaRantai.mockResolvedValue({
+			teks: 'Wakilmu Justin Adrian, S.H., M.H.',
+			rujukan: [],
+			tautan: [{ teks: 'Justin Adrian, S.H., M.H.', jenis: 'anggota', tujuan: 'justin-adrian' }]
+		});
+		const pengguna = userEvent.setup();
+		render(PercakapanTanya, { konteks: { kode: '31.75.07', nama: 'Duren Sawit' } });
+
+		await pengguna.click(screen.getByRole('button', { name: t('ask.suggest.3') }));
+
+		expect(await screen.findByRole('link', { name: 'Justin Adrian, S.H., M.H.' })).toHaveAttribute(
+			'href',
+			'/id/anggota/justin-adrian'
+		);
+	});
+
+	it('menahan pertanyaan sampai wilayah dipilih', () => {
+		render(PercakapanTanya, {});
+
+		expect(screen.getByRole('textbox', { name: t('ask.needArea') })).toBeDisabled();
+		expect(screen.getByRole('button', { name: t('ask.suggest.1') })).toBeDisabled();
 	});
 });

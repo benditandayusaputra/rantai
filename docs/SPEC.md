@@ -688,7 +688,7 @@ API: `POST /laporan` (multipart: `lat`, `lng`, `akurasi`, `kondisi`, `catatan`, 
 
 ### AKS-01 Tanya Rantai
 
-Antarmuka obrolan di `/{bahasa}/tanya` dan panel geser di halaman kecamatan (kecamatan aktif ikut sebagai konteks).
+Antarmuka obrolan di `/{bahasa}/tanya` dan panel geser di halaman kecamatan (kecamatan aktif ikut sebagai konteks). Warga wajib memilih kecamatan sebelum bertanya; kecamatan yang tersimpan sebagai wilayahnya dipakai otomatis. Tag `<kecamatan_aktif>` hanya dikirim ke model bila konteksnya ada, dan gema tag masukan dibuang dari jawaban.
 
 Backend memanggil API LLM dengan tool use (function calling). Model dari env `TANYA_MODEL`; penyedia dipilih dari nama model: awalan `gemini` atau `gemma` memakai Gemini API dengan kunci `GEMINI_API_KEY`, selain itu Claude API dengan kunci `ANTHROPIC_API_KEY`. Klien LLM bersama `internal/llm` juga dipakai job `ringkas_umpan` (`RINGKAS_MODEL`). Permintaan Gemini yang kena batas kuota (429) atau sedang sibuk (500, 503) diulang paling banyak tiga kali dengan jeda saran server. Model hanya boleh menjawab dari hasil fungsi berikut:
 
@@ -719,7 +719,7 @@ Streaming ke klien via SSE. Batas: 20 pertanyaan per IP per jam, panjang pertany
 
 API: `POST /tanya` (SSE) dengan `{pertanyaan, kode_kecamatan_konteks, bahasa}`.
 
-Peristiwa SSE: `alat` (`{alat}`, setiap kali fungsi dipanggil), lalu `jawaban` (`{teks, rujukan: [{nomor, provenance_id}]}`) atau `galat` (`{pesan}`). Teks jawaban dikirim utuh setelah lolos validator, bukan per potongan token, agar jawaban yang gagal validasi tidak pernah sampai ke warga. Model menandai angka dengan `[provenance_id]`; server menggantinya dengan `[n]` berurutan dan mengisi `rujukan`. Pemeriksaan masukan gagal dijawab 400 dengan amplop biasa sebelum aliran dibuka.
+Peristiwa SSE: `alat` (`{alat}`, setiap kali fungsi dipanggil), lalu `jawaban` (`{teks, rujukan: [{nomor, provenance_id}], tautan: [{teks, jenis, tujuan}]}`) atau `galat` (`{pesan}`). `tautan` disusun server dari hasil fungsi, bukan dari tulisan model: nama anggota (`jenis` `anggota`, `tujuan` id anggota), nama dapil (`dapil`, kode kecamatan), dan judul rilis (`rilis`, URL `https`) yang muncul persis di teks jawaban; klien menautkannya ke profil anggota, bagian wakil di halaman kecamatan, atau sumber rilis. Teks jawaban dikirim utuh setelah lolos validator, bukan per potongan token, agar jawaban yang gagal validasi tidak pernah sampai ke warga. Model menandai angka dengan `[provenance_id]`; server menggantinya dengan `[n]` berurutan dan mengisi `rujukan`. Pemeriksaan masukan gagal dijawab 400 dengan amplop biasa sebelum aliran dibuka.
 
 ### AKS-02 Paket Aspirasi
 

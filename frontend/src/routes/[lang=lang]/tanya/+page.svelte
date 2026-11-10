@@ -3,13 +3,29 @@
 	import PercakapanTanya from '$lib/features/tanya/PercakapanTanya.svelte';
 	import { t } from '$lib/i18n';
 	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
 	import { cariWilayah } from '$lib/api/klien';
+	import type { WilayahDitemukan } from '$lib/api/tipe';
 	import RegionSearch from '$lib/components/RegionSearch.svelte';
 	import { kodeKecamatan } from '$lib/features/wilayah/wilayah';
+	import { ingatWilayah, wilayahku } from '$lib/features/wilayah/wilayahku.svelte';
 	import { bahasaAktif } from '$lib/i18n';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
+
+	const halamanTanya = $derived(`/${bahasaAktif}/tanya`);
+
+	$effect(() => {
+		const kode = wilayahku();
+		if (kode && !page.url.searchParams.has('w'))
+			void goto(`${halamanTanya}?w=${kode}`, { replaceState: true });
+	});
+
+	function pilih(wilayah: WilayahDitemukan) {
+		ingatWilayah(wilayah);
+		void goto(`${halamanTanya}?w=${kodeKecamatan(wilayah)}`);
+	}
 </script>
 
 <svelte:head>
@@ -35,14 +51,12 @@
 					<div class="mb-6 rounded-lg border border-line bg-surface p-5">
 						<h2 class="t-h3">{t('ask.chooseArea')}</h2>
 						<p class="mb-4 mt-2 text-small text-muted">{t('ask.chooseAreaLead')}</p>
-						<RegionSearch
-							cari={(q) => cariWilayah(fetch, q)}
-							onselect={(wilayah) => goto(`/${bahasaAktif}/tanya?w=${kodeKecamatan(wilayah)}`)}
-						/>
+						<RegionSearch cari={(q) => cariWilayah(fetch, q)} onselect={pilih} />
 					</div>
 				{/if}
 				<PercakapanTanya
 					konteks={hasil?.ok ? { kode: hasil.data.kode, nama: hasil.data.nama } : null}
+					onlepas={() => goto(`${halamanTanya}?w=`)}
 				/>
 			{/await}
 		</div>

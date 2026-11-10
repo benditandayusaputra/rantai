@@ -4,7 +4,8 @@
 
 	interface Props {
 		value: string;
-		context?: { label: string; onremove: () => void };
+		context?: { label: string; onremove?: () => void };
+		placeholder?: string;
 		suggestions?: string[];
 		disabled?: boolean;
 		maxLength: number;
@@ -14,6 +15,7 @@
 	let {
 		value = $bindable(),
 		context,
+		placeholder = t('ask.placeholder'),
 		suggestions = [],
 		disabled = false,
 		maxLength,
@@ -68,29 +70,35 @@
 		{#if context}
 			<div class="flex px-3 pt-3">
 				<span
-					class="inline-flex h-8 items-center gap-1 rounded-md bg-secondary pl-3 text-small text-secondary-on"
+					class="inline-flex h-8 items-center gap-1 rounded-md bg-secondary pl-3 text-small text-secondary-on {context.onremove
+						? ''
+						: 'pr-3'}"
 				>
 					<MapPin size={16} strokeWidth={1.75} aria-hidden="true" />
 					{t('ask.context', { area: context.label })}
-					<button
-						type="button"
-						class="inline-flex min-h-touch min-w-touch items-center justify-center"
-						aria-label={t('ask.removeContext')}
-						onclick={context.onremove}
-					>
-						<X size={16} strokeWidth={1.75} aria-hidden="true" />
-					</button>
+					{#if context.onremove}
+						<button
+							type="button"
+							class="inline-flex min-h-touch min-w-touch items-center justify-center"
+							aria-label={t('ask.changeArea')}
+							title={t('ask.changeArea')}
+							onclick={context.onremove}
+						>
+							<X size={16} strokeWidth={1.75} aria-hidden="true" />
+						</button>
+					{/if}
 				</span>
 			</div>
 		{/if}
 		<div class="flex items-end gap-2 p-2">
 			<label class="flex-1">
-				<span class="sr-only">{t('ask.placeholder')}</span>
+				<span class="sr-only">{placeholder}</span>
 				<textarea
 					bind:value
 					rows="2"
 					maxlength={maxLength}
-					placeholder={t('ask.placeholder')}
+					{placeholder}
+					{disabled}
 					aria-describedby={idPetunjuk}
 					class="block w-full resize-none bg-transparent px-2 py-2 outline-none placeholder:text-muted"
 					onkeydown={tanganiTombol}></textarea>

@@ -163,3 +163,16 @@ func TestJawab_AngkaKarangan_DigantiPesanAmanDanDicatat(t *testing.T) {
 		t.Errorf("catatan = %v", catatan)
 	}
 }
+
+func TestJawab_TanpaKonteksDanModelMenggemakanTag_TagTidakSampaiKeWarga(t *testing.T) {
+	p, percakapan := penjawabUji(t, Giliran{Teks: "<kecamatan_aktif></kecamatan_aktif>\n\n<bahasa_antarmuka>id</bahasa_antarmuka>\nSebutkan nama kecamatanmu."})
+
+	jawaban, err := p.Jawab(t.Context(), Permintaan{Pertanyaan: "Siapa wakil dapilku?"}, func(Kabar) {})
+
+	if err != nil || jawaban.Teks != "Sebutkan nama kecamatanmu." {
+		t.Errorf("err = %v, teks = %q", err, jawaban.Teks)
+	}
+	if strings.Contains(percakapan.isiTanya, "kecamatan_aktif") {
+		t.Errorf("tag konteks kosong ikut dikirim: %s", percakapan.isiTanya)
+	}
+}

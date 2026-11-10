@@ -428,6 +428,10 @@ Temuan uji tim atas situs produksi. Tiga saran mentor di akhir dokumen QA (integ
 - [x] **T-1214** Cuplikan rilis resmi di Jejak kegiatan · `✨ Tampilkan cuplikan rilis resmi DPRD di jejak kegiatan anggota`
   - Ringkasan buatan `ringkas_umpan` masih kosong di produksi, sehingga tiap rilis hanya tampil judulnya. `cuplikan` yang sudah tersimpan kini ikut dikirim API untuk rilis resmi DPRD saja dan tampil sebagai kutipan sumber; cuplikan media tetap tidak dikirim (SPEC 5 dan ANG-06 diperbarui).
 
+- [x] **T-1215** Tanya Rantai: wilayah wajib dan tautan ke halaman detail · `🐛 Wajibkan wilayah di Tanya Rantai dan tautkan nama di jawaban`
+  - Tanpa konteks, server mengirim tag `<kecamatan_aktif>` kosong dan model menyalinnya ke jawaban. Tag kini hanya dikirim bila konteksnya ada, gema tag masukan dibuang dari jawaban, dan kotak pertanyaan terkunci sampai wilayah dipilih; wilayah tersimpan (T-1211) dipakai otomatis.
+  - Peristiwa `jawaban` membawa `tautan` yang disusun server dari hasil fungsi: nama anggota ke profilnya, nama dapil ke bagian wakil di halaman kecamatan, dan judul rilis ke sumbernya (AKS-01 diperbarui).
+
 ## Keluaran lomba di luar kode
 
 Dikerjakan tim, bukan tugas commit. Dicatat di sini agar urutannya terlihat.

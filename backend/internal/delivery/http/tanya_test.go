@@ -53,7 +53,7 @@ func TestTanya_PertanyaanSah_AliranKabarAlatLaluJawaban(t *testing.T) {
 	kode, tipe, isi := kirimTanya(t, appUjiTanya(tanyaTiruan{}, 20), `{"pertanyaan":"Kursi SMP cukup?","bahasa":"id"}`)
 
 	harap := "event: alat\ndata: {\"alat\":\"indikator_tema\"}\n\n" +
-		"event: jawaban\ndata: {\"teks\":\"Kursi 288 [1].\",\"rujukan\":[{\"nomor\":1,\"provenance_id\":\"prv_1\"}]}\n\n"
+		"event: jawaban\ndata: {\"teks\":\"Kursi 288 [1].\",\"rujukan\":[{\"nomor\":1,\"provenance_id\":\"prv_1\"}],\"tautan\":[]}\n\n"
 	if kode != fiber.StatusOK || tipe != tipeAliranPeristiwa || isi != harap {
 		t.Errorf("kode %d, tipe %q, isi %q", kode, tipe, isi)
 	}

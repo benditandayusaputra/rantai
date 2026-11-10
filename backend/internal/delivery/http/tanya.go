@@ -45,9 +45,16 @@ type rujukanJSON struct {
 	ProvenanceID string `json:"provenance_id"`
 }
 
+type tautanJSON struct {
+	Teks   string `json:"teks"`
+	Jenis  string `json:"jenis"`
+	Tujuan string `json:"tujuan"`
+}
+
 type jawabanTanyaJSON struct {
 	Teks    string        `json:"teks"`
 	Rujukan []rujukanJSON `json:"rujukan"`
+	Tautan  []tautanJSON  `json:"tautan"`
 }
 
 type galatJSON struct {
@@ -109,7 +116,11 @@ func keJawabanTanyaJSON(j tanya.Jawaban) jawabanTanyaJSON {
 	for i, r := range j.Rujukan {
 		rujukan[i] = rujukanJSON(r)
 	}
-	return jawabanTanyaJSON{Teks: j.Teks, Rujukan: rujukan}
+	tautan := make([]tautanJSON, len(j.Tautan))
+	for i, t := range j.Tautan {
+		tautan[i] = tautanJSON(t)
+	}
+	return jawabanTanyaJSON{Teks: j.Teks, Rujukan: rujukan, Tautan: tautan}
 }
 
 func kirimPeristiwa(w *bufio.Writer, nama string, data any) error {

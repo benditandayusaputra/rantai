@@ -14,9 +14,16 @@ export interface RujukanTanya {
 	provenance_id: string;
 }
 
+export interface TautanTanya {
+	teks: string;
+	jenis: string;
+	tujuan: string;
+}
+
 export interface JawabanTanya {
 	teks: string;
 	rujukan: RujukanTanya[];
+	tautan?: TautanTanya[];
 }
 
 export interface Peristiwa {

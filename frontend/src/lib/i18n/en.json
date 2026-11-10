@@ -601,7 +601,6 @@
 	"about.license.code": "Rantai's code is open on GitHub. Data derived from Opentender is released under the same ODbL license.",
 	"about.demo": "Data marked as simulation is an example for demonstration and must not be quoted as fact.",
 	"about.formula.code": "Primary to junior high\nexpected_graduates = grade 6 primary students in the district\npublic_seats       = total capacity of public junior high schools in the district\nspmb_seats         = total capacity of SPMB Bersama partner private junior high schools\nmadrasah_seats     = grade 7 MTs class groups x 32\ngap                = expected_graduates - public_seats\nratio              = public_seats / expected_graduates\n\nJunior high to senior high/vocational\nexpected_graduates = grade 9 junior high students in the district\npublic_seats       = public senior high capacity + public vocational capacity in the district\nspmb_seats         = total capacity of SPMB Bersama partner private senior high and vocational schools\nmadrasah_seats     = grade 10 MA class groups x 36\ngap                = expected_graduates - public_seats\nratio              = public_seats / expected_graduates",
-	"ask.removeContext": "Remove area context",
 	"ask.thinking": "Reading the question...",
 	"ask.error": "Ask Rantai can't answer right now. Please try again shortly.",
 	"ask.you": "You",
@@ -1066,7 +1065,7 @@
 	"packet.channelInfo": "Read about this channel",
 	"packet.copyFailed": "Automatic copying failed. Select the document text manually or download the PDF.",
 	"ask.chooseArea": "Which area would you like to ask about?",
-	"ask.chooseAreaLead": "Choose an area for answers about your district. You can also include the area name in your question.",
+	"ask.chooseAreaLead": "Choose a district or urban village first so the answer uses the right area’s data.",
 	"report.requirements": "Have an account, an accurate device location in DKI Jakarta, and 1–4 project photos ready. Your report will await confirmation from 3 witnesses.",
 	"services.oversightNews": "What have representatives said about education?",
 	"nav.area": "Your area",
@@ -1278,5 +1277,7 @@
 	"report.s1.outsideBody": "Report Evidence is only available for projects in DKI Jakarta for now. If you are actually in Jakarta, your device location is off: turn on GPS or use a phone, then search again.",
 	"report.exit": "Exit Report Evidence",
 	"report.discardConfirm": "Exit and discard this report?",
-	"member.excerpt": "Excerpt from the official release"
+	"member.excerpt": "Excerpt from the official release",
+	"ask.needArea": "Choose an area first to start asking",
+	"ask.changeArea": "Change area"
 }

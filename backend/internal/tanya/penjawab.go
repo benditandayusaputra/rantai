@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"regexp"
 	"strings"
 	"unicode/utf8"
 
@@ -17,6 +18,8 @@ const (
 )
 
 var ErrBatasLangkah = errors.New("model terus memanggil alat melewati batas langkah")
+
+var polaGemaMasukan = regexp.MustCompile(`(?s)<(?:bahasa_antarmuka|kecamatan_aktif)>.*?</(?:bahasa_antarmuka|kecamatan_aktif)>\s*|</?pertanyaan>\s*`)
 
 type Permintaan struct {
 	Pertanyaan           string
@@ -62,6 +65,7 @@ type Rujukan struct {
 type Jawaban struct {
 	Teks      string
 	Rujukan   []Rujukan
+	Tautan    []Tautan
 	HasilAlat []json.RawMessage
 }
 
@@ -128,16 +132,16 @@ func (p Penjawab) Jawab(ctx context.Context, m Permintaan, kabar func(Kabar)) (J
 			return Jawaban{}, fmt.Errorf("kirim hasil alat: %w", err)
 		}
 	}
-	return p.saring(m, giliran.Teks, semuaHasil), nil
+	return p.saring(m, polaGemaMasukan.ReplaceAllString(giliran.Teks, ""), semuaHasil), nil
 }
 
 func (p Penjawab) saring(m Permintaan, teks string, hasilAlat []json.RawMessage) Jawaban {
 	if err := p.Validator.Periksa(teks, hasilAlat); err != nil {
 		p.Laporkan(fmt.Sprintf("jawaban tanya diganti pesan aman: %v; pertanyaan %q; jawaban %q", err, m.Pertanyaan, teks))
-		return Jawaban{Teks: p.pesanAman(m.Bahasa), Rujukan: []Rujukan{}, HasilAlat: hasilAlat}
+		return Jawaban{Teks: p.pesanAman(m.Bahasa), Rujukan: []Rujukan{}, Tautan: []Tautan{}, HasilAlat: hasilAlat}
 	}
 	teksBernomor, rujukan := SusunRujukan(teks)
-	return Jawaban{Teks: teksBernomor, Rujukan: rujukan, HasilAlat: hasilAlat}
+	return Jawaban{Teks: teksBernomor, Rujukan: rujukan, Tautan: SusunTautan(teksBernomor, hasilAlat), HasilAlat: hasilAlat}
 }
 
 func (p Penjawab) pesanAman(bahasa string) string {
@@ -152,8 +156,12 @@ func isiPertanyaan(m Permintaan) string {
 	if bahasa == "" {
 		bahasa = BahasaIndonesia
 	}
-	return fmt.Sprintf("<bahasa_antarmuka>%s</bahasa_antarmuka>\n<kecamatan_aktif>%s</kecamatan_aktif>\n<pertanyaan>\n%s\n</pertanyaan>",
-		bahasa, m.KodeKecamatanKonteks, strings.TrimSpace(m.Pertanyaan))
+	konteks := ""
+	if m.KodeKecamatanKonteks != "" {
+		konteks = fmt.Sprintf("<kecamatan_aktif>%s</kecamatan_aktif>\n", m.KodeKecamatanKonteks)
+	}
+	return fmt.Sprintf("<bahasa_antarmuka>%s</bahasa_antarmuka>\n%s<pertanyaan>\n%s\n</pertanyaan>",
+		bahasa, konteks, strings.TrimSpace(m.Pertanyaan))
 }
 
 func (p Penjawab) jalankanPanggilan(ctx context.Context, daftar []PanggilanAlat, kabar func(Kabar)) ([]HasilAlat, []json.RawMessage, error) {
