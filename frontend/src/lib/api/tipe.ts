@@ -668,6 +668,7 @@ export interface ItemUmpan {
 	media_domain: string;
 	judul: string;
 	ringkasan: string | null;
+	cuplikan?: string;
 	url: string;
 	terbit_pada: string;
 	tag_isu: string[];

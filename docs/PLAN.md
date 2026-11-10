@@ -425,6 +425,9 @@ Temuan uji tim atas situs produksi. Tiga saran mentor di akhir dokumen QA (integ
   - Setelah izin lokasi, alur tidak lagi langsung lanjut: nama kelurahan dan kecamatan yang terdeteksi ditampilkan untuk dikonfirmasi, karena perangkat tanpa GPS sering melapor posisi yang keliru. Lokasi di luar DKI Jakarta ditolak di langkah pertama (bukan saat kirim) dengan tombol keluar.
   - Tombol tutup tersedia di semua langkah (dengan konfirmasi bila draf sudah terisi), dan ringkasan menampilkan pratinjau foto. Alur ini memang satu kolom sempit di semua lebar layar karena dipakai di lapangan lewat ponsel.
 
+- [x] **T-1214** Cuplikan rilis resmi di Jejak kegiatan · `✨ Tampilkan cuplikan rilis resmi DPRD di jejak kegiatan anggota`
+  - Ringkasan buatan `ringkas_umpan` masih kosong di produksi, sehingga tiap rilis hanya tampil judulnya. `cuplikan` yang sudah tersimpan kini ikut dikirim API untuk rilis resmi DPRD saja dan tampil sebagai kutipan sumber; cuplikan media tetap tidak dikirim (SPEC 5 dan ANG-06 diperbarui).
+
 ## Keluaran lomba di luar kode
 
 Dikerjakan tim, bukan tugas commit. Dicatat di sini agar urutannya terlihat.

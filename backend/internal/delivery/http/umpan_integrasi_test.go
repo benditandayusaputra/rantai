@@ -24,7 +24,7 @@ func appUjiUmpan(t *testing.T) *fiber.App {
 	return NewApp(config.Server{}, Layanan{Umpan: usecase.BacaUmpan{Pembaca: repository.UmpanRepository{DB: tx}}})
 }
 
-func TestUmpanAnggota_RilisResmi_TampilTanpaCuplikanDenganMeta(t *testing.T) {
+func TestUmpanAnggota_RilisResmi_TampilDenganCuplikanDanMeta(t *testing.T) {
 	hasil := panggil(t, appUjiUmpan(t), "/api/v1/anggota/yuke-yurike-st-mm/umpan")
 
 	daftar, _ := hasil.respons.Data.([]any)
@@ -32,8 +32,8 @@ func TestUmpanAnggota_RilisResmi_TampilTanpaCuplikanDenganMeta(t *testing.T) {
 		t.Fatalf("kode %d, data %v, meta %+v", hasil.kode, hasil.respons.Data, hasil.respons.Meta)
 	}
 	pertama, _ := daftar[0].(map[string]any)
-	if _, ada := pertama["cuplikan"]; ada {
-		t.Error("cuplikan tidak boleh dikirim API")
+	if cuplikan, _ := pertama["cuplikan"].(string); cuplikan == "" {
+		t.Error("rilis resmi DPRD harus membawa cuplikannya")
 	}
 	if pertama["jenis_sumber"] != "resmi_dprd" || pertama["dasar_cocok"] != "situs_resmi" || pertama["ringkasan"] != nil || pertama["provenance_id"] == "" {
 		t.Errorf("item = %v", pertama)

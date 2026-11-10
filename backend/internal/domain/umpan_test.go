@@ -2,6 +2,7 @@ package domain
 
 import (
 	"slices"
+	"strings"
 	"testing"
 	"unicode/utf8"
 )
@@ -93,5 +94,25 @@ func TestAnggotaDisebut_NamaSatuKata_HanyaSetelahDPRDDKI(t *testing.T) {
 func TestAnggotaDisebut_InisialDiBelakangNama_TetapDitemukan(t *testing.T) {
 	if disebut := BuatPencariNama(anggotaUmpanUji()).AnggotaDisebut("Ali Muhammad Johan meninjau pasar"); !slices.Equal(disebut, []string{"johan"}) {
 		t.Errorf("disebut = %v", disebut)
+	}
+}
+
+func TestCuplikanRilisResmi_HanyaRilisResmiDanDipotongDiBatasKata(t *testing.T) {
+	panjang := strings.Repeat("kata ", BatasCuplikanUmpan/5)
+	kasus := []struct {
+		nama  string
+		umpan UmpanTampil
+		harap string
+	}{
+		{nama: "rilis resmi pendek tampil utuh", umpan: UmpanTampil{JenisSumber: SumberUmpanResmiDPRD, Cuplikan: "Komisi E meninjau sekolah."}, harap: "Komisi E meninjau sekolah."},
+		{nama: "media tidak membawa cuplikan", umpan: UmpanTampil{JenisSumber: SumberUmpanMedia, Cuplikan: "Isi berita media."}, harap: ""},
+		{nama: "rilis resmi sepanjang batas diberi tanda terpotong", umpan: UmpanTampil{JenisSumber: SumberUmpanResmiDPRD, Cuplikan: panjang[:BatasCuplikanUmpan-2] + "ka"}, harap: panjang[:BatasCuplikanUmpan-6] + "…"},
+	}
+	for _, k := range kasus {
+		t.Run(k.nama, func(t *testing.T) {
+			if hasil := k.umpan.CuplikanRilisResmi(); hasil != k.harap {
+				t.Errorf("cuplikan = %q, harap %q", hasil, k.harap)
+			}
+		})
 	}
 }

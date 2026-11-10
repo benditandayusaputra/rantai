@@ -155,12 +155,29 @@ type UmpanTampil struct {
 	MediaDomain  string
 	Judul        string
 	Ringkasan    string
+	Cuplikan     string
 	URL          string
 	TerbitPada   time.Time
 	TagIsu       []string
 	DasarCocok   DasarCocok
 	ProvenanceID string
 	HakJawab     []HakJawab
+}
+
+const tandaCuplikanTerpotong = "…"
+
+func (u UmpanTampil) CuplikanRilisResmi() string {
+	if u.JenisSumber != SumberUmpanResmiDPRD {
+		return ""
+	}
+	if utf8.RuneCountInString(u.Cuplikan) < BatasCuplikanUmpan {
+		return u.Cuplikan
+	}
+	utuh := u.Cuplikan
+	if akhirKata := strings.LastIndexByte(utuh, ' '); akhirKata > 0 {
+		utuh = utuh[:akhirKata]
+	}
+	return utuh + tandaCuplikanTerpotong
 }
 
 type FilterUmpan struct {

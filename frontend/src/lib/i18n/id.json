@@ -1277,5 +1277,6 @@
 	"report.s1.outsideTitle": "Lokasimu terdeteksi di luar DKI Jakarta",
 	"report.s1.outsideBody": "Lapor Bukti baru tersedia untuk proyek di DKI Jakarta. Kalau kamu sebenarnya di Jakarta, lokasi perangkatmu keliru: nyalakan GPS atau pakai ponsel, lalu cari ulang.",
 	"report.exit": "Keluar dari Lapor Bukti",
-	"report.discardConfirm": "Keluar dan hapus isian laporan ini?"
+	"report.discardConfirm": "Keluar dan hapus isian laporan ini?",
+	"member.excerpt": "Cuplikan dari rilis resmi"
 }

@@ -148,7 +148,7 @@ Fungsi SQL `hierarki_wilayah(kode)` mengembalikan leluhur sebuah wilayah sebagai
 | `komisi` | `kode` PK (A sampai E), `nama`, `bidang` text[] (mitra kerja dari situs DPRD, minimal satu), `provenance_id` |
 | `anggota` | `id` (slug halaman profil DPRD), `nama`, `nama_lain` text[] (untuk disambiguasi), `partai`, `fraksi`, `dapil_id`, `komisi_kode` nullable (kosong untuk pimpinan DPRD atau data tidak tersedia), `url_profil`, `lhkpn_url`, `provenance_id` |
 | `anggota_akd` | `anggota_id`, `alat_kelengkapan` (contoh: Pimpinan DPRD, Komisi E Bidang Kesejahteraan Rakyat, Badan Anggaran), `jabatan` apa adanya dari situs, `provenance_id`; PK (`anggota_id`, `alat_kelengkapan`) |
-| `umpan_kegiatan` | `id`, `jenis_sumber` (resmi_dprd, media), `media_nama`, `media_domain`, `judul`, `cuplikan` (maksimal 300 karakter, bahan ringkasan, tidak dikirim API), `ringkasan` nullable (maksimal 160 karakter), `url` unik, `terbit_pada`, `tag_isu` text[], `disembunyikan`, `alasan_disembunyikan`, `provenance_id` |
+| `umpan_kegiatan` | `id`, `jenis_sumber` (resmi_dprd, media), `media_nama`, `media_domain`, `judul`, `cuplikan` (maksimal 300 karakter, bahan ringkasan; dikirim API hanya untuk rilis resmi DPRD), `ringkasan` nullable (maksimal 160 karakter), `url` unik, `terbit_pada`, `tag_isu` text[], `disembunyikan`, `alasan_disembunyikan`, `provenance_id` |
 | `umpan_anggota` | `umpan_id`, `anggota_id`, `dasar_cocok` (nama_dan_dprd, nama_dan_fraksi, situs_resmi) |
 | `sikap_fraksi` | `id`, `fraksi` (sama dengan `anggota.fraksi`), `agenda` (raperda, apbd), `judul_agenda`, `tanggal`, `ringkasan`, `url`, `provenance_id`; unik (`fraksi`, `url`) |
 | `aspirasi_reses` | `id`, `masa_reses`, `tanggal_paripurna`, `bidang` (huruf kecil), `uraian`, `kode_wilayah` nullable (kecamatan atau kelurahan), `url`, `provenance_id`; unik (`url`, `uraian`). Dapil diturunkan dari `kode_wilayah` karena laporan reses tidak menyebut dapil (GD-15) |
@@ -456,7 +456,7 @@ Aturan:
 
 - **Disambiguasi**: artikel media dipautkan ke anggota hanya bila nama (atau `nama_lain`) muncul bersama "DPRD DKI" atau nama fraksinya dalam artikel yang sama (judul atau cuplikan). Item tanpa dasar cocok dibuang. Berita situs resmi dipautkan lewat nama anggota yang disebut.
 - **Ringkasan, bukan salinan**: Rantai menyimpan dan menampilkan judul, ringkasan netral satu kalimat, nama media, tanggal, dan tautan. Teks berita penuh tidak disimpan.
-- **Ringkasan netral**: job `ringkas_umpan` membuat satu kalimat (maksimal 160 karakter) dari judul dan cuplikan memakai klien LLM yang sama dengan Tanya Rantai, model dari env `RINGKAS_MODEL`. Validator menolak ringkasan yang memuat kosakata terlarang, kata penilaian, atau angka yang tidak ada di sumber. Bila ditolak atau model tidak tersedia, ringkasan kosong dan hanya judul yang tampil.
+- **Ringkasan netral**: job `ringkas_umpan` membuat satu kalimat (maksimal 160 karakter) dari judul dan cuplikan memakai klien LLM yang sama dengan Tanya Rantai, model dari env `RINGKAS_MODEL`. Validator menolak ringkasan yang memuat kosakata terlarang, kata penilaian, atau angka yang tidak ada di sumber. Bila ditolak atau model tidak tersedia, ringkasan kosong. Rilis resmi DPRD yang belum punya ringkasan menampilkan `cuplikan` aslinya sebagai kutipan sumber (dipotong di batas kata dan diberi tanda elipsis bila mencapai 300 karakter); cuplikan media tidak pernah dikirim, sehingga item media tanpa ringkasan hanya menampilkan judul.
 - **Tag isu**: setiap item diberi `tag_isu` dari pencocokan kata kunci `tag_isu` semua tema.
 - **Bias liputan diakui**: bagian umpan selalu memuat pernyataan "Anggota yang lebih sering diliput akan terlihat lebih aktif. Umpan ini bukan ukuran kinerja."
 - Moderator bisa menyembunyikan item yang salah atribusi; item tersembunyi tercatat dengan alasan.
@@ -597,7 +597,7 @@ API: `GET /aspirasi-reses/{id}/paket-terkait`. Respons memuat `aspirasi`, `tahun
 | S-04 | Satu penyedia memenangkan sebagian besar paket sejenis | Penyedia sama memenangkan ≥ 40% nilai paket satu kategori di satu instansi dalam satu tahun anggaran, minimal 5 paket | |
 | S-05 | Melewati jadwal | Hari ini > `jadwal_selesai` + 30 hari dan ada ≥ 1 laporan terverifikasi berkondisi belum_dimulai, sedang_dikerjakan, atau terhenti | |
 
-**Kosakata terlarang** untuk teks buatan Rantai (berkas i18n, pesan backend, ringkasan umpan, jawaban Tanya Rantai): korupsi, curang, mark up, penggelembungan, kongkalikong, fiktif, penyelewengan, menyimpang, memperjuangkan. Judul berita media ditampilkan apa adanya sebagai kutipan berlencana dan tidak termasuk teks buatan Rantai. Tes otomatis memindai berkas i18n dan pesan backend.
+**Kosakata terlarang** untuk teks buatan Rantai (berkas i18n, pesan backend, ringkasan umpan, jawaban Tanya Rantai): korupsi, curang, mark up, penggelembungan, kongkalikong, fiktif, penyelewengan, menyimpang, memperjuangkan. Judul berita media dan cuplikan rilis resmi DPRD ditampilkan apa adanya sebagai kutipan berlencana dan tidak termasuk teks buatan Rantai. Tes otomatis memindai berkas i18n dan pesan backend.
 
 Kategori, tema, lokasi, dan sinyal dihitung ulang setiap job `turunan`; sinyal yang polanya tidak lagi terpenuhi menjadi tidak aktif, tidak dihapus. S-03 memakai ambang sesuai tanggal pembuatan paket.
 

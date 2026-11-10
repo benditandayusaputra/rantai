@@ -31,6 +31,7 @@ type umpanJSON struct {
 	MediaDomain  string         `json:"media_domain"`
 	Judul        string         `json:"judul"`
 	Ringkasan    *string        `json:"ringkasan"`
+	Cuplikan     string         `json:"cuplikan,omitempty"`
 	URL          string         `json:"url"`
 	TerbitPada   time.Time      `json:"terbit_pada"`
 	TagIsu       []string       `json:"tag_isu"`
@@ -103,7 +104,7 @@ func keUmpanJSON(u domain.UmpanTampil) umpanJSON {
 	}
 	return umpanJSON{
 		ID: u.ID, JenisSumber: string(u.JenisSumber), MediaNama: u.MediaNama, MediaDomain: u.MediaDomain,
-		Judul: u.Judul, Ringkasan: ringkasan, URL: u.URL, TerbitPada: u.TerbitPada, TagIsu: u.TagIsu,
+		Judul: u.Judul, Ringkasan: ringkasan, Cuplikan: u.CuplikanRilisResmi(), URL: u.URL, TerbitPada: u.TerbitPada, TagIsu: u.TagIsu,
 		DasarCocok: string(u.DasarCocok), ProvenanceID: u.ProvenanceID, HakJawab: keDaftarHakJawabJSON(u.HakJawab),
 	}
 }

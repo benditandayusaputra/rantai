@@ -18,7 +18,7 @@ LIMIT $1`
 
 	sqlAnggotaAda = `SELECT EXISTS (SELECT 1 FROM anggota WHERE id = $1)`
 
-	sqlKolomUmpanTampil = `u.id, u.jenis_sumber, u.media_nama, u.media_domain, u.judul, coalesce(u.ringkasan, ''), u.url,
+	sqlKolomUmpanTampil = `u.id, u.jenis_sumber, u.media_nama, u.media_domain, u.judul, coalesce(u.ringkasan, ''), u.cuplikan, u.url,
     u.terbit_pada, u.tag_isu, ua.dasar_cocok, u.provenance_id`
 
 	sqlUmpanAnggota = `SELECT ` + sqlKolomUmpanTampil + `, count(*) OVER ()
@@ -123,6 +123,6 @@ func (r UmpanRepository) UmpanIsuTerbaru(ctx context.Context, anggotaID, tagIsu 
 }
 
 func kolomUmpanTampil(u *domain.UmpanTampil) []any {
-	return []any{&u.ID, &u.JenisSumber, &u.MediaNama, &u.MediaDomain, &u.Judul, &u.Ringkasan,
+	return []any{&u.ID, &u.JenisSumber, &u.MediaNama, &u.MediaDomain, &u.Judul, &u.Ringkasan, &u.Cuplikan,
 		&u.URL, &u.TerbitPada, &u.TagIsu, &u.DasarCocok, &u.ProvenanceID}
 }

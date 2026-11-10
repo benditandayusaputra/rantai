@@ -29,7 +29,13 @@
 			aria-hidden="true"
 		/><span class="sr-only">{t('a11y.opensNewTab')}</span>
 	</a>
-	{#if item.ringkasan}<p class="text-small text-muted">{item.ringkasan}</p>{/if}
+	{#if item.ringkasan}<p class="text-small text-muted">{item.ringkasan}</p>
+	{:else if item.cuplikan}
+		<blockquote class="border-l-link border-line-strong pl-3 text-small text-muted">
+			<span class="sr-only">{t('member.excerpt')}:</span>
+			{item.cuplikan}
+		</blockquote>
+	{/if}
 	{#each item.hak_jawab ?? [] as hakJawab (hakJawab.id)}
 		<RightOfReply {hakJawab} />
 	{/each}

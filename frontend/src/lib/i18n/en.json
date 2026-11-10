@@ -1277,5 +1277,6 @@
 	"report.s1.outsideTitle": "Your location was detected outside DKI Jakarta",
 	"report.s1.outsideBody": "Report Evidence is only available for projects in DKI Jakarta for now. If you are actually in Jakarta, your device location is off: turn on GPS or use a phone, then search again.",
 	"report.exit": "Exit Report Evidence",
-	"report.discardConfirm": "Exit and discard this report?"
+	"report.discardConfirm": "Exit and discard this report?",
+	"member.excerpt": "Excerpt from the official release"
 }
