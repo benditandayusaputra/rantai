@@ -688,7 +688,7 @@ API: `POST /laporan` (multipart: `lat`, `lng`, `akurasi`, `kondisi`, `catatan`, 
 
 ### AKS-01 Tanya Rantai
 
-Antarmuka obrolan di `/{bahasa}/tanya` dan panel geser di halaman kecamatan (kecamatan aktif ikut sebagai konteks). Warga wajib memilih kecamatan sebelum bertanya; kecamatan yang tersimpan sebagai wilayahnya dipakai otomatis. Tag `<kecamatan_aktif>` hanya dikirim ke model bila konteksnya ada, dan gema tag masukan dibuang dari jawaban.
+Antarmuka obrolan di `/{bahasa}/tanya` dan panel geser di halaman kecamatan (kecamatan aktif ikut sebagai konteks). Warga wajib memilih kecamatan sebelum bertanya; kecamatan yang tersimpan sebagai wilayahnya dipakai otomatis. Tag `<kecamatan_aktif>` hanya dikirim ke model bila konteksnya ada, gema tag masukan dibuang dari jawaban, dan jawaban yang masih menyebut nama tag diganti pesan aman oleh validator.
 
 Backend memanggil API LLM dengan tool use (function calling). Model dari env `TANYA_MODEL`; penyedia dipilih dari nama model: awalan `gemini` atau `gemma` memakai Gemini API dengan kunci `GEMINI_API_KEY`, selain itu Claude API dengan kunci `ANTHROPIC_API_KEY`. Klien LLM bersama `internal/llm` juga dipakai job `ringkas_umpan` (`RINGKAS_MODEL`). Permintaan Gemini yang kena batas kuota (429) atau sedang sibuk (500, 503) diulang paling banyak tiga kali dengan jeda saran server. Model hanya boleh menjawab dari hasil fungsi berikut:
 

@@ -436,6 +436,9 @@ Temuan uji tim atas situs produksi. Tiga saran mentor di akhir dokumen QA (integ
   - `/{bahasa}/belajar` menjelaskan enam langkah kerja pemerintahan daerah DKI Jakarta (pemilu, perencanaan, APBD, pelaksanaan, pengawasan, peran warga) dan kamus 19 istilah yang muncul di Rantai, dalam ID dan EN.
   - Terjangkau dari menu utama layar lebar, kaki halaman, dan bagian "Cara kerja" di beranda.
 
+- [x] **T-1217** Nama tag masukan tidak sampai ke warga · `🐛 Tolak jawaban Tanya Rantai yang menyebut nama tag masukan`
+  - Uji produksi T-1215 tanpa konteks masih menghasilkan kalimat yang menyebut `<kecamatan_aktif>`. Prompt tidak lagi mengajak model membahas tag, dan validator mengganti jawaban yang menyebut nama tag dengan pesan aman.
+
 ## Keluaran lomba di luar kode
 
 Dikerjakan tim, bukan tugas commit. Dicatat di sini agar urutannya terlihat.

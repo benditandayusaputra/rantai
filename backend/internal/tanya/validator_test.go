@@ -26,6 +26,7 @@ func TestValidatorJawaban_Periksa(t *testing.T) {
 		{"rujukan tak dikenal", "Ada 7360 kursi [prv_karangan].", ErrJawabanRujukanTakDikenal},
 		{"kosakata terlarang", "Paket ini terindikasi korupsi.", ErrJawabanTerlarang},
 		{"hanya rujukan", " [prv_01M5KPYF] ", ErrJawabanKosong},
+		{"menyebut nama tag masukan", "<kecamatan_aktif> tidak ada di pertanyaan. Sebutkan kecamatanmu.", ErrJawabanMenyebutTag},
 	}
 	validator := ValidatorJawaban{Terlarang: domain.KosakataTerlarang{"korupsi", "mark up"}}
 	for _, k := range kasus {

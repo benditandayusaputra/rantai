@@ -3,6 +3,7 @@ package tanya
 import (
 	"encoding/json"
 	"errors"
+	"regexp"
 	"strings"
 
 	"github.com/benditandayusaputra/rantai/backend/internal/domain"
@@ -13,7 +14,10 @@ var (
 	ErrJawabanTerlarang         = errors.New("jawaban memuat kosakata terlarang")
 	ErrJawabanRujukanTakDikenal = errors.New("jawaban merujuk provenance yang tidak ada di hasil alat")
 	ErrJawabanAngkaKarangan     = errors.New("jawaban memuat angka yang tidak ada di hasil alat")
+	ErrJawabanMenyebutTag       = errors.New("jawaban menyebut nama tag masukan")
 )
+
+var polaNamaTagMasukan = regexp.MustCompile(`bahasa_antarmuka|kecamatan_aktif`)
 
 type ValidatorJawaban struct {
 	Terlarang domain.KosakataTerlarang
@@ -31,6 +35,8 @@ func (v ValidatorJawaban) Periksa(teks string, hasilAlat []json.RawMessage) erro
 		return ErrJawabanKosong
 	case len(v.Terlarang.Temukan(tanpaRujukan)) > 0:
 		return ErrJawabanTerlarang
+	case polaNamaTagMasukan.MatchString(tanpaRujukan):
+		return ErrJawabanMenyebutTag
 	case !isRujukanDikenal(teks, sumber):
 		return ErrJawabanRujukanTakDikenal
 	case !domain.IsAngkaBersumber(tanpaRujukan, sumber):
