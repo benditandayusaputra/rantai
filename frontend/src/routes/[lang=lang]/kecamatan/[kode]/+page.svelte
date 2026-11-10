@@ -9,6 +9,7 @@
 		ImageDown,
 		Landmark,
 		MapPin,
+		MapPinCheck,
 		MessageCircle,
 		Share2,
 		Wallet
@@ -28,6 +29,7 @@
 		tautanBagian,
 		type Bagian
 	} from '$lib/features/kecamatan/kecamatan';
+	import { simpanWilayahku, wilayahku } from '$lib/features/wilayah/wilayahku.svelte';
 	import { bahasaAktif, t, type KunciPesan } from '$lib/i18n';
 	import type { PageProps } from './$types';
 
@@ -130,9 +132,19 @@
 							>
 						</p>{/if}
 				</div>
-				<a href="/{bahasaAktif}#cari-wilayah" class="btn btn-outline self-start"
-					>{t('area.change')}</a
-				>
+				<div class="flex flex-wrap items-center gap-2 self-start">
+					{#if wilayahku() === ringkasan.kecamatan.kode}
+						<span class="chip"><MapPinCheck size={16} aria-hidden="true" />{t('area.mine')}</span>
+					{:else}
+						<button
+							type="button"
+							class="btn btn-secondary"
+							onclick={() => simpanWilayahku(ringkasan.kecamatan.kode)}
+							><MapPinCheck size={18} aria-hidden="true" />{t('area.setMine')}</button
+						>
+					{/if}
+					<a href="/{bahasaAktif}#cari-wilayah" class="btn btn-outline">{t('area.change')}</a>
+				</div>
 			</div>
 			{#if ringkasan.kelurahan_disorot}<p class="mt-4 rounded-md bg-info-bg p-3 text-small">
 					{t('area.highlighted', { name: ringkasan.kelurahan_disorot.nama })}

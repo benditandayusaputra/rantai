@@ -35,7 +35,7 @@ describe('konteks wilayah saat berpindah halaman', () => {
 
 	it('membawa kode kecamatan ke Tanya dan tidak menambahkannya ke halaman umum', () => {
 		expect(tautanDenganWilayah('/wilayah', 'id', '31.72.06')).toBe('/id/kecamatan/31.72.06');
-		expect(tautanDenganWilayah('/wilayah', 'id', null)).toBe('/id#cari-wilayah');
+		expect(tautanDenganWilayah('/wilayah', 'id', null)).toBe('/id/peta');
 		expect(tautanDenganWilayah('/tanya', 'id', '31.72.06')).toBe('/id/tanya?w=31.72.06');
 		expect(tautanDenganWilayah('/tanya', 'en', null)).toBe('/en/tanya');
 		expect(tautanDenganWilayah('/tentang-data', 'id', '31.72.06')).toBe('/id/tentang-data');

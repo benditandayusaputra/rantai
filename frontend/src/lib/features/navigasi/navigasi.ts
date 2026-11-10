@@ -82,7 +82,7 @@ export function tautanDenganWilayah(path: string, bahasa: string, kode: string |
 	if (path === '/wilayah')
 		return kode
 			? `/${bahasa}/${kode.split('.').length === 2 ? 'kota' : 'kecamatan'}/${kode}`
-			: `/${bahasa}#cari-wilayah`;
+			: `/${bahasa}/peta`;
 	const tujuan = `/${bahasa}${path}`;
 	return kode && kode.split('.').length === 3 && (path === '/tanya' || path === '/cek-sekolah')
 		? `${tujuan}?w=${encodeURIComponent(kode)}`

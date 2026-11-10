@@ -1267,5 +1267,7 @@
 	"home.faq.q5": "How often is the data updated?",
 	"home.faq.a5": "Scheduled updates run every day at 02:00 WIB. The last fetch time of each source is recorded on the About the Data page.",
 	"home.faq.q6": "What does “worth asking about” on a project mean?",
-	"home.faq.a6": "It is a pattern in the data that is worth raising with the responsible agency, shown with its reason and comparison. It is not an accusation and not a conclusion."
+	"home.faq.a6": "It is a pattern in the data that is worth raising with the responsible agency, shown with its reason and comparison. It is not an accusation and not a conclusion.",
+	"area.setMine": "Set as my area",
+	"area.mine": "My area"
 }

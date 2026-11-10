@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { berandaPengguna } from '$lib/features/wilayah/wilayahku.svelte';
 	import { bahasaAktif, t } from '$lib/i18n';
 	import LogoMark from './LogoMark.svelte';
 
@@ -11,7 +12,7 @@
 </script>
 
 <a
-	href="/{bahasaAktif}"
+	href={berandaPengguna(bahasaAktif)}
 	class="inline-flex min-h-touch shrink-0 items-center gap-2.5 rounded-md"
 	aria-label={t('brand.home')}
 >

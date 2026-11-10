@@ -1267,5 +1267,7 @@
 	"home.faq.q5": "Seberapa sering data diperbarui?",
 	"home.faq.a5": "Pembaruan terjadwal berjalan setiap hari pukul 02.00 WIB. Waktu pengambilan terakhir tiap sumber tercatat di halaman Tentang Data.",
 	"home.faq.q6": "Apa arti tanda “perlu ditanyakan” pada proyek?",
-	"home.faq.a6": "Itu pola pada data yang layak ditanyakan ke instansi terkait, lengkap dengan alasan dan pembandingnya. Tanda itu bukan tuduhan dan bukan kesimpulan."
+	"home.faq.a6": "Itu pola pada data yang layak ditanyakan ke instansi terkait, lengkap dengan alasan dan pembandingnya. Tanda itu bukan tuduhan dan bukan kesimpulan.",
+	"area.setMine": "Jadikan wilayahku",
+	"area.mine": "Wilayahku"
 }

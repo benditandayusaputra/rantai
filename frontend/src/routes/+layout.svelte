@@ -6,14 +6,18 @@
 	import fontIsi from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
 	import fontJudul from '@fontsource-variable/plus-jakarta-sans/files/plus-jakarta-sans-latin-wght-normal.woff2?url';
 	import '../app.css';
+	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import { navigating, page } from '$app/state';
+	import { pulihkanWilayahku } from '$lib/features/wilayah/wilayahku.svelte';
 	import { aturBahasa, bahasaDari } from '$lib/i18n';
 
 	let { children } = $props();
 
 	const bahasa = $derived(bahasaDari(page.params.lang));
 	aturBahasa(bahasaDari(page.params.lang));
+
+	onMount(pulihkanWilayahku);
 
 	$effect.pre(() => aturBahasa(bahasa));
 	$effect(() => {

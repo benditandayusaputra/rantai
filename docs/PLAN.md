@@ -413,6 +413,10 @@ Temuan uji tim atas situs produksi. Tiga saran mentor di akhir dokumen QA (integ
   - Bagian "Mulai di sini" kini selebar bagian lain dan berdampingan dengan enam contoh kecamatan (satu sampai dua per kota) serta tautan ke peta. Judul tiga lensa menjadi "Cara kerja", dan ada bagian pertanyaan yang sering diajukan.
   - Tur "Cara memakai Rantai" dihapus dari beranda, kaki halaman, dan kode karena hanya berisi satu langkah.
 
+- [x] **T-1211** Wilayah pilihan menjadi beranda setelah masuk · `✨ Jadikan wilayah pilihan sebagai beranda pengguna yang sudah masuk`
+  - Menu Wilayah tanpa wilayah aktif kini membuka peta, tidak lagi sama dengan Beranda. Kecamatan yang dipilih lewat pencarian, lokasi, atau tombol "Jadikan wilayahku" diingat di perangkat (`localStorage`, bukan di akun).
+  - Pengguna yang sudah masuk dan punya wilayah tersimpan tidak lagi melihat menu Beranda: logo dan `/{bahasa}` membuka halaman kecamatannya, dan menu Wilayah serta Tanya membawa wilayah itu. "Ubah wilayah" tetap membuka pencarian di beranda.
+
 ## Keluaran lomba di luar kode
 
 Dikerjakan tim, bukan tugas commit. Dicatat di sini agar urutannya terlihat.

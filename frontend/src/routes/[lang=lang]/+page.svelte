@@ -10,6 +10,7 @@
 		ShieldCheck,
 		Wallet
 	} from '@lucide/svelte';
+	import { untrack } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { cariWilayah } from '$lib/api/klien';
 	import type { WilayahDitemukan } from '$lib/api/tipe';
@@ -17,6 +18,8 @@
 	import UseLocationButton from '$lib/components/UseLocationButton.svelte';
 	import { daftarSorotan } from '$lib/features/beranda/beranda';
 	import { cariLokasiku, type StatusLokasi } from '$lib/features/wilayah/lokasi';
+	import { sesiAktif } from '$lib/features/akun/sesi.svelte';
+	import { berandaPengguna, ingatWilayah } from '$lib/features/wilayah/wilayahku.svelte';
 	import { tujuanWilayah } from '$lib/features/wilayah/wilayah';
 	import { bahasaAktif, t } from '$lib/i18n';
 
@@ -39,7 +42,17 @@
 		{ tanya: 'home.faq.q6', jawab: 'home.faq.a6' }
 	] as const;
 
+	const jangkarCari = '#cari-wilayah';
+
+	$effect(() => {
+		if (!sesiAktif()) return;
+		const beranda = untrack(() => berandaPengguna(bahasaAktif));
+		if (beranda !== `/${bahasaAktif}` && location.hash !== jangkarCari)
+			void goto(beranda, { replaceState: true });
+	});
+
 	function buka(wilayah: WilayahDitemukan) {
+		ingatWilayah(wilayah);
 		void goto(tujuanWilayah(wilayah));
 	}
 

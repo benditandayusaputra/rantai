@@ -16,12 +16,20 @@
 		tujuanPonsel,
 		tujuanUtama
 	} from '$lib/features/navigasi/navigasi';
+	import { isBerandaWilayah, wilayahku } from '$lib/features/wilayah/wilayahku.svelte';
 	import { bahasaAktif, t } from '$lib/i18n';
 
 	let { children } = $props();
 
 	const aktif = $derived(tujuanAktif(page.url.pathname, bahasaAktif));
-	const kodeWilayah = $derived(kodeWilayahDariURL(page.url));
+	const kodeWilayah = $derived(kodeWilayahDariURL(page.url) ?? wilayahku());
+	const isTanpaBeranda = $derived(isBerandaWilayah());
+	const tujuanDesktop = $derived(
+		tujuanUtama.filter((tujuan) => tujuan.kunci !== 'beranda' || !isTanpaBeranda)
+	);
+	const tujuanLayarKecil = $derived(
+		tujuanPonsel.filter((tujuan) => tujuan.kunci !== 'beranda' || !isTanpaBeranda)
+	);
 	const sesi = $derived(sesiAktif());
 	const tautanMasuk = $derived(
 		`/${bahasaAktif}/masuk?lanjut=${encodeURIComponent(page.url.pathname + page.url.search)}`
@@ -57,7 +65,7 @@
 			<Logo />
 			<nav aria-label={t('nav.main')} class="hidden self-stretch lg:mx-auto lg:block">
 				<ul class="flex h-full items-stretch gap-3 xl:gap-7.5">
-					{#each tujuanUtama as tujuan (tujuan.kunci)}
+					{#each tujuanDesktop as tujuan (tujuan.kunci)}
 						<li class="flex">
 							<a
 								href={tautanDenganWilayah(tujuan.path, bahasaAktif, kodeWilayah)}
@@ -119,7 +127,7 @@
 	class="glass fixed inset-x-0 bottom-0 z-sticky border-t border-line pb-[env(safe-area-inset-bottom)] lg:hidden"
 >
 	<ul class="flex h-16">
-		{#each tujuanPonsel as tujuan (tujuan.kunci)}
+		{#each tujuanLayarKecil as tujuan (tujuan.kunci)}
 			{@const Ikon = tujuan.ikon}
 			<li class="min-w-0 flex-1">
 				<a
