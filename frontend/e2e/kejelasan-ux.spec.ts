@@ -56,8 +56,12 @@ test('ketik wilayah lalu Enter membuka kecamatan yang tepat', async ({ page }, i
 	await page.getByRole('combobox').press('Enter');
 	await expect(page).toHaveURL(new RegExp(`/kecamatan/${wilayah}$`));
 	await expect(page.getByRole('heading', { level: 1 })).toContainText('Kelapa Gading');
-	await expect(page.getByRole('heading', { name: 'Apa yang ingin kamu ketahui?' })).toBeVisible();
-	await expect(page.getByText(/kursi SMP negeri tersedia untuk setiap 100/)).toHaveCount(0);
+	await expect(
+		page.getByRole('heading', { level: 2, name: 'Wakil rakyat & instansi' })
+	).toBeVisible();
+	await expect(page.getByRole('heading', { level: 2, name: 'Proyek pemerintah' })).toBeVisible();
+	await expect(page.getByText(/kursi SMP negeri tersedia untuk setiap 100/)).toBeVisible();
+	await expect(page.getByRole('link', { name: 'Buka dasbor tren', exact: true })).toBeVisible();
 	await page.screenshot({ path: info.outputPath('pilihan-informasi.png'), fullPage: true });
 });
 
@@ -65,7 +69,7 @@ test('ringkasan angka tersambung ke aspirasi dengan wilayah dan masalah terpilih
 	page
 }, info) => {
 	await page.goto(`/id/kecamatan/${wilayah}`);
-	await page.getByRole('link', { name: /^Layanan publik/ }).click();
+	await page.getByRole('link', { name: 'Lihat layanan publik', exact: true }).click();
 	await expect(page).toHaveURL(/kota\/31.72/);
 	await page.getByRole('link', { name: 'Kelapa Gading', exact: true }).first().click();
 	await expect(page).toHaveURL(/bagian=tema/, { timeout: 15_000 });

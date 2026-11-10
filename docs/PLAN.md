@@ -417,6 +417,10 @@ Temuan uji tim atas situs produksi. Tiga saran mentor di akhir dokumen QA (integ
   - Menu Wilayah tanpa wilayah aktif kini membuka peta, tidak lagi sama dengan Beranda. Kecamatan yang dipilih lewat pencarian, lokasi, atau tombol "Jadikan wilayahku" diingat di perangkat (`localStorage`, bukan di akun).
   - Pengguna yang sudah masuk dan punya wilayah tersimpan tidak lagi melihat menu Beranda: logo dan `/{bahasa}` membuka halaman kecamatannya, dan menu Wilayah serta Tanya membawa wilayah itu. "Ubah wilayah" tetap membuka pencarian di beranda.
 
+- [x] **T-1212** Halaman kecamatan sebagai dasbor wilayah · `✨ Ubah halaman kecamatan menjadi dasbor ringkasan wilayah`
+  - Tiga kartu pilihan diganti pratinjau langsung, berurutan: wakil rakyat (delapan anggota pertama dengan foto besar), proyek pemerintah (angka kunci dan tiga paket terbaru), lalu layanan publik (arti angka kursi tiap jenjang). Tiap bagian punya tautan ke halaman lengkapnya.
+  - Di bawahnya ada ajakan ke dasbor tren se-Jakarta, yang sebelumnya hanya terjangkau dari kaki halaman.
+
 ## Keluaran lomba di luar kode
 
 Dikerjakan tim, bukan tugas commit. Dicatat di sini agar urutannya terlihat.

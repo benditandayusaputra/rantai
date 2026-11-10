@@ -5,6 +5,9 @@ import { bahasaAktif, isKunciPesan, t, type KunciPesan } from '$lib/i18n';
 export const daftarBagian = ['tema', 'anggaran', 'wakilku'] as const;
 export type Bagian = (typeof daftarBagian)[number];
 
+export const batasWakilRingkas = 8;
+export const batasPaketRingkas = 3;
+
 export function bacaBagian(nilai: string | null): Bagian | null {
 	return daftarBagian.find((b) => b === nilai) ?? null;
 }

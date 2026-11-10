@@ -3,6 +3,7 @@
 		ArrowLeft,
 		ArrowRight,
 		Building2,
+		ChartLine,
 		ChevronRight,
 		GraduationCap,
 		House,
@@ -17,10 +18,14 @@
 	import { invalidateAll } from '$app/navigation';
 	import { page } from '$app/state';
 	import { alamatKartuKecamatan } from '$lib/api/klien';
+	import EmptyState from '$lib/components/EmptyState.svelte';
 	import ErrorState from '$lib/components/ErrorState.svelte';
 	import BagianAnggaran from '$lib/features/kecamatan/BagianAnggaran.svelte';
 	import BagianTema from '$lib/features/kecamatan/BagianTema.svelte';
 	import BagianWakilku from '$lib/features/kecamatan/BagianWakilku.svelte';
+	import RingkasLayanan from '$lib/features/kecamatan/RingkasLayanan.svelte';
+	import RingkasProyek from '$lib/features/kecamatan/RingkasProyek.svelte';
+	import RingkasWakil from '$lib/features/kecamatan/RingkasWakil.svelte';
 	import TombolPantau from '$lib/features/pantau/TombolPantau.svelte';
 	import {
 		bacaBagian,
@@ -40,28 +45,10 @@
 	const halamanWilayah = $derived(
 		`/${bahasaAktif}/kecamatan/${data.kode}${page.url.searchParams.has('kelurahan') ? `?kelurahan=${encodeURIComponent(page.url.searchParams.get('kelurahan') ?? '')}` : ''}`
 	);
-	const infoBagian: Record<
-		Bagian,
-		{ ikon: typeof Wallet; judul: KunciPesan; isi: KunciPesan; cakupan: KunciPesan }
-	> = {
-		tema: {
-			ikon: GraduationCap,
-			judul: 'bagian.tema',
-			isi: 'hub.services.body',
-			cakupan: 'hub.services.scope'
-		},
-		anggaran: {
-			ikon: Wallet,
-			judul: 'bagian.anggaran',
-			isi: 'hub.projects.body',
-			cakupan: 'hub.projects.scope'
-		},
-		wakilku: {
-			ikon: Landmark,
-			judul: 'bagian.wakilku',
-			isi: 'hub.people.body',
-			cakupan: 'hub.people.scope'
-		}
+	const infoBagian: Record<Bagian, { ikon: typeof Wallet; judul: KunciPesan; isi: KunciPesan }> = {
+		tema: { ikon: GraduationCap, judul: 'bagian.tema', isi: 'hub.services.body' },
+		anggaran: { ikon: Wallet, judul: 'bagian.anggaran', isi: 'hub.projects.body' },
+		wakilku: { ikon: Landmark, judul: 'bagian.wakilku', isi: 'hub.people.body' }
 	};
 
 	async function bagikan() {
@@ -81,6 +68,36 @@
 			: t('brand.name')}</title
 	>
 </svelte:head>
+
+{#snippet pratinjau(bagian: Bagian, tautan: string, labelTautan: KunciPesan)}
+	{@const info = infoBagian[bagian]}
+	{@const Ikon = info.ikon}
+	{#if hasil.ok}
+		<section aria-labelledby="judul-{bagian}">
+			<div class="flex flex-wrap items-end justify-between gap-3">
+				<div class="flex items-start gap-3">
+					<span class="icon-tile"><Ikon size={20} aria-hidden="true" /></span>
+					<div>
+						<h2 id="judul-{bagian}" class="t-h2">{t(info.judul)}</h2>
+						<p class="mt-1 max-w-prose text-small text-muted">{t(info.isi)}</p>
+					</div>
+				</div>
+				<a href={tautan} class="btn btn-outline btn-sm"
+					>{t(labelTautan)}<ArrowRight size={16} aria-hidden="true" /></a
+				>
+			</div>
+			<div class="mt-5">
+				{#if bagian === 'wakilku'}<RingkasWakil wakilku={hasil.data.wakilku} />
+				{:else if bagian === 'tema'}<RingkasLayanan tema={hasil.data.tema} />
+				{:else if hasil.data.anggaran}<RingkasProyek
+						anggaran={hasil.data.anggaran}
+						kodeKecamatan={hasil.data.kecamatan.kode}
+					/>
+				{:else}<EmptyState title={t('money.empty')} />{/if}
+			</div>
+		</section>
+	{/if}
+{/snippet}
 
 {#if !hasil.ok}
 	<div class="wrap pt-10">
@@ -153,37 +170,19 @@
 	</div>
 
 	{#if bagianAktif === null}
-		<section class="wrap pt-8 lg:pt-10" aria-labelledby="judul-pilih-informasi">
-			<h2 id="judul-pilih-informasi" class="t-h2">{t('hub.title')}</h2>
-			<p class="mt-2 max-w-prose text-muted">{t('hub.lead', { name: ringkasan.kecamatan.nama })}</p>
-			<ul class="mt-6 grid gap-4 lg:grid-cols-3 lg:gap-6">
-				{#each daftarBagian as bagian (bagian)}
-					{@const info = infoBagian[bagian]}
-					{@const Ikon = info.ikon}
-					<li>
-						<a
-							href={bagian === 'tema' && kota
-								? `/${bahasaAktif}/kota/${kota.kode}`
-								: tautanBagian(page.url, bagian)}
-							class="card-link group flex h-full flex-col p-5 md:p-6"
-						>
-							<span class="icon-tile h-12 w-12"><Ikon size={24} aria-hidden="true" /></span>
-							<h3 class="t-h3 mt-5">{t(info.judul)}</h3>
-							<p class="mt-2 text-small text-muted">{t(info.isi)}</p>
-							<p class="mt-4 text-caption text-muted">{t(info.cakupan)}</p>
-							<span
-								class="mt-auto flex min-h-touch items-center justify-between gap-3 border-t border-line pt-4 text-small font-semibold group-hover:text-primary"
-								><span>{t('hub.open')}</span><ArrowRight size={18} aria-hidden="true" /></span
-							>
-						</a>
-					</li>
-				{/each}
-			</ul>
+		<div class="wrap flex flex-col gap-10 pt-8 lg:gap-12 lg:pt-10">
+			{@render pratinjau('wakilku', tautanBagian(page.url, 'wakilku'), 'hub.people.more')}
+			{@render pratinjau('anggaran', tautanBagian(page.url, 'anggaran'), 'hub.projects.more')}
+			{@render pratinjau(
+				'tema',
+				kota ? `/${bahasaAktif}/kota/${kota.kode}` : tautanBagian(page.url, 'tema'),
+				'hub.services.more'
+			)}
 			<div
-				class="mt-8 flex flex-col gap-4 rounded-lg bg-sunken p-5 md:flex-row md:items-center md:justify-between md:p-6"
+				class="flex flex-col gap-4 rounded-lg bg-sunken p-5 md:flex-row md:items-center md:justify-between md:p-6"
 			>
 				<div>
-					<h3 class="t-h3">{t('hub.askTitle')}</h3>
+					<h2 class="t-h3">{t('hub.askTitle')}</h2>
 					<p class="mt-1 text-small text-muted">{t('hub.askBody')}</p>
 				</div>
 				<a
@@ -192,21 +191,34 @@
 					><MessageCircle size={18} aria-hidden="true" />{t('ask.title')}</a
 				>
 			</div>
-			<div class="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4">
-				<TombolPantau kodeKecamatan={ringkasan.kecamatan.kode} />
-				<div class="flex flex-wrap gap-2">
-					<button type="button" class="btn btn-ghost" onclick={bagikan}
-						><Share2 size={18} aria-hidden="true" />{t('action.share')}</button
-					><a
-						href={alamatKartuKecamatan(ringkasan.kecamatan.kode, bahasaAktif)}
-						download
-						class="btn btn-ghost"
-						><ImageDown size={18} aria-hidden="true" />{t('action.shareImage')}</a
-					>
+			<div
+				class="flex flex-col gap-4 rounded-lg border border-line p-5 md:flex-row md:items-center md:justify-between md:p-6"
+			>
+				<div>
+					<h2 class="t-h3">{t('hub.trend.title')}</h2>
+					<p class="mt-1 text-small text-muted">{t('hub.trend.body')}</p>
 				</div>
+				<a href="/{bahasaAktif}/dasbor" class="btn btn-outline shrink-0"
+					><ChartLine size={18} aria-hidden="true" />{t('hub.trend.action')}</a
+				>
 			</div>
-			<p class="mt-2 text-small text-success" aria-live="polite">{pesanBagikan}</p>
-		</section>
+			<div>
+				<div class="flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4">
+					<TombolPantau kodeKecamatan={ringkasan.kecamatan.kode} />
+					<div class="flex flex-wrap gap-2">
+						<button type="button" class="btn btn-ghost" onclick={bagikan}
+							><Share2 size={18} aria-hidden="true" />{t('action.share')}</button
+						><a
+							href={alamatKartuKecamatan(ringkasan.kecamatan.kode, bahasaAktif)}
+							download
+							class="btn btn-ghost"
+							><ImageDown size={18} aria-hidden="true" />{t('action.shareImage')}</a
+						>
+					</div>
+				</div>
+				<p class="mt-2 text-small text-success" aria-live="polite">{pesanBagikan}</p>
+			</div>
+		</div>
 	{:else}
 		<div class="wrap pt-5">
 			<a href={halamanWilayah} class="btn btn-ghost btn-sm -ml-3"
